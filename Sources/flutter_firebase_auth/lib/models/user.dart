@@ -1,8 +1,11 @@
-class User {
+import 'package:flutter_firebase_auth/models/inserted_book.dart';
+
+class CustomUser {
+
   final String uid;
   final bool isAnonymous;
 
-  User({this.uid, this.isAnonymous});
+  CustomUser({this.uid, this.isAnonymous});
 
   @override
   String toString() {
@@ -12,4 +15,16 @@ class User {
       " (isAnonymous? " +
       this.isAnonymous.toString() + ")";
   }
+}
+
+
+class UserData {
+
+  final String uid;
+  final String name;
+  final List<InsertedBook> bookForSale;
+  final List<InsertedBook> bookToExchange;
+
+  UserData({ this.uid, this.name , this.bookForSale, this.bookToExchange });
+
 }

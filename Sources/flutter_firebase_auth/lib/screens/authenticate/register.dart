@@ -32,108 +32,148 @@ class _RegisterState extends State<Register> {
         elevation: 0.0,
         title: Text('Sign up to BookYourBook'),
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 20.0,),
-                  TextFormField(
-                    decoration: inputFieldDecoration.copyWith(hintText: 'Email'),
-                    validator: (value) =>
-                    (value.isEmpty | !value.contains('@') | !value.contains('.')) ?
-                      'Enter a valid email' : null,
-                    onChanged: (value) {
-                      setState(() {
-                        _email = value;
-                      });
-                    },
-                  ),
-                  SizedBox(height: 20.0,),
-                  TextFormField(
-                    decoration: inputFieldDecoration.copyWith(hintText: 'Password'),
-                    validator: (value) => value.length < 6 ?
-                      'Enter password of at least 6 characters' : null,
-                    onChanged: (value) {
-                      setState(() {
-                        _password = value;
-                      });
-                    },
-                    obscureText: true,
-                  ),
-                  SizedBox(height: 20.0,),
-                  TextButton(
-                    style: ButtonStyle(
-                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blueGrey[400];
-                            }
-                            else {
-                              return Colors.blueGrey[600];
-                            }
-                          }),
+      body: Container(
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  //mainAxisSize: MainAxisSize.max,
+                  //mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Spacer(
+                        flex: 1
                     ),
-                    child: Text('Sign Up', style: TextStyle(color: Colors.white),),
-                    onPressed: () async {
-                      if(_formKey.currentState.validate()) {
-                        setState(() {
-                          _loading = true;
-                        });
-
-                        dynamic result = await _auth.signUpEmailPassword(_email, _password);
-                        if(result == null) {
+                    Expanded(
+                      flex: 4,
+                      child: TextFormField(
+                        decoration: inputFieldDecoration.copyWith(hintText: 'Email'),
+                        validator: (value) =>
+                        (value.isEmpty | !value.contains('@') | !value.contains('.')) ?
+                          'Enter a valid email' : null,
+                        onChanged: (value) {
                           setState(() {
-                            print("Not a valid email or already registered");
-                            _error = 'Not a valid email or already registered';
-                            _loading = false;
+                            _email = value;
                           });
-                        }
-                      }
-                    },
-                  ),
-                  SizedBox(height: 10.0),
-                  Text(_error, style: TextStyle(color: Colors.red[400], fontSize: 14),),
-                  SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Already have an account?'),
-                      TextButton(
+                        },
+                      ),
+                    ),
+                    Spacer(
+                        flex: 1
+                    ),
+                      Expanded(
+                        flex: 4,
+                        child: TextFormField(
+                          decoration: inputFieldDecoration.copyWith(hintText: 'Password'),
+                          validator: (value) => value.length < 6 ?
+                            'Enter password of at least 6 characters' : null,
+                          onChanged: (value) {
+                            setState(() {
+                              _password = value;
+                            });
+                          },
+                          obscureText: true,
+                        ),
+                      ),
+                    Spacer(
+                        flex: 2
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        children: <Widget>[
+                          Spacer(
+                            flex: 1
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child: TextButton(
+                              style: ButtonStyle(
+                                //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+                                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                        (Set<MaterialState> states) {
+                                      if (states.contains(MaterialState.pressed)) {
+                                        return Colors.blueGrey[400];
+                                      }
+                                      else {
+                                        return Colors.blueGrey[600];
+                                      }
+                                    }),
+                              ),
+                              child: Text('Sign Up', style: TextStyle(color: Colors.white),),
+                              onPressed: () async {
+                                if(_formKey.currentState.validate()) {
+                                  setState(() {
+                                    _loading = true;
+                                  });
+
+                                  dynamic result = await _auth.signUpEmailPassword(_email, _password);
+                                  if(result == null) {
+                                    setState(() {
+                                      print("Not a valid email or already registered");
+                                      _error = 'Not a valid email or already registered';
+                                      _loading = false;
+                                    });
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                          Spacer(
+                              flex: 1
+                          ),
+                        ],
+                      )
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(_error, style: TextStyle(color: Colors.red[400], fontSize: 14),),
+                    ),
+                    Spacer(
+                        flex: 1
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Already have an account?'),
+                          TextButton(
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                            ),
+                            child: Text('Sign in',
+                                style: TextStyle(color: Colors.blue[600])),
+                            onPressed: () {
+                              widget.toggleView();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text('or'),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: TextButton(
                         style: ButtonStyle(
                           overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                         ),
-                        child: Text('Sign in',
+                        child: Text('Continue anonymously..',
                             style: TextStyle(color: Colors.blue[600])),
-                        onPressed: () {
-                          widget.toggleView();
+                        onPressed: () async {
+                          await _auth.signInAnonymously();
                         },
                       ),
-                    ],
-                  ),
-                  Text('or'),
-                  TextButton(
-                    style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                     ),
-                    child: Text('Continue anonymously..',
-                        style: TextStyle(color: Colors.blue[600])),
-                    onPressed: () async {
-                      await _auth.signInAnonymously();
-                    },
-                  ),
-                ],
+                    Spacer(
+                      flex: 1
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+      );
   }
 }

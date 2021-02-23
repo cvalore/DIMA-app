@@ -12,16 +12,16 @@ class AuthService {
   bool _signedInGoogle = false;
 
   //create a user obj based on Firebase user
-  User _userFromFirebaseUser(FirebaseUser user) {
+  CustomUser _userFromFirebaseUser(User user) {
     return user != null ?
-      new User(uid: user.uid, isAnonymous: user.isAnonymous) :
+      new CustomUser(uid: user.uid, isAnonymous: user.isAnonymous) :
       null;
   }
 
   //auth change user stream
-  Stream<User> get userStream {
-    return _auth.onAuthStateChanged.map(
-            (FirebaseUser u) => _userFromFirebaseUser(u)
+  Stream<CustomUser> get userStream {
+    return _auth.authStateChanges().map(
+            (User u) => _userFromFirebaseUser(u)
     );
   }
 
@@ -33,8 +33,8 @@ class AuthService {
   //sign in anonymously
   Future signInAnonymously() async {
     try {
-      AuthResult authResult = await _auth.signInAnonymously();
-      FirebaseUser user = authResult.user;
+      UserCredential authResult = await _auth.signInAnonymously();
+      User user = authResult.user;
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
@@ -45,8 +45,8 @@ class AuthService {
   //sign in with email&password
   Future signInEmailPassword(String email, String password) async {
     try {
-      AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      FirebaseUser user = authResult.user;
+      UserCredential authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      User user = authResult.user;
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
@@ -54,23 +54,24 @@ class AuthService {
     }
   }
 
+
   //sign in with email&password
   Future signInGoogle() async {
     try {
       final GoogleSignInAccount googleSignInAccount = await _googleSignin.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
 
-      final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken
       );
 
-      AuthResult credentialResult = await _auth.signInWithCredential(authCredential);
-      FirebaseUser user = credentialResult.user;
+      UserCredential credentialResult = await _auth.signInWithCredential(authCredential);
+      User user = credentialResult.user;
 
       if(user != null) {
         assert(!user.isAnonymous);
         assert(await user.getIdToken() != null);
-        FirebaseUser currentUser = await _auth.currentUser();
+        User currentUser = _auth.currentUser;
         assert(currentUser.uid == user.uid);
 
         print('Google sign in succedeed');
@@ -90,8 +91,8 @@ class AuthService {
   //register with email&password
   Future signUpEmailPassword(String email, String password) async {
     try {
-      AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseUser user = authResult.user;
+      UserCredential authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      User user = authResult.user;
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
