@@ -49,7 +49,11 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-
+          if (user != null) {
+            Navigator.pushNamed(context, '/addBook');
+          } else {
+            //TODO: display something saying that login is needed to insert content
+          }
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.green,

@@ -9,8 +9,24 @@ class DatabaseService {
 
   // collection reference
   final CollectionReference bookCollection = FirebaseFirestore.instance.collection('books');
+  final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
-  Future<void> addUserBook(InsertedBook book, bool forSale) async {
+
+  Future<void> initializeUser() {
+    // Call the user's CollectionReference to add a new user
+    return usersCollection
+        .add({
+      'uid': uid, // John Doe
+      'name': 'alessio', //TODO add name and add name of the document
+      'forSaleBooks': [],
+      'toExchangeBooks': [],
+    })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+
+  Future addUserBook(InsertedBook book, bool forSale) async {
     if (forSale) {
       return await bookCollection.doc(uid).update({
         'bookForSale': FieldValue.arrayUnion([book])

@@ -35,6 +35,7 @@ class _SignInState extends State<SignIn> {
         elevation: 0.0,
         title: Text('Sign in to BookYourBook'),
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 35.0),
             child: Form(

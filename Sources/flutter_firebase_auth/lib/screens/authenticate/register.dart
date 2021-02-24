@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 
@@ -32,6 +33,7 @@ class _RegisterState extends State<Register> {
         elevation: 0.0,
         title: Text('Sign up to BookYourBook'),
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
               padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
               child: Form(
@@ -113,6 +115,10 @@ class _RegisterState extends State<Register> {
                                       _error = 'Not a valid email or already registered';
                                       _loading = false;
                                     });
+                                  } else {
+                                    DatabaseService db = DatabaseService(uid: result.uid);
+                                    await db.initializeUser();
+                                    //TODO add some check?
                                   }
                                 }
                               },
