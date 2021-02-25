@@ -17,7 +17,7 @@ class DatabaseService {
     return usersCollection
         .add({
       'uid': uid, // John Doe
-      'name': 'alessio', //TODO add name and add name of the document
+      'name': 'alessio', //TODO add name of user and add name of the document
       'forSaleBooks': [],
       'toExchangeBooks': [],
     })
