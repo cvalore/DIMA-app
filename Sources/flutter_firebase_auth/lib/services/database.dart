@@ -13,73 +13,42 @@ class DatabaseService {
 
 
   Future<void> initializeUser() {
-    // Call the user's CollectionReference to add a new user
     return usersCollection
-        .add({
-      'uid': uid, // John Doe
-      'name': 'alessio', //TODO add name of user and add name of the document
-      'forSaleBooks': [],
-      'toExchangeBooks': [],
+        .doc(uid)
+        .set({
+      'name': "Mary Jane",    //TODO add a name for the user
+      'books': [],
     })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
 
 
-  Future addUserBook(InsertedBook book, bool forSale) async {
-    if (forSale) {
-      return await bookCollection.doc(uid).update({
-        'bookForSale': FieldValue.arrayUnion([book])
-      });
+  Future addUserBook(InsertedBook book) async {
+    var mapBook = book.toMap();
+    await usersCollection.doc(uid).update({
+      'books': FieldValue.arrayUnion([mapBook])
+    });
+  }
+
+
+  List<InsertedBook> _bookListFromSnapshot(DocumentSnapshot documentSnapshot) {
+    List<InsertedBook> mylist = [];
+    if (documentSnapshot.exists) {
+      for (var book in documentSnapshot.get("books")) {
+        InsertedBook insertedBook = InsertedBook(title: book['title'] ?? '', author: book['author'] ?? '', purpose: book['purpose'] ?? '',
+                                                  genre: book['genre']);
+        mylist.add(insertedBook);
+      }
     }
-    else{
-      return await bookCollection.doc(uid).update({
-        'bookToExchange': FieldValue.arrayUnion([book])
-      });
-    }
+    return mylist;
   }
 
-  // brew list from snapshot
-  //void _bookListFromSnapshot(QuerySnapshot snapshot) {
-  //  snapshot.docs.map((doc) {
-  //    print(doc.data);});
-      //return InsertedBook(
-      //  title: doc.data['title'] ?? '',
-      //  author: doc.data['author'] ?? '',
-      //)}).toList();
-  }
-/*
-  // brew list from snapshot
-  List<String> _bookListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) => "alessio").toList();
-  }
-*/
 
-  // user data from snapshots
-  /*
-
-  InsertedBook(
-        doc['title'] ?? '',
-        doc['author'] ?? '')
-
-  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
-    return UserData(
-      uid: uid,
-      name: snapshot.data['name'],
-    );
-  }
-  */
-
-  // get brews stream
-/*
-  Stream<List<InsertedBook>> get booksForSale {
-    return bookCollection.doc(uid).
-      .map(_bookForSaleListFromSnapshot);
+  Stream<List<InsertedBook>> get userBooks{
+    Stream<List<InsertedBook>> result =  usersCollection.doc(uid).snapshots()
+            .map(_bookListFromSnapshot);
+    return result;
   }
 
-  // get user doc stream
-  Stream<UserData> get userData {
-    return brewCollection.document(uid).snapshots()
-      .map(_userDataFromSnapshot);
   }
-*/

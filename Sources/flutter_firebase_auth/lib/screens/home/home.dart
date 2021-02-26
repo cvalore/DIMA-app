@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
-  final DatabaseService _db = DatabaseService();
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => BookList()),
+              MaterialPageRoute(builder: (context) => Profile()),
             );
           },
         ),

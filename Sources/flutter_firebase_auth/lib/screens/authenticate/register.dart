@@ -115,10 +115,6 @@ class _RegisterState extends State<Register> {
                                       _error = 'Not a valid email or already registered';
                                       _loading = false;
                                     });
-                                  } else {
-                                    DatabaseService db = DatabaseService(uid: result.uid);
-                                    await db.initializeUser();
-                                    //TODO add some check?
                                   }
                                 }
                               },

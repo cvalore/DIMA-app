@@ -4,6 +4,8 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
+import 'database.dart';
+
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -47,6 +49,7 @@ class AuthService {
     try {
       UserCredential authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       User user = authResult.user;
+
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
@@ -93,6 +96,10 @@ class AuthService {
     try {
       UserCredential authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User user = authResult.user;
+
+      //add empty document for the new registered user
+      await DatabaseService(uid: user.uid).initializeUser();
+
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());

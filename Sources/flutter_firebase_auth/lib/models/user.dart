@@ -22,9 +22,8 @@ class UserData {
 
   final String uid;
   final String name;
-  final List<InsertedBook> bookForSale;
-  final List<InsertedBook> bookToExchange;
+  final List<InsertedBook> books;
 
-  UserData({ this.uid, this.name , this.bookForSale, this.bookToExchange });
+  UserData({ this.uid, this.name , this.books });
 
 }
