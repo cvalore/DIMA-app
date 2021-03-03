@@ -1,0 +1,41 @@
+ABOUT THE DESIGN
+	- add the flag available to toExchangeBook to see if they really are available or are booked in that moment
+	- display all the books, even the non available or only the available ones? 
+	  or only the ones available and the ones that have been put inside at least once but currently not available?
+
+TIPS
+	- USE PAGE VIEW TO SCROLL DOWN https://api.flutter.dev/flutter/widgets/PageView-class.html
+	- VEDERE CLOUD MESSAGING IN FIREBASE
+	- permettere all'app di ricordarsi l'utente senza fare ogni volta il signin
+	- in cloud firebase it may be useful to read content about offline read
+	- UPDATE COME SU INSTAGRAM?
+	- POSSIAMO USARE IL WIDGET DISMISSIBLE PER FARE SWIPE TO DELETE
+	- show snackbar when an element is added or removed
+	- take a look at the sliverappbar
+	- check flutter_screenutil for adjusting layouts of different sizes
+
+USEFUL LINKS 
+	- clear video explaining the difference between streamBuilder and streamProvider
+		https://www.youtube.com/watch?v=budqAnwn740&ab_channel=DavidKing
+
+	- flutter widget della settimana
+		https://www.youtube.com/watch?v=b_sQ9bMltGU&list=PLjxrf2q8roU23XGwz3Km7sQZFTdB996iG&ab_channel=Flutter
+	
+	- using flashbar to better customize user notification
+		https://pub.dev/packages/flushbar
+
+TUTORIAL DA VEDERE
+	- flutter animation tutorial
+
+TODO:
+	- aggiungere modifica e cancellazione
+	- signin google con modifica
+	- creare la collection la prima volta
+	- aggiungere immagini
+	- controllare la sha1
+
+
+
+
+
+  
