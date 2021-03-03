@@ -25,6 +25,18 @@ class _BookListState extends State<BookList> {
           return ListTile(
             title: Text('${books[index].title}'),
             subtitle: Text('by ${books[index].author}'),
+            trailing: TextButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+              ),
+              child: Icon(Icons.remove_circle_outline, color: Colors.red,),
+              onPressed: () {
+                print("remove pressed");
+              },
+            ),
+            onTap: () {
+              print("list tile pressed");
+            },
           );
         },
       );

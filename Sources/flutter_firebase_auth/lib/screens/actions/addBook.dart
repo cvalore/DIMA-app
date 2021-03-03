@@ -55,7 +55,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
   Widget build(BuildContext context) {
 
     CustomUser user = Provider.of<CustomUser>(context);
-    DatabaseService _db = DatabaseService(uid: user.uid);
+    DatabaseService _db = DatabaseService(user: user);
     var screenSize = MediaQuery
         .of(context)
         .size;

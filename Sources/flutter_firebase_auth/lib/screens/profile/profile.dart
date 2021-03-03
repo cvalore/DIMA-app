@@ -12,13 +12,13 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
 
     CustomUser user = Provider.of<CustomUser>(context);
-    DatabaseService _db = DatabaseService(uid: user.uid);
+    DatabaseService _db = DatabaseService(user: user);
 
     return StreamProvider<List<InsertedBook>>.value(  //TODO vedere se qua usare la lista di inserted books o semplicemente insertedbooks
       value: _db.userBooks,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('available books')
+          title: Text('Available books')
         ),
         body: BookList(),
       ),

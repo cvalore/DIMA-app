@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/inserted_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 
 class DatabaseService {
 
-  final String uid;
-  DatabaseService({ this.uid });
+  final CustomUser user;
+  DatabaseService({ this.user });
 
   // collection reference
   final CollectionReference bookCollection = FirebaseFirestore.instance.collection('books');
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
-
   Future<void> initializeUser() {
     return usersCollection
-        .doc(uid)
+        .doc(user.uid)
         .set({
-      'name': "Mary Jane",    //TODO add a name for the user
+      'name': user.email,    //TODO add a name for the user
       'books': [],
     })
         .then((value) => print("User Added"))
@@ -26,7 +26,7 @@ class DatabaseService {
 
   Future addUserBook(InsertedBook book) async {
     var mapBook = book.toMap();
-    await usersCollection.doc(uid).update({
+    await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook])
     });
   }
@@ -46,9 +46,9 @@ class DatabaseService {
 
 
   Stream<List<InsertedBook>> get userBooks{
-    Stream<List<InsertedBook>> result =  usersCollection.doc(uid).snapshots()
+    Stream<List<InsertedBook>> result =  usersCollection.doc(user.uid).snapshots()
             .map(_bookListFromSnapshot);
     return result;
   }
 
-  }
+}
