@@ -28,7 +28,7 @@ TUTORIAL DA VEDERE
 	- flutter animation tutorial
 
 TODO:
-	- aggiungere modifica e cancellazione
+	- aggiungere modifica e cancellazione utenti
 	- signin google con modifica
 	- creare la collection la prima volta
 	- aggiungere immagini
