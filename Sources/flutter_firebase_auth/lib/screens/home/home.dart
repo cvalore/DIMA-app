@@ -3,8 +3,9 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/screens/profile/BookList.dart';
+import 'package:flutter_firebase_auth/screens/profile/bookList.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -51,9 +52,19 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (user != null) {
-            Navigator.pushNamed(context, '/addBook');
+            AddBookParameters args = AddBookParameters(false,
+              bookIndex: -1,
+              editTitle: '',
+              editAuthor: '',
+              editPurpose: '',
+              editFictOrNot: '',
+              editGenre: '',
+            );
+            Navigator.pushNamed(context, '/addBook', arguments: args);
           } else {
             //TODO: display something saying that login is needed to insert content
+            //C: but we shouldn't check whether user is null or not, but
+            //whether user.isAnonymous or not, right?
           }
         },
         child: Icon(Icons.add),

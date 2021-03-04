@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/models/inserted_book.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:provider/provider.dart';
 
@@ -17,9 +18,11 @@ class _AddBookState extends State<AddBook> {
 
   @override
   Widget build(BuildContext context) {
+    final AddBookParameters param = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
         appBar: AppBar(
-          title: Text('Insert your book'),
+          title: Text(param.isEditing ? 'Update your book' : 'Insert your book'),
           actions: <Widget>[
             IconButton(
                 icon: const Icon(Icons.check_outlined), onPressed: () {
@@ -29,12 +32,17 @@ class _AddBookState extends State<AddBook> {
           ],
         ),
         resizeToAvoidBottomInset: false,
-        body: SnackBarPage(),
+        body: SnackBarPage(context),
     );
   }
 }
 
 class SnackBarPage extends StatefulWidget {
+
+  final BuildContext context;
+
+  SnackBarPage(this.context);
+
   @override
   _SnackBarPageState createState() => _SnackBarPageState();
 }
@@ -53,6 +61,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AddBookParameters param = ModalRoute.of(context).settings.arguments;
 
     CustomUser user = Provider.of<CustomUser>(context);
     DatabaseService _db = DatabaseService(user: user);
@@ -75,6 +84,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
+                  initialValue: param.editTitle,
                   decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book title' : null,
@@ -88,6 +98,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
+                  initialValue: param.editAuthor,
                   decoration: inputFieldDecoration.copyWith(hintText: 'Author'),
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book author' : null,
@@ -110,7 +121,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                       _purpose = newvalue;
                     });
                   },
-                  items: <String>['For Sale', 'to Exchange']
+                  items: <String>['For Sale', 'To Exchange']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -187,25 +198,41 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                   }
                                 }),
                           ),
-                          child: Text('Add book', style: TextStyle(color: Colors.white),),
+                          child: Text(
+                            param.isEditing ? 'Update book' : 'Add book',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           onPressed: () async {
                             if(_formKey.currentState.validate()) {
                                 setState(() {
                                 _loading = true;
                                 });
-                                var book = InsertedBook(title:_title, author: _author, genre: _genre, purpose: _fictOrNot);
-                                dynamic result = await _db.addUserBook(book);
-                                setState(() {
-                                  _title = '';
-                                  _author = '';
-                                  _fictOrNot = 'Fiction';
-                                  _genre = BookGenres().getGenres()['Fiction'][0];
-                                });
+                                if(param.isEditing) {
+                                  print('TODO: Editing');
+                                }
+                                else {
+                                  var book = InsertedBook(title: _title,
+                                      author: _author,
+                                      genre: _genre,
+                                      purpose: _fictOrNot);
+                                  dynamic result = await _db.addUserBook(book);
+                                  setState(() {
+                                    _title = '';
+                                    _author = '';
+                                    _fictOrNot = 'Fiction';
+                                    _genre =
+                                    BookGenres().getGenres()['Fiction'][0];
+                                  });
+                                }
                                 final snackBar = SnackBar(
                                   duration: Duration(seconds: 1),
-                                  content: Text('The book has been successfully added!'),
+                                  content: Text(
+                                    param.isEditing ?
+                                        'The book has been successfully modified!' :
+                                        'The book has been successfully added!'
+                                  ),
                                   action: SnackBarAction(
-                                    label: 'Added',
+                                    label: param.isEditing ? 'Modified' : 'Added',
                                     onPressed: () {
                                       //TODO aggiungere una funzione undo?
                                     },

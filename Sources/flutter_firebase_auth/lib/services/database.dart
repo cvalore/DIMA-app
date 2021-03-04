@@ -29,6 +29,18 @@ class DatabaseService {
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook])
     });
+
+    // trick to add more than one book at a time :)
+    /*
+    for (int i = 4; i < 17; i++) {
+      InsertedBook b = InsertedBook(title: book.title + i.toString(), author: book.author + i.toString(), genre: book.genre, purpose: book.purpose);
+      var mb = b.toMap();
+
+      await usersCollection.doc(user.uid).update({
+        'books': FieldValue.arrayUnion([mb])
+      });
+    }
+    */
   }
 
 
@@ -36,8 +48,12 @@ class DatabaseService {
     List<InsertedBook> mylist = [];
     if (documentSnapshot.exists) {
       for (var book in documentSnapshot.get("books")) {
-        InsertedBook insertedBook = InsertedBook(title: book['title'] ?? '', author: book['author'] ?? '', purpose: book['purpose'] ?? '',
-                                                  genre: book['genre']);
+        InsertedBook insertedBook = InsertedBook(
+            title: book['title'] ?? '',
+            author: book['author'] ?? '',
+            purpose: book['purpose'] ?? '',
+            genre: book['genre']
+        );
         mylist.add(insertedBook);
       }
     }
@@ -49,6 +65,43 @@ class DatabaseService {
     Stream<List<InsertedBook>> result =  usersCollection.doc(user.uid).snapshots()
             .map(_bookListFromSnapshot);
     return result;
+  }
+
+  Future removeBook(int index) async {
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) async {
+              List<dynamic> books = userDoc.data()['books'];
+              books.removeAt(index);
+
+              await usersCollection.doc(user.uid).set({
+                'books': books
+              }).then((value) => print("Book removed"));
+
+              //print(books);
+            }
+    );
+  }
+
+  Future<InsertedBook> getBook(int index) async {
+
+    dynamic book;
+
+    await usersCollection.doc(user.uid).get().then(
+      (userDoc) {
+        List<dynamic> books = userDoc.data()['books'];
+        book = books[index];
+      });
+
+    print('Get book ---> ' + book.toString());
+
+    return book == null ?
+        InsertedBook(title: '',author: '',genre: '',purpose: '') :
+        InsertedBook(
+          title: book['title'] ?? '',
+          author: book['author'] ?? '',
+          purpose: book['purpose'] ?? '',
+          genre: book['genre'],
+        );
   }
 
 }
