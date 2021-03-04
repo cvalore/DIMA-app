@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/inserted_book.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/profile/BookList.dart';
+import 'package:flutter_firebase_auth/screens/profile/bookList.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
 
@@ -12,13 +12,15 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
 
     CustomUser user = Provider.of<CustomUser>(context);
-    DatabaseService _db = DatabaseService(uid: user.uid);
+    DatabaseService _db = DatabaseService(user: user);
 
     return StreamProvider<List<InsertedBook>>.value(  //TODO vedere se qua usare la lista di inserted books o semplicemente insertedbooks
       value: _db.userBooks,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('available books')
+          backgroundColor: Colors.blueGrey[700],
+          elevation: 0.0,
+          title: Text('Available books'),
         ),
         body: BookList(),
       ),

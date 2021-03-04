@@ -6,6 +6,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/image.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:provider/provider.dart';
 
@@ -18,24 +19,33 @@ class _AddBookState extends State<AddBook> {
 
   @override
   Widget build(BuildContext context) {
+    final AddBookParameters param = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
         appBar: AppBar(
-          title: Text('Insert your book'),
-          actions: <Widget>[
+          backgroundColor: Colors.blueGrey[700],
+          elevation: 0.0,
+          title: Text('Insert book'),
+          actions: param.isEditing ? null : <Widget>[
             IconButton(
-                icon: const Icon(Icons.check_outlined), onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/profile');
+                icon: param.isEditing ? const Icon(null) : const Icon(Icons.check_outlined), onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/profile');
             })
           ],
         ),
         resizeToAvoidBottomInset: false,
-        body: SnackBarPage(),
+        body: SnackBarPage(context),
     );
   }
 }
 
 class SnackBarPage extends StatefulWidget {
+
+  final BuildContext context;
+
+  SnackBarPage(this.context);
+
   @override
   _SnackBarPageState createState() => _SnackBarPageState();
 }
@@ -54,9 +64,10 @@ class _SnackBarPageState extends State<SnackBarPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AddBookParameters param = ModalRoute.of(context).settings.arguments;
 
     CustomUser user = Provider.of<CustomUser>(context);
-    DatabaseService _db = DatabaseService(uid: user.uid);
+    DatabaseService _db = DatabaseService(user: user);
     var screenSize = MediaQuery
         .of(context)
         .size;
@@ -76,6 +87,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
+                  initialValue: param.editTitle,
                   decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book title' : null,
@@ -89,6 +101,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
+                  initialValue: param.editAuthor,
                   decoration: inputFieldDecoration.copyWith(hintText: 'Author'),
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book author' : null,
@@ -111,7 +124,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                       _purpose = newvalue;
                     });
                   },
-                  items: <String>['For Sale', 'to Exchange']
+                  items: <String>['For Sale', 'To Exchange']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -130,8 +143,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                   onChanged: (String newvalue){
                     setState(() {
                       _fictOrNot = newvalue;
-                      _genre = BookGenres().getGenres()['Fiction'][0];
-
+                      _genre = BookGenres().getGenres()[newvalue][0];
                     });
                   },
                   items: <String>['Fiction', 'Not Fiction']
@@ -188,25 +200,43 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                   }
                                 }),
                           ),
-                          child: Text('Add book', style: TextStyle(color: Colors.white),),
+                          child: Text(
+                            param.isEditing ? 'Update book' : 'Add book',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           onPressed: () async {
                             if(_formKey.currentState.validate()) {
                                 setState(() {
                                 _loading = true;
                                 });
-                                var book = InsertedBook(title:_title, author: _author, genre: _genre, purpose: _fictOrNot);
-                                dynamic result = await _db.addUserBook(book);
-                                setState(() {
-                                  _title = '';
-                                  _author = '';
-                                  _fictOrNot = 'Fiction';
-                                  _genre = BookGenres().getGenres()['Fiction'][0];
-                                });
+                                var book = InsertedBook(title: _title,
+                                    author: _author,
+                                    genre: _genre,
+                                    purpose: _fictOrNot);
+                                if(param.isEditing) {
+                                  dynamic result = await _db.updateBook(book, param.bookIndex);
+                                  //TODO: anche sotto, controllare se è andato a buon fine prima?
+                                  Navigator.pop(context);
+                                }
+                                else {
+                                  dynamic result = await _db.addUserBook(book);
+                                  setState(() {
+                                    _title = '';
+                                    _author = '';
+                                    _fictOrNot = 'Fiction';
+                                    _genre =
+                                    BookGenres().getGenres()['Fiction'][0];
+                                  });
+                                }
                                 final snackBar = SnackBar(
                                   duration: Duration(seconds: 1),
-                                  content: Text('The book has been successfully added!'),
+                                  content: Text(
+                                    param.isEditing ?
+                                        'The book has been successfully modified!' :
+                                        'The book has been successfully added!'
+                                  ),
                                   action: SnackBarAction(
-                                    label: 'Added',
+                                    label: param.isEditing ? 'Modified' : 'Added',
                                     onPressed: () {
                                       //TODO aggiungere una funzione undo?
                                     },

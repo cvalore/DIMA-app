@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/inserted_book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 
 class DatabaseService {
 
-  final String uid;
-  DatabaseService({ this.uid });
+  final CustomUser user;
+  DatabaseService({ this.user });
 
   // collection reference
   final CollectionReference bookCollection = FirebaseFirestore.instance.collection('books');
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
-
   Future<void> initializeUser() {
     return usersCollection
-        .doc(uid)
+        .doc(user.uid)
         .set({
-      'name': "Mary Jane",    //TODO add a name for the user
+      'name': user.email,    //TODO add a name for the user
       'books': [],
     })
         .then((value) => print("User Added"))
@@ -26,9 +26,40 @@ class DatabaseService {
 
   Future addUserBook(InsertedBook book) async {
     var mapBook = book.toMap();
-    await usersCollection.doc(uid).update({
+    await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook])
     });
+
+    // trick to add more than one book at a time :)
+    /*
+    for (int i = 4; i < 17; i++) {
+      InsertedBook b = InsertedBook(title: book.title + i.toString(), author: book.author + i.toString(), genre: book.genre, purpose: book.purpose);
+      var mb = b.toMap();
+
+      await usersCollection.doc(user.uid).update({
+        'books': FieldValue.arrayUnion([mb])
+      });
+    }
+    */
+  }
+
+  Future updateBook(InsertedBook book, int index) async {
+    var mapBook = book.toMap();
+    List<dynamic> books;
+
+    await usersCollection.doc(user.uid).get().then(
+      (userDoc) async {
+        books = userDoc.data()['books'];
+      });
+
+    print(books.runtimeType);
+    print(books[0].runtimeType);
+    print(books[0]);
+
+    books[index] = mapBook;
+    await usersCollection.doc(user.uid).set({
+      'books': books
+    }).then((value) => print("Book updated"));
   }
 
 
@@ -36,8 +67,12 @@ class DatabaseService {
     List<InsertedBook> mylist = [];
     if (documentSnapshot.exists) {
       for (var book in documentSnapshot.get("books")) {
-        InsertedBook insertedBook = InsertedBook(title: book['title'] ?? '', author: book['author'] ?? '', purpose: book['purpose'] ?? '',
-                                                  genre: book['genre']);
+        InsertedBook insertedBook = InsertedBook(
+            title: book['title'] ?? '',
+            author: book['author'] ?? '',
+            purpose: book['purpose'] ?? '',
+            genre: book['genre']
+        );
         mylist.add(insertedBook);
       }
     }
@@ -46,9 +81,46 @@ class DatabaseService {
 
 
   Stream<List<InsertedBook>> get userBooks{
-    Stream<List<InsertedBook>> result =  usersCollection.doc(uid).snapshots()
+    Stream<List<InsertedBook>> result =  usersCollection.doc(user.uid).snapshots()
             .map(_bookListFromSnapshot);
     return result;
   }
 
+  Future removeBook(int index) async {
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) async {
+              List<dynamic> books = userDoc.data()['books'];
+              books.removeAt(index);
+
+              await usersCollection.doc(user.uid).set({
+                'books': books
+              }).then((value) => print("Book removed"));
+
+              //print(books);
+            }
+    );
   }
+
+  Future<InsertedBook> getBook(int index) async {
+
+    dynamic book;
+
+    await usersCollection.doc(user.uid).get().then(
+      (userDoc) {
+        List<dynamic> books = userDoc.data()['books'];
+        book = books[index];
+      });
+
+    print('Get book ---> ' + book.toString());
+
+    return book == null ?
+        InsertedBook(title: '',author: '',genre: '',purpose: '') :
+        InsertedBook(
+          title: book['title'] ?? '',
+          author: book['author'] ?? '',
+          purpose: book['purpose'] ?? '',
+          genre: book['genre'],
+        );
+  }
+
+}

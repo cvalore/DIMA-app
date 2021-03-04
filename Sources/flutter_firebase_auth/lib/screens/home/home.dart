@@ -3,8 +3,9 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/screens/profile/BookList.dart';
+import 'package:flutter_firebase_auth/screens/profile/bookList.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,8 +21,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
 
     CustomUser user = Provider.of<CustomUser>(context);
+    GlobalKey scaffoldKey = GlobalKey();
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
         backgroundColor: Colors.blueGrey[700],
@@ -37,27 +40,78 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: Text('To user profile'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Profile()),
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (user != null) {
-            Navigator.pushNamed(context, '/addBook');
-          } else {
-            //TODO: display something saying that login is needed to insert content
-          }
+      body: Builder(
+        builder: (BuildContext context) {
+          return Scaffold(
+            body: Center(
+              child: TextButton(
+                style: ButtonStyle(
+                  //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.pressed)) {
+                          return Colors.blueGrey[400];
+                        }
+                        else {
+                          return Colors.blueGrey[600];
+                        }
+                      }),
+                ),
+                child: Text('To user profile', style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  if(user != null && !user.isAnonymous) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Profile()),
+                    );
+                  }
+                  else {
+                    final snackBar = SnackBar(
+                      duration: Duration(seconds: 1),
+                      content: Text(
+                          'You need to be logged in to add a book'
+                      ),
+                    );
+                    // Find the Scaffold in the widget tree and use
+                    // it to show a SnackBar.
+                    Scaffold.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+            ),
+              floatingActionButton: FloatingActionButton(
+                elevation: 0.0,
+                backgroundColor: Colors.blueGrey[600],
+                focusColor: Colors.blueGrey[400],
+                hoverColor: Colors.blueGrey[400],
+                onPressed: () {
+                  if (user != null && !user.isAnonymous) {
+                    AddBookParameters args = AddBookParameters(false,
+                      bookIndex: -1,
+                      editTitle: '',
+                      editAuthor: '',
+                      editPurpose: '',
+                      editFictOrNot: '',
+                      editGenre: '',
+                    );
+                    Navigator.pushNamed(context, '/addBook', arguments: args);
+                  }
+                  else {
+                    final snackBar = SnackBar(
+                      duration: Duration(seconds: 1),
+                      content: Text(
+                          'You need to be logged in to add a book'
+                      ),
+                    );
+                    // Find the Scaffold in the widget tree and use
+                    // it to show a SnackBar.
+                    Scaffold.of(context).showSnackBar(snackBar);
+                  }
+                },
+                child: Icon(Icons.add),
+              ),
+          );
         },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green,
       ),
     );
   }

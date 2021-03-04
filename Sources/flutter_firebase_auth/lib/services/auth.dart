@@ -16,7 +16,7 @@ class AuthService {
   //create a user obj based on Firebase user
   CustomUser _userFromFirebaseUser(User user) {
     return user != null ?
-      new CustomUser(uid: user.uid, isAnonymous: user.isAnonymous) :
+      new CustomUser(uid: user.uid, email: user.email, isAnonymous: user.isAnonymous) :
       null;
   }
 
@@ -80,7 +80,11 @@ class AuthService {
         print('Google sign in succedeed');
         _signedInGoogle = true;
 
-        return _userFromFirebaseUser(user);
+        //add empty document for the new registered user
+        CustomUser customUser = _userFromFirebaseUser(user);
+        await DatabaseService(user: customUser).initializeUser();
+
+        return customUser;
       }
 
       return null;
@@ -98,9 +102,10 @@ class AuthService {
       User user = authResult.user;
 
       //add empty document for the new registered user
-      await DatabaseService(uid: user.uid).initializeUser();
+      CustomUser customUser = _userFromFirebaseUser(user);
+      await DatabaseService(user: customUser).initializeUser();
 
-      return _userFromFirebaseUser(user);
+      return customUser;
     } catch(e) {
       print(e.toString());
       return null;

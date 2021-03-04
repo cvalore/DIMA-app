@@ -3,9 +3,10 @@ import 'package:flutter_firebase_auth/models/inserted_book.dart';
 class CustomUser {
 
   final String uid;
+  final String email;
   final bool isAnonymous;
 
-  CustomUser({this.uid, this.isAnonymous});
+  CustomUser({this.uid, this.email, this.isAnonymous});
 
   @override
   String toString() {
