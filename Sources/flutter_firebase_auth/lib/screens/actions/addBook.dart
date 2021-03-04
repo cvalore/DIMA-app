@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/inserted_book.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/image.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
@@ -224,9 +225,17 @@ class _SnackBarPageState extends State<SnackBarPage> {
                     ],
                   )
               ),
+              Expanded(
+                flex: 2,
+                child: ImageService())
             ],
           ),
         ),
     );
   }
+
+
+
+
+
 }
