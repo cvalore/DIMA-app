@@ -140,8 +140,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                   onChanged: (String newvalue){
                     setState(() {
                       _fictOrNot = newvalue;
-                      _genre = BookGenres().getGenres()['Fiction'][0];
-
+                      _genre = BookGenres().getGenres()[newvalue][0];
                     });
                   },
                   items: <String>['Fiction', 'Not Fiction']

@@ -2,11 +2,11 @@ class AddBookParameters {
   final int bookIndex;
   final bool isEditing;
 
-  final String editTitle;
-  final String editAuthor;
-  final String editPurpose;
-  final String editFictOrNot;
-  final String editGenre;
+  String editTitle;
+  String editAuthor;
+  String editPurpose;
+  String editFictOrNot;
+  String editGenre;
 
   AddBookParameters(this.isEditing,{
     this.bookIndex,

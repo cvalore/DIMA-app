@@ -40,7 +40,7 @@ class _BookListState extends State<BookList> {
           return Dismissible(
             key: Key('${books[index].title}'), //TODO: SERVE UN ID UNIVOCO!!
             background: Container(color: Colors.red[600]),
-            direction: DismissDirection.startToEnd,
+            direction: DismissDirection.endToStart,
             onDismissed: (direction) {
               _db.removeBook(index);
 
