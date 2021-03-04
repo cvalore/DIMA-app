@@ -43,6 +43,25 @@ class DatabaseService {
     */
   }
 
+  Future updateBook(InsertedBook book, int index) async {
+    var mapBook = book.toMap();
+    List<dynamic> books;
+
+    await usersCollection.doc(user.uid).get().then(
+      (userDoc) async {
+        books = userDoc.data()['books'];
+      });
+
+    print(books.runtimeType);
+    print(books[0].runtimeType);
+    print(books[0]);
+
+    books[index] = mapBook;
+    await usersCollection.doc(user.uid).set({
+      'books': books
+    }).then((value) => print("Book updated"));
+  }
+
 
   List<InsertedBook> _bookListFromSnapshot(DocumentSnapshot documentSnapshot) {
     List<InsertedBook> mylist = [];

@@ -18,7 +18,9 @@ class Profile extends StatelessWidget {
       value: _db.userBooks,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Available books')
+          backgroundColor: Colors.blueGrey[700],
+          elevation: 0.0,
+          title: Text('Available books'),
         ),
         body: BookList(),
       ),

@@ -22,12 +22,14 @@ class _AddBookState extends State<AddBook> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(param.isEditing ? 'Update your book' : 'Insert your book'),
-          actions: <Widget>[
+          backgroundColor: Colors.blueGrey[700],
+          elevation: 0.0,
+          title: Text('Insert book'),
+          actions: param.isEditing ? null : <Widget>[
             IconButton(
-                icon: const Icon(Icons.check_outlined), onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/profile');
+                icon: param.isEditing ? const Icon(null) : const Icon(Icons.check_outlined), onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/profile');
             })
           ],
         ),
@@ -206,14 +208,16 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                 setState(() {
                                 _loading = true;
                                 });
+                                var book = InsertedBook(title: _title,
+                                    author: _author,
+                                    genre: _genre,
+                                    purpose: _fictOrNot);
                                 if(param.isEditing) {
-                                  print('TODO: Editing');
+                                  dynamic result = await _db.updateBook(book, param.bookIndex);
+                                  //TODO: anche sotto, controllare se è andato a buon fine prima?
+                                  Navigator.pop(context);
                                 }
                                 else {
-                                  var book = InsertedBook(title: _title,
-                                      author: _author,
-                                      genre: _genre,
-                                      purpose: _fictOrNot);
                                   dynamic result = await _db.addUserBook(book);
                                   setState(() {
                                     _title = '';
