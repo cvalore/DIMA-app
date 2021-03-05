@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/inserted_book.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addImage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
@@ -25,7 +26,8 @@ class _AddBookState extends State<AddBook> {
           backgroundColor: Colors.blueGrey[700],
           elevation: 0.0,
           title: Text('Insert book'),
-          actions: param.isEditing ? null : <Widget>[
+          actions:
+          <Widget>[
             IconButton(
                 icon: param.isEditing ? const Icon(null) : const Icon(Icons.check_outlined), onPressed: () {
                   Navigator.pop(context);
@@ -179,6 +181,10 @@ class _SnackBarPageState extends State<SnackBarPage> {
                     )
                 ),
               Expanded(
+                  flex: 2,
+                  child: ImageService()
+              ),
+              Expanded(
                   flex: 3,
                   child: Row(
                     children: <Widget>[
@@ -264,4 +270,9 @@ class _SnackBarPageState extends State<SnackBarPage> {
         ),
     );
   }
+
+
+
+
+
 }
