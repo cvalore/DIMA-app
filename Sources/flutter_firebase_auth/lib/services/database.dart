@@ -48,13 +48,9 @@ class DatabaseService {
     List<dynamic> books;
 
     await usersCollection.doc(user.uid).get().then(
-      (userDoc) async {
+      (userDoc) {
         books = userDoc.data()['books'];
       });
-
-    print(books.runtimeType);
-    print(books[0].runtimeType);
-    print(books[0]);
 
     books[index] = mapBook;
     await usersCollection.doc(user.uid).set({

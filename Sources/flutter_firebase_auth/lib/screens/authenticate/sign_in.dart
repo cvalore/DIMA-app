@@ -41,7 +41,7 @@ class _SignInState extends State<SignIn> {
             child: Form(
               key: _formKey,
               child: Column(
-                //mainAxisSize: MainAxisSize.max,
+                //mainAxisSize: MainAxisSize.min,
                 //mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Spacer(

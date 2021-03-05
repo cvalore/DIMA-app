@@ -41,12 +41,14 @@ class _BookListState extends State<BookList> {
             key: Key('${books[index].title}'), //TODO: SERVE UN ID UNIVOCO!!
             background: Container(color: Colors.red[600]),
             direction: DismissDirection.endToStart,
-            onDismissed: (direction) {
-              _db.removeBook(index);
-
-              Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text('Book removed: ' + '${books[index].title}',)),
-              );
+            onDismissed: (direction) async {
+              dynamic result = _db.removeBook(index);
+              if(result != null) {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(content: Text(
+                    'Book removed: ' + '${books[index].title}',)),
+                );
+              }
             },
             child: ListTile(
               title: Text('${books[index].title}'),
@@ -56,8 +58,8 @@ class _BookListState extends State<BookList> {
                   overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                 ),
                 child: Icon(Icons.remove_circle_outline, color: Colors.red,),
-                onPressed: () {
-                  _db.removeBook(index);
+                onPressed: () async {
+                  dynamic result = await _db.removeBook(index);
                 },
               ),
               onTap: () async {

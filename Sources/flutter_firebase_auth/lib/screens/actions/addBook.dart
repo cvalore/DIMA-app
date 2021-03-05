@@ -53,8 +53,8 @@ class SnackBarPage extends StatefulWidget {
 class _SnackBarPageState extends State<SnackBarPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = '';
-  String _author = '';
+  /*String _title = '';
+  String _author = '';*/
   String _purpose = 'For Sale';
   bool _loading = false;
   final Map<String, List<String>> bookGenres = BookGenres().getGenres();
@@ -92,7 +92,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                   value.isEmpty ? 'Enter the book title' : null,
                   onChanged: (value) {
                     setState(() {
-                      _title = value;
+                      param.editTitle = value;
                     });
                   },
                 ),
@@ -106,7 +106,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                   value.isEmpty ? 'Enter the book author' : null,
                   onChanged: (value) {
                     setState(() {
-                      _author = value;
+                      param.editAuthor = value;
                     });
                   },
                 ),
@@ -208,24 +208,29 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                 setState(() {
                                 _loading = true;
                                 });
-                                var book = InsertedBook(title: _title,
-                                    author: _author,
+                                var book = InsertedBook(
+                                    title: param.editTitle,
+                                    author: param.editAuthor,
                                     genre: _genre,
                                     purpose: _fictOrNot);
                                 if(param.isEditing) {
                                   dynamic result = await _db.updateBook(book, param.bookIndex);
                                   //TODO: anche sotto, controllare se è andato a buon fine prima?
-                                  Navigator.pop(context);
+                                  if(result != null) {
+                                    Navigator.pop(context);
+                                  }
                                 }
                                 else {
                                   dynamic result = await _db.addUserBook(book);
-                                  setState(() {
-                                    _title = '';
-                                    _author = '';
-                                    _fictOrNot = 'Fiction';
-                                    _genre =
-                                    BookGenres().getGenres()['Fiction'][0];
-                                  });
+                                  //if(result != null) {
+                                    setState(() {
+                                      param.editTitle = '';
+                                      param.editAuthor = '';
+                                      _fictOrNot = 'Fiction';
+                                      _genre =
+                                      BookGenres().getGenres()['Fiction'][0];
+                                    });
+                                  }
                                 }
                                 final snackBar = SnackBar(
                                   duration: Duration(seconds: 1),
