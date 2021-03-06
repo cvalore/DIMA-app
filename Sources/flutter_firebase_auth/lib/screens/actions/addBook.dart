@@ -10,6 +10,8 @@ import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:provider/provider.dart';
 
+import 'addImage.dart';
+
 class AddBook extends StatefulWidget {
   @override
   _AddBookState createState() => _AddBookState();
@@ -180,10 +182,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                         }).toList(),
                     )
                 ),
-              Expanded(
-                  flex: 2,
-                  child: ImageService()
-              ),
+              ImageService(),
               Expanded(
                   flex: 3,
                   child: Row(
@@ -256,7 +255,6 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                 // it to show a SnackBar.
                                 Scaffold.of(context).showSnackBar(snackBar);
                             }
-                          }
                         ),
                       ),
                       Spacer(

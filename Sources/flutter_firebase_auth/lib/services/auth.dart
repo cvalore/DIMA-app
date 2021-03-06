@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user.dart';
 import 'database.dart';
 
 class AuthService {
@@ -16,9 +17,10 @@ class AuthService {
   //create a user obj based on Firebase user
   CustomUser _userFromFirebaseUser(User user) {
     return user != null ?
-      new CustomUser(uid: user.uid, email: user.email, isAnonymous: user.isAnonymous) :
+      new CustomUser(user.uid, user.email, user.isAnonymous) :
       null;
   }
+
 
   //auth change user stream
   Stream<CustomUser> get userStream {
@@ -82,7 +84,7 @@ class AuthService {
 
         //add empty document for the new registered user
         CustomUser customUser = _userFromFirebaseUser(user);
-        await DatabaseService(user: customUser).initializeUser();
+        await DatabaseService(user: customUser).initializeUser(); //TODO add here the username
 
         return customUser;
       }
@@ -90,19 +92,20 @@ class AuthService {
       return null;
 
     } catch(e) {
-      print(e.toString());
+      print(e.toString());      //TODO stampare a schermo che la mail è già usata
       return null;
     }
   }
 
   //register with email&password
-  Future signUpEmailPassword(String email, String password) async {
+  Future signUpEmailPassword(String email, String password, String username) async {
     try {
       UserCredential authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User user = authResult.user;
 
       //add empty document for the new registered user
-      CustomUser customUser = _userFromFirebaseUser(user);
+      CustomUser customUser = CustomUser(user.uid, user.email, user.isAnonymous, username: username);
+      print("username is ${username }");
       await DatabaseService(user: customUser).initializeUser();
 
       return customUser;
@@ -111,6 +114,7 @@ class AuthService {
       return null;
     }
   }
+
 
   //sign out
   Future signOut() async {

@@ -72,44 +72,42 @@ class _ImageServiceState extends State<ImageService> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Expanded(
-          flex: 3,
-          child: Row(
-            children: <Widget>[
-              Spacer(
-                  flex: 1
+    return Expanded(
+        flex: 3,
+        child: Row(
+          children: <Widget>[
+            Spacer(
+                flex: 1
+            ),
+            Expanded(
+              flex: 5,
+              child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.blueGrey[400];
+                          }
+                          else {
+                            return Colors.blueGrey[600];
+                          }
+                        }),
+                  ),
+                  child: Text(
+                    "Add image",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () =>
+                  {
+                    _showPicker(context)
+                  }
               ),
-              Expanded(
-                flex: 5,
-                child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blueGrey[400];
-                            }
-                            else {
-                              return Colors.blueGrey[600];
-                            }
-                          }),
-                    ),
-                    child: Text(
-                      "Add image",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () =>
-                    {
-                      _showPicker(context)
-                    }
-                ),
-              ),
-              Spacer(
-                  flex: 1
-              ),
-            ],
-          )
-      ),
+            ),
+            Spacer(
+                flex: 1
+            ),
+          ],
+        )
     );
   }
 }
