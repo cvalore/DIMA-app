@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
+import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +68,7 @@ void main() {
              //'/': (context) => Wrapper(),
              '/addBook': (context) => AddBook(),
              '/profile': (context) => Profile(),
+             '/subscribe': (context) => Subscribe(),
            }
          ),
        );

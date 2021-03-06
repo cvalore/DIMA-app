@@ -15,12 +15,9 @@ class DatabaseService {
   Future<void> initializeUser() {
 
     var doc = usersCollection.doc(user.uid);
-
+    var userMap = user.toMap();
     return doc != null ? doc :
-      doc.set({
-        'name': user.email,    //TODO add a name for the user
-        'books': [],
-      })
+      doc.set(userMap)
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }

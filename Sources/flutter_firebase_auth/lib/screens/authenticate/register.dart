@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/credentials.dart';
 
 class Register extends StatefulWidget {
 
@@ -107,15 +107,11 @@ class _RegisterState extends State<Register> {
                                   setState(() {
                                     _loading = true;
                                   });
-
-                                  dynamic result = await _auth.signUpEmailPassword(_email, _password);
-                                  if(result == null) {
-                                    setState(() {
-                                      print("Not a valid email or already registered");
-                                      _error = 'Not a valid email or already registered';
-                                      _loading = false;
-                                    });
-                                  }
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/subscribe',
+                                    arguments: Credentials(_email,_password)
+                                  );
                                 }
                               },
                             ),
@@ -155,6 +151,36 @@ class _RegisterState extends State<Register> {
                     Expanded(
                       flex: 4,
                       child: Text('or'),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: OutlinedButton(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0))
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0,),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text('Sign up with google'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onPressed: () async {
+                          dynamic result = await _auth.signInGoogle();
+                          if(result == null) {
+                            print('Google sign up failed');
+                          }
+                        },
+                      ),
                     ),
                     Expanded(
                       flex: 4,
