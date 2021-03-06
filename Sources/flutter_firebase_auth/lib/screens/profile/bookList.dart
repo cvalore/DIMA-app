@@ -24,12 +24,17 @@ class _BookListState extends State<BookList> {
 
     var books = [];
     books = Provider.of<List<InsertedBook>>(context);
-    if (books.length == 0){
-      return Column(
-        children: <Widget>[
-          Text('No books yet, the books you add will appear here'),
-          Icon(Icons.menu_book_rounded),
-        ],
+    if (books == null || books.length == 0){
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text('No books yet, the books you add will appear here',
+            style: TextStyle(color: Colors.blueGrey[300]),),
+            Icon(Icons.menu_book_rounded, color: Colors.blueGrey[300],),
+          ],
+        ),
       );
     } else {
       return ListView.builder(

@@ -12,14 +12,16 @@ class DatabaseService {
   final CollectionReference bookCollection = FirebaseFirestore.instance.collection('books');
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
-  Future<void> initializeUser() {
+  Future<void> initializeUser() async {
 
     var doc = usersCollection.doc(user.uid);
     var userMap = user.toMap();
-    return doc != null ? doc :
-      doc.set(userMap)
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+
+    if(doc == null) {
+      await doc.set(userMap)
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
+    }
   }
 
 

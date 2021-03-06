@@ -20,7 +20,7 @@ class CustomUser {
   }
 
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     var user = new Map<String, dynamic>();
     user['uid'] = uid;
     user['email'] = email;
