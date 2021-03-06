@@ -14,6 +14,9 @@ TIPS
 	- take a look at the sliverappbar
 	- check flutter_screenutil for adjusting layouts of different sizes
 
+	- (After you have an API key, your application can append the query parameter key=yourAPIKey)
+	NOSTRA CHIAVE = AIzaSyAIbNkEmTSHCeggxoGFlN7D0WiFFORuewA
+
 USEFUL LINKS 
 	- clear video explaining the difference between streamBuilder and streamProvider
 		https://www.youtube.com/watch?v=budqAnwn740&ab_channel=DavidKing
@@ -23,6 +26,8 @@ USEFUL LINKS
 	
 	- using flashbar to better customize user notification
 		https://pub.dev/packages/flushbar
+
+	- google books: https://developers.google.com/books/docs/v1/using
 
 TUTORIAL DA VEDERE
 	- flutter animation tutorial
