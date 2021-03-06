@@ -68,6 +68,7 @@ class DatabaseService {
             title: book['title'] ?? '',
             author: book['author'] ?? '',
             purpose: book['purpose'] ?? '',
+            fictOrNot: book['fictOrNot'] ?? '',
             genre: book['genre']
         );
         mylist.add(insertedBook);
@@ -111,11 +112,12 @@ class DatabaseService {
     print('Get book ---> ' + book.toString());
 
     return book == null ?
-        InsertedBook(title: '',author: '',genre: '',purpose: '') :
+        InsertedBook(title: '',author: '',genre: '',purpose: '', fictOrNot: '') :
         InsertedBook(
           title: book['title'] ?? '',
           author: book['author'] ?? '',
           purpose: book['purpose'] ?? '',
+          fictOrNot: book['fictOrNot'] ?? '',
           genre: book['genre'],
         );
   }

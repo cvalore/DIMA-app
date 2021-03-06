@@ -3,11 +3,10 @@ class InsertedBook {
   final String title;
   final String author;
   final String genre;
-
-  // purpose should be forSale or toExchange
   final String purpose;
+  final String fictOrNot;
 
-  InsertedBook({ this.title, this.author, this.genre, this.purpose });
+  InsertedBook({ this.title, this.author, this.genre, this.purpose, this.fictOrNot});
 
 
   Map<String, String> toMap(){
@@ -16,6 +15,7 @@ class InsertedBook {
     myMap['author'] = author;
     myMap['genre'] = genre;
     myMap['purpose'] = purpose;
+    myMap['fictOrNot'] = fictOrNot;
     return myMap;
   }
 

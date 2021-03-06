@@ -209,52 +209,56 @@ class _SnackBarPageState extends State<SnackBarPage> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () async {
-                            if(_formKey.currentState.validate()) {
-                                setState(() {
+                            if (_formKey.currentState.validate()) {
+                              setState(() {
                                 _loading = true;
-                                });
-                                var book = InsertedBook(
-                                    title: param.editTitle,
-                                    author: param.editAuthor,
-                                    genre: _genre,
-                                    purpose: _fictOrNot);
-                                if(param.isEditing) {
-                                  dynamic result = await _db.updateBook(book, param.bookIndex);
-                                  //TODO: anche sotto, controllare se è andato a buon fine prima?
-                                  if(result != null) {
-                                    Navigator.pop(context);
-                                  }
+                              });
+                              var book = InsertedBook(
+                                  title: param.editTitle,
+                                  author: param.editAuthor,
+                                  genre: _genre,
+                                  purpose: _purpose,
+                                  fictOrNot: _fictOrNot
+                              );
+                              if (param.isEditing) {
+                                dynamic result = await _db.updateBook(
+                                    book, param.bookIndex);
+                                if (result != null) {
+                                  Navigator.pop(context);
                                 }
-                                else {
-                                  dynamic result = await _db.addUserBook(book);
-                                  //if(result != null) {
-                                    setState(() {
-                                      param.editTitle = '';
-                                      param.editAuthor = '';
-                                      _fictOrNot = 'Fiction';
-                                      _genre =
-                                      BookGenres().getGenres()['Fiction'][0];
-                                    });
-                                  }
+                              }
+                              else {
+                                dynamic result = await _db.addUserBook(book);
+                                if (result != null) {
+                                  setState(() {
+                                    param.editTitle = '';
+                                    param.editAuthor = '';
+                                    //_purpose = 'For Sale'; //Do not clear this
+                                    _fictOrNot = 'Fiction';
+                                    _genre =
+                                    BookGenres().getGenres()['Fiction'][0];
+                                  });
                                 }
-                                final snackBar = SnackBar(
-                                  duration: Duration(seconds: 1),
-                                  content: Text(
+                              }
+                              final snackBar = SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: Text(
                                     param.isEditing ?
-                                        'The book has been successfully modified!' :
-                                        'The book has been successfully added!'
-                                  ),
-                                  action: SnackBarAction(
-                                    label: param.isEditing ? 'Modified' : 'Added',
-                                    onPressed: () {
-                                      //TODO aggiungere una funzione undo?
-                                    },
-                                  ),
-                                );
-                                // Find the Scaffold in the widget tree and use
-                                // it to show a SnackBar.
-                                Scaffold.of(context).showSnackBar(snackBar);
+                                    'The book has been successfully modified!' :
+                                    'The book has been successfully added!'
+                                ),
+                                action: SnackBarAction(
+                                  label: param.isEditing ? 'Modified' : 'Added',
+                                  onPressed: () {
+                                    //TODO aggiungere una funzione undo?
+                                  },
+                                ),
+                              );
+                              // Find the Scaffold in the widget tree and use
+                              // it to show a SnackBar.
+                              Scaffold.of(context).showSnackBar(snackBar);
                             }
+                          }
                         ),
                       ),
                       Spacer(

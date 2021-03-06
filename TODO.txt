@@ -30,8 +30,6 @@ TUTORIAL DA VEDERE
 TODO:
 	- CAPIRE IN GENERALE PROBLEMI DI CONCORRENZA / FARE DEI TEST / BOH
 	- capire landscape mode
-
-	---> POST SIGN OUT I LIBRI SI CANCELLANO
 	
 	- capire come fare scorrere la schermata quando c'è la tastiera aperta
 	- capire come pulire i campi (in add e update book)
