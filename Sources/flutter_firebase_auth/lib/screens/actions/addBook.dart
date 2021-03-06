@@ -256,7 +256,6 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                 // it to show a SnackBar.
                                 Scaffold.of(context).showSnackBar(snackBar);
                             }
-                          }
                         ),
                       ),
                       Spacer(

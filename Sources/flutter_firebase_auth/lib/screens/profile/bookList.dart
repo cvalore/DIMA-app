@@ -24,9 +24,7 @@ class _BookListState extends State<BookList> {
 
     var books = [];
     books = Provider.of<List<InsertedBook>>(context);
-    if (books == null){
-      print('here'); //TODO: PERCHE' NON SI VEDE?? prima c'era il widget Loading
-      //Scoperto che si vede per un istante e poi non piu, perche?
+    if (books.length == 0){
       return Column(
         children: <Widget>[
           Text('No books yet, the books you add will appear here'),

@@ -13,12 +13,14 @@ class DatabaseService {
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
   Future<void> initializeUser() {
-    return usersCollection
-        .doc(user.uid)
-        .set({
-      'name': user.email,    //TODO add a name for the user
-      'books': [],
-    })
+
+    var doc = usersCollection.doc(user.uid);
+
+    return doc != null ? doc :
+      doc.set({
+        'name': user.email,    //TODO add a name for the user
+        'books': [],
+      })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
