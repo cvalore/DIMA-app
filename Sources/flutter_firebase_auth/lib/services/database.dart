@@ -16,7 +16,6 @@ class DatabaseService {
 
     var doc = usersCollection.doc(user.uid);
     var userMap = user.toMap();
-    userMap['books'] = [];
     return doc != null ? doc :
       doc.set(userMap)
         .then((value) => print("User Added"))

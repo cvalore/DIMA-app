@@ -25,6 +25,7 @@ class CustomUser {
     user['uid'] = uid;
     user['email'] = email;
     user['username'] = username;
+    user['books'] = [];
     return user;
   }
 }
