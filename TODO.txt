@@ -28,13 +28,15 @@ TUTORIAL DA VEDERE
 	- flutter animation tutorial
 
 TODO:
-	- aggiungere modifica e cancellazione utenti
-	- signin google con modifica
-	- creare la collection la prima volta
+	- creare la collection la prima volta ---> risolto da solo ??? CAPIRE IN GENERALE PROBLEMI DI CONCORRENZA / FARE DEI TEST / BOH
 	- aggiungere immagini
+	- capire landscape mode
 	- controllare la sha1
 
-
+	---> POST SIGN OUT I LIBRI SI CANCELLANO
+	- capire come fare scorrere la schermata quando c'è la tastiera aperta
+	- capire come pulire i campi (in add e update book)
+	- capire come inizializzare i dropdown all'update book
 
 
 
