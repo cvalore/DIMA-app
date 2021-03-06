@@ -83,6 +83,7 @@ class _SubscribeState extends State<Subscribe> {
                               _loading = false;
                             });
                           }
+                          Navigator.pop(context);
                         }
                       },
                     ),
