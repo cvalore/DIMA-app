@@ -8,3 +8,5 @@ const inputFieldDecoration = InputDecoration(
       borderSide: BorderSide(color: Colors.red, width: 2.0),
   ),*/
 );
+
+const googleBookAPIKey = 'AIzaSyAIbNkEmTSHCeggxoGFlN7D0WiFFORuewA';

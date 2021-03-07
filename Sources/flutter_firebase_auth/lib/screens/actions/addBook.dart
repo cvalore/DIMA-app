@@ -9,7 +9,6 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:provider/provider.dart';
-
 import 'addImage.dart';
 
 class AddBook extends StatefulWidget {

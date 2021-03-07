@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/TestPage.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -44,39 +45,66 @@ class _HomeState extends State<Home> {
         builder: (BuildContext context) {
           return Scaffold(
             body: Center(
-              child: TextButton(
-                style: ButtonStyle(
-                  //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.blueGrey[400];
-                        }
-                        else {
-                          return Colors.blueGrey[600];
-                        }
-                      }),
-                ),
-                child: Text('To user profile', style: TextStyle(color: Colors.white),),
-                onPressed: () {
-                  if(user != null && !user.isAnonymous) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile()),
-                    );
-                  }
-                  else {
-                    final snackBar = SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text(
-                          'You need to be logged in to add a book'
-                      ),
-                    );
-                    // Find the Scaffold in the widget tree and use
-                    // it to show a SnackBar.
-                    Scaffold.of(context).showSnackBar(snackBar);
-                  }
-                },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  TextButton(
+                    style: ButtonStyle(
+                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Colors.blueGrey[400];
+                            }
+                            else {
+                              return Colors.blueGrey[600];
+                            }
+                          }),
+                    ),
+                    child: Text('To user profile', style: TextStyle(color: Colors.white),),
+                    onPressed: () {
+                      if(user != null && !user.isAnonymous) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Profile()),
+                        );
+                      }
+                      else {
+                        final snackBar = SnackBar(
+                          duration: Duration(seconds: 1),
+                          content: Text(
+                              'You need to be logged in to add a book'
+                          ),
+                        );
+                        // Find the Scaffold in the widget tree and use
+                        // it to show a SnackBar.
+                        Scaffold.of(context).showSnackBar(snackBar);
+                      }
+                    },
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Colors.blueGrey[400];
+                            }
+                            else {
+                              return Colors.blueGrey[600];
+                            }
+                          }),
+                    ),
+                    child: Text('To TEST PAGE', style: TextStyle(color: Colors.white),),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TestPage()),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
               floatingActionButton: FloatingActionButton(
