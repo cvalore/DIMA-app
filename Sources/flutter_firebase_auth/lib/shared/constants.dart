@@ -10,3 +10,4 @@ const inputFieldDecoration = InputDecoration(
 );
 
 const googleBookAPIKey = 'AIzaSyAIbNkEmTSHCeggxoGFlN7D0WiFFORuewA';
+const googleBookAPIFields = 'items(volumeInfo(title))';
