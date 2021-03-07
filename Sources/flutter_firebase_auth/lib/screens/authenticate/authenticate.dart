@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/register.dart';
-import 'package:flutter_firebase_auth/screens/authenticate/sign_in.dart';
+import 'package:flutter_firebase_auth/screens/authenticate/signIn.dart';
 
 class Authenticate extends StatefulWidget {
   @override

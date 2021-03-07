@@ -1,4 +1,4 @@
-import 'package:flutter_firebase_auth/models/inserted_book.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 
 class CustomUser {
 
