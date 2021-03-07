@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addImage.dart';
+import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
@@ -12,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'addImage.dart';
 
 class AddBook extends StatefulWidget {
+  static const routeName = '/addBook';
+
   @override
   _AddBookState createState() => _AddBookState();
 }
@@ -32,7 +35,8 @@ class _AddBookState extends State<AddBook> {
             IconButton(
                 icon: param.isEditing ? const Icon(null) : const Icon(Icons.check_outlined), onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, Profile.routeName);
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => ImageService()));
             })
           ],
         ),

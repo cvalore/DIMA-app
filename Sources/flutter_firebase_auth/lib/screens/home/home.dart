@@ -21,14 +21,15 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
+
     CustomUser user = Provider.of<CustomUser>(context);
     GlobalKey scaffoldKey = GlobalKey();
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.blueGrey[50],
+      //backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey[700],
+        //backgroundColor: Colors.blueGrey[700],
         elevation: 0.0,
         title: Text('BookYourBook'),
         actions: <Widget>[

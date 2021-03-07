@@ -62,12 +62,17 @@ void main() {
        return StreamProvider<CustomUser>.value(
          value: AuthService().userStream,
          child: MaterialApp(
+           theme: ThemeData(
+             buttonColor: Colors.white12,
+             primarySwatch: Colors.blueGrey,
+             buttonTheme: const ButtonThemeData(
+               textTheme: ButtonTextTheme.primary
+             )
+           ),
            home: Wrapper(),
-           //initialRoute: '/',
            routes: {
-             //'/': (context) => Wrapper(),
-             '/addBook': (context) => AddBook(),
-             '/profile': (context) => Profile(),
+             AddBook.routeName: (context) => AddBook(),
+             Profile.routeName: (context) => Profile(),
              Subscribe.routeName: (context) => Subscribe(),
            }
          ),

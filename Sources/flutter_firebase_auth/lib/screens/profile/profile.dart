@@ -8,6 +8,8 @@ import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatelessWidget {
+  static const routeName = '/profile';
+
   @override
   Widget build(BuildContext context) {
 

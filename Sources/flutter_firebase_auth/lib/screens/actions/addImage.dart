@@ -20,10 +20,12 @@ class _ImageServiceState extends State<ImageService> {
         imageQuality: 50
     );
 
-    setState(() {
-      images.add(image);
-      print("Image inserted. Now there are ${images.length}");
-    });
+    if(image != null) {
+      setState(() {
+        images.add(image);
+        print("Image inserted. Now there are ${images.length}");
+      });
+    }
   }
 
   _imgFromGallery() async {
@@ -32,9 +34,11 @@ class _ImageServiceState extends State<ImageService> {
         imageQuality: 50
     );
 
-    setState(() {
-      images.add(image);
-    });
+    if(image != null) {
+      setState(() {
+        images.add(image);
+      });
+    }
   }
 
 
@@ -70,6 +74,33 @@ class _ImageServiceState extends State<ImageService> {
   }
 
 
+  @override
+  Widget build(BuildContext context) {
+    
+    final listItem = List<ImageDisplay>.generate(images.length, (index) => ImageDisplay(images[index]));
+    return  Scaffold(
+      appBar: AppBar(
+        title: Text("Inserted pictures"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_a_photo), onPressed: () {
+              _showPicker(context);
+          })
+        ],
+      ),
+      body: listItem.length == 0 ? Text(
+        "nothing to show here"
+      ) : ListView.builder(
+        itemCount: listItem.length,
+        itemBuilder: (context, index) {
+          final item = listItem[index];
+          
+          return item.buildImage(context);
+        }),
+    );
+  }
+
+/*
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -109,5 +140,28 @@ class _ImageServiceState extends State<ImageService> {
           ],
         )
     );
+  }
+
+ */
+}
+
+class ImageDisplay {
+
+  PickedFile _imageFile;
+
+  ImageDisplay(this._imageFile);
+
+  Widget buildImage(BuildContext context){
+    return Container(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Image.file(
+                File(_imageFile.path)
+            ),
+          ],
+        ),
+      );
   }
 }

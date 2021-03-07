@@ -37,8 +37,10 @@ TODO:
 	- capire landscape mode
 	
 	- capire come fare scorrere la schermata quando c'è la tastiera aperta
-	- capire come pulire i campi (in add e update book)
+	- capire come pulire i campi (in add e update book) (text edit controller)
 	- capire come inizializzare i dropdown all'update book
+
+	- vedere anche come inserire un libro aggiungendolo all'array dei libri già inseriti
 
 	- CAMBIARE MODALITA INSERIMENTO LIBRO, INTERFACCIARSI A DB ESISTENTE (CREARE NOI)
 

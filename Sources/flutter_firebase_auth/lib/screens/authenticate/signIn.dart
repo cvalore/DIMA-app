@@ -29,9 +29,9 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return _loading ? Loading() : Scaffold (
-      backgroundColor: Colors.blueGrey[50],
+      //backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey[700],
+        //backgroundColor: Colors.blueGrey[700],
         elevation: 0.0,
         title: Text('Sign in to BookYourBook'),
       ),
@@ -100,7 +100,9 @@ class _SignInState extends State<SignIn> {
                                   }
                                 }),
                           ),
-                          child: Text('Sign In', style: TextStyle(color: Colors.white),),
+                          child: Text('Sign In',
+                            style: TextStyle(color: Colors.white),
+                            ),
                           onPressed: () {
                             _signinWithEmailAndPassword(context);
                           },
