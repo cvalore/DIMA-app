@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/utils/credentials.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -7,6 +6,8 @@ import 'package:flutter_firebase_auth/services/auth.dart';
 
 
 class Subscribe extends StatefulWidget {
+  static const routeName = '/subscribe';
+
   @override
   _SubscribeState createState() => _SubscribeState();
 }
@@ -23,7 +24,8 @@ class _SubscribeState extends State<Subscribe> {
   @override
   Widget build(BuildContext context) {
 
-    final Credentials credentials = ModalRoute.of(context).settings.arguments;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,19 +33,20 @@ class _SubscribeState extends State<Subscribe> {
         backgroundColor: Colors.blueGrey[700],
         elevation: 0.0,
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Form(
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  Expanded(
-                    flex: 3,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       initialValue: _username,
                       decoration: inputFieldDecoration.copyWith(hintText: 'Username'),
                       validator: (value) =>
-                      value.isEmpty ? 'Enter a username' : null,
+                      value.isEmpty ? 'Enter a valid username' : null,
                       onChanged: (value) {
                         setState(() {
                           _username = value;
@@ -51,45 +54,33 @@ class _SubscribeState extends State<Subscribe> {
                       },
                     ),
                   ),
-                  Spacer(
-                    flex: 5
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: TextButton(
-                      style: ButtonStyle(
-                        //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.pressed)) {
-                                return Colors.blueGrey[400];
-                              }
-                              else {
-                                return Colors.blueGrey[600];
-                              }
-                            }),
-                      ),
-                      child: Text('Sign Up', style: TextStyle(color: Colors.white),),
-                      onPressed: () async {
-                        if(_formKey.currentState.validate()) {
-                          setState(() {
-                            _loading = true;
-                          });
-                          dynamic result = await _auth.signUpEmailPassword(credentials.email, credentials.password, _username);
-                          if(result == null) {
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 0.0),
+                    child: Container(
+                      width: width * 0.5,
+                      child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed)) {
+                                  return Colors.blueGrey[400];
+                                }
+                                else {
+                                  return Colors.blueGrey[600];
+                                }
+                              }),
+                        ),
+                        child: Text('Sign Up', style: TextStyle(color: Colors.white),),
+                        onPressed: () async {
+                          if(_formKey.currentState.validate()) {
                             setState(() {
-                              print("Not a valid email or already registered");
-                              _error = 'Not a valid email or already registered';
-                              _loading = false;
+                              _loading = true;
                             });
+                            Navigator.pop(context, _username);
                           }
-                          Navigator.pop(context);
-                        }
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                  Spacer(
-                      flex: 5
                   ),
                 ],
               ),

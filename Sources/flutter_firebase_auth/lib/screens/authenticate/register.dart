@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:flutter_firebase_auth/utils/credentials.dart';
 
 class Register extends StatefulWidget {
 
@@ -90,7 +90,6 @@ class _RegisterState extends State<Register> {
                             flex: 5,
                             child: TextButton(
                               style: ButtonStyle(
-                                //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
                                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                                         (Set<MaterialState> states) {
                                       if (states.contains(MaterialState.pressed)) {
@@ -102,17 +101,8 @@ class _RegisterState extends State<Register> {
                                     }),
                               ),
                               child: Text('Sign Up', style: TextStyle(color: Colors.white),),
-                              onPressed: () async {
-                                if(_formKey.currentState.validate()) {
-                                  setState(() {
-                                    _loading = true;
-                                  });
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/subscribe',
-                                    arguments: Credentials(_email,_password)
-                                  );
-                                }
+                              onPressed: () {
+                                _registerWithEmailAndPassword(context);
                               },
                             ),
                           ),
@@ -153,36 +143,6 @@ class _RegisterState extends State<Register> {
                       child: Text('or'),
                     ),
                     Expanded(
-                      flex: 5,
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all<OutlinedBorder>(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0))
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Sign up with google'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        onPressed: () async {
-                          dynamic result = await _auth.signInGoogle();
-                          if(result == null) {
-                            print('Google sign up failed');
-                          }
-                        },
-                      ),
-                    ),
-                    Expanded(
                       flex: 4,
                       child: TextButton(
                         style: ButtonStyle(
@@ -204,4 +164,35 @@ class _RegisterState extends State<Register> {
             ),
       );
   }
+
+
+  _registerWithEmailAndPassword(BuildContext context) async {
+    if(_formKey.currentState.validate()) {
+      setState(() {
+        _loading = true;
+      });
+      final usernameAsResult = await Navigator.pushNamed(context,Subscribe.routeName) as String;
+      if (usernameAsResult == null) {
+        setState(() {
+          _loading = false;
+        });
+      }
+      else {
+        dynamic authResult = await _auth
+            .signUpEmailPassword(
+            _email, _password,
+            usernameAsResult);
+        if (authResult == null) {
+          setState(() {
+            print(
+                "Not a valid email or already registered");
+            _error =
+            'Not a valid email or already registered';
+            _loading = false;
+          });
+        }
+      }
+    }
+  }
+
 }

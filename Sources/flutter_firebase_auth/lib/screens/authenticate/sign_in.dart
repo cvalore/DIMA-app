@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 
 class SignIn extends StatefulWidget {
@@ -101,21 +101,8 @@ class _SignInState extends State<SignIn> {
                                 }),
                           ),
                           child: Text('Sign In', style: TextStyle(color: Colors.white),),
-                          onPressed: () async {
-                            if(_formKey.currentState.validate()) {
-                              setState(() {
-                                _loading = true;
-                              });
-
-                              dynamic result = await _auth.signInEmailPassword(_email, _password);
-                              if(result == null) {
-                                setState(() {
-                                  print("Wrong username or password");
-                                  _error = 'Wrong username or password';
-                                  _loading = false;
-                                });
-                              }
-                            }
+                          onPressed: () {
+                            _signinWithEmailAndPassword(context);
                           },
                         ),
                       ),
@@ -195,11 +182,8 @@ class _SignInState extends State<SignIn> {
                           ],
                         ),
                       ),
-                      onPressed: () async {
-                        dynamic result = await _auth.signInGoogle();
-                        if(result == null) {
-                          print('Google sign in failed');
-                        }
+                      onPressed: () {
+                        _signWithGoogle(context);
                       },
                     ),
                   ),
@@ -244,5 +228,41 @@ class _SignInState extends State<SignIn> {
             ),
       ),
     );
+  }
+
+
+  _signinWithEmailAndPassword(BuildContext context) async {
+    if(_formKey.currentState.validate()) {
+      setState(() {
+        _loading = true;
+      });
+
+      dynamic result = await _auth.signInEmailPassword(_email, _password);
+      if(result == null) {
+        setState(() {
+          print("Wrong username or password");
+          _error = 'Wrong username or password';
+          _loading = false;
+        });
+      }
+    }
+  }
+
+  _signWithGoogle(BuildContext context) async {
+      final result = await _auth.signInGoogle();
+      if(result == null) {
+        print('Google sign in failed');
+      } else if (!result['alreadyExists']) {
+        final username = await Navigator.pushNamed(context, Subscribe.routeName) as String;
+        print(username);
+        if (username != null) {
+          dynamic signupResult = await _auth.signUpGoogle(
+              result['authCredentials'], result['email'],
+              username);
+          if (signupResult == null) {
+            print('Google sign in failed');
+          }
+        }
+      }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -70,27 +71,43 @@ class AuthService {
           idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken
       );
 
-      UserCredential credentialResult = await _auth.signInWithCredential(authCredential);
-      User user = credentialResult.user;
+      var userAlreadyExists = true;
 
-      if(user != null) {
-        assert(!user.isAnonymous);
-        assert(await user.getIdToken() != null);
-        User currentUser = _auth.currentUser;
-        assert(currentUser.uid == user.uid);
+      //check if user already exists
+      CollectionReference usersCollection = DatabaseService().usersCollection;
+      await usersCollection
+          .where('email', isEqualTo: googleSignInAccount.email)
+          .get()
+          .then((QuerySnapshot snapshot) {
+        if (snapshot.size == 0) {
+          userAlreadyExists = false;
+        }
+      });
 
-        print('Google sign in succedeed');
-        _signedInGoogle = true;
+      if (userAlreadyExists) {
+        UserCredential credentialResult = await _auth.signInWithCredential(
+            authCredential);
+        User user = credentialResult.user;
 
-        //add empty document for the new registered user
-        CustomUser customUser = _userFromFirebaseUser(user);
-        await DatabaseService(user: customUser).initializeUser(); //TODO add here the username
+        if (user != null) {
+          assert(!user.isAnonymous);
+          assert(await user.getIdToken() != null);
+          User currentUser = _auth.currentUser;
+          assert(currentUser.uid == user.uid);
 
-        return customUser;
+          print('Google sign in succedeed');
+          _signedInGoogle = true;
+          var map = Map<String,bool>();
+          map['alreadyExists'] = true;
+          return map;
+        }
+      } else {
+        var map = Map<String,dynamic>();
+        map['authCredentials'] = authCredential;
+        map['alreadyExists'] = false;
+        map['email'] = googleSignInAccount.email;
+        return map;
       }
-
-      return null;
-
     } catch(e) {
       print(e.toString());      //TODO stampare a schermo che la mail è già usata
       return null;
@@ -105,10 +122,38 @@ class AuthService {
 
       //add empty document for the new registered user
       CustomUser customUser = CustomUser(user.uid, user.email, user.isAnonymous, username: username);
-      print("username is ${username }");
       await DatabaseService(user: customUser).initializeUser();
 
       return customUser;
+    } catch(e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+
+  Future signUpGoogle(AuthCredential authCredential, String email, String username) async {
+    try {
+
+      UserCredential credentialResult = await _auth.signInWithCredential(authCredential);
+      User user = credentialResult.user;
+
+      if(user != null) {
+        assert(!user.isAnonymous);
+        assert(await user.getIdToken() != null);
+        User currentUser = _auth.currentUser;
+        assert(currentUser.uid == user.uid);
+
+        print('Google sign in succedeed');
+        _signedInGoogle = true;
+
+        //add empty document for the new registered user
+        CustomUser customUser = CustomUser(user.uid, user.email, user.isAnonymous, username: username);
+        await DatabaseService(user: customUser).initializeUser();
+        return customUser;
+      }
+      return null;
+
     } catch(e) {
       print(e.toString());
       return null;
