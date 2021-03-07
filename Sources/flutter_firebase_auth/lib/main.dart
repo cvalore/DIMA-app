@@ -68,7 +68,7 @@ void main() {
              //'/': (context) => Wrapper(),
              '/addBook': (context) => AddBook(),
              '/profile': (context) => Profile(),
-             '/subscribe': (context) => Subscribe(),
+             Subscribe.routeName: (context) => Subscribe(),
            }
          ),
        );
