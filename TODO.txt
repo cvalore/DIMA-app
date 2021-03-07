@@ -40,7 +40,7 @@ TODO:
 	- capire come pulire i campi (in add e update book)
 	- capire come inizializzare i dropdown all'update book
 
-	- CAMBIARE MODALITA INSERIMENTO LIBRO, INTERFACCIARSI A DB ESISTENTE (CRERE NOI)
+	- CAMBIARE MODALITA INSERIMENTO LIBRO, INTERFACCIARSI A DB ESISTENTE (CREARE NOI)
 
 
 
