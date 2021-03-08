@@ -1,7 +1,12 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 
 class ImageService extends StatefulWidget {
@@ -76,8 +81,13 @@ class _ImageServiceState extends State<ImageService> {
 
   @override
   Widget build(BuildContext context) {
-    
+
+    CustomUser user = Provider.of<CustomUser>(context);
+    DatabaseService _db = DatabaseService(user: user);
+    var storage = StorageService();
+
     final listItem = List<ImageDisplay>.generate(images.length, (index) => ImageDisplay(images[index]));
+
     return  Scaffold(
       appBar: AppBar(
         title: Text("Inserted pictures"),
@@ -89,14 +99,28 @@ class _ImageServiceState extends State<ImageService> {
         ],
       ),
       body: listItem.length == 0 ? Text(
-        "nothing to show here"
-      ) : ListView.builder(
-        itemCount: listItem.length,
-        itemBuilder: (context, index) {
-          final item = listItem[index];
-          
-          return item.buildImage(context);
-        }),
+          "nothing to show here"
+      ) : Column(
+            children: [
+              Flexible(
+                child: ListView.builder(
+                    itemCount: listItem.length,
+                    itemBuilder: (context, index) {
+                      final item = listItem[index];
+
+                      return item.buildImage(context);
+                    }),
+              ),
+              FloatingActionButton(
+                child: Icon(Icons.check_outlined),
+                onPressed: () {
+                  //TODO aggiungere un set state con loading?
+                  storage.addBookPictures("bookTitle", images);
+                }
+              )
+            ],
+      )
+
     );
   }
 
@@ -157,9 +181,12 @@ class ImageDisplay {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.file(
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Image.file(
                 File(_imageFile.path)
             ),
+            )
           ],
         ),
       );

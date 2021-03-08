@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/screens/actions/addImage.dart';
 import 'package:flutter_firebase_auth/services/googleBooksAPI.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bottomThreeDosts.dart';
@@ -133,6 +134,7 @@ class TestPage extends StatelessWidget {
             )
           ),
           Container(
+            // container containing the addImage section
               padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,

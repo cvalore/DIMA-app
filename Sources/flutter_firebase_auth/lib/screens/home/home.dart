@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/TestPage.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addImage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -102,6 +103,27 @@ class _HomeState extends State<Home> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => TestPage()),
+                      );
+                    },
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Colors.blueGrey[400];
+                            }
+                            else {
+                              return Colors.blueGrey[600];
+                            }
+                          }),
+                    ),
+                    child: Text('To addImage page', style: TextStyle(color: Colors.white),),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ImageService()),
                       );
                     },
                   ),
