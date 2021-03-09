@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/TestPage.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addImage.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
