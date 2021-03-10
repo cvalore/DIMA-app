@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/descriptionBox.dart';
@@ -49,6 +51,20 @@ class _TestPageState extends State<TestPage> {
             heroTag: "saveBtn",
             onPressed: () {
               //TODO
+              BookGeneralInfo bookGeneralInfo = BookGeneralInfo(
+                  _selected['volumeInfo']['title'],
+                  _selected['volumeInfo']['authors'].toString(),
+                  _selected['volumeInfo']['imageLinks']['thumbnail'],
+                  'fake isbn',
+                  _selected['volumeInfo']['language']
+                  );
+              InsertedBook insertedBook = InsertedBook(
+                  _selected['volumeInfo']['title'],
+                  _selected['volumeInfo']['authors'].toString(),
+                  'fake isbn',
+                  5);
+              insertedBook.addBookGeneralInfo(bookGeneralInfo);
+              _db.addUserBook(insertedBook);
             },
             icon: Icon(Icons.save),
             label: Text("Save"),

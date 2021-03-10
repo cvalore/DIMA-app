@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -25,9 +24,32 @@ class DatabaseService {
 
 
   Future addUserBook(InsertedBook book) async {
+
+    // add book to the user collection
     var mapBook = book.toMap();
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook])
+    });
+
+    // add book to book collection
+    var generalInfoBookMap = book.generalInfoToMap();
+    await bookCollection
+        .where('isbn', isEqualTo: generalInfoBookMap['isbn'])
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.size == 1) {
+        // if the book already exists insert the new owner having it
+        //TODO qua ci va await ?
+        bookCollection.doc(querySnapshot.docs[0].id)
+            .update({'owners': FieldValue.arrayUnion([user.uid])});
+        print("Update done");
+      } else {
+        generalInfoBookMap['owners'] = [user.uid];
+        //TODO qua ci va await ?
+        bookCollection.doc(mapBook['isbn']).set(generalInfoBookMap)
+            .then((value) => print("Book added"))
+            .catchError((error) => print("Failed to add book: $error"));
+      }
     });
 
     // trick to add more than one book at a time :)
@@ -64,12 +86,13 @@ class DatabaseService {
     if (documentSnapshot.exists) {
       for (var book in documentSnapshot.get("books")) {
         InsertedBook insertedBook = InsertedBook(
-            title: book['title'] ?? '',
-            author: book['author'] ?? '',
-            purpose: book['purpose'] ?? '',
-            fictOrNot: book['fictOrNot'] ?? '',
-            genre: book['genre']
+            book['title'],
+            book['author'],
+            book['isbn'],
+            book['status']
+            //TODO add purpose
         );
+
         mylist.add(insertedBook);
       }
     }
@@ -99,25 +122,22 @@ class DatabaseService {
   }
 
   Future<InsertedBook> getBook(int index) async {
-
     dynamic book;
-
     await usersCollection.doc(user.uid).get().then(
       (userDoc) {
         List<dynamic> books = userDoc.data()['books'];
         book = books[index];
       });
-
     print('Get book ---> ' + book.toString());
 
     return book == null ?
-        InsertedBook(title: '',author: '',genre: '',purpose: '', fictOrNot: '') :
+        InsertedBook('','','', 0) :   //riguardare ??
         InsertedBook(
-          title: book['title'] ?? '',
-          author: book['author'] ?? '',
-          purpose: book['purpose'] ?? '',
-          fictOrNot: book['fictOrNot'] ?? '',
-          genre: book['genre'],
+            book['title'],
+            book['author'],
+            book['isbn'],
+            book['status']
+          //TODO add purpose
         );
   }
 

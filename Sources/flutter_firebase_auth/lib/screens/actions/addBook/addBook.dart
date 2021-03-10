@@ -214,6 +214,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                               setState(() {
                                 _loading = true;
                               });
+                              /*
                               var book = InsertedBook(
                                   title: param.editTitle,
                                   author: param.editAuthor,
@@ -221,6 +222,10 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                   purpose: _purpose,
                                   fictOrNot: _fictOrNot
                               );
+
+                               */
+                              var book;
+
                               if (param.isEditing) {
                                 dynamic result = await _db.updateBook(
                                     book, param.bookIndex);
