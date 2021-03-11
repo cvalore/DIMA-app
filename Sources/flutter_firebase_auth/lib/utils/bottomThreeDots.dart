@@ -4,16 +4,17 @@ class BottomThreeDots extends StatelessWidget {
 
   final darkerIndex;
   final size;
+  final double height;
 
-  const BottomThreeDots({Key key, this.size = 10.0, this.darkerIndex = 2}) : super(key: key);
+  const BottomThreeDots({Key key, this.size = 10.0, this.darkerIndex = 2, this.height = 10}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     final index = darkerIndex < 0 ? 0 : (darkerIndex > 2 ? 2 : darkerIndex);
 
-    return Flexible(
-      flex: 1,
+    return Container(
+      height: height,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addImage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
@@ -216,6 +214,7 @@ class _SnackBarPageState extends State<SnackBarPage> {
                               setState(() {
                                 _loading = true;
                               });
+                              /*
                               var book = InsertedBook(
                                   title: param.editTitle,
                                   author: param.editAuthor,
@@ -223,6 +222,10 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                   purpose: _purpose,
                                   fictOrNot: _fictOrNot
                               );
+
+                               */
+                              var book;
+
                               if (param.isEditing) {
                                 dynamic result = await _db.updateBook(
                                     book, param.bookIndex);

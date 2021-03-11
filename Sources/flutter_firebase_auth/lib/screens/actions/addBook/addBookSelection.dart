@@ -10,8 +10,9 @@ class AddBookSelection extends StatefulWidget {
   final Function(dynamic sel) setSelected;
   dynamic selected;
   final bool showDots;
+  PageController controller;
 
-  AddBookSelection({Key key, this.setSelected, this.selected, this.showDots}) : super(key: key);
+  AddBookSelection({Key key, this.setSelected, this.selected, this.showDots, this.controller}) : super(key: key);
 
   @override
   _AddBookSelectionState createState() => _AddBookSelectionState();

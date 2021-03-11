@@ -71,8 +71,8 @@ class _BookListState extends State<BookList> {
                   bookIndex: index,
                   editTitle: book.title,
                   editAuthor: book.author,
-                  editGenre: book.genre,
-                  editPurpose: book.purpose,
+                  //editGenre: book.genre,
+                  //editPurpose: book.purpose,
                   //editFictOrNot: book['fiction']
                 );
                 Navigator.pushNamed(context, '/addBook', arguments: args);
