@@ -147,7 +147,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   Text(booksAPI.getISBN13(widget.selected['volumeInfo']) ?? ''),
                   Text(''),
                   Text('Page count', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['pageCount'].toString() ?? ''),
+                  Text(widget.selected['volumeInfo']['pageCount'] != null ? widget.selected['volumeInfo']['pageCount'].toString() : ''),
                   Text(''),
                   Text('Categories', style: TextStyle(fontWeight: FontWeight.bold),),
                   Text(widget.selected['volumeInfo']['categories'].toString() ?? ''),
@@ -156,7 +156,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text((widget.selected['volumeInfo']['averageRating'].floor()).toString() ?? ''),
+                      Text(widget.selected['volumeInfo']['averageRating'] != null ? (widget.selected['volumeInfo']['averageRating'].floor()).toString() : ''),
                       Text('  '),
                       for(var i = 0; i < 5 && widget.selected['volumeInfo']['averageRating'] != null; i++)
                         Icon(i > widget.selected['volumeInfo']['averageRating'] - 1 ?
@@ -167,10 +167,11 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   ),
                   Text(''),
                   Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['ratingsCount'].toString() ?? ''),
+                  Text(widget.selected['volumeInfo']['ratingsCount'] != null ? widget.selected['volumeInfo']['ratingsCount'].toString() : ''),
                   Text(''),
                   Text('Language', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['language'].toString().toUpperCase() ?? ''),
+                  Text(widget.selected['volumeInfo']['language'] != null ? widget.selected['volumeInfo']['language'].toString().toUpperCase() : ''),
+                  
                 ],
               ),
             ),
