@@ -23,8 +23,9 @@ class _HomeState extends State<Home> {
   int _selectedBottomTab = 0;
   static List<Widget> _widgetsBottomOptions = <Widget> [
     HomePage(),
-    Text('Page 2'),
-    Text('Page 3'),
+    Center(child: Text('TODO:// Search books',
+      style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),
+    BookInsert(),
     Profile(),
   ];
 
