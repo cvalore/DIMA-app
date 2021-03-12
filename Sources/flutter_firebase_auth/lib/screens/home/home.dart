@@ -1,15 +1,12 @@
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'file:///C:/Users/cvalo/OneDrive%20-%20Politecnico%20di%20Milano/Documenti/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/screens/profile/bookList.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -46,31 +43,71 @@ class _HomeState extends State<Home> {
     CustomUser user = Provider.of<CustomUser>(context);
     GlobalKey scaffoldKey = GlobalKey();
 
-    return Scaffold(
-      key: scaffoldKey,
-      //backgroundColor: Colors.blueGrey[50],
-      appBar: AppBar(
-        //backgroundColor: Colors.blueGrey[700],
-        elevation: 0.0,
-        title: Text('BookYourBook'),
-        actions: <Widget>[
-          TextButton.icon(
-            icon: Icon(Icons.logout, color: Colors.white,),
-            label: Text(''),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-          ),
-        ],
-      ),
-      body: Builder(
-        builder: (BuildContext context) {
-          return _widgetsBottomOptions.elementAt(_selectedBottomTab);
-        },
-      ),
-      bottomNavigationBar: BottomTabs(
-          getIndex: getIndex,
-          setIndex: setIndex,
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        key: scaffoldKey,
+        //backgroundColor: Colors.blueGrey[50],
+        appBar: AppBar(
+          //backgroundColor: Colors.blueGrey[700],
+          elevation: 0.0,
+          title: Text('BookYourBook'),
+          actions: <Widget>[
+            TextButton.icon(
+              icon: Icon(Icons.logout, color: Colors.white,),
+              label: Text(''),
+              onPressed: () async {
+                await _auth.signOut();
+              },
+            ),
+          ],
+          bottom: _selectedBottomTab == 0 ?
+            TabBar(
+              tabs: <Widget>[
+                Container(height: 40.0, child: Center(child: Text('All',))),
+                Container(height: 40.0, child: Center(child: Text('For Sale',))),
+                Container(height: 40.0, child: Center(child: Text('For Exchange',))),
+              ],
+            ) :
+            null,
+        ),
+        body: Builder(
+          builder: (BuildContext context) {
+            
+            return _selectedBottomTab != 0 ? 
+              _widgetsBottomOptions.elementAt(_selectedBottomTab) : 
+              TabBarView(
+                children: [
+                  Icon(Icons.menu_book, color: Colors.blueGrey[600],),
+                  Icon(Icons.attach_money, color: Colors.blueGrey[600],),
+                  Icon(Icons.compare_arrows, color: Colors.blueGrey[600],),
+                ]
+              );
+            
+            return _widgetsBottomOptions.elementAt(_selectedBottomTab);
+            /*return _selectedBottomTab != 0 ?
+            _widgetsBottomOptions.elementAt(_selectedBottomTab) :
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: UpperTabs(),
+                ),
+                Expanded(
+                  flex: 10,
+                  child: _widgetsBottomOptions.elementAt(_selectedBottomTab),
+                ),
+              ],
+            );*/
+          },
+        ),
+        bottomNavigationBar: BottomTabs(
+            getIndex: getIndex,
+            setIndex: setIndex,
+        ),
       ),
     );
   }
