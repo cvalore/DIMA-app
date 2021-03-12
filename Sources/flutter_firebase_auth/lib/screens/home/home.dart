@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/TestPage.dart';
+import 'file:///C:/Users/cvalo/OneDrive%20-%20Politecnico%20di%20Milano/Documenti/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
+import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
+import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_firebase_auth/screens/profile/bookList.dart';
 
@@ -18,6 +20,23 @@ class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
 
+  int _selectedBottomTab = 0;
+  static List<Widget> _widgetsBottomOptions = <Widget> [
+    HomePage(),
+    Text('Page 2'),
+    Text('Page 3'),
+    Profile(),
+  ];
+
+  void setIndex(int newIndex) {
+    setState(() {
+      this._selectedBottomTab = newIndex;
+    });
+  }
+
+  int getIndex() {
+    return this._selectedBottomTab;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,124 +64,12 @@ class _HomeState extends State<Home> {
       ),
       body: Builder(
         builder: (BuildContext context) {
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  TextButton(
-                    style: ButtonStyle(
-                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blueGrey[400];
-                            }
-                            else {
-                              return Colors.blueGrey[600];
-                            }
-                          }),
-                    ),
-                    child: Text('To user profile', style: TextStyle(color: Colors.white),),
-                    onPressed: () {
-                      if(user != null && !user.isAnonymous) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Profile()),
-                        );
-                      }
-                      else {
-                        final snackBar = SnackBar(
-                          duration: Duration(seconds: 1),
-                          content: Text(
-                              'You need to be logged in to add a book'
-                          ),
-                        );
-                        // Find the Scaffold in the widget tree and use
-                        // it to show a SnackBar.
-                        Scaffold.of(context).showSnackBar(snackBar);
-                      }
-                    },
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blueGrey[400];
-                            }
-                            else {
-                              return Colors.blueGrey[600];
-                            }
-                          }),
-                    ),
-                    child: Text('To TEST PAGE', style: TextStyle(color: Colors.white),),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TestPage()),
-                      );
-                    },
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.blueGrey[400];
-                            }
-                            else {
-                              return Colors.blueGrey[600];
-                            }
-                          }),
-                    ),
-                    child: Text('To addImage page', style: TextStyle(color: Colors.white),),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ImageService()),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-              floatingActionButton: FloatingActionButton(
-                elevation: 0.0,
-                backgroundColor: Colors.blueGrey[600],
-                focusColor: Colors.blueGrey[400],
-                hoverColor: Colors.blueGrey[400],
-                onPressed: () {
-                  if (user != null && !user.isAnonymous) {
-                    AddBookParameters args = AddBookParameters(false,
-                      bookIndex: -1,
-                      editTitle: '',
-                      editAuthor: '',
-                      editPurpose: '',
-                      editFictOrNot: '',
-                      editGenre: '',
-                    );
-                    Navigator.pushNamed(context, '/addBook', arguments: args);
-                  }
-                  else {
-                    final snackBar = SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text(
-                          'You need to be logged in to add a book'
-                      ),
-                    );
-                    // Find the Scaffold in the widget tree and use
-                    // it to show a SnackBar.
-                    Scaffold.of(context).showSnackBar(snackBar);
-                  }
-                },
-                child: Icon(Icons.add),
-              ),
-          );
+          return _widgetsBottomOptions.elementAt(_selectedBottomTab);
         },
+      ),
+      bottomNavigationBar: BottomTabs(
+          getIndex: getIndex,
+          setIndex: setIndex,
       ),
     );
   }

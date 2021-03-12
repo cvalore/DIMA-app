@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/descriptionBox.dart';
@@ -10,16 +11,14 @@ import 'package:flutter_firebase_auth/utils/bottomThreeDots.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookStatus.dart';
 import 'package:provider/provider.dart';
 
-import 'models/user.dart';
-
-class TestPage extends StatefulWidget {
+class BookInsert extends StatefulWidget {
   @override
-  _TestPageState createState() => _TestPageState();
+  _BookInsertState createState() => _BookInsertState();
 
   //static _TestPageState of(BuildContext context) => context.findAncestorStateOfType<_TestPageState>();
 }
 
-class _TestPageState extends State<TestPage> {
+class _BookInsertState extends State<BookInsert> {
 
   final PageController controller = PageController();
   int currentPageValue = 0;
