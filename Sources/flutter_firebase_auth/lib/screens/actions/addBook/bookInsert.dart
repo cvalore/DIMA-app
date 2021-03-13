@@ -5,7 +5,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/descriptionBox.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/commentBox.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bottomThreeDots.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookStatus.dart';
@@ -23,12 +23,13 @@ class _BookInsertState extends State<BookInsert> {
   final PageController controller = PageController();
   int currentPageValue = 0;
   final pageViewSize = 3;
-  dynamic _selected;
+  BookGeneralInfo _selectedBook;
+  InsertedBook _insertedBook = InsertedBook();
   DatabaseService _db;
 
   void setSelected(dynamic sel) {
     setState(() {
-      _selected = sel;
+      _selectedBook = sel;
     });
   }
 
@@ -49,26 +50,19 @@ class _BookInsertState extends State<BookInsert> {
           FloatingActionButton.extended(
             heroTag: "saveBtn",
             onPressed: () {
-              //TODO
-              BookGeneralInfo bookGeneralInfo = BookGeneralInfo(
-                  _selected['volumeInfo']['title'],
-                  _selected['volumeInfo']['authors'].toString(),
-                  _selected['volumeInfo']['imageLinks']['thumbnail'],
-                  'fake isbn',
-                  _selected['volumeInfo']['language']
-                  );
-              InsertedBook insertedBook = InsertedBook(
-                  _selected['volumeInfo']['title'],
-                  _selected['volumeInfo']['authors'].toString(),
-                  'fake isbn',
-                  5);
-              insertedBook.addBookGeneralInfo(bookGeneralInfo);
-              _db.addUserBook(insertedBook);
+              if (_selectedBook.title != null) {
+                _insertedBook.setTitleAuthorIsbn(
+                    _selectedBook.title, _selectedBook.author,
+                    _selectedBook.isbn13);
+                _insertedBook.setBookGeneralInfo(_selectedBook);
+                _insertedBook.printBook();
+                _db.addUserBook(_insertedBook);
+              }
             },
             icon: Icon(Icons.save),
             label: Text("Save"),
           ) : null,
-      body: _selected != null ?
+      body: _selectedBook != null ?
         PageView(
           controller: controller,
           onPageChanged: (index) {
@@ -78,7 +72,7 @@ class _BookInsertState extends State<BookInsert> {
             });
           },
           children: <Widget>[
-            AddBookSelection(setSelected: setSelected, selected: _selected, showDots: true, controller: controller),
+            AddBookSelection(setSelected: setSelected, selectedBook: _selectedBook, showDots: true, controller: controller),
             Container(
               padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
               child: Column(
@@ -92,36 +86,23 @@ class _BookInsertState extends State<BookInsert> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  ImageService(),
+                  ImageService(insertedBook: _insertedBook),
                   customSizedBox(1.0),
-                  BookStatus(height: 60),
+                  BookStatus(insertedBook: _insertedBook, height: 60),
                   customSizedBox(1.0),
-                  DescriptionBox(height: 60),
+                  CommentBox(insertedBook: _insertedBook, height: 60),
                   customSizedBox(1.0),
                   //backAndForthButtons(60),
                   BottomThreeDots(darkerIndex: 2, size: 9.0,)     //TODO sistemare la posizione dei dots qui
                 ],
               ),
             ),
-            /*
-            Container(
-              // container containing the addImage section
-                padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      BottomThreeDots(darkerIndex: 2, size: 9.0,),
-                    ]
-                )
-            ),
-
-             */
           ],
         ) :
         PageView(
           controller: controller,
           children: <Widget>[
-            AddBookSelection(setSelected: setSelected, selected: _selected, showDots: false,),
+            AddBookSelection(setSelected: setSelected, selectedBook: _selectedBook, showDots: false,),
           ],
         )
     );

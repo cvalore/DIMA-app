@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 
 
 
-class DescriptionBox extends StatefulWidget {
+class CommentBox extends StatefulWidget {
 
+  InsertedBook insertedBook;
   double height;
 
-  DescriptionBox({Key key, @required this.height}) : super(key: key);
+  CommentBox({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
 
   @override
-  _DescriptionBoxState createState() => _DescriptionBoxState();
+  _CommentBoxState createState() => _CommentBoxState();
 }
 
-class _DescriptionBoxState extends State<DescriptionBox> {
-
-  String description = '';
+class _CommentBoxState extends State<CommentBox> {
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class _DescriptionBoxState extends State<DescriptionBox> {
       height: widget.height,
       child: ListTile(
         title: Text(
-          "Description",
+          "Comment",
           style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold
@@ -30,10 +30,10 @@ class _DescriptionBoxState extends State<DescriptionBox> {
         ),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () async {
-          dynamic result = await Navigator.pushNamed(context, Description.routeName, arguments: description);
+          dynamic result = await Navigator.pushNamed(context, Comment.routeName, arguments: widget.insertedBook.comment);
           setState(() {
             if(result != null)
-              description = result;
+              widget.insertedBook.comment = result;
           });
         },
       ),
@@ -41,15 +41,15 @@ class _DescriptionBoxState extends State<DescriptionBox> {
   }
 }
 
-class Description extends StatefulWidget {
-  static const routeName = '/description';
+class Comment extends StatefulWidget {
+  static const routeName = '/comment';
   @override
-  _DescriptionState createState() => _DescriptionState();
+  _CommentState createState() => _CommentState();
 }
 
-class _DescriptionState extends State<Description> {
+class _CommentState extends State<Comment> {
 
-  String description = '';
+  String comment = '';
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +58,15 @@ class _DescriptionState extends State<Description> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Book description"),
+        title: Text("Book comment"),
       ),
       floatingActionButton : FloatingActionButton(
-        heroTag: "saveDescrButt",
+        heroTag: "saveCommentButt",
         child: Icon(Icons.check_outlined),
         backgroundColor: Colors.blueGrey,
         onPressed: () {
-          print(description);
-          Navigator.pop(context, description);
+          print(comment);
+          Navigator.pop(context, comment);
         },
       ),
       resizeToAvoidBottomPadding: false,
@@ -79,10 +79,10 @@ class _DescriptionState extends State<Description> {
                 child: TextFormField(
                   initialValue: args,
                   maxLines: 8,
-                  decoration: InputDecoration.collapsed(hintText: "Enter your description here"),
+                  decoration: InputDecoration.collapsed(hintText: "Enter your comment here"),
                   onChanged: (value) {
                     setState(() {
-                      description = value;
+                      comment = value;
                     });
                   },
                 ),

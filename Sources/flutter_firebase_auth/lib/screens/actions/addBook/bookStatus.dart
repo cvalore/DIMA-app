@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 
 class BookStatus extends StatefulWidget {
 
+  InsertedBook insertedBook;
   double height;
 
-  BookStatus({Key key, @required this.height}) : super(key: key);
+  BookStatus({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
 
   @override
   _BookStatusState createState() => _BookStatusState();
@@ -13,7 +15,7 @@ class BookStatus extends StatefulWidget {
 
 class _BookStatusState extends State<BookStatus> {
 
-  int status = 1;
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +45,10 @@ class _BookStatusState extends State<BookStatus> {
                       width: MediaQuery.of(context).size.width / 10,
                       child: IconButton(
                         padding: EdgeInsets.symmetric(vertical: 1.0),
-                        icon: status > i ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border, color: Colors.yellow,),
+                        icon: widget.insertedBook.status > i ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border, color: Colors.yellow,),
                         onPressed: () {
                           setState(() {
-                            status = i + 1;
+                            widget.insertedBook.setStatus(i + 1);
                           });
                         })
                     )

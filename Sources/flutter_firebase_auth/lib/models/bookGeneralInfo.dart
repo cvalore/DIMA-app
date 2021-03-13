@@ -2,15 +2,29 @@ class BookGeneralInfo {
 
   final String title;
   final String author;
+  final String publisher;
+  final String publishedDate;
   final String thumbnail;   //TODO check thumbnail
-  final String summary;
+  final String description;
   final String isbn13;
-  final int pageCount;
-  final List<String> categories;
-  final int rating;
   final String language;
+  List<String> categories;
+  double averageRating;
+  int pageCount;
+  int ratingsCount;
 
-  BookGeneralInfo(this.title, this.author, this.thumbnail, this.isbn13, this.language, {this.summary, this.pageCount, this.categories, this.rating});
+  BookGeneralInfo(this.title,
+      this.author,
+      this.publisher,
+      this.publishedDate,
+      this.isbn13,
+      this.thumbnail,
+      this.description,
+      this.categories,
+      this.language,
+      this.pageCount,
+      this.averageRating,
+      this.ratingsCount);
 
 
   //TODO check if it is ok
@@ -18,13 +32,13 @@ class BookGeneralInfo {
     var bookMap = new Map<String, dynamic>();
     bookMap['title'] = title;
     bookMap['author'] = author;
-    bookMap['thumbnail'] = thumbnail;
     bookMap['isbn'] = isbn13;
     bookMap['language'] = language;
-    if (summary != null) bookMap['summary'] = summary;
+    if (thumbnail != null) bookMap['thumbnail'] = thumbnail;
+    if (description != null) bookMap['summary'] = description;
     if (pageCount != null) bookMap['pageCount'] = pageCount;
-    if (categories != null) bookMap['categories'] = categories;
-    if (rating != null) bookMap['ratingsCount'] = rating;
+    if (categories.length != 0) bookMap['categories'] = categories;     //TODO check if safe
+    if (averageRating != null) bookMap['ratingsCount'] = averageRating;
     return bookMap;
   }
 }

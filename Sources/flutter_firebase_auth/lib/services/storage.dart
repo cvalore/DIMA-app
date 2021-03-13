@@ -8,12 +8,13 @@ class StorageService {
 
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  void addBookPictures(String bookTitle, List<PickedFile> images) {
+  void addBookPictures(String useruid, String bookTitle, List<PickedFile> images) {
     //var result = List<String>();
+    String basePath = useruid + "/" + bookTitle;
 
     images.asMap().forEach((index, image) async {
       String fileName = bookTitle + index.toString();
-      Reference reference = storage.ref().child("$bookTitle/$fileName");
+      Reference reference = storage.ref().child("$basePath/$fileName");
 
       /*
       final metadata = SettableMetadata(
@@ -25,7 +26,7 @@ class StorageService {
 
       try {
         await reference.putFile(File(image.path));
-        print("Inserted");
+        print("Images Inserted");
       } on FirebaseException catch (e) {
           e.toString();
       }

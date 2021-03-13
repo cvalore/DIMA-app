@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
@@ -11,13 +12,17 @@ import 'package:provider/provider.dart';
 
 
 class ImageService extends StatefulWidget {
+
+  InsertedBook insertedBook;
+  ImageService({Key key, @required this.insertedBook}) : super(key: key);
+
   @override
   _ImageServiceState createState() => _ImageServiceState();
 }
 
 class _ImageServiceState extends State<ImageService> {
 
-  List<PickedFile> images = List<PickedFile>();
+  //TODO add image removal
   final ImagePicker _picker = ImagePicker();
 
   _imgFromCamera() async {
@@ -28,8 +33,8 @@ class _ImageServiceState extends State<ImageService> {
 
     if(image != null) {
       setState(() {
-        images.add(image);
-        print("Image inserted. Now there are ${images.length}");
+        widget.insertedBook.addImage(image);
+        print("Image inserted. Now there are ${widget.insertedBook.images.length}");
       });
     }
   }
@@ -42,7 +47,8 @@ class _ImageServiceState extends State<ImageService> {
 
     if(image != null) {
       setState(() {
-        images.add(image);
+        widget.insertedBook.addImage(image);
+        print("Image inserted. Now there are ${widget.insertedBook.images.length}");
       });
     }
   }
@@ -86,8 +92,11 @@ class _ImageServiceState extends State<ImageService> {
     DatabaseService _db = DatabaseService(user: user);
     var storage = StorageService();
 
-    final listItem = List<ImageDisplay>.generate(
-        images.length, (index) => ImageDisplay(images[index]));
+    final listItem = widget.insertedBook.images != null ?
+        List<ImageDisplay>.generate(
+          widget.insertedBook.images.length,
+          (index) => ImageDisplay(widget.insertedBook.images[index]))
+        : null;
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -106,7 +115,7 @@ class _ImageServiceState extends State<ImageService> {
             child: Column(
                 children: [
                   Text("Insert here the images of your book"),
-                  listItem.length == 0 ? FloatingActionButton.extended(
+                  listItem == null ? FloatingActionButton.extended(
                     backgroundColor: Colors.white24,
                     foregroundColor: Colors.black,
                     onPressed: () {
@@ -152,68 +161,6 @@ class _ImageServiceState extends State<ImageService> {
     );
   }
 
-
-
-
-/*
-
-      return Container(
-              child: listItem.length == 0 ? Container(
-                  constraints: BoxConstraints(
-                    maxWidth: 100,
-                    maxHeight: 100,
-                  ),
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton.extended(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.black,
-                      onPressed: () {
-                        _showPicker(context);
-                      },
-                      icon: Icon(Icons.add),
-                      label: Text("Add images"),
-                    )
-              )
-              : Column(
-                  children: [
-                    Flexible(
-                      child: ListView.builder(
-                          itemCount: listItem.length,
-                          itemBuilder: (context, index) {
-                            final item = listItem[index];
-
-                            return item.buildImage(context);
-                          }),
-                    ),
-                    Container(
-                        constraints: BoxConstraints(
-                          maxWidth: 1000,
-                          maxHeight: 100,
-                        ),
-                        alignment: Alignment.bottomRight,
-                        child: FloatingActionButton.extended(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.black,
-                          onPressed: () {
-                            //TODO aggiungere un set state con loading?
-                            storage.addBookPictures("bookTitle", images);
-                          },
-                          icon: Icon(Icons.add),
-                          label: Text("Save images"),
-                        )
-                    ),
-                    FloatingActionButton(
-                      child: Icon(Icons.check_outlined),
-                      onPressed: () {
-                        //TODO aggiungere un set state con loading?
-                        _showPicker(context);
-                      }
-                    )
-                  ],
-            )
-    );
-  }
-*/
 
 /*
   @override

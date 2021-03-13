@@ -1,11 +1,13 @@
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/services/storage.dart';
 
 class DatabaseService {
 
   final CustomUser user;
   DatabaseService({ this.user });
+  StorageService storageService = StorageService();
 
   // collection reference
   final CollectionReference bookCollection = FirebaseFirestore.instance.collection('books');
@@ -24,7 +26,6 @@ class DatabaseService {
 
 
   Future addUserBook(InsertedBook book) async {
-
     // add book to the user collection
     var mapBook = book.toMap();
     await usersCollection.doc(user.uid).update({
@@ -51,6 +52,10 @@ class DatabaseService {
             .catchError((error) => print("Failed to add book: $error"));
       }
     });
+
+    //add book images to the storage
+    if(book.images != null)
+      storageService.addBookPictures(user.uid, book.title, book.images);
 
     // trick to add more than one book at a time :)
     /*
@@ -86,10 +91,10 @@ class DatabaseService {
     if (documentSnapshot.exists) {
       for (var book in documentSnapshot.get("books")) {
         InsertedBook insertedBook = InsertedBook(
-            book['title'],
-            book['author'],
-            book['isbn'],
-            book['status']
+            title: book['title'],
+            author: book['author'],
+            isbn13: book['isbn'],
+            status: book['status']
             //TODO add purpose
         );
 
@@ -131,13 +136,13 @@ class DatabaseService {
     print('Get book ---> ' + book.toString());
 
     return book == null ?
-        InsertedBook('','','', 0) :   //riguardare ??
+        InsertedBook() :   //TODO riguardare questo controllo
         InsertedBook(
-            book['title'],
-            book['author'],
-            book['isbn'],
-            book['status']
-          //TODO add purpose
+            title: book['title'],
+            author: book['author'],
+            isbn13: book['isbn'],
+            status: book['status']
+            //TODO add purpose
         );
   }
 

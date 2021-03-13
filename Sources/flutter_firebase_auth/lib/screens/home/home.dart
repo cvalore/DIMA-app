@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/cvalo/OneDrive%20-%20Politecnico%20di%20Milano/Documenti/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/screens/actions/addBook/bookInsert.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/screens/profile/bookList.dart';
 
 class Home extends StatefulWidget {
   @override

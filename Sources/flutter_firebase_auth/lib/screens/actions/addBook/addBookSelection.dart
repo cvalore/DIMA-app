@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/services/googleBooksAPI.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
@@ -8,11 +9,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 class AddBookSelection extends StatefulWidget {
 
   final Function(dynamic sel) setSelected;
-  dynamic selected;
+  dynamic selectedBook;
   final bool showDots;
   PageController controller;
 
-  AddBookSelection({Key key, this.setSelected, this.selected, this.showDots, this.controller}) : super(key: key);
+  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.controller}) : super(key: key);
 
   @override
   _AddBookSelectionState createState() => _AddBookSelectionState();
@@ -83,7 +84,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
           ),
           Expanded(
             flex: 35,
-            child: widget.selected == null ?
+            child: widget.selectedBook == null ?
             Container(
               decoration: BoxDecoration(
                 border: Border.symmetric(
@@ -99,9 +100,10 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       subtitle: Text(listItems[index]['volumeInfo']['authors'].toString()),
                       onTap: () {
                         setState(() {
-                          widget.selected = listItems[index];
+                          widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);
+                          //widget.selectedBook = listItems[index];
                           if(widget.setSelected != null) {
-                            widget.setSelected(widget.selected);
+                            widget.setSelected(widget.selectedBook);
                           }
                           //TestPage.of(context).selected = _selected;
                         });
@@ -119,60 +121,87 @@ class _AddBookSelectionState extends State<AddBookSelection> {
             Container(
               child: ListView(
                 children: <Widget>[
-                  Text(widget.selected['volumeInfo']['title'], textAlign: TextAlign.center,),
-                  Text('by ' + widget.selected['volumeInfo']['authors'].toString(), style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                  Text("prova"),
+                  Text(widget.selectedBook.title, textAlign: TextAlign.center,),
+                  Text('by ' + widget.selectedBook.author, style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
                   Text(''),
-                  Text(widget.selected['volumeInfo']['publisher'] ?? '' + ' ' + widget.selected['volumeInfo']['publishedDate'] ?? '', textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic),),
-                  Text(''),
-                  widget.selected['volumeInfo']['imageLinks'] != null ? (
-                    widget.selected['volumeInfo']['imageLinks']['thumbnail'] != null ?
+                  ((widget.selectedBook.publisher != null) & (widget.selectedBook.publishedDate != null)) ? Column(
+                    children: [
+                      Text(widget.selectedBook.publisher + ' ' + widget.selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic),),
+                      Text(''),
+                    ],
+                  ) : Container(),
+                  widget.selectedBook.thumbnail != null ?
                       CachedNetworkImage(
-                        imageUrl: widget.selected['volumeInfo']['imageLinks']['thumbnail'],
+                        imageUrl: widget.selectedBook.thumbnail,
                         placeholder: (context, url) => Loading(),
                         width: imageWidth,
                         height: imageHeight,
                       ) :
-                      Container()
-                    ) :
-                    Container(),
+                      Container(),
                   Text(''),
                   Text('Description', style: TextStyle(fontWeight: FontWeight.bold),),
-                  widget.selected['volumeInfo']['description'] != null ?
-                      Text(widget.selected['volumeInfo']['description'], textAlign: TextAlign.justify,) :
+                  widget.selectedBook.description != null ?
+                      Text(widget.selectedBook.description, textAlign: TextAlign.justify,) :
                       Text('No description provided', style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
                   Text(''),
+                  /*
                   Text('ISBN 10', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(booksAPI.getISBN10(widget.selected['volumeInfo']) ?? ''),
+                  Text(booksAPI.getISBN10(widget.selectedBook['volumeInfo']) ?? ''),
                   Text(''),
-                  Text('ISBN 13', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(booksAPI.getISBN13(widget.selected['volumeInfo']) ?? ''),
-                  Text(''),
-                  Text('Page count', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['pageCount'] != null ? widget.selected['volumeInfo']['pageCount'].toString() : ''),
-                  Text(''),
-                  Text('Categories', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['categories'].toString() ?? ''),
-                  Text(''),
-                  Text('Average rating', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(widget.selected['volumeInfo']['averageRating'] != null ? (widget.selected['volumeInfo']['averageRating'].floor()).toString() : ''),
-                      Text('  '),
-                      for(var i = 0; i < 5 && widget.selected['volumeInfo']['averageRating'] != null; i++)
-                        Icon(i > widget.selected['volumeInfo']['averageRating'] - 1 ?
-                          Icons.star_border : Icons.star,
-                            size: 15.0,
-                            color: Colors.yellow[700]),
+                   */
+                  widget.selectedBook.isbn13 != null ? Column(
+                    children: [
+                        Text('ISBN 13', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(widget.selectedBook.isbn13),
+                        Text('')
                     ],
-                  ),
-                  Text(''),
-                  Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['ratingsCount'] != null ? widget.selected['volumeInfo']['ratingsCount'].toString() : ''),
-                  Text(''),
-                  Text('Language', style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(widget.selected['volumeInfo']['language'] != null ? widget.selected['volumeInfo']['language'].toString().toUpperCase() : ''),
-                  
+                  ) : Container(),
+                  widget.selectedBook.pageCount != null ? Column(
+                      children: [
+                        Text('Page count', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(widget.selectedBook.pageCount.toString()),
+                        Text(''),
+                      ],
+                  ) : Container(),
+                  widget.selectedBook.categories != null ? Column(
+                        children: [
+                          Text('Categories', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text(widget.selectedBook.categories.toString()),
+                          Text(''),
+                        ],
+                  ) : Container(),
+                  widget.selectedBook.averageRating != null ? Column(
+                    children: [
+                          Text('Average rating', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(widget.selectedBook.averageRating.floor().toString()),
+                              Text('  '),
+                              for(var i = 0; i < 5 && widget.selectedBook.averageRating != null; i++)
+                              Icon(i > widget.selectedBook.averageRating - 1 ?
+                              Icons.star_border : Icons.star,
+                              size: 15.0,
+                              color: Colors.yellow[700]),
+                            ],
+                          ),
+                          Text(''),
+                    ],
+                  ) : Container(),
+                  widget.selectedBook.ratingsCount != null ? Column(
+                    children: [
+                      Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(widget.selectedBook.ratingsCount.toString()),
+                      Text(''),
+                    ],
+                  ) : Container(),
+                  widget.selectedBook.language != null ? Column(
+                    children: [
+                      Text('Language', style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(widget.selectedBook.language.toString().toUpperCase()),
+                    ],
+                  ) : Container(),
                 ],
               ),
             ),
@@ -198,9 +227,9 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   final result = await booksAPI.performSearch(_title, _author);
                   if(result != null) {
                     setState(() {
-                      widget.selected = null;
+                      widget.selectedBook = null;
                       if(widget.setSelected != null) {
-                        widget.setSelected(widget.selected);
+                        widget.setSelected(widget.selectedBook);
                       }
                       //TestPage.of(context).selected = null;
                       listItems = result['items'];
@@ -221,5 +250,40 @@ class _AddBookSelectionState extends State<AddBookSelection> {
         ],
       ),
     );
+  }
+
+  BookGeneralInfo _initializeBookGeneralInfo(dynamic selectedBook) {
+
+    var imageLink = selectedBook['volumeInfo']['imageLinks'] != null ? (
+            selectedBook['volumeInfo']['imageLinks']['thumbnail'] != null ?
+              selectedBook['volumeInfo']['imageLinks']['thumbnail'] : null
+          ) : null;
+
+    var categories = selectedBook['volumeInfo']['categories'] != null ?
+        List<String>.from(selectedBook['volumeInfo']['categories'])
+            : null;
+    print(categories.runtimeType);
+    print(categories);
+
+    var averageRating = selectedBook['volumeInfo']['averageRating'] != null ?
+    selectedBook['volumeInfo']['averageRating'].toDouble() :
+        null;
+
+    BookGeneralInfo book = BookGeneralInfo(
+      selectedBook['volumeInfo']['title'],
+      selectedBook['volumeInfo']['authors'].toString(),
+      selectedBook['volumeInfo']['publisher'] ?? null,
+      selectedBook['volumeInfo']['publishedDate'] ?? null,
+      booksAPI.getISBN13(selectedBook['volumeInfo']) ?? null,         //check the case it is null
+      imageLink,
+      selectedBook['volumeInfo']['description'] ?? null,
+      categories,    //TODO check this
+      selectedBook['volumeInfo']['language'] ?? null,
+      selectedBook['volumeInfo']['pageCount'] ?? null,
+      averageRating,
+      selectedBook['volumeInfo']['ratingsCount'] ?? null,
+    );
+
+    return book;
   }
 }
