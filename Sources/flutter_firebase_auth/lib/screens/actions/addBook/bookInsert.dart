@@ -40,11 +40,11 @@ class _BookInsertState extends State<BookInsert> {
     _db = DatabaseService(user: user);
 
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: Colors.blueGrey[700],
         elevation: 0.0,
         title: changeAppBar(currentPageValue),
-      ),
+      ),*/
       resizeToAvoidBottomInset: false,
       floatingActionButton: currentPageValue == pageViewSize - 1 ?
           FloatingActionButton.extended(

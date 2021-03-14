@@ -121,11 +121,12 @@ class _AddBookSelectionState extends State<AddBookSelection> {
             Container(
               child: ListView(
                 children: <Widget>[
-                  Text("prova"),
                   Text(widget.selectedBook.title, textAlign: TextAlign.center,),
                   Text('by ' + widget.selectedBook.author, style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
                   Text(''),
-                  ((widget.selectedBook.publisher != null) & (widget.selectedBook.publishedDate != null)) ? Column(
+                  ((widget.selectedBook.publisher != null) & (widget.selectedBook.publishedDate != null)) ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.selectedBook.publisher + ' ' + widget.selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic),),
                       Text(''),
@@ -150,32 +151,40 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   Text(booksAPI.getISBN10(widget.selectedBook['volumeInfo']) ?? ''),
                   Text(''),
                    */
-                  widget.selectedBook.isbn13 != null ? Column(
+                  widget.selectedBook.isbn13 != null ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                         Text('ISBN 13', style: TextStyle(fontWeight: FontWeight.bold),),
                         Text(widget.selectedBook.isbn13),
                         Text('')
                     ],
                   ) : Container(),
-                  widget.selectedBook.pageCount != null ? Column(
+                  widget.selectedBook.pageCount != null ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Page count', style: TextStyle(fontWeight: FontWeight.bold),),
                         Text(widget.selectedBook.pageCount.toString()),
                         Text(''),
                       ],
                   ) : Container(),
-                  widget.selectedBook.categories != null ? Column(
-                        children: [
-                          Text('Categories', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text(widget.selectedBook.categories.toString()),
-                          Text(''),
-                        ],
+                  widget.selectedBook.categories != null ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Categories', style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(widget.selectedBook.categories.toString()),
+                      Text(''),
+                    ],
                   ) : Container(),
-                  widget.selectedBook.averageRating != null ? Column(
+                  widget.selectedBook.averageRating != null ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                           Text('Average rating', style: TextStyle(fontWeight: FontWeight.bold),),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Text(widget.selectedBook.averageRating.floor().toString()),
                               Text('  '),
@@ -189,14 +198,18 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                           Text(''),
                     ],
                   ) : Container(),
-                  widget.selectedBook.ratingsCount != null ? Column(
+                  widget.selectedBook.ratingsCount != null ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(widget.selectedBook.ratingsCount.toString()),
                       Text(''),
                     ],
                   ) : Container(),
-                  widget.selectedBook.language != null ? Column(
+                  widget.selectedBook.language != null ?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Language', style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(widget.selectedBook.language.toString().toUpperCase()),

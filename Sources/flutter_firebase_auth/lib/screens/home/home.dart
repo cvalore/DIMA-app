@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
 
   int _selectedBottomTab = 0;
   static List<Widget> _widgetsBottomOptions = <Widget> [
-    HomePage(),
+    Container(),
     Center(child: Text('TODO:// Search books',
       style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),
     BookInsert(),
@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
               _widgetsBottomOptions.elementAt(_selectedBottomTab) : 
               TabBarView(
                 children: [
-                  Icon(Icons.menu_book, color: Colors.blueGrey[600],),
+                  HomePage(),
                   Icon(Icons.attach_money, color: Colors.blueGrey[600],),
                   Icon(Icons.compare_arrows, color: Colors.blueGrey[600],),
                 ]

@@ -47,17 +47,17 @@ class GoogleBooksAPI {
   }
 
   String getISBN13(dynamic selected) {
-    if(selected['industryIdentifiers'][0] != null) {
+    if(selected['industryIdentifiers'].length > 0 && selected['industryIdentifiers'][0] != null) {
       if(selected['industryIdentifiers'][0]['type'] == 'ISBN_13') {
         return selected['industryIdentifiers'][0]['identifier'];
       }
-      else if(selected['industryIdentifiers'][1] != null) {
+      else if(selected['industryIdentifiers'].length > 1 && selected['industryIdentifiers'][1] != null) {
         if(selected['industryIdentifiers'][1]['type'] == 'ISBN_13') {
           return selected['industryIdentifiers'][1]['identifier'];
         }
       }
     }
-    else if(selected['industryIdentifiers'][1] != null) {
+    else if(selected['industryIdentifiers'].length > 1 && selected['industryIdentifiers'][1] != null) {
       if(selected['industryIdentifiers'][1]['type'] == 'ISBN_13') {
         return selected['industryIdentifiers'][1]['identifier'];
       }

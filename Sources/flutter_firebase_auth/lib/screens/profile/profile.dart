@@ -19,11 +19,11 @@ class Profile extends StatelessWidget {
     return StreamProvider<List<InsertedBook>>.value(  //TODO vedere se qua usare la lista di inserted books o semplicemente insertedbooks
       value: _db.userBooks,
       child: Scaffold(
-        appBar: AppBar(
+        /*appBar: AppBar(
           backgroundColor: Colors.blueGrey[700],
           elevation: 0.0,
           title: Text('Available books'),
-        ),
+        ),*/
         body: BookList(),
       ),
     );
