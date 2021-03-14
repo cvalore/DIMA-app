@@ -28,6 +28,7 @@ class DatabaseService {
   Future addUserBook(InsertedBook book) async {
     // add book to the user collection
     var mapBook = book.toMap();
+    print(mapBook['id']);
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook])
     });
@@ -47,7 +48,7 @@ class DatabaseService {
       } else {
         generalInfoBookMap['owners'] = [user.uid];
         //TODO qua ci va await ?
-        bookCollection.doc(mapBook['isbn']).set(generalInfoBookMap)
+        bookCollection.doc(mapBook['id']).set(generalInfoBookMap)
             .then((value) => print("Book added"))
             .catchError((error) => print("Failed to add book: $error"));
       }

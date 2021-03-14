@@ -51,8 +51,10 @@ class _BookInsertState extends State<BookInsert> {
             heroTag: "saveBtn",
             onPressed: () {
               if (_selectedBook.title != null) {
-                _insertedBook.setTitleAuthorIsbn(
-                    _selectedBook.title, _selectedBook.author,
+                _insertedBook.setIdTitleAuthorIsbn(
+                    _selectedBook.id,
+                    _selectedBook.title,
+                    _selectedBook.author,
                     _selectedBook.isbn13);
                 _insertedBook.setBookGeneralInfo(_selectedBook);
                 _insertedBook.printBook();
