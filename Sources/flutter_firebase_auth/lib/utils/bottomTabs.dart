@@ -29,7 +29,11 @@ class BottomTabs extends StatelessWidget {
             label: 'Insert Book'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 3 ? Icons.person : Icons.person_outlined),
+            icon: Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined),
+            label: 'Forum'
+        ),
+        BottomNavigationBarItem(
+            icon: Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined),
             label: 'Profile'
         ),
       ],

@@ -16,7 +16,8 @@ class Profile extends StatelessWidget {
     CustomUser user = Provider.of<CustomUser>(context);
     DatabaseService _db = DatabaseService(user: user);
 
-    return StreamProvider<List<InsertedBook>>.value(  //TODO vedere se qua usare la lista di inserted books o semplicemente insertedbooks
+    return StreamProvider<List<InsertedBook>>.value(
+      //TODO vedere se qua usare la lista di inserted books o semplicemente insertedbooks
       value: _db.userBooks,
       child: Scaffold(
         /*appBar: AppBar(

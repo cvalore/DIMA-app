@@ -35,6 +35,8 @@ class DatabaseService {
           numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
         });
 
+    print("---> " + mapBook.toString());
+
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),
       'numberOfInsertedItems': numberOfInsertedItems + 1,
@@ -51,7 +53,7 @@ class DatabaseService {
         //TODO qua ci va await ?
         bookCollection.doc(querySnapshot.docs[0].id)
             .update({'owners': FieldValue.arrayUnion([user.uid])});
-        print("Update done");
+        print("Book already present, add you as owner too");
       } else {
         generalInfoBookMap['owners'] = [user.uid];
         //TODO qua ci va await ?
@@ -119,17 +121,56 @@ class DatabaseService {
   }
 
   Future removeBook(int index) async {
+
+    String isbn = "";
+
     await usersCollection.doc(user.uid).get().then(
             (userDoc) async {
               List<dynamic> books = userDoc.data()['books'];
+              isbn = books[index]['isbn'];
               books.removeAt(index);
 
-              await usersCollection.doc(user.uid).set({
+              await usersCollection.doc(user.uid).update({
                 'books': books
               }).then((value) => print("Book removed"));
-
-              //print(books);
             }
+    );
+
+    await bookCollection
+        .where('isbn', isEqualTo: isbn)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+          if (querySnapshot.size == 1) {
+            //TODO qua ci va await ?
+            List<dynamic> owners;
+            bookCollection.doc(querySnapshot.docs[0].id)
+              .get().then((book)
+                {
+                  owners = book['owners'];
+                  if(owners.contains(user.uid)) {
+                    if(owners.length <= 1) {
+                      //remove all the document
+                      print('No other user has this book, removing all...');
+
+                      bookCollection.doc(querySnapshot.docs[0].id).delete().then(
+                              (value) => print('Removed')
+                      );
+                    }
+                    else {
+                      //remove only the current user
+                      print('Other users have this book, just removing you...');
+                      owners.remove(user.uid);
+
+                      bookCollection.doc(querySnapshot.docs[0].id)
+                          .update({'owners': owners}).then(
+                              (value) => print('Removed')
+                      );
+                    }
+                  }
+                }
+            );
+          }
+        }
     );
   }
 

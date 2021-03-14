@@ -41,7 +41,7 @@ class _BookListState extends State<BookList> {
         itemCount: books.length,
         itemBuilder: (context, index) {
           return Dismissible(
-            key: Key('${books[index].title}'), //TODO: SERVE UN ID UNIVOCO!!
+            key: Key('${books[index].id}'), //TODO: SERVE UN ID UNIVOCO!!
             background: Container(color: Colors.red[600]),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) async {

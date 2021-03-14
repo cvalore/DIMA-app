@@ -18,7 +18,7 @@ class _CommentBoxState extends State<CommentBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    /*return Container(
       height: widget.height,
       child: ListTile(
         title: Text(
@@ -37,6 +37,39 @@ class _CommentBoxState extends State<CommentBox> {
           });
         },
       ),
+    );*/
+    return Container(
+        height: widget.height,
+        child: GestureDetector(
+          onTap: () async {
+            dynamic result = await Navigator.pushNamed(context, Comment.routeName, arguments: widget.insertedBook.comment);
+            setState(() {
+              if(result != null)
+                widget.insertedBook.comment = result;
+            });
+          },
+          child: Row(
+            children: [
+              Expanded(
+                  flex: 10,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text("Comment",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  )
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Icon(Icons.arrow_forward_ios),
+              )
+            ],
+          ),
+        )
     );
   }
 }

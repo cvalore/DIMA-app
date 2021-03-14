@@ -8,7 +8,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/commentBox.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
-import 'package:flutter_firebase_auth/utils/bottomThreeDots.dart';
+import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookStatus.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +30,7 @@ class _BookInsertState extends State<BookInsert> {
 
   final PageController controller = PageController();
   int currentPageValue = 0;
-  final pageViewSize = 3;
+  final pageViewSize = 2;
   BookGeneralInfo _selectedBook;
   InsertedBook _insertedBook = InsertedBook();
   DatabaseService _db;
@@ -110,12 +110,12 @@ class _BookInsertState extends State<BookInsert> {
                   CommentBox(insertedBook: _insertedBook, height: 60),
                   customSizedBox(1.0),
                   Flexible(
-                    flex: 2,
-                    child: SizedBox(height: 13.5,),
+                    flex: 4,
+                    child: SizedBox(height: 20.0,),
                   ),
                   Flexible(
-                    flex: 2,
-                    child: SizedBox(height: 13.5,),
+                    flex: 4,
+                    child: SizedBox(height: 20.0,),
                   ),
                   //backAndForthButtons(60),
                   BottomTwoDots(darkerIndex: 2, size: 9.0,)

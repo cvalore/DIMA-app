@@ -119,6 +119,10 @@ class _ImageServiceState extends State<ImageService> {
             child: Column(
                 children: [
                   Text("Insert here the images of your book"),
+                  Flexible(
+                    flex: 1,
+                    child: SizedBox(height: 20.0,),
+                  ),
                   (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
                     heroTag: "addImageBtn",
                     backgroundColor: Colors.white24,
