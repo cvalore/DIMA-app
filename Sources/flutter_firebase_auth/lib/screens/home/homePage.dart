@@ -40,11 +40,6 @@ class _HomePageState extends State<HomePage> {
 
     CustomUser user = Provider.of<CustomUser>(context);
 
-    Map<String, dynamic> map = {
-      "fantasy" : "{[,,,,,]}",
-      "horror" : "{[,,,,]}",
-    };
-
     return CustomScrollView(
         controller: _scrollController,
         slivers: [

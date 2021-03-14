@@ -34,7 +34,7 @@ class _ImageServiceState extends State<ImageService> {
     if(image != null) {
       setState(() {
         widget.insertedBook.addImage(image);
-        print("Image inserted. Now there are ${widget.insertedBook.images.length}");
+        //print("Image inserted. Now there are ${widget.insertedBook.images.length}");
       });
     }
   }
@@ -48,7 +48,7 @@ class _ImageServiceState extends State<ImageService> {
     if(image != null) {
       setState(() {
         widget.insertedBook.addImage(image);
-        print("Image inserted. Now there are ${widget.insertedBook.images.length}");
+        //print("Image inserted. Now there are ${widget.insertedBook.images.length}");
       });
     }
   }
@@ -116,6 +116,7 @@ class _ImageServiceState extends State<ImageService> {
                 children: [
                   Text("Insert here the images of your book"),
                   listItem == null ? FloatingActionButton.extended(
+                    heroTag: "addImageBtn",
                     backgroundColor: Colors.white24,
                     foregroundColor: Colors.black,
                     onPressed: () {
@@ -144,11 +145,12 @@ class _ImageServiceState extends State<ImageService> {
                       Expanded(
                           flex: 2,
                           child:  FloatingActionButton(
-                              child: Icon(Icons.add_a_photo),
-                              onPressed: () {
-                                //TODO aggiungere un set state con loading?
-                                _showPicker(context);
-                              }
+                            heroTag: "addPhotoBtn",
+                            child: Icon(Icons.add_a_photo),
+                            onPressed: () {
+                              //TODO aggiungere un set state con loading?
+                              _showPicker(context);
+                            }
                           )
                       ),
                     ],

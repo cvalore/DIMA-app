@@ -7,11 +7,19 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.d
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/commentBox.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomThreeDots.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookStatus.dart';
 import 'package:provider/provider.dart';
 
 class BookInsert extends StatefulWidget {
+
+  final AddBookParameters param;
+  final void Function(int) setIndex;
+  final BuildContext fatherContext;
+
+  const BookInsert({Key key, this.param, this.setIndex, this.fatherContext}) : super(key: key);
+
   @override
   _BookInsertState createState() => _BookInsertState();
 
@@ -49,7 +57,7 @@ class _BookInsertState extends State<BookInsert> {
       floatingActionButton: currentPageValue == pageViewSize - 1 ?
           FloatingActionButton.extended(
             heroTag: "saveBtn",
-            onPressed: () {
+            onPressed: () async {
               if (_selectedBook.title != null) {
                 _insertedBook.setIdTitleAuthorIsbn(
                     _selectedBook.id,
@@ -57,8 +65,18 @@ class _BookInsertState extends State<BookInsert> {
                     _selectedBook.author,
                     _selectedBook.isbn13);
                 _insertedBook.setBookGeneralInfo(_selectedBook);
-                _insertedBook.printBook();
-                _db.addUserBook(_insertedBook);
+                //_insertedBook.printBook();
+                await _db.addUserBook(_insertedBook);
+                widget.setIndex(0);
+                final snackBar = SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text(
+                      'Book added successfully',
+                  ),
+                );
+                // Find the Scaffold in the widget tree and use
+                // it to show a SnackBar.
+                Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
               }
             },
             icon: Icon(Icons.save),
@@ -68,7 +86,7 @@ class _BookInsertState extends State<BookInsert> {
         PageView(
           controller: controller,
           onPageChanged: (index) {
-            print("the index is $index");
+            //print("the index is $index");
             setState(() {
               currentPageValue = index;
             });
@@ -111,7 +129,7 @@ class _BookInsertState extends State<BookInsert> {
   }
 
   Widget changeAppBar(int page) {
-    print(page);
+    //print(page);
       if(page == 0)
         return Text("Insert book");
       else if(page == 1)

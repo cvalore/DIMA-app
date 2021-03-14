@@ -91,13 +91,13 @@ class _SnackBarPageState extends State<SnackBarPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
-                  initialValue: param.editTitle,
+                  //initialValue: param.editTitle,
                   decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book title' : null,
                   onChanged: (value) {
                     setState(() {
-                      param.editTitle = value;
+                      //param.editTitle = value;
                     });
                   },
                 ),
@@ -105,13 +105,13 @@ class _SnackBarPageState extends State<SnackBarPage> {
               Expanded(
                 flex: 2,
                 child: TextFormField(
-                  initialValue: param.editAuthor,
+                  //initialValue: param.editAuthor,
                   decoration: inputFieldDecoration.copyWith(hintText: 'Author'),
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book author' : null,
                   onChanged: (value) {
                     setState(() {
-                      param.editAuthor = value;
+                      //param.editAuthor = value;
                     });
                   },
                 ),
@@ -237,8 +237,8 @@ class _SnackBarPageState extends State<SnackBarPage> {
                                 dynamic result = await _db.addUserBook(book);
                                 if (result != null) {
                                   setState(() {
-                                    param.editTitle = '';
-                                    param.editAuthor = '';
+                                    //param.editTitle = '';
+                                    //param.editAuthor = '';
                                     //_purpose = 'For Sale'; //Do not clear this
                                     _fictOrNot = 'Fiction';
                                     _genre =

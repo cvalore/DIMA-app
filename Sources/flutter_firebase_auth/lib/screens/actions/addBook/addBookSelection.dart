@@ -126,7 +126,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   Text(''),
                   ((widget.selectedBook.publisher != null) & (widget.selectedBook.publishedDate != null)) ?
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(widget.selectedBook.publisher + ' ' + widget.selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic),),
                       Text(''),
@@ -228,6 +228,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
           Flexible(
             flex: 4,
             child: FloatingActionButton(
+              heroTag: "searchBookBtn",
               elevation: 0.0,
               focusElevation: 0.0,
               hoverElevation: 0.0,
@@ -275,8 +276,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
     var categories = selectedBook['volumeInfo']['categories'] != null ?
         List<String>.from(selectedBook['volumeInfo']['categories'])
             : null;
-    print(categories.runtimeType);
-    print(categories);
+    //print(categories.runtimeType);
+    //print(categories);
 
     var averageRating = selectedBook['volumeInfo']['averageRating'] != null ?
     selectedBook['volumeInfo']['averageRating'].toDouble() :

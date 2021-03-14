@@ -140,7 +140,8 @@ class DatabaseService {
         List<dynamic> books = userDoc.data()['books'];
         book = books[index];
       });
-    print('Get book ---> ' + book.toString());
+
+    //print('Get book ---> ' + book.toString());
 
     return book == null ?
         InsertedBook() :   //TODO riguardare questo controllo

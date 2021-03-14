@@ -10,10 +10,14 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<CustomUser>(context);
 
     if(user == null) {
-      return Authenticate();
+      return Scaffold(
+        body: Authenticate()
+      );
     }
     else {
-      return Home();
+      return Scaffold(
+        body: Home(),
+      );
     }
   }
 }

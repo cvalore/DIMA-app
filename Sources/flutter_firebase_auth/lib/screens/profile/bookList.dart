@@ -69,13 +69,13 @@ class _BookListState extends State<BookList> {
                 InsertedBook book = await _db.getBook(index);
                 AddBookParameters args = AddBookParameters(true,
                   bookIndex: index,
-                  editTitle: book.title,
-                  editAuthor: book.author,
+                  //editTitle: book.title,
+                  //editAuthor: book.author,
                   //editGenre: book.genre,
                   //editPurpose: book.purpose,
                   //editFictOrNot: book['fiction']
                 );
-                Navigator.pushNamed(context, '/addBook', arguments: args);
+                //Navigator.pushNamed(context, '/addBook', arguments: args);
               },
             ),
           );

@@ -40,7 +40,7 @@ class BookGeneralInfo {
     if (thumbnail != null) bookMap['thumbnail'] = thumbnail;
     if (description != null) bookMap['summary'] = description;
     if (pageCount != null) bookMap['pageCount'] = pageCount;
-    if (categories.length != 0) bookMap['categories'] = categories;     //TODO check if safe
+    if (categories != null) bookMap['categories'] = categories;     //TODO check if safe
     if (averageRating != null) bookMap['ratingsCount'] = averageRating;
     return bookMap;
   }
