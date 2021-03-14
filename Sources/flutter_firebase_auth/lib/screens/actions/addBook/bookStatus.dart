@@ -6,8 +6,9 @@ class BookStatus extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
+  double offset;
 
-  BookStatus({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
+  BookStatus({Key key, @required this.insertedBook, @required this.height, @required this.offset}) : super(key: key);
 
   @override
   _BookStatusState createState() => _BookStatusState();
@@ -42,7 +43,7 @@ class _BookStatusState extends State<BookStatus> {
                 children: [
                   for(int i = 0; i < 5; i++)
                     Container(
-                      width: MediaQuery.of(context).size.width / 10,
+                      width: (MediaQuery.of(context).size.width - widget.offset) / 10,
                       child: IconButton(
                         padding: EdgeInsets.symmetric(vertical: 1.0),
                         icon: widget.insertedBook.status > i ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border, color: Colors.yellow,),

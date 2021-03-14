@@ -260,7 +260,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
               height: 20.0,
             ),
           ),
-          widget.showDots ? BottomThreeDots(darkerIndex: 0, size: 9.0,) : Container(),
+          widget.showDots ? BottomTwoDots(darkerIndex: 0, size: 9.0,) : Container(),
         ],
       ),
     );

@@ -92,28 +92,33 @@ class _BookInsertState extends State<BookInsert> {
             });
           },
           children: <Widget>[
-            AddBookSelection(setSelected: setSelected, selectedBook: _selectedBook, showDots: true, controller: controller),
+            AddBookSelection(
+              setSelected: setSelected,
+              selectedBook: _selectedBook,
+              showDots: true,
+              controller: controller
+            ),
             Container(
               padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  BottomThreeDots(darkerIndex: 1, size: 9.0,),
-                ]
-              )
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
                 children: [
-                  ImageService(insertedBook: _insertedBook),
+                  Expanded(flex: 50, child: ImageService(insertedBook: _insertedBook)),
                   customSizedBox(1.0),
-                  BookStatus(insertedBook: _insertedBook, height: 60),
+                  BookStatus(insertedBook: _insertedBook, height: 60, offset: 50.0),
                   customSizedBox(1.0),
                   CommentBox(insertedBook: _insertedBook, height: 60),
                   customSizedBox(1.0),
+                  Flexible(
+                    flex: 2,
+                    child: SizedBox(height: 13.5,),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: SizedBox(height: 13.5,),
+                  ),
                   //backAndForthButtons(60),
-                  BottomThreeDots(darkerIndex: 2, size: 9.0,)     //TODO sistemare la posizione dei dots qui
+                  BottomTwoDots(darkerIndex: 2, size: 9.0,)
                 ],
               ),
             ),
