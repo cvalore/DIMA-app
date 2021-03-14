@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
+import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
 import 'package:provider/provider.dart';
 
@@ -18,13 +19,6 @@ class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
 
   int _selectedBottomTab = 0;
-  static List<Widget> _widgetsBottomOptions = <Widget> [
-    Container(),
-    Center(child: Text('TODO:// Search books',
-      style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),
-    BookInsert(),
-    Profile(),
-  ];
 
   void setIndex(int newIndex) {
     setState(() {
@@ -39,6 +33,21 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
+    List<Widget> _widgetsBottomOptions = <Widget> [
+      Container(),
+      Center(child: Text('TODO:// Search books',
+        style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),
+      BookInsert(
+        param: AddBookParameters(false,
+          bookIndex: -1,
+          editPurpose: "",
+          editGenre: "",
+        ),
+        setIndex: setIndex,
+        fatherContext: context,
+      ),
+      Profile(),
+    ];
 
     CustomUser user = Provider.of<CustomUser>(context);
     GlobalKey scaffoldKey = GlobalKey();
@@ -73,9 +82,9 @@ class _HomeState extends State<Home> {
         ),
         body: Builder(
           builder: (BuildContext context) {
-            
-            return _selectedBottomTab != 0 ? 
-              _widgetsBottomOptions.elementAt(_selectedBottomTab) : 
+
+            return _selectedBottomTab != 0 ?
+              _widgetsBottomOptions.elementAt(_selectedBottomTab) :
               TabBarView(
                 children: [
                   HomePage(),
@@ -83,7 +92,7 @@ class _HomeState extends State<Home> {
                   Icon(Icons.compare_arrows, color: Colors.blueGrey[600],),
                 ]
               );
-            
+
             return _widgetsBottomOptions.elementAt(_selectedBottomTab);
             /*return _selectedBottomTab != 0 ?
             _widgetsBottomOptions.elementAt(_selectedBottomTab) :

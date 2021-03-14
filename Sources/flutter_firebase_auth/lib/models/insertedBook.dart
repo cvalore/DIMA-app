@@ -67,9 +67,8 @@ class InsertedBook {
     if (images != null) {
       print("number of images is ${images.length}");
     } else {
-      print("no imagesss");
+      print("no images");
     }
-    print("HOlaaaa");
     print(this.bookGeneralInfo.title);
     print(this.bookGeneralInfo.author);
     print(this.bookGeneralInfo.isbn13);

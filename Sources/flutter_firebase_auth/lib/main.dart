@@ -72,7 +72,6 @@ void main() {
            ),
            home: Wrapper(),
            routes: {
-             AddBook.routeName: (context) => AddBook(),
              Profile.routeName: (context) => Profile(),
              Subscribe.routeName: (context) => Subscribe(),
              Comment.routeName: (context) => Comment(),

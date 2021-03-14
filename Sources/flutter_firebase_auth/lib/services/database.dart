@@ -54,8 +54,9 @@ class DatabaseService {
     });
 
     //add book images to the storage
-    if(book.images != null)
+    if(book.images != null) {
       storageService.addBookPictures(user.uid, book.title, book.images);
+    }
 
     // trick to add more than one book at a time :)
     /*
@@ -133,7 +134,8 @@ class DatabaseService {
         List<dynamic> books = userDoc.data()['books'];
         book = books[index];
       });
-    print('Get book ---> ' + book.toString());
+
+    //print('Get book ---> ' + book.toString());
 
     return book == null ?
         InsertedBook() :   //TODO riguardare questo controllo

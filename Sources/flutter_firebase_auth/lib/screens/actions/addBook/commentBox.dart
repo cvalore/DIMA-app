@@ -65,7 +65,7 @@ class _CommentState extends State<Comment> {
         child: Icon(Icons.check_outlined),
         backgroundColor: Colors.blueGrey,
         onPressed: () {
-          print(comment);
+          //print(comment);
           Navigator.pop(context, comment);
         },
       ),
