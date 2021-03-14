@@ -93,9 +93,13 @@ class _ImageServiceState extends State<ImageService> {
     var storage = StorageService();
 
     final listItem = widget.insertedBook.images != null ?
+        widget.insertedBook.images
+        /*
         List<ImageDisplay>.generate(
           widget.insertedBook.images.length,
           (index) => ImageDisplay(widget.insertedBook.images[index]))
+
+         */
         : null;
 
     return SingleChildScrollView(
@@ -115,7 +119,7 @@ class _ImageServiceState extends State<ImageService> {
             child: Column(
                 children: [
                   Text("Insert here the images of your book"),
-                  listItem == null ? FloatingActionButton.extended(
+                  (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
                     heroTag: "addImageBtn",
                     backgroundColor: Colors.white24,
                     foregroundColor: Colors.black,
@@ -137,8 +141,35 @@ class _ImageServiceState extends State<ImageService> {
                             scrollDirection: Axis.horizontal,
                             itemCount: listItem.length,
                             itemBuilder: (context, index) {
-                              final item = listItem[index];
-                              return item.buildImage(context);
+                              return Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.rectangle
+                                ),
+                                padding: EdgeInsets.all(5.0),
+
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Stack(
+                                    children: [
+                                      Image.file(
+                                          File(listItem[index].path)
+                                      ),
+                                      Positioned(
+                                        top: 1,
+                                        right: 1,
+                                        child: IconButton(
+                                          icon: Icon(Icons.cancel, color: Colors.white70,),
+                                          onPressed: () {
+                                            setState(() {
+                                              widget.insertedBook.removeImage(index);
+                                            });
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );;
                             }),
                         ),
                       ),
@@ -162,96 +193,39 @@ class _ImageServiceState extends State<ImageService> {
       ),
     );
   }
-
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-        flex: 3,
-        child: Row(
-          children: <Widget>[
-            Spacer(
-                flex: 1
-            ),
-            Expanded(
-              flex: 5,
-              child: TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.blueGrey[400];
-                          }
-                          else {
-                            return Colors.blueGrey[600];
-                          }
-                        }),
-                  ),
-                  child: Text(
-                    "Add image",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () =>
-                  {
-                    _showPicker(context)
-                  }
-              ),
-            ),
-            Spacer(
-                flex: 1
-            ),
-          ],
-        )
-    );
-  }
-
- */
 }
 
+/*
 class ImageDisplay {
-
   PickedFile _imageFile;
-
   ImageDisplay(this._imageFile);
-
-
   Widget buildImage(BuildContext context){
     return Container(
       decoration: BoxDecoration(
           shape: BoxShape.rectangle
       ),
       padding: EdgeInsets.all(5.0),
+
       child: Padding(
         padding: EdgeInsets.all(10.0),
-        child: Image.file(
-            File(_imageFile.path)
+        child: Stack(
+          children: [
+            Image.file(
+                File(_imageFile.path)
+            ),
+            Positioned(
+                child: IconButton(
+                    icon: Icon(Icons.cancel_outlined),
+                    onPressed: () {
+
+                    },
+                ),
+            )
+          ],
         ),
       ),
     );
   }
-
-/*
-  Widget buildImage(BuildContext context){
-    return Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle
-        ),
-        padding: EdgeInsets.all(5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Image.file(
-                File(_imageFile.path)
-            ),
-            )
-          ],
-        ),
-      );
-  }
+}
 
  */
-
-}
