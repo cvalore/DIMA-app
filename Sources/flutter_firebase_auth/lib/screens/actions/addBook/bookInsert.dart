@@ -4,12 +4,9 @@ import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/commentBox.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
-import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/bookStatus.dart';
 import 'package:provider/provider.dart';
 
 class BookInsert extends StatefulWidget {
@@ -17,8 +14,9 @@ class BookInsert extends StatefulWidget {
   final AddBookParameters param;
   final void Function(int) setIndex;
   final BuildContext fatherContext;
+  BookGeneralInfo selectedBook;
 
-  const BookInsert({Key key, this.param, this.setIndex, this.fatherContext}) : super(key: key);
+  BookInsert({Key key, this.param, this.setIndex, this.fatherContext, this.selectedBook}) : super(key: key);
 
   @override
   _BookInsertState createState() => _BookInsertState();
@@ -31,13 +29,12 @@ class _BookInsertState extends State<BookInsert> {
   final PageController controller = PageController();
   int currentPageValue = 0;
   final pageViewSize = 2;
-  BookGeneralInfo _selectedBook;
   InsertedBook _insertedBook = InsertedBook();
   DatabaseService _db;
 
   void setSelected(dynamic sel) {
     setState(() {
-      _selectedBook = sel;
+      widget.selectedBook = sel;
     });
   }
 
@@ -58,13 +55,13 @@ class _BookInsertState extends State<BookInsert> {
           FloatingActionButton.extended(
             heroTag: "saveBtn",
             onPressed: () async {
-              if (_selectedBook.title != null) {
+              if (widget.selectedBook.title != null) {
                 _insertedBook.setIdTitleAuthorIsbn(
-                    _selectedBook.id,
-                    _selectedBook.title,
-                    _selectedBook.author,
-                    _selectedBook.isbn13);
-                _insertedBook.setBookGeneralInfo(_selectedBook);
+                    widget.selectedBook.id,
+                    widget.selectedBook.title,
+                    widget.selectedBook.author,
+                    widget.selectedBook.isbn13);
+                _insertedBook.setBookGeneralInfo(widget.selectedBook);
                 //_insertedBook.printBook();
                 await _db.addUserBook(_insertedBook);
                 widget.setIndex(0);
@@ -82,7 +79,7 @@ class _BookInsertState extends State<BookInsert> {
             icon: Icon(Icons.save),
             label: Text("Save"),
           ) : null,
-      body: _selectedBook != null ?
+      body: widget.selectedBook != null ?
         PageView(
           controller: controller,
           onPageChanged: (index) {
@@ -94,40 +91,17 @@ class _BookInsertState extends State<BookInsert> {
           children: <Widget>[
             AddBookSelection(
               setSelected: setSelected,
-              selectedBook: _selectedBook,
+              selectedBook: widget.selectedBook,
               showDots: true,
               controller: controller
             ),
-            Container(
-              padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(flex: 50, child: ImageService(insertedBook: _insertedBook)),
-                  customSizedBox(1.0),
-                  BookStatus(insertedBook: _insertedBook, height: 60, offset: 50.0),
-                  customSizedBox(1.0),
-                  CommentBox(insertedBook: _insertedBook, height: 60),
-                  customSizedBox(1.0),
-                  Flexible(
-                    flex: 4,
-                    child: SizedBox(height: 20.0,),
-                  ),
-                  Flexible(
-                    flex: 4,
-                    child: SizedBox(height: 20.0,),
-                  ),
-                  //backAndForthButtons(60),
-                  BottomTwoDots(darkerIndex: 2, size: 9.0,)
-                ],
-              ),
-            ),
+            AddBookUserInfo(insertedBook: _insertedBook, edit: false,),
           ],
         ) :
         PageView(
           controller: controller,
           children: <Widget>[
-            AddBookSelection(setSelected: setSelected, selectedBook: _selectedBook, showDots: false,),
+            AddBookSelection(setSelected: setSelected, selectedBook: widget.selectedBook, showDots: false,),
           ],
         )
     );
@@ -201,16 +175,4 @@ class _BookInsertState extends State<BookInsert> {
       ),
     );
   }
-
-  Widget customSizedBox(height) {
-    return SizedBox(
-      height: height,
-      child: Container(
-        color: Colors.black,
-      ),
-    );
-  }
-
-
-
 }

@@ -3,9 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 
@@ -15,6 +18,8 @@ class BookList extends StatefulWidget {
 }
 
 class _BookListState extends State<BookList> {
+
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class _BookListState extends State<BookList> {
     } else {
       return ListView.builder(
         itemCount: books.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (ctx, index) {
           return Dismissible(
             key: Key('${books[index].id}'), //TODO: SERVE UN ID UNIVOCO!!
             background: Container(color: Colors.red[600]),
@@ -66,16 +71,52 @@ class _BookListState extends State<BookList> {
                 },
               ),
               onTap: () async {
+                //per ora è stato popolato solo con id, status e commenti
+                //servirebbero sicuramente anche le immagini, gli altri campi forse no
                 InsertedBook book = await _db.getBook(index);
-                AddBookParameters args = AddBookParameters(true,
-                  bookIndex: index,
-                  //editTitle: book.title,
-                  //editAuthor: book.author,
-                  //editGenre: book.genre,
-                  //editPurpose: book.purpose,
-                  //editFictOrNot: book['fiction']
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (newContext) =>
+                      Scaffold(
+                        appBar: AppBar(
+                          //backgroundColor: Colors.blueGrey[700],
+                          elevation: 0.0,
+                          title: Text('BookYourBook'),
+                          actions: <Widget>[
+                            TextButton.icon(
+                              icon: Icon(Icons.logout, color: Colors.white,),
+                              label: Text(''),
+                              onPressed: () async {
+                                await _auth.signOut();
+                              },
+                            ),
+                          ],
+                        ),
+                        floatingActionButton: FloatingActionButton.extended(
+                          heroTag: "editSaveBtn",
+                          onPressed: () async {
+                            await _db.updateBook(book, index);
+                            final snackBar = SnackBar(
+                              duration: Duration(seconds: 1),
+                              content: Text(
+                                'Book updated successfully',
+                              ),
+                            );
+                            Navigator.pop(context);
+                            // Find the Scaffold in the widget tree and use
+                            // it to show a SnackBar.
+                            Scaffold.of(context).showSnackBar(snackBar);
+                          },
+                          icon: Icon(Icons.save),
+                          label: Text("Save"),
+                        ),
+                        body: AddBookUserInfo(
+                          insertedBook: book, edit: true,
+                        ),
+                      )
+                    )
                 );
-                //Navigator.pushNamed(context, '/addBook', arguments: args);
               },
             ),
           );

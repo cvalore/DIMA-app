@@ -35,8 +35,6 @@ class DatabaseService {
           numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
         });
 
-    print("---> " + mapBook.toString());
-
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),
       'numberOfInsertedItems': numberOfInsertedItems + 1,
@@ -81,7 +79,6 @@ class DatabaseService {
   }
 
   Future updateBook(InsertedBook book, int index) async {
-    var mapBook = book.toMap();
     List<dynamic> books;
 
     await usersCollection.doc(user.uid).get().then(
@@ -89,8 +86,9 @@ class DatabaseService {
         books = userDoc.data()['books'];
       });
 
-    books[index] = mapBook;
-    await usersCollection.doc(user.uid).set({
+    books[index]["comment"] = book.comment;
+    books[index]["status"] = book.status;
+    await usersCollection.doc(user.uid).update({
       'books': books
     }).then((value) => print("Book updated"));
   }
@@ -172,9 +170,21 @@ class DatabaseService {
           }
         }
     );
+
+    int numberOfInsertedItems;
+
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) {
+          numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
+        });
+
+    await usersCollection.doc(user.uid).update({
+      'numberOfInsertedItems': numberOfInsertedItems - 1,
+    });
   }
 
   Future<InsertedBook> getBook(int index) async {
+
     dynamic book;
     await usersCollection.doc(user.uid).get().then(
       (userDoc) {
@@ -185,13 +195,12 @@ class DatabaseService {
     //print('Get book ---> ' + book.toString());
 
     return book == null ?
-        InsertedBook() :   //TODO riguardare questo controllo
+        InsertedBook() :
         InsertedBook(
-            title: book['title'],
-            author: book['author'],
-            isbn13: book['isbn'],
-            status: book['status']
-            //TODO add purpose
+          id: book["id"],
+          //images: book["images"],
+          status: book["status"],
+          comment: book["comment"],
         );
   }
 
