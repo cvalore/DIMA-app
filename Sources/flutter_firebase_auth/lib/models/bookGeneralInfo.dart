@@ -1,5 +1,6 @@
 class BookGeneralInfo {
 
+  final String id;
   final String title;
   final String author;
   final String publisher;
@@ -13,7 +14,8 @@ class BookGeneralInfo {
   int pageCount;
   int ratingsCount;
 
-  BookGeneralInfo(this.title,
+  BookGeneralInfo(this.id,
+      this.title,
       this.author,
       this.publisher,
       this.publishedDate,
@@ -30,6 +32,7 @@ class BookGeneralInfo {
   //TODO check if it is ok
   Map<String, dynamic> toMap() {
     var bookMap = new Map<String, dynamic>();
+    bookMap['id'] = id;
     bookMap['title'] = title;
     bookMap['author'] = author;
     bookMap['isbn'] = isbn13;

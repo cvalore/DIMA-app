@@ -284,6 +284,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
         null;
 
     BookGeneralInfo book = BookGeneralInfo(
+      selectedBook['id'],
       selectedBook['volumeInfo']['title'],
       selectedBook['volumeInfo']['authors'].toString(),
       selectedBook['volumeInfo']['publisher'] ?? null,

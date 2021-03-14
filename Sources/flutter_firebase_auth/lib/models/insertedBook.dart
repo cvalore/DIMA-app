@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 class InsertedBook {
 
+  String id;
   String title;   //redundant but useful for search
   String author;
   String isbn13;      //redundant but useful for search
@@ -14,13 +15,14 @@ class InsertedBook {
       //TODO add purpose
 
 
-  InsertedBook({this.title, this.author, this.isbn13, this.status = 1, this.images, this.comment = '', this.price});
+  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.images, this.comment = '', this.price});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;
   }
 
-  void setTitleAuthorIsbn(String title, String author, String isbn13){
+  void setIdTitleAuthorIsbn(String id, String title, String author, String isbn13){
+    this.id = id;
     this.title = title;
     this.author = author;
     this.isbn13 = isbn13;
@@ -52,6 +54,7 @@ class InsertedBook {
   /// returns mapping of the class excluding the bookGeneralInfo attribute
   Map<String, dynamic> toMap() {
     var insertedBook = new Map<String, dynamic>();
+    insertedBook['id'] = id;
     insertedBook['title'] = title;
     insertedBook['author'] = author;
     insertedBook['isbn'] = isbn13;
