@@ -28,9 +28,16 @@ class DatabaseService {
   Future addUserBook(InsertedBook book) async {
     // add book to the user collection
     var mapBook = book.toMap();
-    print(mapBook['id']);
+    int numberOfInsertedItems;
+
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) {
+          numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
+        });
+
     await usersCollection.doc(user.uid).update({
-      'books': FieldValue.arrayUnion([mapBook])
+      'books': FieldValue.arrayUnion([mapBook]),
+      'numberOfInsertedItems': numberOfInsertedItems + 1,
     });
 
     // add book to book collection
@@ -55,9 +62,8 @@ class DatabaseService {
     });
 
     //add book images to the storage
-    if(book.images != null) {
-      storageService.addBookPictures(user.uid, book.title, book.images);
-    }
+    if(book.images != null)
+      storageService.addBookPictures(user.uid, book.title, numberOfInsertedItems, book.images);
 
     // trick to add more than one book at a time :)
     /*
@@ -99,7 +105,6 @@ class DatabaseService {
             status: book['status']
             //TODO add purpose
         );
-
         mylist.add(insertedBook);
       }
     }

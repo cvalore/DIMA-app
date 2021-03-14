@@ -8,12 +8,12 @@ class StorageService {
 
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-  void addBookPictures(String useruid, String bookTitle, List<PickedFile> images) {
+  void addBookPictures(String useruid, String bookTitle, int numberOfInsertedItems, List<PickedFile> images) {
     //var result = List<String>();
-    String basePath = useruid + "/" + bookTitle;
+    String basePath = useruid + "/" + bookTitle + '_' + numberOfInsertedItems.toString();
 
     images.asMap().forEach((index, image) async {
-      String fileName = bookTitle + index.toString();
+      String fileName = bookTitle + '_' + index.toString();
       Reference reference = storage.ref().child("$basePath/$fileName");
 
       /*
