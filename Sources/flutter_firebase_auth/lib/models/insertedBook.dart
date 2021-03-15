@@ -8,14 +8,15 @@ class InsertedBook {
   String author;
   String isbn13;      //redundant but useful for search
   List<PickedFile> images;
+  List<String> imagesUrl;
   BookGeneralInfo bookGeneralInfo;
   int status;
   String comment;
   double price;
-      //TODO add purpose
+  //TODO add purpose
 
 
-  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.images, this.comment = '', this.price});
+  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.images, this.imagesUrl, this.comment = '', this.price});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;
@@ -60,7 +61,8 @@ class InsertedBook {
     insertedBook['isbn'] = isbn13;
     insertedBook['status'] = status;        //make it optional??
     //if (images != null) insertedBook['images'] = images;
-    if (comment != null) insertedBook['comment'] = comment;
+    insertedBook['comment'] = comment;
+    insertedBook['imagesUrl'] = imagesUrl;
     return insertedBook;
   }
 

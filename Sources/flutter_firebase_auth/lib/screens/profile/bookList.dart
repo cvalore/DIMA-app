@@ -72,8 +72,10 @@ class _BookListState extends State<BookList> {
               ),
               onTap: () async {
                 //per ora è stato popolato solo con id, status e commenti
-                //servirebbero sicuramente anche le immagini, gli altri campi forse no
+                //servirebbero sicuramente anche le immagini,
+                // gli altri campi forse no (mettere tutto quello che si mette nella seconda schermata)
                 InsertedBook book = await _db.getBook(index);
+                print(book.toString());
                 Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -1,7 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DatabaseService {
 
@@ -27,7 +29,6 @@ class DatabaseService {
 
   Future addUserBook(InsertedBook book) async {
     // add book to the user collection
-    var mapBook = book.toMap();
     int numberOfInsertedItems;
 
     await usersCollection.doc(user.uid).get().then(
@@ -35,15 +36,10 @@ class DatabaseService {
           numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
         });
 
-    await usersCollection.doc(user.uid).update({
-      'books': FieldValue.arrayUnion([mapBook]),
-      'numberOfInsertedItems': numberOfInsertedItems + 1,
-    });
-
     // add book to book collection
     var generalInfoBookMap = book.generalInfoToMap();
     await bookCollection
-        .where('isbn', isEqualTo: generalInfoBookMap['isbn'])
+        .where('id', isEqualTo: generalInfoBookMap['id'])
         .get()
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.size == 1) {
@@ -55,27 +51,41 @@ class DatabaseService {
       } else {
         generalInfoBookMap['owners'] = [user.uid];
         //TODO qua ci va await ?
-        bookCollection.doc(mapBook['id']).set(generalInfoBookMap)
+        bookCollection.doc(book.id).set(generalInfoBookMap)
             .then((value) => print("Book added"))
             .catchError((error) => print("Failed to add book: $error"));
       }
     });
 
     //add book images to the storage
-    if(book.images != null)
-      storageService.addBookPictures(user.uid, book.title, numberOfInsertedItems, book.images);
+    if(book.images != null) {
+      /*List<String> imagesUrl = await storageService.addBookPictures(
+          user.uid, book.title, numberOfInsertedItems, book.images);
+      book.imagesUrl = imagesUrl;*/
+      List<String> imagesUrl = List<String>();
+      for(int i = 0; i < book.images.length; i++) {
+        Reference imgRef = await storageService.addBookPicture(
+          user.uid,
+          book.title,
+          numberOfInsertedItems,
+          book.images[i],
+          i
+        );
+        String imgUrl = await storageService.addUrlPicture(imgRef);
+        imagesUrl.add(imgUrl);
+      }
 
-    // trick to add more than one book at a time :)
-    /*
-    for (int i = 4; i < 17; i++) {
-      InsertedBook b = InsertedBook(title: book.title + i.toString(), author: book.author + i.toString(), genre: book.genre, purpose: book.purpose);
-      var mb = b.toMap();
-
-      await usersCollection.doc(user.uid).update({
-        'books': FieldValue.arrayUnion([mb])
-      });
+      book.imagesUrl = imagesUrl;
     }
-    */
+    else {
+      book.imagesUrl = List<String>();
+    }
+
+    var mapBook = book.toMap();
+    await usersCollection.doc(user.uid).update({
+      'books': FieldValue.arrayUnion([mapBook]),
+      'numberOfInsertedItems': numberOfInsertedItems + 1,
+    });
   }
 
   Future updateBook(InsertedBook book, int index) async {
@@ -120,12 +130,12 @@ class DatabaseService {
 
   Future removeBook(int index) async {
 
-    String isbn = "";
+    String id = "";
 
     await usersCollection.doc(user.uid).get().then(
             (userDoc) async {
               List<dynamic> books = userDoc.data()['books'];
-              isbn = books[index]['isbn'];
+              id = books[index]['id'];
               books.removeAt(index);
 
               await usersCollection.doc(user.uid).update({
@@ -135,7 +145,7 @@ class DatabaseService {
     );
 
     await bookCollection
-        .where('isbn', isEqualTo: isbn)
+        .where('id', isEqualTo: id)
         .get()
         .then((QuerySnapshot querySnapshot) {
           if (querySnapshot.size == 1) {
@@ -157,10 +167,10 @@ class DatabaseService {
                     else {
                       //remove only the current user
                       print('Other users have this book, just removing you...');
-                      owners.remove(user.uid);
+                      //owners.remove(user.uid);
 
                       bookCollection.doc(querySnapshot.docs[0].id)
-                          .update({'owners': owners}).then(
+                          .update({'owners': FieldValue.arrayRemove([user.uid])}).then(
                               (value) => print('Removed')
                       );
                     }
@@ -171,7 +181,7 @@ class DatabaseService {
         }
     );
 
-    int numberOfInsertedItems;
+    /*int numberOfInsertedItems;
 
     await usersCollection.doc(user.uid).get().then(
             (userDoc) {
@@ -180,7 +190,9 @@ class DatabaseService {
 
     await usersCollection.doc(user.uid).update({
       'numberOfInsertedItems': numberOfInsertedItems - 1,
-    });
+    });*/
+
+    //TODO: remove book images from storage
   }
 
   Future<InsertedBook> getBook(int index) async {
@@ -198,9 +210,9 @@ class DatabaseService {
         InsertedBook() :
         InsertedBook(
           id: book["id"],
-          //images: book["images"],
           status: book["status"],
           comment: book["comment"],
+          imagesUrl: book['imagesUrl'],
         );
   }
 
