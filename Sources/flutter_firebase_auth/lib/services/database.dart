@@ -44,13 +44,11 @@ class DatabaseService {
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.size == 1) {
         // if the book already exists insert the new owner having it
-        //TODO qua ci va await ?
         bookCollection.doc(querySnapshot.docs[0].id)
             .update({'owners': FieldValue.arrayUnion([user.uid])});
         print("Book already present, add you as owner too");
       } else {
         generalInfoBookMap['owners'] = [user.uid];
-        //TODO qua ci va await ?
         bookCollection.doc(book.id).set(generalInfoBookMap)
             .then((value) => print("Book added"))
             .catchError((error) => print("Failed to add book: $error"));
@@ -81,6 +79,7 @@ class DatabaseService {
       book.imagesUrl = List<String>();
     }
 
+    book.setInsertionNumber(numberOfInsertedItems + 1);
     var mapBook = book.toMap();
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),

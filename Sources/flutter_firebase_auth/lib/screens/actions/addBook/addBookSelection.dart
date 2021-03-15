@@ -3,8 +3,8 @@ import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/services/googleBooksAPI.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 
 class AddBookSelection extends StatefulWidget {
 

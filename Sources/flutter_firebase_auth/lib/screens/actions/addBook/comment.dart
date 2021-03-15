@@ -3,49 +3,29 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 
 
 
-class CommentBox extends StatefulWidget {
+class Comment extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
 
-  CommentBox({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
+  Comment({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
 
   @override
-  _CommentBoxState createState() => _CommentBoxState();
+  _CommentState createState() => _CommentState();
 }
 
-class _CommentBoxState extends State<CommentBox> {
+class _CommentState extends State<Comment> {
 
   @override
   Widget build(BuildContext context) {
-    /*return Container(
-      height: widget.height,
-      child: ListTile(
-        title: Text(
-          "Comment",
-          style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-          ),
-        ),
-        trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () async {
-          dynamic result = await Navigator.pushNamed(context, Comment.routeName, arguments: widget.insertedBook.comment);
-          setState(() {
-            if(result != null)
-              widget.insertedBook.comment = result;
-          });
-        },
-      ),
-    );*/
     return Container(
         height: widget.height,
         child: GestureDetector(
           onTap: () async {
-            dynamic result = await Navigator.pushNamed(context, Comment.routeName, arguments: widget.insertedBook.comment);
+            dynamic result = await Navigator.pushNamed(context, CommentBox.routeName, arguments: widget.insertedBook.comment);
             setState(() {
               if(result != null)
-                widget.insertedBook.comment = result;
+                widget.insertedBook.setComment(result);
             });
           },
           child: Row(
@@ -74,13 +54,13 @@ class _CommentBoxState extends State<CommentBox> {
   }
 }
 
-class Comment extends StatefulWidget {
-  static const routeName = '/comment';
+class CommentBox extends StatefulWidget {
+  static const routeName = '/commentBox';
   @override
-  _CommentState createState() => _CommentState();
+  _CommentBoxState createState() => _CommentBoxState();
 }
 
-class _CommentState extends State<Comment> {
+class _CommentBoxState extends State<CommentBox> {
 
   String comment = '';
 
@@ -98,7 +78,6 @@ class _CommentState extends State<Comment> {
         child: Icon(Icons.check_outlined),
         backgroundColor: Colors.blueGrey,
         onPressed: () {
-          //print(comment);
           Navigator.pop(context, comment);
         },
       ),

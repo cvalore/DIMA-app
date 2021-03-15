@@ -2,21 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 
-class BookStatus extends StatefulWidget {
+class Status extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
   double offset;
 
-  BookStatus({Key key, @required this.insertedBook, @required this.height, @required this.offset}) : super(key: key);
+  Status({Key key, @required this.insertedBook, @required this.height, @required this.offset}) : super(key: key);
 
   @override
-  _BookStatusState createState() => _BookStatusState();
+  _StatusState createState() => _StatusState();
 }
 
-class _BookStatusState extends State<BookStatus> {
-
-
+class _StatusState extends State<Status> {
 
   @override
   Widget build(BuildContext context) {
