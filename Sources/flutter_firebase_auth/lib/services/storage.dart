@@ -39,7 +39,7 @@ class StorageService {
     return url;
   }
 
-  Future<List<String>> addBookPictures(String useruid, String bookTitle,
+  /*Future<List<String>> addBookPictures(String useruid, String bookTitle,
       int numberOfInsertedItems, List<PickedFile> images) async {
 
     List<String> result = List<String>();
@@ -66,5 +66,5 @@ class StorageService {
     });
 
     return result;
-  }
+  }*/
 }

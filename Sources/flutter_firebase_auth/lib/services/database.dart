@@ -212,7 +212,7 @@ class DatabaseService {
           id: book["id"],
           status: book["status"],
           comment: book["comment"],
-          imagesUrl: book['imagesUrl'],
+          imagesUrl: List.from(book['imagesUrl']),
         );
   }
 

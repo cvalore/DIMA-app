@@ -22,7 +22,6 @@ class ImageService extends StatefulWidget {
 
 class _ImageServiceState extends State<ImageService> {
 
-  //TODO add image removal
   final ImagePicker _picker = ImagePicker();
 
   _imgFromCamera() async {
