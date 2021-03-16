@@ -10,13 +10,15 @@ class InsertedBook {
   List<PickedFile> images;
   List<String> imagesUrl;
   BookGeneralInfo bookGeneralInfo;
+  String category;
+  int insertionNumber;
   int status;
   String comment;
   double price;
-  //TODO add purpose
+  bool exchangeable;
 
 
-  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.images, this.imagesUrl, this.comment = '', this.price});
+  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.category, this.images, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;
@@ -35,6 +37,22 @@ class InsertedBook {
 
   void setComment(String comment){
     this.comment = comment;
+  }
+
+  void setCategory(String category){
+    this.category = category;
+  }
+
+  void setInsertionNumber(int insertionNumber){
+    this.insertionNumber = insertionNumber;
+  }
+
+  void setPrice(double price){
+    this.price = price;
+  }
+
+  void toggleExchangeable(){
+    this.exchangeable = !this.exchangeable;
   }
 
   void addImage(PickedFile imageAsFile){
@@ -59,13 +77,17 @@ class InsertedBook {
     insertedBook['title'] = title;
     insertedBook['author'] = author;
     insertedBook['isbn'] = isbn13;
-    insertedBook['status'] = status;        //make it optional??
+    insertedBook['status'] = status;
     //if (images != null) insertedBook['images'] = images;
     insertedBook['comment'] = comment;
     insertedBook['imagesUrl'] = imagesUrl;
+    insertedBook['insertionNumber'] = insertionNumber;
+    insertedBook['exchangeable'] = exchangeable;
+    insertedBook['price'] = price;
     return insertedBook;
   }
 
+  /*
   void printBook(){
     print("${this.title} + ${this.author} + ${this.isbn13} + ${this.status.toString()}");
     print("$comment");
@@ -78,8 +100,7 @@ class InsertedBook {
     print(this.bookGeneralInfo.author);
     print(this.bookGeneralInfo.isbn13);
     print(this.bookGeneralInfo.language);
-
-
   }
+   */
 
 }

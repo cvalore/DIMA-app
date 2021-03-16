@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/unused/addBook.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/commentBox.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -74,7 +76,9 @@ void main() {
            routes: {
              Profile.routeName: (context) => Profile(),
              Subscribe.routeName: (context) => Subscribe(),
-             Comment.routeName: (context) => Comment(),
+             CommentBox.routeName: (context) => CommentBox(),
+             CategoryBox.routeName: (context) => CategoryBox(),
+             PriceBox.routeName: (context) => PriceBox(),
            }
          ),
        );
