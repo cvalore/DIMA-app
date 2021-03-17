@@ -28,7 +28,6 @@ class DatabaseService {
 
 
   Future addUserBook(InsertedBook book) async {
-    // add book to the user collection
     int numberOfInsertedItems;
 
     await usersCollection.doc(user.uid).get().then(
@@ -50,26 +49,25 @@ class DatabaseService {
       } else {
         generalInfoBookMap['owners'] = [user.uid];
         bookCollection.doc(book.id).set(generalInfoBookMap)
-            .then((value) => print("Book added"))
             .catchError((error) => print("Failed to add book: $error"));
       }
     });
 
     //add book images to the storage
-    if(book.images != null) {
+    if(book.imagesPath != null) {
       /*List<String> imagesUrl = await storageService.addBookPictures(
           user.uid, book.title, numberOfInsertedItems, book.images);
       book.imagesUrl = imagesUrl;*/
       List<String> imagesUrl = List<String>();
-      for(int i = 0; i < book.images.length; i++) {
+      for(int i = 0; i < book.imagesPath.length; i++) {
         Reference imgRef = await storageService.addBookPicture(
           user.uid,
           book.title,
           numberOfInsertedItems,
-          book.images[i],
+          book.imagesPath[i],
           i
         );
-        String imgUrl = await storageService.addUrlPicture(imgRef);
+        String imgUrl = await storageService.getUrlPicture(imgRef);
         imagesUrl.add(imgUrl);
       }
 
@@ -79,24 +77,66 @@ class DatabaseService {
       book.imagesUrl = List<String>();
     }
 
-    book.setInsertionNumber(numberOfInsertedItems + 1);
+    book.setInsertionNumber(numberOfInsertedItems);
     var mapBook = book.toMap();
+    // add book to the user collection
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),
       'numberOfInsertedItems': numberOfInsertedItems + 1,
     });
+
+    print("Book added");
   }
 
   Future updateBook(InsertedBook book, int index) async {
     List<dynamic> books;
+
+    int numberOfInsertedItems;
+
+    await storageService.removeBookPicture(user.uid, book.title, book.insertionNumber);
+
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) {
+          numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
+        });
 
     await usersCollection.doc(user.uid).get().then(
       (userDoc) {
         books = userDoc.data()['books'];
       });
 
+    if(book.imagesPath != null) {
+      /*List<String> imagesUrl = await storageService.addBookPictures(
+          user.uid, book.title, numberOfInsertedItems, book.images);
+      book.imagesUrl = imagesUrl;*/
+      List<String> imagesUrl = List<String>();
+      for(int i = 0; i < book.imagesPath.length; i++) {
+        Reference imgRef = await storageService.addBookPicture(
+            user.uid,
+            book.title,
+            numberOfInsertedItems,
+            book.imagesPath[i],
+            i
+        );
+        String imgUrl = await storageService.getUrlPicture(imgRef);
+        imagesUrl.add(imgUrl);
+      }
+
+      book.imagesUrl = imagesUrl;
+    }
+    else {
+      book.imagesUrl = List<String>();
+    }
+    book.setInsertionNumber(numberOfInsertedItems);
+
+    books[index]["insertionNumber"] = book.insertionNumber;
     books[index]["comment"] = book.comment;
     books[index]["status"] = book.status;
+    books[index]["category"] = book.category;
+    books[index]["price"] = book.price;
+    books[index]["exchangeable"] = book.exchangeable;
+    books[index]["imagesUrl"] = book.imagesUrl;
+
     await usersCollection.doc(user.uid).update({
       'books': books
     }).then((value) => print("Book updated"));
@@ -127,7 +167,7 @@ class DatabaseService {
     return result;
   }
 
-  Future removeBook(int index) async {
+  Future removeBook(int index, int insertionNumber, String bookTitle) async {
 
     String id = "";
 
@@ -139,7 +179,7 @@ class DatabaseService {
 
               await usersCollection.doc(user.uid).update({
                 'books': books
-              }).then((value) => print("Book removed"));
+              });
             }
     );
 
@@ -159,9 +199,7 @@ class DatabaseService {
                       //remove all the document
                       print('No other user has this book, removing all...');
 
-                      bookCollection.doc(querySnapshot.docs[0].id).delete().then(
-                              (value) => print('Removed')
-                      );
+                      bookCollection.doc(querySnapshot.docs[0].id).delete();
                     }
                     else {
                       //remove only the current user
@@ -169,9 +207,7 @@ class DatabaseService {
                       //owners.remove(user.uid);
 
                       bookCollection.doc(querySnapshot.docs[0].id)
-                          .update({'owners': FieldValue.arrayRemove([user.uid])}).then(
-                              (value) => print('Removed')
-                      );
+                          .update({'owners': FieldValue.arrayRemove([user.uid])});
                     }
                   }
                 }
@@ -180,18 +216,9 @@ class DatabaseService {
         }
     );
 
-    /*int numberOfInsertedItems;
+    await storageService.removeBookPicture(user.uid, bookTitle, insertionNumber);
 
-    await usersCollection.doc(user.uid).get().then(
-            (userDoc) {
-          numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
-        });
-
-    await usersCollection.doc(user.uid).update({
-      'numberOfInsertedItems': numberOfInsertedItems - 1,
-    });*/
-
-    //TODO: remove book images from storage
+    print("Book removed");
   }
 
   Future<InsertedBook> getBook(int index) async {
@@ -209,9 +236,14 @@ class DatabaseService {
         InsertedBook() :
         InsertedBook(
           id: book["id"],
+          title: book["title"],
           status: book["status"],
           comment: book["comment"],
           imagesUrl: List.from(book['imagesUrl']),
+          insertionNumber: book["insertionNumber"],
+          category: book["category"],
+          price: book["price"]*1.0,
+          exchangeable: book["exchangeable"],
         );
   }
 

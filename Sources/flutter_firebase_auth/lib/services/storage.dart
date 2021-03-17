@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class StorageService {
 
@@ -9,15 +12,14 @@ class StorageService {
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   Future addBookPicture(String useruid, String bookTitle,
-      int numberOfInsertedItems, PickedFile image, int index) async {
+      int numberOfInsertedItems, String imagePath, int index) async {
 
     String basePath = useruid + "/" + bookTitle + '_' + numberOfInsertedItems.toString();
     String fileName = bookTitle + '_' + index.toString();
     Reference reference = storage.ref().child("$basePath/$fileName");
 
     try {
-      await reference.putFile(File(image.path));
-      print("Images Inserted");
+      await reference.putFile(File(imagePath));
     } on FirebaseException catch (e) {
       e.toString();
     }
@@ -25,13 +27,26 @@ class StorageService {
     return reference;
   }
 
-  Future addUrlPicture(Reference reference) async {
+  Future removeBookPicture(String useruid, String bookTitle, int insertionNumber) async {
+    String basePath = useruid + "/" + bookTitle + '_' + insertionNumber.toString();
+    Reference reference = storage.ref().child("$basePath/");
+
+    ListResult lr = await reference.listAll();
+    for(Reference r in lr.items) {
+      try {
+        await r.delete();
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+    }
+  }
+
+  Future getUrlPicture(Reference reference) async {
 
     String url;
 
     try {
       url = await reference.getDownloadURL();
-      print("Images Inserted");
     } on FirebaseException catch (e) {
       e.toString();
     }
@@ -39,32 +54,28 @@ class StorageService {
     return url;
   }
 
-  /*Future<List<String>> addBookPictures(String useruid, String bookTitle,
-      int numberOfInsertedItems, List<PickedFile> images) async {
+  Reference getBookDirectoryReference(String useruid, InsertedBook book) {
+    String basePath = useruid + "/" + book.title + '_' + book.insertionNumber.toString();
+    Reference reference = storage.ref().child("$basePath/");
+    return reference;
+  }
 
-    List<String> result = List<String>();
-    String basePath = useruid + "/" + bookTitle + '_' + numberOfInsertedItems.toString();
+  Reference getBookImageReference(String useruid, InsertedBook book, int index) {
+    String basePath = useruid + "/" + book.title + '_' + book.insertionNumber.toString();
+    String fileName = book.title + '_' + index.toString();
+    Reference reference = storage.ref().child("$basePath/$fileName");
+    return reference;
+  }
 
-
-    images.asMap().forEach((index, image) async {
-      String fileName = bookTitle + '_' + index.toString();
-      Reference reference = storage.ref().child("$basePath/$fileName");
-
-      try {
-        await reference.putFile(File(image.path));
-        print("Images Inserted");
-      } on FirebaseException catch (e) {
-          e.toString();
-      }
-
-      try {
-        String imgUrl = await reference.getDownloadURL();
-        result.add(imgUrl);
-      } on FirebaseException catch (e) {
-        e.toString();
-      }
-    });
-
-    return result;
-  }*/
+  Future<String> toDownloadFile(Reference ref, int index) async {
+    Directory tempDir = await getTemporaryDirectory();
+    File downloadToFile = File('${tempDir.path}/tempImage'+ UniqueKey().toString() +'.png');
+    try {
+      await ref.writeToFile(downloadToFile);
+      return downloadToFile.path;
+    } on FirebaseException catch (e) {
+      e.toString();
+      return null;
+    }
+  }
 }

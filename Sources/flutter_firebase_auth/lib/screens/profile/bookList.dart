@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
@@ -13,6 +16,7 @@ import 'package:provider/provider.dart';
 
 
 class BookList extends StatefulWidget {
+
   @override
   _BookListState createState() => _BookListState();
 }
@@ -46,17 +50,16 @@ class _BookListState extends State<BookList> {
         itemCount: books.length,
         itemBuilder: (ctx, index) {
           return Dismissible(
-            key: Key('${books[index].id}'), //TODO: SERVE UN ID UNIVOCO!!
+            key: UniqueKey(),
             background: Container(color: Colors.red[600]),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) async {
-              dynamic result = _db.removeBook(index);
-              if(result != null) {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(content: Text(
-                    'Book removed: ' + '${books[index].title}',)),
-                );
-              }
+              InsertedBook book = await _db.getBook(index);
+              dynamic result = await _db.removeBook(index, book.insertionNumber, book.title);
+              Scaffold.of(context).showSnackBar(
+                SnackBar(duration: Duration(seconds: 1), content: Text(
+                  'Book removed: ' + '${books[index].title}',)),
+              );
             },
             child: ListTile(
               title: Text('${books[index].title}'),
@@ -67,14 +70,32 @@ class _BookListState extends State<BookList> {
                 ),
                 child: Icon(Icons.remove_circle_outline, color: Colors.red,),
                 onPressed: () async {
-                  dynamic result = await _db.removeBook(index);
+                  InsertedBook book = await _db.getBook(index);
+                  dynamic result = await _db.removeBook(index, book.insertionNumber, book.title);
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(duration: Duration(seconds: 1), content: Text(
+                      'Book removed: ' + '${books[index].title}',)),
+                  );
                 },
               ),
               onTap: () async {
-                //per ora è stato popolato solo con id, status e commenti
-                //servirebbero sicuramente anche le immagini,
-                // gli altri campi forse no (mettere tutto quello che si mette nella seconda schermata)
                 InsertedBook book = await _db.getBook(index);
+                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+                List<String> bookPickedFilePaths = List<String>();
+                ListResult lr = await bookRef.listAll();
+                int count = 0;
+                for(Reference r in lr.items) {
+                  try {
+                    String filePath = await _db.storageService.toDownloadFile(r, count);
+                    if(filePath != null) {
+                      bookPickedFilePaths.add(filePath);
+                    }
+                  } on FirebaseException catch (e) {
+                    e.toString();
+                  }
+                  count = count + 1;
+                }
+                book.imagesPath = bookPickedFilePaths;
                 Navigator.push(
                   context,
                   MaterialPageRoute(

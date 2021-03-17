@@ -7,7 +7,7 @@ class InsertedBook {
   String title;   //redundant but useful for search
   String author;
   String isbn13;      //redundant but useful for search
-  List<PickedFile> images;
+  List<String> imagesPath;
   List<String> imagesUrl;
   BookGeneralInfo bookGeneralInfo;
   String category;
@@ -18,7 +18,7 @@ class InsertedBook {
   bool exchangeable;
 
 
-  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.category, this.images, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false});
+  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.category, this.imagesPath, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;
@@ -55,15 +55,15 @@ class InsertedBook {
     this.exchangeable = !this.exchangeable;
   }
 
-  void addImage(PickedFile imageAsFile){
-    if (images == null){
-      images = List<PickedFile>();
+  void addImage(String imagePath){
+    if (imagesPath == null){
+      imagesPath = List<String>();
     }
-    images.add(imageAsFile);
+    imagesPath.add(imagePath);
   }
 
   void removeImage(int index){
-    images.removeAt(index);
+    imagesPath.removeAt(index);
   }
 
   Map<String, dynamic> generalInfoToMap() {
@@ -79,11 +79,12 @@ class InsertedBook {
     insertedBook['isbn'] = isbn13;
     insertedBook['status'] = status;
     //if (images != null) insertedBook['images'] = images;
-    insertedBook['comment'] = comment;
-    insertedBook['imagesUrl'] = imagesUrl;
+    insertedBook['comment'] = comment ?? "";
+    insertedBook['imagesUrl'] = imagesUrl ?? "";
     insertedBook['insertionNumber'] = insertionNumber;
-    insertedBook['exchangeable'] = exchangeable;
-    insertedBook['price'] = price;
+    insertedBook['exchangeable'] = exchangeable ?? false;
+    insertedBook['price'] = price ?? 0.0;
+    insertedBook['category'] = category ?? "Generic";
     return insertedBook;
   }
 

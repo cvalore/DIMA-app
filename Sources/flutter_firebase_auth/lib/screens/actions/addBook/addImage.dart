@@ -32,7 +32,7 @@ class _ImageServiceState extends State<ImageService> {
 
     if(image != null) {
       setState(() {
-        widget.insertedBook.addImage(image);
+        widget.insertedBook.addImage(image.path);
         //print("Image inserted. Now there are ${widget.insertedBook.images.length}");
       });
     }
@@ -46,7 +46,7 @@ class _ImageServiceState extends State<ImageService> {
 
     if(image != null) {
       setState(() {
-        widget.insertedBook.addImage(image);
+        widget.insertedBook.addImage(image.path);
         //print("Image inserted. Now there are ${widget.insertedBook.images.length}");
       });
     }
@@ -91,8 +91,8 @@ class _ImageServiceState extends State<ImageService> {
     DatabaseService _db = DatabaseService(user: user);
     var storage = StorageService();
 
-    final listItem = widget.insertedBook.images != null ?
-        widget.insertedBook.images
+    final listItem = widget.insertedBook.imagesPath != null ?
+        widget.insertedBook.imagesPath
         /*
         List<ImageDisplay>.generate(
           widget.insertedBook.images.length,
@@ -155,7 +155,7 @@ class _ImageServiceState extends State<ImageService> {
                                   child: Stack(
                                     children: [
                                       Image.file(
-                                          File(listItem[index].path)
+                                          File(listItem[index])
                                       ),
                                       Positioned(
                                         top: 1,

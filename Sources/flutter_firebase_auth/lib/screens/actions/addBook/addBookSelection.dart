@@ -22,8 +22,8 @@ class AddBookSelection extends StatefulWidget {
 class _AddBookSelectionState extends State<AddBookSelection> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = 'harry potter';
-  String _author = 'rowling';
+  String _title = 'pandora';
+  String _author = 'licia troisi';
 
   final booksAPI = GoogleBooksAPI();
 
@@ -51,7 +51,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                         decoration: InputDecoration(
                           hintText: 'Title',
                         ),
-                        initialValue: 'harry potter',//just to debug easily,
+                        initialValue: 'pandora',//just to debug easily,
                         validator: (value) =>
                         value.isEmpty ? 'Enter the book title' : null,
                         onChanged: (value) {
@@ -66,7 +66,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                         decoration: InputDecoration(
                           hintText: 'Author',
                         ),
-                        initialValue: 'rowling',//just to debug easily,
+                        initialValue: 'licia troisi',//just to debug easily,
                         validator: (value) =>
                         value.isEmpty ? 'Enter the book author' : null,
                         onChanged: (value) {

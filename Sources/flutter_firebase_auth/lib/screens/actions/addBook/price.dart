@@ -91,11 +91,11 @@ class _PriceBoxState extends State<PriceBox> {
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             if (_formKey.currentState.validate()){
-              print("price as string is $price");
+              //print("price as string is $price");
               if(!price.contains('.'))
                 price = price + '.0';
               var priceAsDouble = double.parse(price);
-              print(priceAsDouble);
+              //print(priceAsDouble);
               Navigator.pop(context, double.parse(price));
             }
           },
@@ -127,7 +127,7 @@ class _PriceBoxState extends State<PriceBox> {
                     if(value != '') {
                       setState(() {
                         price = value;
-                        print(price);
+                        //print(price);
                       });
                     }
                   },
