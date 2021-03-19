@@ -57,24 +57,46 @@ class _BookInsertState extends State<BookInsert> {
             heroTag: "saveBtn",
             onPressed: () async {
               if (widget.selectedBook.title != null) {
-                _insertedBook.setIdTitleAuthorIsbn(
-                    widget.selectedBook.id,
-                    widget.selectedBook.title,
-                    widget.selectedBook.author,
-                    widget.selectedBook.isbn13);
-                _insertedBook.setBookGeneralInfo(widget.selectedBook);
-                //_insertedBook.printBook();
-                await _db.addUserBook(_insertedBook);
-                widget.setIndex(0);
-                final snackBar = SnackBar(
-                  duration: Duration(seconds: 1),
-                  content: Text(
+                if ( _insertedBook.category == null || _insertedBook.category == '') {
+                  final snackBar = SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text(
+                      'You need to insert book category',
+                      ),
+                    );
+                    // Find the Scaffold in the widget tree and use
+                    // it to show a SnackBar.
+                  Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+              } else if (_insertedBook.price == null || _insertedBook.price == 0.0) {
+                  final snackBar = SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text(
+                      'You need to insert a price for the book',
+                    ),
+                  );
+                  // Find the Scaffold in the widget tree and use
+                  // it to show a SnackBar.
+                  Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+              } else {
+                  _insertedBook.setIdTitleAuthorIsbn(
+                      widget.selectedBook.id,
+                      widget.selectedBook.title,
+                      widget.selectedBook.author,
+                      widget.selectedBook.isbn13);
+                  _insertedBook.setBookGeneralInfo(widget.selectedBook);
+                  //_insertedBook.printBook();
+                  await _db.addUserBook(_insertedBook);
+                  widget.setIndex(0);
+                  final snackBar = SnackBar(
+                    duration: Duration(seconds: 1),
+                    content: Text(
                       'Book added successfully',
-                  ),
-                );
-                // Find the Scaffold in the widget tree and use
-                // it to show a SnackBar.
-                Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+                    ),
+                  );
+                  // Find the Scaffold in the widget tree and use
+                  // it to show a SnackBar.
+                  Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+                }
               }
             },
             icon: Icon(Icons.save),

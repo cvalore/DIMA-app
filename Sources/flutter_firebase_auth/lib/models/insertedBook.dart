@@ -18,7 +18,7 @@ class InsertedBook {
   bool exchangeable;
 
 
-  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 1, this.category, this.imagesPath, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false});
+  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 3, this.category, this.imagesPath, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;

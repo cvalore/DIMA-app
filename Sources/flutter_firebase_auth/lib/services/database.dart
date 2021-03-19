@@ -3,7 +3,6 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
-import 'package:image_picker/image_picker.dart';
 
 class DatabaseService {
 
