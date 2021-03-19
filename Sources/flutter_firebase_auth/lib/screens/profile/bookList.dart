@@ -55,7 +55,7 @@ class _BookListState extends State<BookList> {
             direction: DismissDirection.endToStart,
             onDismissed: (direction) async {
               InsertedBook book = await _db.getBook(index);
-              dynamic result = await _db.removeBook(index, book.insertionNumber, book.title);
+              dynamic result = await _db.removeBook(index, book.insertionNumber, book);
               Scaffold.of(context).showSnackBar(
                 SnackBar(duration: Duration(seconds: 1), content: Text(
                   'Book removed: ' + '${books[index].title}',)),
@@ -71,7 +71,7 @@ class _BookListState extends State<BookList> {
                 child: Icon(Icons.remove_circle_outline, color: Colors.red,),
                 onPressed: () async {
                   InsertedBook book = await _db.getBook(index);
-                  dynamic result = await _db.removeBook(index, book.insertionNumber, book.title);
+                  dynamic result = await _db.removeBook(index, book.insertionNumber, book);
                   Scaffold.of(context).showSnackBar(
                     SnackBar(duration: Duration(seconds: 1), content: Text(
                       'Book removed: ' + '${books[index].title}',)),

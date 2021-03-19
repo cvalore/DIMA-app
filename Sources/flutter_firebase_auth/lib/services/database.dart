@@ -14,6 +14,7 @@ class DatabaseService {
   // collection reference
   final CollectionReference bookCollection = FirebaseFirestore.instance.collection('books');
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+  final CollectionReference booksPerGenreCollection = FirebaseFirestore.instance.collection('booksPerGenre');
 
   Future<void> initializeUser() {
     var userMap = user.toMap();
@@ -83,6 +84,27 @@ class DatabaseService {
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),
       'numberOfInsertedItems': numberOfInsertedItems + 1,
+    });
+
+    Map<String, dynamic> bookPerGenreInfo = {
+      'title' : book.title,
+      'author' : book.author,
+      'thumbnail' : book.bookGeneralInfo.thumbnail,
+    };
+    Map<String, dynamic> bookPerGenreMap = {
+      book.id : bookPerGenreInfo,
+    };
+    await booksPerGenreCollection.doc(book.category).get().then((DocumentSnapshot doc) {
+      if(!doc.exists) {
+        booksPerGenreCollection.doc(book.category).set({
+          "books": FieldValue.arrayUnion([bookPerGenreMap]),
+        });
+      }
+      else {
+        booksPerGenreCollection.doc(book.category).update({
+          "books": FieldValue.arrayUnion([bookPerGenreMap]),
+        });
+      }
     });
 
     print("Book added");
@@ -167,10 +189,12 @@ class DatabaseService {
     return result;
   }
 
-  Future removeBook(int index, int insertionNumber, String bookTitle) async {
+  Future removeBook(int index, int insertionNumber, InsertedBook book) async {
 
     String id = "";
+    String thumbnail = "";
 
+    //remove from users collection
     await usersCollection.doc(user.uid).get().then(
             (userDoc) async {
               List<dynamic> books = userDoc.data()['books'];
@@ -183,16 +207,17 @@ class DatabaseService {
             }
     );
 
+    //remove from books collection
     await bookCollection
         .where('id', isEqualTo: id)
         .get()
-        .then((QuerySnapshot querySnapshot) {
+        .then((QuerySnapshot querySnapshot) async {
           if (querySnapshot.size == 1) {
-            //TODO qua ci va await ?
             List<dynamic> owners;
-            bookCollection.doc(querySnapshot.docs[0].id)
+            await bookCollection.doc(querySnapshot.docs[0].id)
               .get().then((book)
                 {
+                  thumbnail = book['thumbnail'];
                   owners = book['owners'];
                   if(owners.contains(user.uid)) {
                     if(owners.length <= 1) {
@@ -216,7 +241,22 @@ class DatabaseService {
         }
     );
 
-    await storageService.removeBookPicture(user.uid, bookTitle, insertionNumber);
+    //remove pictures from the storage
+    await storageService.removeBookPicture(user.uid, book.title, insertionNumber);
+
+    //remove book from book from genres
+    Map<String,dynamic> bookToRemoveInfoMap = {
+      "title" : book.title,
+      "author" : book.author,
+      "thumbnail" : thumbnail,
+    };
+    Map<String,dynamic> bookToRemoveMap = {
+      book.id : bookToRemoveInfoMap,
+    };
+
+    await booksPerGenreCollection.doc(book.category).update({
+      'books': FieldValue.arrayRemove([bookToRemoveMap]),
+    });
 
     print("Book removed");
   }
@@ -237,6 +277,7 @@ class DatabaseService {
         InsertedBook(
           id: book["id"],
           title: book["title"],
+          author: book["author"],
           status: book["status"],
           comment: book["comment"],
           imagesUrl: List.from(book['imagesUrl']),
