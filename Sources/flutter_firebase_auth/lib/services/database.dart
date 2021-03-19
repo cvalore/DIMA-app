@@ -48,12 +48,12 @@ class DatabaseService {
         bookCollection.doc(querySnapshot.docs[0].id)
             .update({
           'owners': FieldValue.arrayUnion([user.uid]),
-          'available_num': FieldValue.increment(1)
+          'availableNum': FieldValue.increment(1)
         });
         print("Book already present, add you as owner too");
       } else {
         generalInfoBookMap['owners'] = [user.uid];
-        generalInfoBookMap['available_num'] = 1;    //TODO metterlo come campo in BookGeneralInfo ?
+        generalInfoBookMap['availableNum'] = 1;    //TODO metterlo come campo in BookGeneralInfo ?
         bookCollection.doc(book.id).set(generalInfoBookMap)
             .catchError((error) => print("Failed to add book: $error"));
       }
@@ -83,12 +83,13 @@ class DatabaseService {
       book.imagesUrl = List<String>();
     }
 
+    numberOfInsertedItems += 1;
     book.setInsertionNumber(numberOfInsertedItems);
     var mapBook = book.toMap();
     // add book to the user collection
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),
-      'numberOfInsertedItems': numberOfInsertedItems + 1,
+      'numberOfInsertedItems': FieldValue.increment(1),
     });
 
     Map<String, dynamic> bookPerGenreInfo = {
@@ -208,12 +209,13 @@ class DatabaseService {
     return result;
   }
 
-  Future removeBook(int index, int insertionNumber, InsertedBook book) async {
+  Future removeBook(int index, InsertedBook book) async {
 
     String id = "";
     String thumbnail = "";
-    int available_num;
+    int availableNum;
     bool duplicatePresent = false;
+    bool bookDocumentRemoved = false;
 
     //remove from users collection
     await usersCollection.doc(user.uid).get().then(
@@ -223,7 +225,7 @@ class DatabaseService {
               books.removeAt(index);
 
               for (int i = 0; i < books.length && !duplicatePresent; i++){
-                if (books[i].id ==id)
+                if (books[i]['id'] == id)
                   duplicatePresent = true;
               }
 
@@ -239,19 +241,18 @@ class DatabaseService {
         .get()
         .then((QuerySnapshot querySnapshot) async {
           if (querySnapshot.size == 1) {
-            List<dynamic> owners;
             await bookCollection.doc(querySnapshot.docs[0].id)
               .get().then((book)
                 {
                   thumbnail = book['thumbnail'];
-                  owners = book['owners'];
-                  available_num = book['available_num'];
-                  if (available_num == 1){
+                  availableNum = book['availableNum'];
+                  if (availableNum == 1){
                     //remove all the document
                     print('No other user has this book, removing all...');
 
                     bookCollection.doc(querySnapshot.docs[0].id).delete();
-                    //TODO add removal from bookbygenre
+                    bookDocumentRemoved = true;
+
                   } else if (!duplicatePresent) {
                       //remove only the current user
                       print('Other users have this book, just removing you...');
@@ -260,15 +261,14 @@ class DatabaseService {
                       bookCollection.doc(querySnapshot.docs[0].id)
                           .update({
                         'owners': FieldValue.arrayRemove([user.uid]),
-                        'available_num': FieldValue.increment(-1)
+                        'availableNum': FieldValue.increment(-1)
                       });
                   } else {
-                      //only decrement available_num
-                      print('The user removed a duplicated book, just reducing the available_num...');
+                      //only decrement availableNum
+                      print('The user removed a duplicated book, just reducing the availableNum...');
                       //owners.remove(user.uid);
-
                       bookCollection.doc(querySnapshot.docs[0].id)
-                          .update({'available_num': FieldValue.increment(-1)});
+                          .update({'availableNum': FieldValue.increment(-1)});
                     }
                   }
             );
@@ -277,21 +277,23 @@ class DatabaseService {
     );
 
     //remove pictures from the storage
-    await storageService.removeBookPicture(user.uid, book.title, insertionNumber);
+    await storageService.removeBookPicture(user.uid, book.title, book.insertionNumber);
 
-    //remove book from book from genres
-    Map<String,dynamic> bookToRemoveInfoMap = {
-      "title" : book.title,
-      "author" : book.author,
-      "thumbnail" : thumbnail,
-    };
-    Map<String,dynamic> bookToRemoveMap = {
-      book.id : bookToRemoveInfoMap,
-    };
+    if (bookDocumentRemoved) {
+      //remove book from book from genres
+      Map<String, dynamic> bookToRemoveInfoMap = {
+        "title": book.title,
+        "author": book.author,
+        "thumbnail": thumbnail,
+      };
+      Map<String, dynamic> bookToRemoveMap = {
+        book.id: bookToRemoveInfoMap,
+      };
 
-    await booksPerGenreCollection.doc(book.category).update({
-      'books': FieldValue.arrayRemove([bookToRemoveMap]),
-    });
+      await booksPerGenreCollection.doc(book.category).update({
+        'books': FieldValue.arrayRemove([bookToRemoveMap]),
+      });
+    }
 
     print("Book removed");
   }
