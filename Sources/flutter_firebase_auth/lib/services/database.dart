@@ -1,6 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
 
@@ -173,7 +174,6 @@ class DatabaseService {
             author: book['author'],
             isbn13: book['isbn'],
             status: book['status']
-            //TODO add purpose
         );
         mylist.add(insertedBook);
       }
@@ -181,6 +181,21 @@ class DatabaseService {
     return mylist;
   }
 
+  Map<String,dynamic> _bookPerGenreListFromSnapshot(QuerySnapshot querySnapshot) {
+    Map<String,dynamic> result = Map<String,dynamic>();
+    List<QueryDocumentSnapshot> docs = querySnapshot.docs;
+    for(QueryDocumentSnapshot qds in docs) {
+      result[qds.id] = qds.data();
+    }
+    return result;
+  }
+
+
+  Stream<Map<String,dynamic>> get perGenreBooks{
+    Stream<Map<String,dynamic>> result = booksPerGenreCollection.snapshots()
+        .map(_bookPerGenreListFromSnapshot);
+    return result;
+  }
 
   Stream<List<InsertedBook>> get userBooks{
     Stream<List<InsertedBook>> result =  usersCollection.doc(user.uid).snapshots()
@@ -261,7 +276,6 @@ class DatabaseService {
   }
 
   Future<InsertedBook> getBook(int index) async {
-
     dynamic book;
     await usersCollection.doc(user.uid).get().then(
       (userDoc) {

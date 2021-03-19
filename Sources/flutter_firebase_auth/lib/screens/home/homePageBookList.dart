@@ -1,9 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 
 class HomePageBookList extends StatelessWidget {
+
+  final String genre;
+  final List<PerGenreBook> books;
+
+  const HomePageBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -12,7 +20,7 @@ class HomePageBookList extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Text(
-            'Prova',
+            genre,
             style: TextStyle(
               color: Colors.blueGrey[700],
               fontSize: 20.0,
@@ -25,7 +33,7 @@ class HomePageBookList extends StatelessWidget {
           child: ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
             scrollDirection: Axis.horizontal,
-            itemCount: 10,
+            itemCount: books.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () => print('Tapped'),
