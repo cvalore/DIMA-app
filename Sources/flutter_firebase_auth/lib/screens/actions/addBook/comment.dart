@@ -32,15 +32,29 @@ class _CommentState extends State<Comment> {
             children: [
               Expanded(
                   flex: 10,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Comment",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.bold
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Text("Comment",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      widget.insertedBook.comment != null && widget.insertedBook.comment != '' ?
+                      Expanded(
+                          flex: 3,
+                          child: Text(
+                              showComment(widget.insertedBook.comment),
+                              textAlign: TextAlign.right)) :
+                      Container(),
+                    ],
                   )
               ),
               Expanded(
@@ -51,6 +65,20 @@ class _CommentState extends State<Comment> {
           ),
         )
     );
+  }
+
+  String showComment(String comment) {
+    int num_displayed_char = 12;
+    int cut_index;
+    bool truncated= true;
+    if (comment.contains('\n') && comment.indexOf('\n') < num_displayed_char)
+      cut_index = comment.indexOf('\n');
+    else {
+      cut_index = comment.length < num_displayed_char ? comment.length : num_displayed_char;
+    }
+
+
+    return cut_index == comment.length ? comment : comment.substring(0, cut_index) + '...';
   }
 }
 
