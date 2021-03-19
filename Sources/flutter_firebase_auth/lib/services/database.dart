@@ -35,6 +35,7 @@ class DatabaseService {
           numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
         });
 
+
     // add book to book collection
     var generalInfoBookMap = book.generalInfoToMap();
     await bookCollection
@@ -44,10 +45,14 @@ class DatabaseService {
       if (querySnapshot.size == 1) {
         // if the book already exists insert the new owner having it
         bookCollection.doc(querySnapshot.docs[0].id)
-            .update({'owners': FieldValue.arrayUnion([user.uid])});
+            .update({
+          'owners': FieldValue.arrayUnion([user.uid]),
+          'available_num': FieldValue.increment(1)
+        });
         print("Book already present, add you as owner too");
       } else {
         generalInfoBookMap['owners'] = [user.uid];
+        generalInfoBookMap['available_num'] = 1;    //TODO metterlo come campo in BookGeneralInfo ?
         bookCollection.doc(book.id).set(generalInfoBookMap)
             .catchError((error) => print("Failed to add book: $error"));
       }
@@ -192,6 +197,8 @@ class DatabaseService {
 
     String id = "";
     String thumbnail = "";
+    int available_num;
+    bool duplicatePresent = false;
 
     //remove from users collection
     await usersCollection.doc(user.uid).get().then(
@@ -199,6 +206,11 @@ class DatabaseService {
               List<dynamic> books = userDoc.data()['books'];
               id = books[index]['id'];
               books.removeAt(index);
+
+              for (int i = 0; i < books.length && !duplicatePresent; i++){
+                if (books[i].id ==id)
+                  duplicatePresent = true;
+              }
 
               await usersCollection.doc(user.uid).update({
                 'books': books
@@ -218,23 +230,32 @@ class DatabaseService {
                 {
                   thumbnail = book['thumbnail'];
                   owners = book['owners'];
-                  if(owners.contains(user.uid)) {
-                    if(owners.length <= 1) {
-                      //remove all the document
-                      print('No other user has this book, removing all...');
+                  available_num = book['available_num'];
+                  if (available_num == 1){
+                    //remove all the document
+                    print('No other user has this book, removing all...');
 
-                      bookCollection.doc(querySnapshot.docs[0].id).delete();
-                    }
-                    else {
+                    bookCollection.doc(querySnapshot.docs[0].id).delete();
+                    //TODO add removal from bookbygenre
+                  } else if (!duplicatePresent) {
                       //remove only the current user
                       print('Other users have this book, just removing you...');
                       //owners.remove(user.uid);
 
                       bookCollection.doc(querySnapshot.docs[0].id)
-                          .update({'owners': FieldValue.arrayRemove([user.uid])});
+                          .update({
+                        'owners': FieldValue.arrayRemove([user.uid]),
+                        'available_num': FieldValue.increment(-1)
+                      });
+                  } else {
+                      //only decrement available_num
+                      print('The user removed a duplicated book, just reducing the available_num...');
+                      //owners.remove(user.uid);
+
+                      bookCollection.doc(querySnapshot.docs[0].id)
+                          .update({'available_num': FieldValue.increment(-1)});
                     }
                   }
-                }
             );
           }
         }
