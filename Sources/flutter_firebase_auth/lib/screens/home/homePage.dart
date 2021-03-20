@@ -7,6 +7,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/home/homePageBookList.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
     _db = DatabaseService(user: user);
 
     Map<String,dynamic> books = Provider.of<Map<String,dynamic>>(context);
-    if(books != null) {
+    if(books != null && books.length != 0) {
       books.removeWhere((key, value) {
         bool empty = books[key]['books'] == null ||
             books[key]['books'].length == 0;
@@ -56,15 +57,19 @@ class _HomePageState extends State<HomePage> {
     return CustomScrollView(
         controller: _scrollController,
         slivers: [
-          for(int i = 0; i < books.length; i++)
-            SliverPadding(
-              padding: EdgeInsets.only(top: 20.0),
-              sliver: SliverToBoxAdapter(
-                child: HomePageBookList(
-                    genre: books.keys.elementAt(i).toString(),
-                    books: books[books.keys.elementAt(i).toString()]['books']),
-              ),
-            )
+          if(books == null || books.length == 0)
+            SliverToBoxAdapter(child: Container())
+          else
+            for(int i = 0; i < books.length; i++)
+              SliverPadding(
+                padding: EdgeInsets.only(top: 20.0),
+                sliver: SliverToBoxAdapter(
+                  child: HomePageBookList(
+                      genre: books.keys.elementAt(i).toString(),
+                      books: books[books.keys.elementAt(i).toString()]['books']
+                  ),
+                ),
+              )
         ],
     );
   }
