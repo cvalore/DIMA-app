@@ -69,7 +69,7 @@ class DatabaseService {
         Reference imgRef = await storageService.addBookPicture(
           user.uid,
           book.title,
-          numberOfInsertedItems,
+          numberOfInsertedItems + 1,
           book.imagesPath[i],
           i
         );
