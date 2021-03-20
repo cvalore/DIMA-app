@@ -45,17 +45,26 @@ class _HomePageState extends State<HomePage> {
     _db = DatabaseService(user: user);
 
     Map<String,dynamic> books = Provider.of<Map<String,dynamic>>(context);
-    print("---> " + books.toString());
+    if(books != null) {
+      books.removeWhere((key, value) {
+        bool empty = books[key]['books'] == null ||
+            books[key]['books'].length == 0;
+        return key == null || value == null || empty;
+      });
+    }
 
     return CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverPadding(
-            padding: EdgeInsets.only(top: 20.0),
-            sliver: SliverToBoxAdapter(
-              child: HomePageBookList(genre: "prova1", books: List<PerGenreBook>()),
-            ),
-          ),
+          for(int i = 0; i < books.length; i++)
+            SliverPadding(
+              padding: EdgeInsets.only(top: 20.0),
+              sliver: SliverToBoxAdapter(
+                child: HomePageBookList(
+                    genre: books.keys.elementAt(i).toString(),
+                    books: books[books.keys.elementAt(i).toString()]['books']),
+              ),
+            )
         ],
     );
   }

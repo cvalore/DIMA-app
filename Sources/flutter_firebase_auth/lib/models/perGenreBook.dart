@@ -16,4 +16,9 @@ class PerGenreBook {
     perGenreBook['thumbnail'] = thumbnail;
     return perGenreBook;
   }
+
+  @override
+  String toString() {
+    return 'PerGenreBook{id: $id, title: $title, author: $author, thumbnail: $thumbnail}';
+  }
 }

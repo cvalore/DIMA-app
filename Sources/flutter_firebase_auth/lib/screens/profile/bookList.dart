@@ -80,8 +80,6 @@ class _BookListState extends State<BookList> {
               ),
               onTap: () async {
                 InsertedBook book = await _db.getBook(index);
-                dynamic result = await _db.removeBook(index, book);
-                //TODO check result
                 Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
                 List<String> bookPickedFilePaths = List<String>();
                 ListResult lr = await bookRef.listAll();

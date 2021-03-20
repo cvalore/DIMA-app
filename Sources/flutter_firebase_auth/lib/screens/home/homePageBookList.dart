@@ -8,12 +8,25 @@ import 'package:flutter_firebase_auth/shared/loading.dart';
 class HomePageBookList extends StatelessWidget {
 
   final String genre;
-  final List<PerGenreBook> books;
+  final List<dynamic> books;
 
   const HomePageBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    List<PerGenreBook> perGenreBooks = List<PerGenreBook>();
+    for(dynamic b in books) {
+      perGenreBooks.add(
+        PerGenreBook(
+          id: b.keys.elementAt(0).toString(),
+          title: b[b.keys.elementAt(0).toString()]["title"],
+          author: b[b.keys.elementAt(0).toString()]["author"],
+          thumbnail: b[b.keys.elementAt(0).toString()]["thumbnail"],
+        )
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -33,7 +46,7 @@ class HomePageBookList extends StatelessWidget {
           child: ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
             scrollDirection: Axis.horizontal,
-            itemCount: books.length,
+            itemCount: perGenreBooks.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () => print('Tapped'),
@@ -44,7 +57,7 @@ class HomePageBookList extends StatelessWidget {
                       height: 130.0,
                       width: 130.0,
                       child: CachedNetworkImage(
-                        imageUrl: "http://books.google.com/books/content?id=k_eWzQEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+                        imageUrl: perGenreBooks[index].thumbnail,
                         placeholder: (context, url) => Loading(),
                         width: imageWidth,
                         height: imageHeight,
