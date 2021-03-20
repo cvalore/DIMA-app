@@ -17,14 +17,16 @@ class HomePageBookList extends StatelessWidget {
 
     List<PerGenreBook> perGenreBooks = List<PerGenreBook>();
     for(dynamic b in books) {
-      perGenreBooks.add(
-        PerGenreBook(
-          id: b.keys.elementAt(0).toString(),
-          title: b[b.keys.elementAt(0).toString()]["title"],
-          author: b[b.keys.elementAt(0).toString()]["author"],
-          thumbnail: b[b.keys.elementAt(0).toString()]["thumbnail"],
-        )
-      );
+      if(b != null) {
+        perGenreBooks.add(
+            PerGenreBook(
+              id: b.keys.elementAt(0).toString(),
+              title: b[b.keys.elementAt(0).toString()]["title"],
+              author: b[b.keys.elementAt(0).toString()]["author"],
+              thumbnail: b[b.keys.elementAt(0).toString()]["thumbnail"],
+            )
+        );
+      }
     }
 
     return Column(
@@ -56,12 +58,20 @@ class HomePageBookList extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 16.0),
                       height: 130.0,
                       width: 130.0,
-                      child: CachedNetworkImage(
-                        imageUrl: perGenreBooks[index].thumbnail,
-                        placeholder: (context, url) => Loading(),
-                        width: imageWidth,
-                        height: imageHeight,
-                      ),
+                      child:
+                        perGenreBooks[index].thumbnail != null &&
+                          perGenreBooks[index].thumbnail.toString() != "" ?
+                            CachedNetworkImage(
+                              imageUrl: perGenreBooks[index].thumbnail,
+                              placeholder: (context, url) => Loading(),
+                              width: imageWidth,
+                              height: imageHeight,
+                            ) :
+                            Image(
+                              image: AssetImage("assets/images/no_image_available.png"),
+                              width: imageWidth,
+                              height: imageHeight,
+                            ),
                     ),
                   ],
                 ),

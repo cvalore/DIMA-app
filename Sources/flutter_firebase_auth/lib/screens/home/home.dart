@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
     return StreamProvider<Map<String,dynamic>>.value(
       value: _db.perGenreBooks,
       child: DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           key: scaffoldKey,
           //backgroundColor: Colors.blueGrey[50],
@@ -81,9 +81,8 @@ class _HomeState extends State<Home> {
             bottom: _selectedBottomTab == 0 ?
               TabBar(
                 tabs: <Widget>[
-                  Container(height: 40.0, child: Center(child: Text('All',))),
                   Container(height: 40.0, child: Center(child: Text('For Sale',))),
-                  Container(height: 40.0, child: Center(child: Text('For Exchange',))),
+                  Container(height: 40.0, child: Center(child: Text('My Books',))),
                 ],
               ) :
               null,
@@ -96,8 +95,7 @@ class _HomeState extends State<Home> {
                 TabBarView(
                   children: [
                     HomePage(),
-                    Icon(Icons.attach_money, color: Colors.blueGrey[600],),
-                    Icon(Icons.compare_arrows, color: Colors.blueGrey[600],),
+                    Profile(),
                   ]
                 );
 
