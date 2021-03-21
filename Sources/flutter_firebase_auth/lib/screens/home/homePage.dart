@@ -54,22 +54,31 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    return CustomScrollView(
+    return (books == null || books.length == 0) ?
+    Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text('No books yet, the books you add will appear here',
+            style: TextStyle(color: Colors.blueGrey[300]),),
+          Icon(Icons.menu_book_rounded, color: Colors.blueGrey[300],),
+        ],
+      ),
+    ) :
+    CustomScrollView(
         controller: _scrollController,
         slivers: [
-          if(books == null || books.length == 0)
-            SliverToBoxAdapter(child: Container())
-          else
-            for(int i = 0; i < books.length; i++)
-              SliverPadding(
-                padding: EdgeInsets.only(top: 20.0),
-                sliver: SliverToBoxAdapter(
-                  child: HomePageBookList(
-                      genre: books.keys.elementAt(i).toString(),
-                      books: books[books.keys.elementAt(i).toString()]['books']
-                  ),
+          for(int i = 0; i < books.length; i++)
+            SliverPadding(
+              padding: EdgeInsets.only(top: 20.0),
+              sliver: SliverToBoxAdapter(
+                child: HomePageBookList(
+                    genre: books.keys.elementAt(i).toString(),
+                    books: books[books.keys.elementAt(i).toString()]['books']
                 ),
-              )
+              ),
+            )
         ],
     );
   }

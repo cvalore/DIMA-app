@@ -244,7 +244,8 @@ class DatabaseService {
             await bookCollection.doc(querySnapshot.docs[0].id)
               .get().then((book)
                 {
-                  thumbnail = book['thumbnail'];
+                  thumbnail = book.data().containsKey("thumbnail") ?
+                    book['thumbnail'] : null;
                   availableNum = book['availableNum'];
                   if (availableNum == 1){
                     //remove all the document
