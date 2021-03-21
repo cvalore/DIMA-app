@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
-import 'package:flutter_firebase_auth/unused/addBook.dart';
+import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
-import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
@@ -74,7 +73,7 @@ void main() {
            ),
            home: Wrapper(),
            routes: {
-             Profile.routeName: (context) => Profile(),
+             MyBooks.routeName: (context) => MyBooks(),
              Subscribe.routeName: (context) => Subscribe(),
              CommentBox.routeName: (context) => CommentBox(),
              CategoryBox.routeName: (context) => CategoryBox(),
