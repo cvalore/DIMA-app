@@ -46,11 +46,6 @@ class _BookInsertState extends State<BookInsert> {
     _db = DatabaseService(user: user);
 
     return Scaffold(
-      /*appBar: AppBar(
-        backgroundColor: Colors.blueGrey[700],
-        elevation: 0.0,
-        title: changeAppBar(currentPageValue),
-      ),*/
       resizeToAvoidBottomInset: false,
       floatingActionButton: currentPageValue == pageViewSize - 1 ?
           FloatingActionButton.extended(
@@ -116,7 +111,8 @@ class _BookInsertState extends State<BookInsert> {
               setSelected: setSelected,
               selectedBook: widget.selectedBook,
               showDots: true,
-              controller: controller
+              controller: controller,
+              appBarHeight: Scaffold.of(context).appBarMaxHeight,
             ),
             AddBookUserInfo(insertedBook: _insertedBook, edit: false,),
           ],
@@ -124,78 +120,14 @@ class _BookInsertState extends State<BookInsert> {
         PageView(
           controller: controller,
           children: <Widget>[
-            AddBookSelection(setSelected: setSelected, selectedBook: widget.selectedBook, showDots: false,),
+            AddBookSelection(
+              setSelected: setSelected,
+              selectedBook: widget.selectedBook,
+              showDots: false,
+              appBarHeight: Scaffold.of(context).appBarMaxHeight,
+            ),
           ],
         )
-    );
-  }
-
-  Widget changeAppBar(int page) {
-    //print(page);
-      if(page == 0)
-        return Text("Insert book");
-      else if(page == 1)
-        return Text("Book status");
-      else if(page == 2)
-        return Text("Insert images");
-  }
-
-  Widget backAndForthButtons(double height) {
-
-    return Container(
-      height: height,
-      child: Row(
-        children: [
-          Expanded(
-              flex: 3,
-              child: currentPageValue == 0 ?
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                  ) :
-                  ElevatedButton (
-                    child: Text("Previous"),
-                    onPressed: () {
-                      if (controller.hasClients) {
-                        controller.animateToPage(
-                          currentPageValue = currentPageValue - 1,
-                          duration: const Duration(milliseconds: 400),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                  )
-          ),
-          Expanded(
-              flex: 6,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.height * 0.1,
-              ),
-          ),
-          Expanded(
-              flex: 3,
-              child:  currentPageValue == (pageViewSize - 1)  ?
-                ElevatedButton (
-                  child: Text("Upload"),
-                  onPressed: () {
-                    //_db.uploadBook();
-                  },
-                ) :
-                ElevatedButton (
-                  child: Text("Next"),
-                  onPressed: () {
-                    if (controller.hasClients) {
-                      controller.animateToPage(
-                        currentPageValue++,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                      );
-                    }
-                  },
-                )
-          ),
-        ],
-      ),
     );
   }
 }

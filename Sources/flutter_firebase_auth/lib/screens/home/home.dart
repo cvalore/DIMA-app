@@ -35,7 +35,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),
       Center(child: Text('TODO:// Search books',
@@ -64,6 +63,7 @@ class _HomeState extends State<Home> {
         length: 2,
         child: Scaffold(
           key: scaffoldKey,
+          resizeToAvoidBottomInset: false,
           //backgroundColor: Colors.blueGrey[50],
           appBar: AppBar(
             //backgroundColor: Colors.blueGrey[700],
@@ -89,7 +89,6 @@ class _HomeState extends State<Home> {
           ),
           body: Builder(
             builder: (BuildContext context) {
-
               return _selectedBottomTab != 0 ?
                 _widgetsBottomOptions.elementAt(_selectedBottomTab) :
                 TabBarView(
