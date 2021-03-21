@@ -95,18 +95,17 @@ class _CategoryBoxState extends State<CategoryBox> {
           itemCount: genres.length,
           itemBuilder: (context, index) {
             final genre = genres[index];
-            return ListTile(
+            return RadioListTile(
               title: Text(genre),
-              trailing: Radio(
-                value: genre,
-                groupValue: chosenGenre,
-                onChanged: (value) {
-                  setState(() {
-                    chosenGenre = value;
-                  });
-                  Navigator.pop(context, chosenGenre);
-                },
-              ),
+              value: genre,
+              controlAffinity: ListTileControlAffinity.trailing,
+              groupValue: chosenGenre,
+              onChanged: (value) {
+                setState(() {
+                  chosenGenre = value;
+                });
+                Navigator.pop(context, chosenGenre);
+              },
             );
           }),
     );
