@@ -15,6 +15,9 @@ class BottomTabs extends StatelessWidget {
     CustomUser user = Provider.of<CustomUser>(context);
 
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      showUnselectedLabels: false,
+      showSelectedLabels: true,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined),

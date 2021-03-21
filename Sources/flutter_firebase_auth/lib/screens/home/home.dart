@@ -45,7 +45,6 @@ class _HomeState extends State<Home> {
           editGenre: "",
         ),
         setIndex: setIndex,
-        fatherContext: context,
       ),
       Center(child: Text('TODO:// Forum',
         style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),

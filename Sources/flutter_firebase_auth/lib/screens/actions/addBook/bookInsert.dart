@@ -14,10 +14,9 @@ class BookInsert extends StatefulWidget {
 
   final AddBookParameters param;
   final void Function(int) setIndex;
-  final BuildContext fatherContext;
   BookGeneralInfo selectedBook;
 
-  BookInsert({Key key, this.param, this.setIndex, this.fatherContext, this.selectedBook}) : super(key: key);
+  BookInsert({Key key, this.param, this.setIndex, this.selectedBook}) : super(key: key);
 
   @override
   _BookInsertState createState() => _BookInsertState();
@@ -61,7 +60,7 @@ class _BookInsertState extends State<BookInsert> {
                     );
                     // Find the Scaffold in the widget tree and use
                     // it to show a SnackBar.
-                  Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+                  Scaffold.of(context).showSnackBar(snackBar);
               } else if (_insertedBook.price == null || _insertedBook.price == 0.0) {
                   final snackBar = SnackBar(
                     duration: Duration(seconds: 1),
@@ -71,7 +70,7 @@ class _BookInsertState extends State<BookInsert> {
                   );
                   // Find the Scaffold in the widget tree and use
                   // it to show a SnackBar.
-                  Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+                  Scaffold.of(context).showSnackBar(snackBar);
               } else {
                   _insertedBook.setIdTitleAuthorIsbn(
                       widget.selectedBook.id,
@@ -90,7 +89,7 @@ class _BookInsertState extends State<BookInsert> {
                   );
                   // Find the Scaffold in the widget tree and use
                   // it to show a SnackBar.
-                  Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+                  Scaffold.of(context).showSnackBar(snackBar);
                 }
               }
             },
