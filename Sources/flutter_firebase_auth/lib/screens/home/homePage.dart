@@ -1,13 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/home/homePageBookList.dart';
-import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

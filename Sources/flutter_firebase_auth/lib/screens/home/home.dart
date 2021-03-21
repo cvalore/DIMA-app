@@ -1,14 +1,13 @@
-import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/home/homePage.dart';
-import 'package:flutter_firebase_auth/screens/profile/profile.dart';
+import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
+import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -95,7 +94,7 @@ class _HomeState extends State<Home> {
                 TabBarView(
                   children: [
                     HomePage(),
-                    Profile(),
+                    MyBooks(),
                   ]
                 );
 
