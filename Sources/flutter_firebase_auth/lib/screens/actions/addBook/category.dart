@@ -91,14 +91,29 @@ class _CategoryBoxState extends State<CategoryBox> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Categories"),
       ),
-      body: ListView.builder(
+      backgroundColor: Colors.black,
+      body: Theme(
+        data: Theme.of(context).copyWith(
+            unselectedWidgetColor: Colors.white,
+            disabledColor: Colors.white10,
+        ),
+        child: ListView.separated(
+          separatorBuilder: (context, index) {
+            return Divider(
+              color: Colors.white,
+              indent: 15.0,
+              endIndent: 15.0,
+            );
+          },
           itemCount: genres.length,
           itemBuilder: (context, index) {
             final genre = genres[index];
             return RadioListTile(
-              title: Text(genre),
+              activeColor: Colors.white,
+              title: Text(genre, style: TextStyle(color: Colors.white),),
               value: genre,
               controlAffinity: ListTileControlAffinity.trailing,
               groupValue: chosenGenre,
@@ -109,7 +124,9 @@ class _CategoryBoxState extends State<CategoryBox> {
                 Navigator.pop(context, chosenGenre);
               },
             );
-          }),
+          }
+        ),
+      ),
     );
   }
 }

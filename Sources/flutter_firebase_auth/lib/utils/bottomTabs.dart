@@ -65,6 +65,7 @@ class BottomTabs extends StatelessWidget {
             content: Text(
                 'You need to be logged in to access this functionality'
             ),
+            backgroundColor: Colors.white24,
           );
           // Find the Scaffold in the widget tree and use
           // it to show a SnackBar.

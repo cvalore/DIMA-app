@@ -18,11 +18,7 @@ class MyBooks extends StatelessWidget {
     return StreamProvider<List<InsertedBook>>.value(
       value: _db.userBooks,
       child: Scaffold(
-        /*appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0.0,
-          title: Text('Available books'),
-        ),*/
+        backgroundColor: Colors.black,
         body: BookList(),
       ),
     );

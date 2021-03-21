@@ -59,17 +59,21 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                             hintText: 'Title',
                             hintStyle: TextStyle(color: Colors.grey[500]),
                             filled: true,
-                            fillColor: Colors.grey[100],
+                            fillColor: Colors.white24,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(7.0),
                               ),
                             ),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                borderSide: BorderSide(color: Colors.white)
+                            ),
                             contentPadding: EdgeInsets.only(top: 25.0),
-                        ),
+                          ),
                           textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black, fontSize: 17.0,),
+                          style: TextStyle(color: Colors.white, fontSize: 17.0,),
                           initialValue: 'il signore degli anelli',//just to debug easily,
                           validator: (value) =>
                           value.isEmpty ? 'Enter the book title' : null,
@@ -94,7 +98,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                               hintText: 'Author',
                               hintStyle: TextStyle(color: Colors.grey[500]),
                               filled: true,
-                              fillColor: Colors.grey[100],
+                              fillColor: Colors.white24,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(7.0),
@@ -108,7 +112,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                             ),
                             textAlignVertical: TextAlignVertical.center,
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black, fontSize: 17.0),
+                            style: TextStyle(color: Colors.white, fontSize: 17.0),
                             initialValue: 'tolkien',//just to debug easily,
                             validator: (value) =>
                             value.isEmpty ? 'Enter the book author' : null,
