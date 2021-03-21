@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
@@ -44,9 +45,9 @@ class HomePageBookList extends StatelessWidget {
           ),
         ),
         Container(
-          height: 165.0,
+          height: imageHeight,
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
             scrollDirection: Axis.horizontal,
             itemCount: perGenreBooks.length,
             itemBuilder: (BuildContext context, int index) {
@@ -55,23 +56,50 @@ class HomePageBookList extends StatelessWidget {
                 child: Stack(
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16.0),
-                      height: 130.0,
-                      width: 130.0,
-                      child:
-                        perGenreBooks[index].thumbnail != null &&
+                      decoration: perGenreBooks[index].thumbnail != null &&
                           perGenreBooks[index].thumbnail.toString() != "" ?
-                            CachedNetworkImage(
-                              imageUrl: perGenreBooks[index].thumbnail,
-                              placeholder: (context, url) => Loading(),
-                              width: imageWidth,
-                              height: imageHeight,
-                            ) :
-                            Image(
-                              image: AssetImage("assets/images/no_image_available.png"),
-                              width: imageWidth,
-                              height: imageHeight,
+                      null : BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/no_image_available.png"),
+                          fit: BoxFit.cover,
+                        )
+                      ),
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      height: imageHeight,
+                      width: imageWidth,
+                      child: perGenreBooks[index].thumbnail != null &&
+                          perGenreBooks[index].thumbnail.toString() != "" ?
+                      CachedNetworkImage(
+                        imageUrl: perGenreBooks[index].thumbnail,
+                        placeholder: (context, url) => Loading(),
+                        //width: imageWidth,
+                        //height: imageHeight,
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            width: imageWidth,
+                            height: imageHeight,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 1.0,
+                              ),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              )
                             ),
+                          );
+                        },
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ) : Container(),
                     ),
                   ],
                 ),

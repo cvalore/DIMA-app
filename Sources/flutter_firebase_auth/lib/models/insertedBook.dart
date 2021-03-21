@@ -67,7 +67,14 @@ class InsertedBook {
   }
 
   Map<String, dynamic> generalInfoToMap() {
-    return bookGeneralInfo.toMap();
+    Map<String, dynamic> completeGeneralInfoMap = Map<String, dynamic>();
+    completeGeneralInfoMap.addAll(bookGeneralInfo.toMap());
+    completeGeneralInfoMap.addAll({
+      "availableNum": 1,
+      "exchangeable": exchangeable ? 1 : 0,
+      "haveImages": (imagesPath != null && imagesPath.length != 0) ? 1 : 0,
+    });
+    return completeGeneralInfoMap;
   }
 
   /// returns mapping of the class excluding the bookGeneralInfo attribute

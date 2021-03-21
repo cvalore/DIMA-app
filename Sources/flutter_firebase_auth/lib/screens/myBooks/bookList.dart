@@ -80,6 +80,8 @@ class _BookListState extends State<BookList> {
               ),
               onTap: () async {
                 InsertedBook book = await _db.getBook(index);
+                bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
+                bool wasExchangeable = book.exchangeable;
                 Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
                 List<String> bookPickedFilePaths = List<String>();
                 ListResult lr = await bookRef.listAll();
@@ -118,7 +120,7 @@ class _BookListState extends State<BookList> {
                         floatingActionButton: FloatingActionButton.extended(
                           heroTag: "editSaveBtn",
                           onPressed: () async {
-                            await _db.updateBook(book, index);
+                            await _db.updateBook(book, index, hadImages, wasExchangeable);
                             final snackBar = SnackBar(
                               duration: Duration(seconds: 1),
                               content: Text(
@@ -134,7 +136,8 @@ class _BookListState extends State<BookList> {
                           label: Text("Save"),
                         ),
                         body: AddBookUserInfo(
-                          insertedBook: book, edit: true,
+                          insertedBook: book,
+                          edit: true,
                         ),
                       )
                     )

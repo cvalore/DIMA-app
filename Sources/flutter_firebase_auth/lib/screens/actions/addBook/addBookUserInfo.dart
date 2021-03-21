@@ -55,7 +55,7 @@ class AddBookUserInfo extends StatelessWidget {
               )
             ),
           ),
-          BottomTwoDots(darkerIndex: 2, size: 9.0,)
+          edit ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,)
         ],
       ),
     );
