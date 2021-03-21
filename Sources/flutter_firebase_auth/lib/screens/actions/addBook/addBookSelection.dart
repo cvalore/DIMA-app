@@ -49,33 +49,73 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Flexible(
-                      flex: 1,
-                      child: TextFormField(
-                        //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
+                      flex: 2,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0,),
+                        child: TextFormField(
+                          cursorColor: Colors.black,
+                          //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                           decoration: InputDecoration(
                             hintText: 'Title',
-                          ),
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(7.0),
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(top: 25.0),
+                        ),
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black, fontSize: 17.0,),
                           initialValue: 'il signore degli anelli',//just to debug easily,
                           validator: (value) =>
                           value.isEmpty ? 'Enter the book title' : null,
                           onChanged: (value) {
                             _title = value;
                           }
+                        ),
                       ),
                     ),
                     Flexible(
                       flex: 1,
-                      child: TextFormField(
-                        //decoration: inputFieldDecoration.copyWith(hintText: 'Author'),
-                          decoration: InputDecoration(
-                            hintText: 'Author',
-                          ),
-                          initialValue: 'tolkien',//just to debug easily,
-                          validator: (value) =>
-                          value.isEmpty ? 'Enter the book author' : null,
-                          onChanged: (value) {
-                            _author = value;
-                          }
+                      child: SizedBox(height: 5.0,),
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0,),
+                        child: TextFormField(
+                          cursorColor: Colors.black,
+                          //decoration: inputFieldDecoration.copyWith(hintText: 'Author'),
+                            decoration: InputDecoration(
+                              hintText: 'Author',
+                              hintStyle: TextStyle(color: Colors.grey[500]),
+                              filled: true,
+                              fillColor: Colors.grey[100],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(7.0),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                  borderSide: BorderSide(color: Colors.white)
+                              ),
+                              contentPadding: EdgeInsets.only(top: 25.0),
+                            ),
+                            textAlignVertical: TextAlignVertical.center,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontSize: 17.0),
+                            initialValue: 'tolkien',//just to debug easily,
+                            validator: (value) =>
+                            value.isEmpty ? 'Enter the book author' : null,
+                            onChanged: (value) {
+                              _author = value;
+                            }
+                        ),
                       ),
                     ),
                   ],
@@ -91,16 +131,18 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 child: widget.loading == true ?
                 Container(
                     decoration: BoxDecoration(
+                      color: Colors.black,
                       border: Border.symmetric(
-                        vertical: BorderSide(color: Colors.grey[500]),
+                        vertical: BorderSide(color: Colors.white),
                       ),
                     ),
                     child: Loading()
                 ) : (widget.selectedBook == null ?
                 Container(
                   decoration: BoxDecoration(
+                    //color: Colors.white,
                     border: Border.symmetric(
-                      vertical: BorderSide(color: Colors.grey[500]),
+                      vertical: BorderSide(color: Colors.white),
                     ),
                   ),
                   child: ListView.builder(
@@ -108,8 +150,10 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         child: ListTile(
-                          title: Text(listItems[index]['volumeInfo']['title']),
-                          subtitle: Text(listItems[index]['volumeInfo']['authors'].toString()),
+                          title: Text(listItems[index]['volumeInfo']['title'],
+                            style: TextStyle(color: Colors.white),),
+                          subtitle: Text(listItems[index]['volumeInfo']['authors'].toString(),
+                            style: TextStyle(color: Colors.white),),
                           onTap: () {
                             setState(() {
                               widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);
@@ -122,8 +166,9 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                           },
                         ),
                         decoration: BoxDecoration(
+                          color: Colors.transparent,
                           border: Border(
-                            bottom: BorderSide(width: 0.3),
+                            bottom: BorderSide(width: 0.3, color: Colors.white),
                           ),
                         ),
                       );
@@ -133,14 +178,14 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 Container(
                   child: ListView(
                     children: <Widget>[
-                      Text(widget.selectedBook.title, textAlign: TextAlign.center,),
-                      Text('by ' + widget.selectedBook.author, style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                      Text(widget.selectedBook.title, textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
+                      Text('by ' + widget.selectedBook.author, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white), textAlign: TextAlign.center,),
                       Text(''),
                       ((widget.selectedBook.publisher != null) & (widget.selectedBook.publishedDate != null)) ?
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(widget.selectedBook.publisher + ' ' + widget.selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic),),
+                          Text(widget.selectedBook.publisher + ' ' + widget.selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),),
                           Text(''),
                         ],
                       ) : Container(),
@@ -153,10 +198,10 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       ) :
                       Container(),
                       Text(''),
-                      Text('Description', style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text('Description', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                       widget.selectedBook.description != null ?
-                      Text(widget.selectedBook.description, textAlign: TextAlign.justify,) :
-                      Text('No description provided', style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                      Text(widget.selectedBook.description, textAlign: TextAlign.justify, style: TextStyle(color: Colors.white),) :
+                      Text('No description provided', style: TextStyle(fontStyle: FontStyle.italic,color: Colors.white), textAlign: TextAlign.center,),
                       Text(''),
                       /*
                       Text('ISBN 10', style: TextStyle(fontWeight: FontWeight.bold),),
@@ -167,8 +212,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('ISBN 13', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text(widget.selectedBook.isbn13),
+                          Text('ISBN 13', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                          Text(widget.selectedBook.isbn13, style: TextStyle(color: Colors.white),),
                           Text('')
                         ],
                       ) : Container(),
@@ -176,8 +221,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Page count', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text(widget.selectedBook.pageCount.toString()),
+                          Text('Page count', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                          Text(widget.selectedBook.pageCount.toString(), style: TextStyle(color: Colors.white),),
                           Text(''),
                         ],
                       ) : Container(),
@@ -185,8 +230,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Categories', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text(widget.selectedBook.categories.toString()),
+                          Text('Categories', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                          Text(widget.selectedBook.categories.toString(), style: TextStyle(color: Colors.white)),
                           Text(''),
                         ],
                       ) : Container(),
@@ -194,11 +239,11 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Average rating', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('Average rating', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Text(widget.selectedBook.averageRating.floor().toString()),
+                              Text(widget.selectedBook.averageRating.floor().toString(), style: TextStyle(color: Colors.white),),
                               Text('  '),
                               for(var i = 0; i < 5 && widget.selectedBook.averageRating != null; i++)
                                 Icon(i > widget.selectedBook.averageRating - 1 ?
@@ -214,8 +259,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text(widget.selectedBook.ratingsCount.toString()),
+                          Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                          Text(widget.selectedBook.ratingsCount.toString(), style: TextStyle(color: Colors.white)),
                           Text(''),
                         ],
                       ) : Container(),
@@ -223,8 +268,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Language', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text(widget.selectedBook.language.toString().toUpperCase()),
+                          Text('Language', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                          Text(widget.selectedBook.language.toString().toUpperCase(), style: TextStyle(color: Colors.white),),
                         ],
                       ) : Container(),
                     ],
@@ -246,7 +291,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 hoverElevation: 0.0,
                 highlightElevation: 0.0,
                 backgroundColor: Colors.transparent,
-                child: Icon(Icons.search, color: Colors.blueGrey[600],size: 35.0),
+                child: Icon(Icons.search, color: Colors.white,size: 35.0),
                 onPressed: () async {
                   if(_formKey.currentState.validate()) {
                     setState(() {

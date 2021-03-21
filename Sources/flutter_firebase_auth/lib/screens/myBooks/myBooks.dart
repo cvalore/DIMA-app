@@ -19,7 +19,7 @@ class MyBooks extends StatelessWidget {
       value: _db.userBooks,
       child: Scaffold(
         /*appBar: AppBar(
-          backgroundColor: Colors.blueGrey[700],
+          backgroundColor: Colors.black,
           elevation: 0.0,
           title: Text('Available books'),
         ),*/

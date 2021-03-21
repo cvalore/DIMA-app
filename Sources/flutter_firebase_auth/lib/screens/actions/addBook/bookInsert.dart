@@ -45,14 +45,17 @@ class _BookInsertState extends State<BookInsert> {
     _db = DatabaseService(user: user);
 
     return Scaffold(
+      backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       floatingActionButton: currentPageValue == pageViewSize - 1 ?
           FloatingActionButton.extended(
+            backgroundColor: Colors.white24,
             heroTag: "saveBtn",
             onPressed: () async {
               if (widget.selectedBook.title != null) {
                 if ( _insertedBook.category == null || _insertedBook.category == '') {
                   final snackBar = SnackBar(
+                    backgroundColor: Colors.white24,
                     duration: Duration(seconds: 1),
                     content: Text(
                       'You need to insert book category',
@@ -63,6 +66,7 @@ class _BookInsertState extends State<BookInsert> {
                   Scaffold.of(context).showSnackBar(snackBar);
               } else if (_insertedBook.price == null || _insertedBook.price == 0.0) {
                   final snackBar = SnackBar(
+                    backgroundColor: Colors.white24,
                     duration: Duration(seconds: 1),
                     content: Text(
                       'You need to insert a price for the book',
@@ -82,6 +86,7 @@ class _BookInsertState extends State<BookInsert> {
                   await _db.addUserBook(_insertedBook);
                   widget.setIndex(0);
                   final snackBar = SnackBar(
+                    backgroundColor: Colors.white24,
                     duration: Duration(seconds: 1),
                     content: Text(
                       'Book added successfully',
@@ -93,8 +98,8 @@ class _BookInsertState extends State<BookInsert> {
                 }
               }
             },
-            icon: Icon(Icons.save),
-            label: Text("Save"),
+            icon: Icon(Icons.save, color: Colors.white),
+            label: Text("Save", style: TextStyle(color: Colors.white),),
           ) : null,
       body: widget.selectedBook != null ?
         PageView(

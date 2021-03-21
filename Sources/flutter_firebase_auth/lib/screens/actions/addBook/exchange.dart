@@ -33,7 +33,8 @@ class _ExchangeState extends State<Exchange> {
                   style: TextStyle(
                       fontSize: 20,
                       fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
                   ),
                 ),
               ),
@@ -41,8 +42,8 @@ class _ExchangeState extends State<Exchange> {
             Expanded(
               flex: 1,
               child: widget.insertedBook.exchangeable ?
-                  Icon((Icons.check_box_outlined)) :
-                  Icon((Icons.check_box_outline_blank))
+                  Icon(Icons.check_box_outlined, color: Colors.white) :
+                  Icon(Icons.check_box_outline_blank, color: Colors.white)
             )
           ],
         ),

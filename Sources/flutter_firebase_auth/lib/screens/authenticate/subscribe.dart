@@ -30,7 +30,7 @@ class _SubscribeState extends State<Subscribe> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Subscribe"),
-        backgroundColor: Colors.blueGrey[700],
+        backgroundColor: Colors.grey[900],
         elevation: 0.0,
       ),
       resizeToAvoidBottomInset: false,

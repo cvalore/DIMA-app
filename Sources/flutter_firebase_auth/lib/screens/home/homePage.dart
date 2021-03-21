@@ -56,8 +56,8 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text('No books yet, the books for sale will appear here',
-            style: TextStyle(color: Colors.blueGrey[300]),),
-          Icon(Icons.menu_book_rounded, color: Colors.blueGrey[300],),
+            style: TextStyle(color: Colors.white),),
+          Icon(Icons.menu_book_rounded, color: Colors.white,),
         ],
       ),
     ) :

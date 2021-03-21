@@ -66,7 +66,7 @@ Widget customSizedBox(height) {
   return SizedBox(
     height: height,
     child: Container(
-      color: Colors.black,
+      color: Colors.white,
     ),
   );
 }

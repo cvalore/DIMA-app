@@ -38,7 +38,7 @@ class HomePageBookList extends StatelessWidget {
           child: Text(
             genre,
             style: TextStyle(
-              color: Colors.blueGrey[700],
+              color: Colors.white,
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
@@ -61,10 +61,6 @@ class HomePageBookList extends StatelessWidget {
                       null : BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
-                          ),
                         image: DecorationImage(
                           image: AssetImage("assets/images/no_image_available.png"),
                           fit: BoxFit.cover,
@@ -87,10 +83,6 @@ class HomePageBookList extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 1.0,
-                              ),
                               image: DecorationImage(
                                 image: imageProvider,
                                 fit: BoxFit.cover,

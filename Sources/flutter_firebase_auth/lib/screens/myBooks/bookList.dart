@@ -40,8 +40,8 @@ class _BookListState extends State<BookList> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text('No books yet, the books you add will appear here',
-            style: TextStyle(color: Colors.blueGrey[300]),),
-            Icon(Icons.menu_book_rounded, color: Colors.blueGrey[300],),
+            style: TextStyle(color: Colors.white),),
+            Icon(Icons.menu_book_rounded, color: Colors.white,),
           ],
         ),
       );
@@ -104,7 +104,7 @@ class _BookListState extends State<BookList> {
                     builder: (newContext) =>
                       Scaffold(
                         appBar: AppBar(
-                          //backgroundColor: Colors.blueGrey[700],
+                          //backgroundColor: Colors.black,
                           elevation: 0.0,
                           title: Text('BookYourBook'),
                           actions: <Widget>[

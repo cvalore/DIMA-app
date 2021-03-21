@@ -41,7 +41,8 @@ class _PriceState extends State<Price> {
                           style: TextStyle(
                               fontSize: 20,
                               fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
                           ),
                         ),
                       ),
@@ -50,14 +51,15 @@ class _PriceState extends State<Price> {
                     Expanded(
                         flex: 3,
                         child: Text(widget.insertedBook.price.toString() + ' €',
-                            textAlign: TextAlign.right)) :
+                            textAlign: TextAlign.right,
+                        style: TextStyle(color: Colors.white),)) :
                     Container(),
                   ],
                 )
             ),
             Expanded(
               flex: 1,
-              child: Icon(Icons.arrow_forward_ios),
+              child: Icon(Icons.arrow_forward_ios, color: Colors.white),
             )
           ],
         ),

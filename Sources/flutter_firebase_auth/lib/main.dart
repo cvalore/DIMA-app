@@ -66,7 +66,7 @@ void main() {
          child: MaterialApp(
            theme: ThemeData(
              buttonColor: Colors.white12,
-             primarySwatch: Colors.blueGrey,
+             //primarySwatch: Colors.blueGrey[600],
              buttonTheme: const ButtonThemeData(
                textTheme: ButtonTextTheme.primary
              )

@@ -15,6 +15,7 @@ class BottomTabs extends StatelessWidget {
     CustomUser user = Provider.of<CustomUser>(context);
 
     return BottomNavigationBar(
+      backgroundColor: Colors.black,
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: false,
       showSelectedLabels: true,
@@ -41,8 +42,8 @@ class BottomTabs extends StatelessWidget {
         ),
       ],
       currentIndex: getIndex(),
-      unselectedItemColor: Colors.blueGrey[600],
-      selectedItemColor: Colors.blueGrey[600],
+      unselectedItemColor: Colors.white,
+      selectedItemColor: Colors.white,
       //add line below if wanted, probably better if not, since icons are not equally spaced
       //showUnselectedLabels: true,
       onTap: (index) {
