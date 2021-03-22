@@ -199,38 +199,3 @@ class _ImageServiceState extends State<ImageService> {
     );
   }
 }
-
-/*
-class ImageDisplay {
-  PickedFile _imageFile;
-  ImageDisplay(this._imageFile);
-  Widget buildImage(BuildContext context){
-    return Container(
-      decoration: BoxDecoration(
-          shape: BoxShape.rectangle
-      ),
-      padding: EdgeInsets.all(5.0),
-
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Stack(
-          children: [
-            Image.file(
-                File(_imageFile.path)
-            ),
-            Positioned(
-                child: IconButton(
-                    icon: Icon(Icons.cancel_outlined),
-                    onPressed: () {
-
-                    },
-                ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
- */

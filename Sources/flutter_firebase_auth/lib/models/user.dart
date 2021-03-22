@@ -7,12 +7,17 @@ class CustomUser {
   final String username;
   final bool isAnonymous;
   final List<InsertedBook> books;
+  String userProfileImagePath;
   int numberOfInsertedItems;
 
-  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems});
+  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems, this.userProfileImagePath});
 
-  void setNumberOfInsetedItems(int num){
+  void setNumberOfInsertedItems(int num){
     this.numberOfInsertedItems = num;
+  }
+
+  void setUserProfileImagePath(String userProfileImagePath){
+    this.userProfileImagePath = userProfileImagePath;
   }
 
 

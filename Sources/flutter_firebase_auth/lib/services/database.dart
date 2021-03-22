@@ -341,7 +341,7 @@ class DatabaseService {
       }
        */
       user = CustomUser(userMap['uid'], userMap['email'], userMap['isAnonymous'],
-          username: userMap['username'], numberOfInsertedItems: userMap['numberOfInsertedItems']);
+          username: 'Sono io', numberOfInsertedItems: userMap['numberOfInsertedItems']);
     }
     return user;
   }
@@ -362,6 +362,7 @@ class DatabaseService {
   Stream<CustomUser> get userInfo{
     Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
             .map(_userInfoFromSnapshot);
+    return result;
   }
 
   Future removeBook(int index, InsertedBook book) async {

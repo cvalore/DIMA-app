@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/profileHomePage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:provider/provider.dart';
 
 class VisualizeMyProfile extends StatefulWidget {
 
@@ -9,7 +10,7 @@ class VisualizeMyProfile extends StatefulWidget {
   CustomUser user;
   //Image avatar;
 
-  VisualizeMyProfile({Key key, @required this.user, @required this.height}) : super(key: key);
+  VisualizeMyProfile({Key key, @required this.height}) : super(key: key);
 
   @override
   _VisualizeMyProfileState createState() => _VisualizeMyProfileState();
@@ -18,7 +19,10 @@ class VisualizeMyProfile extends StatefulWidget {
 class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
   @override
   Widget build(BuildContext context) {
+
+    CustomUser user = Provider.of<CustomUser>(context);
     DatabaseService _db = DatabaseService(); //here we need the user uid
+
     return Container(
       height: widget.height,
       child: GestureDetector(
@@ -42,25 +46,37 @@ class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
                       flex: 5,
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: new BoxDecoration(
-                          image: new DecorationImage(
-                            image: new NetworkImage('http://i.imgur.com/QSev0hg.jpg'),
-                            fit: BoxFit.cover,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: user.userProfileImagePath == null ?
+                              AssetImage('assets/images/no_image_available.png') :
+                              AssetImage('assets/images/no_image_available.png'),    //TODO nell'else qui mettere un'immagine dell'utente
+                            fit: BoxFit.contain,
                           ),
                           borderRadius: new BorderRadius.all(new Radius.circular(50.0)),
+                          /*
                           border: new Border.all(
                             color: Colors.red,
                             width: 4.0,
                           ),
+
+                           */
                         ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        Text(widget.user.username),
-                        Text('Recensioni?')
-                      ],
-                    )
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        children: [
+                          Text(user.username,
+                            style: TextStyle(
+                              color: Colors.white70
+                            ),
+                          ),
+                          Text('Recensioni?')
+                        ],
+                      )
+                    ),
                   ],
                 )
             ),
