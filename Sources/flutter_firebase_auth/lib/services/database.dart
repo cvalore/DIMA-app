@@ -296,17 +296,20 @@ class DatabaseService {
 
 
   BookPerGenreUserMap _bookPerGenreUserListFromSnapshot(DocumentSnapshot documentSnapshot) {
-    Map<String,dynamic> result = Map<String,dynamic>();
+    Map<int,dynamic> result = Map<int,dynamic>();
     if (documentSnapshot.exists) {
+      int index = 0;
       for (var book in documentSnapshot.get("books")) {
-        if(result.containsKey(book['category'])) {
+        /*if(result.containsKey(book['category'])) {
           result[book['category']].add(book);
         }
-        else {
+        else {*/
           result.addAll({
-            book['category'] : [book],
+            //book['category'] : [book],
+            index : book,
           });
-        }
+          index = index + 1;
+        //}
       }
     }
     return BookPerGenreUserMap(result);
