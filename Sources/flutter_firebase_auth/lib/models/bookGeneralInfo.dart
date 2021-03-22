@@ -26,8 +26,8 @@ class BookGeneralInfo {
       this.language,
       this.pageCount,
       this.averageRating,
-      this.ratingsCount);
-
+      this.ratingsCount
+  );
 
   //TODO check if it is ok
   Map<String, dynamic> toMap() {
