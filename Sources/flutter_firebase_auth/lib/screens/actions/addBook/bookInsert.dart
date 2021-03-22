@@ -118,7 +118,7 @@ class _BookInsertState extends State<BookInsert> {
               controller: controller,
               appBarHeight: Scaffold.of(context).appBarMaxHeight,
             ),
-            AddBookUserInfo(insertedBook: _insertedBook, edit: false,),
+            AddBookUserInfo(insertedBook: _insertedBook, edit: false, justView: false,),
           ],
         ) :
         PageView(

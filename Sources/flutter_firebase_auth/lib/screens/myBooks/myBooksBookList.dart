@@ -79,29 +79,10 @@ class MyBooksBookList extends StatelessWidget {
                             ],
                           ),
                           backgroundColor: Colors.black,
-                          floatingActionButton: FloatingActionButton.extended(
-                            backgroundColor: Colors.white24,
-                            heroTag: "editSaveBtn",
-                            onPressed: () async {
-                              await _db.updateBook(book, index, hadImages, wasExchangeable);
-                              final snackBar = SnackBar(
-                                duration: Duration(seconds: 1),
-                                content: Text(
-                                  'Book updated successfully',
-                                ),
-                                backgroundColor: Colors.white24,
-                              );
-                              Navigator.pop(context);
-                              // Find the Scaffold in the widget tree and use
-                              // it to show a SnackBar.
-                              Scaffold.of(context).showSnackBar(snackBar);
-                            },
-                            icon: Icon(Icons.save),
-                            label: Text("Save"),
-                          ),
                           body: AddBookUserInfo(
                             insertedBook: book,
-                            edit: true,
+                            edit: false,
+                            justView: true,
                           ),
                         )
                 )

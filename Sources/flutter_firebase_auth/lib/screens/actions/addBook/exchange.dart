@@ -5,8 +5,9 @@ class Exchange extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
+  bool justView;
 
-  Exchange({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
+  Exchange({Key key, @required this.insertedBook, @required this.height, @required this.justView}) : super(key: key);
 
   @override
   _ExchangeState createState() => _ExchangeState();
@@ -19,9 +20,11 @@ class _ExchangeState extends State<Exchange> {
       height: widget.height,
       child: GestureDetector(
         onTap: () async {
-          setState(() {
-            widget.insertedBook.toggleExchangeable();
-          });
+          if(!widget.justView) {
+            setState(() {
+              widget.insertedBook.toggleExchangeable();
+            });
+          }
         },
         child: Row(
           children: [

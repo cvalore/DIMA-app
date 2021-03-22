@@ -7,8 +7,9 @@ class Category extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
+  bool justView;
 
-  Category({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
+  Category({Key key, @required this.insertedBook, @required this.height, @required this.justView}) : super(key: key);
 
   @override
   _CategoryState createState() => _CategoryState();
@@ -21,11 +22,15 @@ class _CategoryState extends State<Category> {
       height: widget.height,
         child: GestureDetector(
           onTap: () async {
-            dynamic result = await Navigator.pushNamed(context, CategoryBox.routeName, arguments: widget.insertedBook.category);
-            setState(() {
-              if(result != null)
-                widget.insertedBook.setCategory(result);
-            });
+            if(!widget.justView) {
+              dynamic result = await Navigator.pushNamed(
+                  context, CategoryBox.routeName,
+                  arguments: widget.insertedBook.category);
+              setState(() {
+                if (result != null)
+                  widget.insertedBook.setCategory(result);
+              });
+            }
           },
           child: Row(
             children: [
