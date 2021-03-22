@@ -44,6 +44,7 @@ class _HomeState extends State<Home> {
           bookIndex: -1,
           editPurpose: "",
           editGenre: "",
+
         ),
         setIndex: setIndex,
         fatherContext: context,
