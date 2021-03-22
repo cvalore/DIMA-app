@@ -38,7 +38,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
 
     Map<String,dynamic> books = Provider.of<BookPerGenreMap>(context) != null ?

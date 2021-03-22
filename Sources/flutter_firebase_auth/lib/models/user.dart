@@ -42,3 +42,13 @@ class CustomUser {
     return user;
   }
 }
+
+
+class AuthCustomUser{
+
+  final String uid;
+  final String email;
+  final bool isAnonymous;
+
+  AuthCustomUser(this.uid, this.email, this.isAnonymous);
+}

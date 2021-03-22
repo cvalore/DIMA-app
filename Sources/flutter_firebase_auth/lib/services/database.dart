@@ -344,7 +344,7 @@ class DatabaseService {
       }
        */
       user = CustomUser(userMap['uid'], userMap['email'], userMap['isAnonymous'],
-          username: 'Sono io', numberOfInsertedItems: userMap['numberOfInsertedItems']);
+          username: userMap['username'], numberOfInsertedItems: userMap['numberOfInsertedItems']);
     }
     return user;
   }

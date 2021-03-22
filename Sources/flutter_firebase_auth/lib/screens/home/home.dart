@@ -54,9 +54,10 @@ class _HomeState extends State<Home> {
       Profile(),
     ];
 
-    CustomUser user = Provider.of<CustomUser>(context);
-    GlobalKey scaffoldKey = GlobalKey();
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
+    GlobalKey scaffoldKey = GlobalKey();
 
     return StreamProvider<BookPerGenreMap>.value(
       value: _db.perGenreBooks,

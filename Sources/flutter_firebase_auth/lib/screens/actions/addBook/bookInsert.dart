@@ -41,8 +41,9 @@ class _BookInsertState extends State<BookInsert> {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
-    _db = DatabaseService(user: user);
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    DatabaseService _db = DatabaseService(user: user);
 
     return Scaffold(
       backgroundColor: Colors.black,

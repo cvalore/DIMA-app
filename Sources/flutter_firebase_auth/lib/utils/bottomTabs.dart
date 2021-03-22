@@ -12,7 +12,7 @@ class BottomTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
+    AuthCustomUser user = Provider.of<AuthCustomUser>(context);
 
     return BottomNavigationBar(
       backgroundColor: Colors.black,

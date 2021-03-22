@@ -22,8 +22,9 @@ class MyBooksBookList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
-    final DatabaseService _db = DatabaseService(user: user);
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    DatabaseService _db = DatabaseService(user: user);
 
     return GridView.count(
       crossAxisCount: 2,

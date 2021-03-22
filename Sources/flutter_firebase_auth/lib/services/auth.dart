@@ -16,15 +16,15 @@ class AuthService {
   bool _signedInGoogle = false;
 
   //create a user obj based on Firebase user
-  CustomUser _userFromFirebaseUser(User user) {
+  AuthCustomUser _userFromFirebaseUser(User user) {
     return user != null ?
-      new CustomUser(user.uid, user.email, user.isAnonymous) :
+      new AuthCustomUser(user.uid, user.email, user.isAnonymous) :
       null;
   }
 
 
   //auth change user stream
-  Stream<CustomUser> get userStream {
+  Stream<AuthCustomUser> get userStream {
     return _auth.authStateChanges().map(
             (User u) => _userFromFirebaseUser(u)
     );

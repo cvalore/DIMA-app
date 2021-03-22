@@ -28,7 +28,8 @@ class _BookListState extends State<BookList> {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     final DatabaseService _db = DatabaseService(user: user);
 
     var books = [];

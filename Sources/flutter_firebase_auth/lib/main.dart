@@ -5,6 +5,8 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
+import 'package:flutter_firebase_auth/screens/profile/favorites.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/profileHomePage.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -62,7 +64,7 @@ void main() {
        if (!_initialized) {
          return Loading();
        }
-       return StreamProvider<CustomUser>.value(
+       return StreamProvider<AuthCustomUser>.value(
          value: AuthService().userStream,
          child: MaterialApp(
            theme: ThemeData(
@@ -80,6 +82,8 @@ void main() {
              CategoryBox.routeName: (context) => CategoryBox(),
              PriceBox.routeName: (context) => PriceBox(),
              ProfileHomePage.routeName: (context) => ProfileHomePage(),
+             FavoritesPage.routeName: (context) => FavoritesPage(),
+             OrdersPage.routeName: (context) => OrdersPage(),
            }
          ),
        );

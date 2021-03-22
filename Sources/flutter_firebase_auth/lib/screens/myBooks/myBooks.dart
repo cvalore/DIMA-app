@@ -40,7 +40,8 @@ class _MyBooksState extends State<MyBooks> {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
 
     Map<int,dynamic> books = Provider.of<BookPerGenreUserMap>(context) != null ?

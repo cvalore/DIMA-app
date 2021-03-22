@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/profileHomePage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 class VisualizeMyProfile extends StatefulWidget {
@@ -21,7 +22,7 @@ class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
   Widget build(BuildContext context) {
 
     CustomUser user = Provider.of<CustomUser>(context);
-    DatabaseService _db = DatabaseService(); //here we need the user uid
+    DatabaseService _db = DatabaseService(user: user);
 
     return Container(
       height: widget.height,
@@ -36,44 +37,38 @@ class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
              // widget.insertedBook.setCategory(result);
           });
         },
-        child: Row(
+        child: user == null ? Loading() :
+        Row(
           children: [
             Expanded(
                 flex: 10,
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 5,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: user.userProfileImagePath == null ?
-                              AssetImage('assets/images/no_image_available.png') :
-                              AssetImage('assets/images/no_image_available.png'),    //TODO nell'else qui mettere un'immagine dell'utente
-                            fit: BoxFit.contain,
-                          ),
-                          borderRadius: new BorderRadius.all(new Radius.circular(50.0)),
-                          /*
-                          border: new Border.all(
-                            color: Colors.red,
-                            width: 4.0,
-                          ),
-
-                           */
+                      flex: 2,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 60.0,
+                        child: CircleAvatar(
+                          backgroundImage: user.userProfileImagePath == null ?
+                            AssetImage('assets/images/no_image_available.png') :
+                            AssetImage('assets/images/no_image_available.png'),
+                          radius: 50.0,
                         ),
                       ),
                     ),
                     Expanded(
                       flex: 3,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(user.username,
                             style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white70
                             ),
-                          ),
-                          Text('Recensioni?')
+                          )
                         ],
                       )
                     ),
