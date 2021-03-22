@@ -17,7 +17,7 @@ class InsertedBook {
   bool exchangeable;
 
 
-  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 3, this.category, this.imagesPath, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false});
+  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 3, this.category, this.imagesPath, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false, this.bookGeneralInfo});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;
@@ -91,6 +91,7 @@ class InsertedBook {
     insertedBook['exchangeable'] = exchangeable ?? false;
     insertedBook['price'] = price ?? 0.0;
     insertedBook['category'] = category ?? "Generic";
+    insertedBook['thumbnail'] = bookGeneralInfo.thumbnail ?? null;
     return insertedBook;
   }
 

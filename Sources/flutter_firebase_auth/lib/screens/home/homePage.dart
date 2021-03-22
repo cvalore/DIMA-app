@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/home/homePageBookList.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,7 +41,9 @@ class _HomePageState extends State<HomePage> {
     CustomUser user = Provider.of<CustomUser>(context);
     _db = DatabaseService(user: user);
 
-    Map<String,dynamic> books = Provider.of<Map<String,dynamic>>(context);
+    Map<String,dynamic> books = Provider.of<BookPerGenreMap>(context) != null ?
+      Provider.of<BookPerGenreMap>(context).result : null;
+
     if(books != null && books.length != 0) {
       books.removeWhere((key, value) {
         bool empty = books[key]['books'] == null ||

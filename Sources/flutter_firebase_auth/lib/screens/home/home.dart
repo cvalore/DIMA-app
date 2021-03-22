@@ -6,6 +6,8 @@ import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
 import 'package:flutter_firebase_auth/screens/profile/profile.dart';
 import 'package:provider/provider.dart';
@@ -56,76 +58,79 @@ class _HomeState extends State<Home> {
     GlobalKey scaffoldKey = GlobalKey();
     _db = DatabaseService(user: user);
 
-    return StreamProvider<Map<String,dynamic>>.value(
+    return StreamProvider<BookPerGenreMap>.value(
       value: _db.perGenreBooks,
-      child: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          key: scaffoldKey,
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.black,
-          appBar: AppBar(
+      child: StreamProvider<BookPerGenreUserMap>.value(
+        value: _db.userBooksPerGenre,
+        child: DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            key: scaffoldKey,
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.black,
-            elevation: 0.0,
-            title: Text('BookYourBook', style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
-              letterSpacing: 1.0,
-            ),),
-            actions: <Widget>[
-              TextButton.icon(
-                icon: Icon(Icons.logout, color: Colors.white,),
-                label: Text(''),
-                onPressed: () async {
-                  await _auth.signOut();
-                },
-              ),
-            ],
-            bottom: _selectedBottomTab == 0 ?
-              TabBar(
-                indicatorColor: Colors.white,
-                tabs: <Widget>[
-                  Container(height: 40.0, child: Center(child: Text('For Sale',))),
-                  Container(height: 40.0, child: Center(child: Text('My Books',))),
-                ],
-              ) :
-              null,
-          ),
-          body: Builder(
-            builder: (BuildContext context) {
-              return _selectedBottomTab != 0 ?
-                _widgetsBottomOptions.elementAt(_selectedBottomTab) :
-                TabBarView(
-                  children: [
-                    HomePage(),
-                    MyBooks(),
-                  ]
-                );
+            appBar: AppBar(
+              backgroundColor: Colors.black,
+              elevation: 0.0,
+              title: Text('BookYourBook', style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
+                letterSpacing: 1.0,
+              ),),
+              actions: <Widget>[
+                TextButton.icon(
+                  icon: Icon(Icons.logout, color: Colors.white,),
+                  label: Text(''),
+                  onPressed: () async {
+                    await _auth.signOut();
+                  },
+                ),
+              ],
+              bottom: _selectedBottomTab == 0 ?
+                TabBar(
+                  indicatorColor: Colors.white,
+                  tabs: <Widget>[
+                    Container(height: 40.0, child: Center(child: Text('For Sale',))),
+                    Container(height: 40.0, child: Center(child: Text('My Books',))),
+                  ],
+                ) :
+                null,
+            ),
+            body: Builder(
+              builder: (BuildContext context) {
+                return _selectedBottomTab != 0 ?
+                  _widgetsBottomOptions.elementAt(_selectedBottomTab) :
+                  TabBarView(
+                    children: [
+                      HomePage(),
+                      MyBooks(),
+                    ]
+                  );
 
-              return _widgetsBottomOptions.elementAt(_selectedBottomTab);
-              /*return _selectedBottomTab != 0 ?
-              _widgetsBottomOptions.elementAt(_selectedBottomTab) :
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: UpperTabs(),
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: _widgetsBottomOptions.elementAt(_selectedBottomTab),
-                  ),
-                ],
-              );*/
-            },
-          ),
-          bottomNavigationBar: BottomTabs(
-              getIndex: getIndex,
-              setIndex: setIndex,
+                return _widgetsBottomOptions.elementAt(_selectedBottomTab);
+                /*return _selectedBottomTab != 0 ?
+                _widgetsBottomOptions.elementAt(_selectedBottomTab) :
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: UpperTabs(),
+                    ),
+                    Expanded(
+                      flex: 10,
+                      child: _widgetsBottomOptions.elementAt(_selectedBottomTab),
+                    ),
+                  ],
+                );*/
+              },
+            ),
+            bottomNavigationBar: BottomTabs(
+                getIndex: getIndex,
+                setIndex: setIndex,
+            ),
           ),
         ),
       ),

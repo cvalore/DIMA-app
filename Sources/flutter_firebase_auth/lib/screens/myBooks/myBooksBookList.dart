@@ -1,16 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 
-class HomePageBookList extends StatelessWidget {
+class MyBooksBookList extends StatelessWidget {
 
   final String genre;
   final List<dynamic> books;
 
-  const HomePageBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
+  const MyBooksBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +22,10 @@ class HomePageBookList extends StatelessWidget {
       if(b != null) {
         perGenreBooks.add(
             PerGenreBook(
-              id: b.keys.elementAt(0).toString(),
-              title: b[b.keys.elementAt(0).toString()]["title"],
-              author: b[b.keys.elementAt(0).toString()]["author"],
-              thumbnail: b[b.keys.elementAt(0).toString()]["thumbnail"],
+              id: b["id"],
+              title: b["title"],
+              author: b["author"],
+              thumbnail: b["thumbnail"],
             )
         );
       }
@@ -51,19 +53,19 @@ class HomePageBookList extends StatelessWidget {
             itemCount: perGenreBooks.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () => print('Tapped'),
+                onTap: () => print('Tapped My Book - TODO: open edit'),
                 child: Stack(
                   children: [
                     Container(
                       decoration: perGenreBooks[index].thumbnail != null &&
                           perGenreBooks[index].thumbnail.toString() != "" ?
                       null : BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/no_image_available.png"),
-                          //fit: BoxFit.cover,
-                        )
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/no_image_available.png"),
+                            //fit: BoxFit.cover,
+                          )
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
                       height: imageHeight,
@@ -80,12 +82,12 @@ class HomePageBookList extends StatelessWidget {
                             width: imageWidth,
                             height: imageHeight,
                             decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                //fit: BoxFit.cover,
-                              )
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  //fit: BoxFit.cover,
+                                )
                             ),
                           );
                         },
@@ -100,5 +102,6 @@ class HomePageBookList extends StatelessWidget {
         ),
       ],
     );
+
   }
 }
