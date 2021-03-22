@@ -317,6 +317,31 @@ class DatabaseService {
     return result;
   }
 
+  CustomUser _userInfoFromSnapshot(DocumentSnapshot documentSnapshot) {
+    CustomUser user;
+    Map<String,dynamic> userMap;
+    List<InsertedBook> books = [];
+
+    if (documentSnapshot.exists) {
+      userMap = documentSnapshot.data();
+      /*
+      for (var book in userMap["books"]) {
+        InsertedBook insertedBook = InsertedBook(
+            title: book['title'],
+            author: book['author'],
+            isbn13: book['isbn'],
+            status: book['status']
+            //TODO add also other info??
+        );
+        books.add(insertedBook);
+      }
+       */
+      user = CustomUser(userMap['uid'], userMap['email'], userMap['isAnonymous'],
+          username: userMap['username'], numberOfInsertedItems: userMap['numberOfInsertedItems']);
+    }
+    return user;
+  }
+
 
   Stream<Map<String,dynamic>> get perGenreBooks{
     Stream<Map<String,dynamic>> result = booksPerGenreCollection.snapshots()
@@ -328,6 +353,11 @@ class DatabaseService {
     Stream<List<InsertedBook>> result =  usersCollection.doc(user.uid).snapshots()
             .map(_bookListFromSnapshot);
     return result;
+  }
+
+  Stream<CustomUser> get userInfo{
+    Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
+            .map(_userInfoFromSnapshot);
   }
 
   Future removeBook(int index, InsertedBook book) async {

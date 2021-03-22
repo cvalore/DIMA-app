@@ -71,7 +71,7 @@ class _CategoryState extends State<Category> {
 
 
 class CategoryBox extends StatefulWidget {
-  static const routeName = 'categoryBox';
+  static const routeName = '/categoryBox';
 
   @override
   _CategoryBoxState createState() => _CategoryBoxState();

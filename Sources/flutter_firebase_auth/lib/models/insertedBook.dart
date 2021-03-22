@@ -1,5 +1,4 @@
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
-import 'package:image_picker/image_picker.dart';
 
 class InsertedBook {
 
