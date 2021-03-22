@@ -19,9 +19,9 @@ class BottomTwoDots extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(Icons.circle, color: index == 0 ? Colors.blueGrey[600] : Colors.blueGrey[100], size: size,),
+          Icon(Icons.circle, color: index == 0 ? Colors.red : Colors.white, size: size,),
           Icon(Icons.circle, color: Colors.transparent, size: 3.0,),
-          Icon(Icons.circle, color: index == 1 ? Colors.blueGrey[600] : Colors.blueGrey[100], size: size,),
+          Icon(Icons.circle, color: index == 1 ? Colors.red : Colors.white, size: size,),
         ],
       ),
     );

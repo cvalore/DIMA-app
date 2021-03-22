@@ -42,7 +42,8 @@ class _CommentState extends State<Comment> {
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
                             ),
                           ),
                         ),
@@ -52,14 +53,15 @@ class _CommentState extends State<Comment> {
                           flex: 3,
                           child: Text(
                               showComment(widget.insertedBook.comment),
-                              textAlign: TextAlign.right)) :
+                              textAlign: TextAlign.right,
+                              style: TextStyle(color: Colors.white),)) :
                       Container(),
                     ],
                   )
               ),
               Expanded(
                   flex: 1,
-                  child: Icon(Icons.arrow_forward_ios),
+                  child: Icon(Icons.arrow_forward_ios, color: Colors.white),
               )
             ],
           ),
@@ -99,27 +101,33 @@ class _CommentBoxState extends State<CommentBox> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Book comment"),
       ),
+      backgroundColor: Colors.black,
       floatingActionButton : FloatingActionButton(
         heroTag: "saveCommentButt",
         child: Icon(Icons.check_outlined),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.white24,
         onPressed: () {
           Navigator.pop(context, comment);
         },
       ),
-      resizeToAvoidBottomPadding: false,
+      //resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[
           Card(
-              color: Colors.white10,
+              color: Colors.white24,
               child: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextFormField(
                   initialValue: args,
                   maxLines: 8,
-                  decoration: InputDecoration.collapsed(hintText: "Enter your comment here"),
+                  decoration: InputDecoration.collapsed(
+                    hintText: "Enter your comment here",
+                    hintStyle: TextStyle(color: Colors.grey[500]),
+                  ),
+                  style: TextStyle(color: Colors.white),
                   onChanged: (value) {
                     setState(() {
                       comment = value;

@@ -55,9 +55,9 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text('No books yet, the books you add will appear here',
-            style: TextStyle(color: Colors.blueGrey[300]),),
-          Icon(Icons.menu_book_rounded, color: Colors.blueGrey[300],),
+          Text('No books yet, the books for sale will appear here',
+            style: TextStyle(color: Colors.white),),
+          Icon(Icons.menu_book_rounded, color: Colors.white,),
         ],
       ),
     ) :
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
         slivers: [
           for(int i = 0; i < books.length; i++)
             SliverPadding(
-              padding: EdgeInsets.only(top: 20.0),
+              padding: EdgeInsets.only(top: 8.0),
               sliver: SliverToBoxAdapter(
                 child: HomePageBookList(
                     genre: books.keys.elementAt(i).toString(),

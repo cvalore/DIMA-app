@@ -15,6 +15,10 @@ class BottomTabs extends StatelessWidget {
     CustomUser user = Provider.of<CustomUser>(context);
 
     return BottomNavigationBar(
+      backgroundColor: Colors.black,
+      type: BottomNavigationBarType.fixed,
+      showUnselectedLabels: false,
+      showSelectedLabels: true,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined),
@@ -38,8 +42,8 @@ class BottomTabs extends StatelessWidget {
         ),
       ],
       currentIndex: getIndex(),
-      unselectedItemColor: Colors.blueGrey[600],
-      selectedItemColor: Colors.blueGrey[600],
+      unselectedItemColor: Colors.white,
+      selectedItemColor: Colors.white,
       //add line below if wanted, probably better if not, since icons are not equally spaced
       //showUnselectedLabels: true,
       onTap: (index) {
@@ -61,6 +65,7 @@ class BottomTabs extends StatelessWidget {
             content: Text(
                 'You need to be logged in to access this functionality'
             ),
+            backgroundColor: Colors.white24,
           );
           // Find the Scaffold in the widget tree and use
           // it to show a SnackBar.

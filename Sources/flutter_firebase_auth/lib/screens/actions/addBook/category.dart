@@ -41,7 +41,8 @@ class _CategoryState extends State<Category> {
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
                             ),
                           ),
                         ),
@@ -51,14 +52,15 @@ class _CategoryState extends State<Category> {
                             flex: 3,
                             child: Text(
                               widget.insertedBook.category,
-                              textAlign: TextAlign.right)) :
+                              textAlign: TextAlign.right,
+                            style: TextStyle(color: Colors.white),)) :
                         Container(),
                     ],
                   )
               ),
               Expanded(
                 flex: 1,
-                child: Icon(Icons.arrow_forward_ios),
+                child: Icon(Icons.arrow_forward_ios, color: Colors.white),
               )
             ],
           ),
@@ -89,14 +91,29 @@ class _CategoryBoxState extends State<CategoryBox> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Categories"),
       ),
-      body: ListView.builder(
+      backgroundColor: Colors.black,
+      body: Theme(
+        data: Theme.of(context).copyWith(
+            unselectedWidgetColor: Colors.white,
+            disabledColor: Colors.white10,
+        ),
+        child: ListView.separated(
+          separatorBuilder: (context, index) {
+            return Divider(
+              color: Colors.white,
+              indent: 15.0,
+              endIndent: 15.0,
+            );
+          },
           itemCount: genres.length,
           itemBuilder: (context, index) {
             final genre = genres[index];
             return RadioListTile(
-              title: Text(genre),
+              activeColor: Colors.white,
+              title: Text(genre, style: TextStyle(color: Colors.white),),
               value: genre,
               controlAffinity: ListTileControlAffinity.trailing,
               groupValue: chosenGenre,
@@ -107,7 +124,9 @@ class _CategoryBoxState extends State<CategoryBox> {
                 Navigator.pop(context, chosenGenre);
               },
             );
-          }),
+          }
+        ),
+      ),
     );
   }
 }

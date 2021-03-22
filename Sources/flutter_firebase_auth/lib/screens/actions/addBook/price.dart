@@ -41,7 +41,8 @@ class _PriceState extends State<Price> {
                           style: TextStyle(
                               fontSize: 20,
                               fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
                           ),
                         ),
                       ),
@@ -50,14 +51,15 @@ class _PriceState extends State<Price> {
                     Expanded(
                         flex: 3,
                         child: Text(widget.insertedBook.price.toString() + ' €',
-                            textAlign: TextAlign.right)) :
+                            textAlign: TextAlign.right,
+                        style: TextStyle(color: Colors.white),)) :
                     Container(),
                   ],
                 )
             ),
             Expanded(
               flex: 1,
-              child: Icon(Icons.arrow_forward_ios),
+              child: Icon(Icons.arrow_forward_ios, color: Colors.white),
             )
           ],
         ),
@@ -86,20 +88,24 @@ class _PriceBoxState extends State<PriceBox> {
 
     return  Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Price"),
       ),
+      backgroundColor: Colors.black,
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            if (_formKey.currentState.validate()){
-              //print("price as string is $price");
-              if(!price.contains('.'))
-                price = price + '.0';
-              var priceAsDouble = double.parse(price);
-              //print(priceAsDouble);
-              Navigator.pop(context, double.parse(price));
-            }
-          },
-          label: Text("Done")),
+        backgroundColor: Colors.white24,
+        onPressed: () {
+          if (_formKey.currentState.validate()){
+            //print("price as string is $price");
+            if(!price.contains('.'))
+              price = price + '.0';
+            var priceAsDouble = double.parse(price);
+            //print(priceAsDouble);
+            Navigator.pop(context, double.parse(price));
+          }
+        },
+        label: Text("Done", style: TextStyle(color: Colors.white),)
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
         child: Form(
@@ -112,11 +118,23 @@ class _PriceBoxState extends State<PriceBox> {
                   initialValue: args == '' ? null : args.toString(),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
-                    labelStyle: TextStyle(fontSize: 20),
-                    labelText: "Price",
+                    labelStyle: TextStyle(fontSize: 16, color: Colors.white),
+                    labelText: "Enter price",
                     hintText: '0.00',
                     suffixText: "€",
+                    hintStyle: TextStyle(color: Colors.white,),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0),),
+                      borderSide: BorderSide(color: Colors.white)
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        borderSide: BorderSide(color: Colors.white)
+                    ),
+                    filled: true,
+                    fillColor: Colors.white24,
                   ),
+                  style: TextStyle(color: Colors.white),
                   validator: (value) =>
                     (value.isEmpty ||
                     value.startsWith('0') ||

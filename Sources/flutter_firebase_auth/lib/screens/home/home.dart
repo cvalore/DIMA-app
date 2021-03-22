@@ -34,11 +34,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),
       Center(child: Text('TODO:// Search books',
-        style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),
+        style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
       BookInsert(
         param: AddBookParameters(false,
           bookIndex: -1,
@@ -47,10 +46,9 @@ class _HomeState extends State<Home> {
 
         ),
         setIndex: setIndex,
-        fatherContext: context,
       ),
       Center(child: Text('TODO:// Forum',
-        style: TextStyle(color: Colors.blueGrey[300], fontStyle: FontStyle.italic),)),
+        style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
       Profile(),
     ];
 
@@ -64,11 +62,17 @@ class _HomeState extends State<Home> {
         length: 2,
         child: Scaffold(
           key: scaffoldKey,
-          //backgroundColor: Colors.blueGrey[50],
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.black,
           appBar: AppBar(
-            //backgroundColor: Colors.blueGrey[700],
+            backgroundColor: Colors.black,
             elevation: 0.0,
-            title: Text('BookYourBook'),
+            title: Text('BookYourBook', style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
+              letterSpacing: 1.0,
+            ),),
             actions: <Widget>[
               TextButton.icon(
                 icon: Icon(Icons.logout, color: Colors.white,),
@@ -80,6 +84,7 @@ class _HomeState extends State<Home> {
             ],
             bottom: _selectedBottomTab == 0 ?
               TabBar(
+                indicatorColor: Colors.white,
                 tabs: <Widget>[
                   Container(height: 40.0, child: Center(child: Text('For Sale',))),
                   Container(height: 40.0, child: Center(child: Text('My Books',))),
@@ -89,7 +94,6 @@ class _HomeState extends State<Home> {
           ),
           body: Builder(
             builder: (BuildContext context) {
-
               return _selectedBottomTab != 0 ?
                 _widgetsBottomOptions.elementAt(_selectedBottomTab) :
                 TabBarView(

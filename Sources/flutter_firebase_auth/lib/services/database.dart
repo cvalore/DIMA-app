@@ -45,15 +45,41 @@ class DatabaseService {
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.size == 1) {
         // if the book already exists insert the new owner having it
-        bookCollection.doc(querySnapshot.docs[0].id)
-            .update({
-          'owners': FieldValue.arrayUnion([user.uid]),
-          'availableNum': FieldValue.increment(1)
-        });
+        if(book.exchangeable && book.imagesPath != null && book.imagesPath.length != 0) {
+          bookCollection.doc(querySnapshot.docs[0].id)
+              .update({
+            'owners': FieldValue.arrayUnion([user.uid]),
+            'availableNum': FieldValue.increment(1),
+            'exchangeable': FieldValue.increment(1),
+            'haveImages': FieldValue.increment(1),
+          });
+        }
+        else if(book.exchangeable) {
+          bookCollection.doc(querySnapshot.docs[0].id)
+              .update({
+            'owners': FieldValue.arrayUnion([user.uid]),
+            'availableNum': FieldValue.increment(1),
+            'exchangeable': FieldValue.increment(1),
+          });
+        }
+        else if(book.imagesPath != null && book.imagesPath.length != 0) {
+          bookCollection.doc(querySnapshot.docs[0].id)
+              .update({
+            'owners': FieldValue.arrayUnion([user.uid]),
+            'availableNum': FieldValue.increment(1),
+            'haveImages': FieldValue.increment(1),
+          });
+        }
+        else {
+          bookCollection.doc(querySnapshot.docs[0].id)
+              .update({
+            'owners': FieldValue.arrayUnion([user.uid]),
+            'availableNum': FieldValue.increment(1),
+          });
+        }
         print("Book already present, add you as owner too");
       } else {
         generalInfoBookMap['owners'] = [user.uid];
-        generalInfoBookMap['availableNum'] = 1;    //TODO metterlo come campo in BookGeneralInfo ?
         bookCollection.doc(book.id).set(generalInfoBookMap)
             .catchError((error) => print("Failed to add book: $error"));
       }
@@ -116,7 +142,7 @@ class DatabaseService {
     print("Book added");
   }
 
-  Future updateBook(InsertedBook book, int index) async {
+  Future updateBook(InsertedBook book, int index, bool hadImages, bool wasExchangeable) async {
     List<dynamic> books;
 
     int numberOfInsertedItems;
@@ -167,7 +193,102 @@ class DatabaseService {
 
     await usersCollection.doc(user.uid).update({
       'books': books
-    }).then((value) => print("Book updated"));
+    });
+
+    // update book of books collection
+    await bookCollection
+        .where('id', isEqualTo: books[index]['id'])
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.size == 1) {
+        if(wasExchangeable && hadImages) {
+          if(!book.exchangeable && !(book.imagesUrl != null && book.imagesUrl.length != 0)) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(-1),
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+          else if(!book.exchangeable) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(-1),
+            });
+          }
+          else if(!(book.imagesUrl != null && book.imagesUrl.length != 0)) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+        }
+        else if(wasExchangeable) {
+          if(!book.exchangeable && book.imagesUrl != null && book.imagesUrl.length != 0) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(-1),
+              'haveImages': FieldValue.increment(1),
+            });
+          }
+          else if(!book.exchangeable) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(-1),
+            });
+          }
+          else if(book.imagesUrl != null && book.imagesUrl.length != 0) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'haveImages': FieldValue.increment(1),
+            });
+          }
+        }
+        else if(hadImages) {
+          if(book.exchangeable && !(book.imagesUrl != null && book.imagesUrl.length != 0)) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(1),
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+          else if(book.exchangeable) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(1),
+            });
+          }
+          else if(!(book.imagesUrl != null && book.imagesUrl.length != 0)) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+        }
+        else {
+          if(book.exchangeable && book.imagesUrl != null && book.imagesUrl.length != 0) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(1),
+              'haveImages': FieldValue.increment(1),
+            });
+          }
+          else if(book.exchangeable) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'exchangeable': FieldValue.increment(1),
+            });
+          }
+          else if(book.imagesUrl != null && book.imagesUrl.length != 0) {
+            bookCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'haveImages': FieldValue.increment(1),
+            });
+          }
+        }
+      }
+    });
+
+    print("Book updated");
   }
 
 
@@ -242,11 +363,11 @@ class DatabaseService {
         .then((QuerySnapshot querySnapshot) async {
           if (querySnapshot.size == 1) {
             await bookCollection.doc(querySnapshot.docs[0].id)
-              .get().then((book)
+              .get().then((bookDoc)
                 {
-                  thumbnail = book.data().containsKey("thumbnail") ?
-                    book['thumbnail'] : null;
-                  availableNum = book['availableNum'];
+                  thumbnail = bookDoc.data().containsKey("thumbnail") ?
+                    bookDoc['thumbnail'] : null;
+                  availableNum = bookDoc['availableNum'];
                   if (availableNum == 1){
                     //remove all the document
                     print('No other user has this book, removing all...');
@@ -257,19 +378,66 @@ class DatabaseService {
                   } else if (!duplicatePresent) {
                       //remove only the current user
                       print('Other users have this book, just removing you...');
-                      //owners.remove(user.uid);
 
-                      bookCollection.doc(querySnapshot.docs[0].id)
-                          .update({
-                        'owners': FieldValue.arrayRemove([user.uid]),
-                        'availableNum': FieldValue.increment(-1)
-                      });
+                      if(book.exchangeable && book.imagesUrl != null && book.imagesUrl.length != 0) {
+                        bookCollection.doc(querySnapshot.docs[0].id)
+                            .update({
+                          'owners': FieldValue.arrayRemove([user.uid]),
+                          'availableNum': FieldValue.increment(-1),
+                          'exchangeable': FieldValue.increment(-1),
+                          'haveImages': FieldValue.increment(-1),
+                        });
+                      }
+                      else if(book.exchangeable) {
+                        bookCollection.doc(querySnapshot.docs[0].id)
+                            .update({
+                          'owners': FieldValue.arrayRemove([user.uid]),
+                          'availableNum': FieldValue.increment(-1),
+                          'exchangeable': FieldValue.increment(-1),
+                        });
+                      }
+                      else if(book.imagesUrl != null && book.imagesUrl.length != 0) {
+                        bookCollection.doc(querySnapshot.docs[0].id)
+                            .update({
+                          'owners': FieldValue.arrayRemove([user.uid]),
+                          'availableNum': FieldValue.increment(-1),
+                          'haveImages': FieldValue.increment(-1),
+                        });
+                      }
+                      else {
+                        bookCollection.doc(querySnapshot.docs[0].id)
+                            .update({
+                          'owners': FieldValue.arrayRemove([user.uid]),
+                          'availableNum': FieldValue.increment(-1),
+                        });
+                      }
                   } else {
                       //only decrement availableNum
                       print('The user removed a duplicated book, just reducing the availableNum...');
-                      //owners.remove(user.uid);
-                      bookCollection.doc(querySnapshot.docs[0].id)
-                          .update({'availableNum': FieldValue.increment(-1)});
+                      if(book.exchangeable && book.imagesUrl != null && book.imagesUrl.length != 0) {
+                        bookCollection.doc(querySnapshot.docs[0].id).update({
+                          'availableNum': FieldValue.increment(-1),
+                          'exchangeable': FieldValue.increment(-1),
+                          'haveImages': FieldValue.increment(-1),
+                        });
+                      }
+                      else if(book.exchangeable) {
+                        bookCollection.doc(querySnapshot.docs[0].id).update({
+                          'availableNum': FieldValue.increment(-1),
+                          'exchangeable': FieldValue.increment(-1),
+                        });
+                      }
+                      else if(book.imagesUrl != null && book.imagesUrl.length != 0) {
+                        bookCollection.doc(querySnapshot.docs[0].id).update({
+                          'availableNum': FieldValue.increment(-1),
+                          'haveImages': FieldValue.increment(-1),
+                        });
+                      }
+                      else {
+                        bookCollection.doc(querySnapshot.docs[0].id).update({
+                          'availableNum': FieldValue.increment(-1),
+                        });
+                      }
                     }
                   }
             );

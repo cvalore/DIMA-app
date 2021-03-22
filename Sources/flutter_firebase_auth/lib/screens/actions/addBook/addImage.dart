@@ -59,18 +59,19 @@ class _ImageServiceState extends State<ImageService> {
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
+              color: Colors.black,
               child: new Wrap(
                 children: <Widget>[
                   new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Photo Library'),
+                      leading: new Icon(Icons.photo_library, color: Colors.white,),
+                      title: new Text('Photo Library', style: TextStyle(color: Colors.white),),
                       onTap: () {
                         _imgFromGallery();
                         Navigator.of(context).pop();
                       }),
                   new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
+                    leading: new Icon(Icons.photo_camera, color: Colors.white),
+                    title: new Text('Camera', style: TextStyle(color: Colors.white),),
                     onTap: () {
                       _imgFromCamera();
                       Navigator.of(context).pop();
@@ -117,7 +118,7 @@ class _ImageServiceState extends State<ImageService> {
                 .height * 0.4,
             child: Column(
                 children: [
-                  Text("Insert here the images of your book"),
+                  Text("Insert here the images of your book", style: TextStyle(color: Colors.white),),
                   Flexible(
                     flex: 1,
                     child: SizedBox(height: 20.0,),
@@ -129,8 +130,8 @@ class _ImageServiceState extends State<ImageService> {
                     onPressed: () {
                       _showPicker(context);
                     },
-                    icon: Icon(Icons.add),
-                    label: Text("Add images"),
+                    icon: Icon(Icons.add, color: Colors.white),
+                    label: Text("Add images", style: TextStyle(color: Colors.white),),
                   ) : Row(
                     children: [
                       Expanded(
@@ -180,6 +181,7 @@ class _ImageServiceState extends State<ImageService> {
                           flex: 2,
                           child:  FloatingActionButton(
                             heroTag: "addPhotoBtn",
+                            backgroundColor: Colors.white24,
                             child: Icon(Icons.add_a_photo),
                             onPressed: () {
                               //TODO aggiungere un set state con loading?

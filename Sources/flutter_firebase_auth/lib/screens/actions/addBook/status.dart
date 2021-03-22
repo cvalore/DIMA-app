@@ -30,7 +30,8 @@ class _StatusState extends State<Status> {
                   style: TextStyle(
                     fontSize: 20,
                     fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
                   ),
                 ),
               )

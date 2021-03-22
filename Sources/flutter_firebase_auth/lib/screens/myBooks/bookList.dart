@@ -40,30 +40,37 @@ class _BookListState extends State<BookList> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text('No books yet, the books you add will appear here',
-            style: TextStyle(color: Colors.blueGrey[300]),),
-            Icon(Icons.menu_book_rounded, color: Colors.blueGrey[300],),
+            style: TextStyle(color: Colors.white),),
+            Icon(Icons.menu_book_rounded, color: Colors.white,),
           ],
         ),
       );
     } else {
-      return ListView.builder(
+      return ListView.separated(
+        separatorBuilder: (ctx, index) {
+          return Divider(
+            color: Colors.white,
+            indent: 15.0,
+            endIndent: 15.0,
+          );
+        },
         itemCount: books.length,
         itemBuilder: (ctx, index) {
           return Dismissible(
             key: UniqueKey(),
-            background: Container(color: Colors.red[600]),
+            background: Container(color: Colors.red[700]),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) async {
               InsertedBook book = await _db.getBook(index);
               dynamic result = await _db.removeBook(index, book);
               Scaffold.of(context).showSnackBar(
                 SnackBar(duration: Duration(seconds: 1), content: Text(
-                  'Book removed: ' + '${books[index].title}',)),
+                  'Book removed: ' + '${books[index].title}',), backgroundColor: Colors.white24,),
               );
             },
             child: ListTile(
-              title: Text('${books[index].title}'),
-              subtitle: Text('by ${books[index].author}'),
+              title: Text('${books[index].title}', style: TextStyle(color: Colors.white),),
+              subtitle: Text('by ${books[index].author}', style: TextStyle(color: Colors.white),),
               trailing: TextButton(
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
@@ -74,12 +81,14 @@ class _BookListState extends State<BookList> {
                   dynamic result = await _db.removeBook(index, book);
                   Scaffold.of(context).showSnackBar(
                     SnackBar(duration: Duration(seconds: 1), content: Text(
-                      'Book removed: ' + '${books[index].title}',)),
+                      'Book removed: ' + '${books[index].title}',), backgroundColor: Colors.white24,),
                   );
                 },
               ),
               onTap: () async {
                 InsertedBook book = await _db.getBook(index);
+                bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
+                bool wasExchangeable = book.exchangeable;
                 Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
                 List<String> bookPickedFilePaths = List<String>();
                 ListResult lr = await bookRef.listAll();
@@ -102,9 +111,14 @@ class _BookListState extends State<BookList> {
                     builder: (newContext) =>
                       Scaffold(
                         appBar: AppBar(
-                          //backgroundColor: Colors.blueGrey[700],
+                          backgroundColor: Colors.black,
                           elevation: 0.0,
-                          title: Text('BookYourBook'),
+                          title: Text('BookYourBook', style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.0,
+                            letterSpacing: 1.0,
+                          ),),
                           actions: <Widget>[
                             TextButton.icon(
                               icon: Icon(Icons.logout, color: Colors.white,),
@@ -115,15 +129,18 @@ class _BookListState extends State<BookList> {
                             ),
                           ],
                         ),
+                        backgroundColor: Colors.black,
                         floatingActionButton: FloatingActionButton.extended(
+                          backgroundColor: Colors.white24,
                           heroTag: "editSaveBtn",
                           onPressed: () async {
-                            await _db.updateBook(book, index);
+                            await _db.updateBook(book, index, hadImages, wasExchangeable);
                             final snackBar = SnackBar(
                               duration: Duration(seconds: 1),
                               content: Text(
                                 'Book updated successfully',
                               ),
+                              backgroundColor: Colors.white24,
                             );
                             Navigator.pop(context);
                             // Find the Scaffold in the widget tree and use
@@ -134,7 +151,8 @@ class _BookListState extends State<BookList> {
                           label: Text("Save"),
                         ),
                         body: AddBookUserInfo(
-                          insertedBook: book, edit: true,
+                          insertedBook: book,
+                          edit: true,
                         ),
                       )
                     )

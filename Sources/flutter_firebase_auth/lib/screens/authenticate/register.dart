@@ -27,11 +27,11 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return _loading ? Loading() : Scaffold(
-      backgroundColor: Colors.blueGrey[50],
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey[700],
+        backgroundColor: Colors.black,
         elevation: 0.0,
-        title: Text('Sign up to BookYourBook'),
+        title: Text('Sign up to BookYourBook', style: TextStyle(color: Colors.white),),
       ),
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -48,7 +48,27 @@ class _RegisterState extends State<Register> {
                     Expanded(
                       flex: 4,
                       child: TextFormField(
-                        decoration: inputFieldDecoration.copyWith(hintText: 'Email'),
+                        cursorColor: Colors.black,
+                        //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          hintStyle: TextStyle(color: Colors.grey[500]),
+                          filled: true,
+                          fillColor: Colors.white24,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(7.0),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color: Colors.white)
+                          ),
+                          contentPadding: EdgeInsets.only(top: 25.0),
+                        ),
+                        textAlignVertical: TextAlignVertical.center,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white, fontSize: 17.0,),
                         validator: (value) =>
                         (value.isEmpty | !value.contains('@') | !value.contains('.')) ?
                           'Enter a valid email' : null,
@@ -65,7 +85,27 @@ class _RegisterState extends State<Register> {
                       Expanded(
                         flex: 4,
                         child: TextFormField(
-                          decoration: inputFieldDecoration.copyWith(hintText: 'Password'),
+                          cursorColor: Colors.black,
+                          //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            filled: true,
+                            fillColor: Colors.white24,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(7.0),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                borderSide: BorderSide(color: Colors.white)
+                            ),
+                            contentPadding: EdgeInsets.only(top: 25.0),
+                          ),
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontSize: 17.0,),
                           validator: (value) => value.length < 6 ?
                             'Enter password of at least 6 characters' : null,
                           onChanged: (value) {
@@ -93,10 +133,10 @@ class _RegisterState extends State<Register> {
                                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                                         (Set<MaterialState> states) {
                                       if (states.contains(MaterialState.pressed)) {
-                                        return Colors.blueGrey[400];
+                                        return Colors.white10;
                                       }
                                       else {
-                                        return Colors.blueGrey[600];
+                                        return Colors.white24;
                                       }
                                     }),
                               ),
@@ -124,13 +164,13 @@ class _RegisterState extends State<Register> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('Already have an account?'),
+                          Text('Already have an account?', style: TextStyle(color: Colors.white),),
                           TextButton(
                             style: ButtonStyle(
                               overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                             ),
                             child: Text('Sign in',
-                                style: TextStyle(color: Colors.blue[600])),
+                                style: TextStyle(color: Colors.red[600])),
                             onPressed: () {
                               widget.toggleView();
                             },
@@ -140,7 +180,7 @@ class _RegisterState extends State<Register> {
                     ),
                     Expanded(
                       flex: 4,
-                      child: Text('or'),
+                      child: Text('or', style: TextStyle(color: Colors.white),),
                     ),
                     Expanded(
                       flex: 4,
@@ -149,7 +189,7 @@ class _RegisterState extends State<Register> {
                           overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                         ),
                         child: Text('Continue anonymously..',
-                            style: TextStyle(color: Colors.blue[600])),
+                            style: TextStyle(color: Colors.red[600])),
                         onPressed: () async {
                           await _auth.signInAnonymously();
                         },
