@@ -12,8 +12,9 @@ class AddBookUserInfo extends StatelessWidget {
 
   InsertedBook insertedBook;
   bool edit;
+  bool justView;
 
-  AddBookUserInfo({@required this.insertedBook, @required this.edit});
+  AddBookUserInfo({@required this.insertedBook, @required this.edit, @required this.justView});
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +29,17 @@ class AddBookUserInfo extends StatelessWidget {
                 child: Column(
                   children: [
                     //Expanded(flex: 50, child: ImageService(insertedBook: insertedBook)),
-                    ImageService(insertedBook: insertedBook),
+                    ImageService(insertedBook: insertedBook, justView: justView),
                     customSizedBox(1.0),
-                    Status(insertedBook: insertedBook, height: 60, offset: 50.0),
+                    Status(insertedBook: insertedBook, height: 60, offset: 50.0, justView: justView),
                     customSizedBox(1.0),
-                    edit ? Container() : Category(insertedBook: insertedBook, height: 60),
+                    edit ? Container() : Category(insertedBook: insertedBook, height: 60, justView: justView),
                     edit ? Container() : customSizedBox(1.0),
-                    Comment(insertedBook: insertedBook, height: 60),
+                    Comment(insertedBook: insertedBook, height: 60, justView: justView),
                     customSizedBox(1.0),
-                    Price(insertedBook: insertedBook, height: 60),
+                    Price(insertedBook: insertedBook, height: 60, justView: justView),
                     customSizedBox(1.0),
-                    Exchange(insertedBook: insertedBook, height: 60),
+                    Exchange(insertedBook: insertedBook, height: 60, justView: justView),
                     SizedBox(height: 100)
                     /*
                     Flexible(

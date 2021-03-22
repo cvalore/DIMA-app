@@ -7,8 +7,9 @@ class Comment extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
+  bool justView;
 
-  Comment({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
+  Comment({Key key, @required this.insertedBook, @required this.height, @required this.justView}) : super(key: key);
 
   @override
   _CommentState createState() => _CommentState();
@@ -22,11 +23,15 @@ class _CommentState extends State<Comment> {
         height: widget.height,
         child: GestureDetector(
           onTap: () async {
-            dynamic result = await Navigator.pushNamed(context, CommentBox.routeName, arguments: widget.insertedBook.comment);
-            setState(() {
-              if(result != null)
-                widget.insertedBook.setComment(result);
-            });
+            if(!widget.justView) {
+              dynamic result = await Navigator.pushNamed(
+                  context, CommentBox.routeName,
+                  arguments: widget.insertedBook.comment);
+              setState(() {
+                if (result != null)
+                  widget.insertedBook.setComment(result);
+              });
+            }
           },
           child: Row(
             children: [

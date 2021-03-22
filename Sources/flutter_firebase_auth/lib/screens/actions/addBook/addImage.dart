@@ -14,7 +14,9 @@ import 'package:provider/provider.dart';
 class ImageService extends StatefulWidget {
 
   InsertedBook insertedBook;
-  ImageService({Key key, @required this.insertedBook}) : super(key: key);
+  bool justView;
+
+  ImageService({Key key, @required this.insertedBook, @required this.justView}) : super(key: key);
 
   @override
   _ImageServiceState createState() => _ImageServiceState();
@@ -118,12 +120,12 @@ class _ImageServiceState extends State<ImageService> {
                 .height * 0.4,
             child: Column(
                 children: [
-                  Text("Insert here the images of your book", style: TextStyle(color: Colors.white),),
+                  Text(widget.justView ? "":"Insert here the images of your book", style: TextStyle(color: Colors.white),),
                   Flexible(
                     flex: 1,
                     child: SizedBox(height: 20.0,),
                   ),
-                  (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
+                  !widget.justView && (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
                     heroTag: "addImageBtn",
                     backgroundColor: Colors.white24,
                     foregroundColor: Colors.black,
@@ -158,7 +160,7 @@ class _ImageServiceState extends State<ImageService> {
                                       Image.file(
                                           File(listItem[index])
                                       ),
-                                      Positioned(
+                                      widget.justView ? Container() : Positioned(
                                         top: 1,
                                         right: 1,
                                         child: IconButton(
@@ -177,7 +179,7 @@ class _ImageServiceState extends State<ImageService> {
                             }),
                         ),
                       ),
-                      Expanded(
+                      widget.justView ? Container() : Expanded(
                           flex: 2,
                           child:  FloatingActionButton(
                             heroTag: "addPhotoBtn",

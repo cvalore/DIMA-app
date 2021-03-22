@@ -7,8 +7,9 @@ class Price extends StatefulWidget {
 
   InsertedBook insertedBook;
   double height;
+  bool justView;
 
-  Price({Key key, @required this.insertedBook, @required this.height}) : super(key: key);
+  Price({Key key, @required this.insertedBook, @required this.height, @required this.justView}) : super(key: key);
 
   @override
   _PriceState createState() => _PriceState();
@@ -21,11 +22,14 @@ class _PriceState extends State<Price> {
       height: widget.height,
       child: GestureDetector(
         onTap: () async {
-          dynamic result = await Navigator.pushNamed(context, PriceBox.routeName, arguments: widget.insertedBook.price);
-          setState(() {
-            if(result != null)
-              widget.insertedBook.setPrice(result);
-          });
+          if(!widget.justView) {
+            dynamic result = await Navigator.pushNamed(
+                context, PriceBox.routeName, arguments: widget.insertedBook.price);
+            setState(() {
+              if (result != null)
+                widget.insertedBook.setPrice(result);
+            });
+          }
         },
         child: Row(
           children: [

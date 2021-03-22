@@ -1,5 +1,5 @@
 class BookPerGenreUserMap {
-  final Map<String,dynamic> result;
+  final Map<int,dynamic> result;
 
   BookPerGenreUserMap(this.result);
 }

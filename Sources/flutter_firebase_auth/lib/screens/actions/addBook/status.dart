@@ -7,8 +7,9 @@ class Status extends StatefulWidget {
   InsertedBook insertedBook;
   double height;
   double offset;
+  bool justView;
 
-  Status({Key key, @required this.insertedBook, @required this.height, @required this.offset}) : super(key: key);
+  Status({Key key, @required this.insertedBook, @required this.height, @required this.offset, @required this.justView}) : super(key: key);
 
   @override
   _StatusState createState() => _StatusState();
@@ -47,9 +48,11 @@ class _StatusState extends State<Status> {
                         padding: EdgeInsets.symmetric(vertical: 1.0),
                         icon: widget.insertedBook.status > i ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border, color: Colors.yellow,),
                         onPressed: () {
-                          setState(() {
-                            widget.insertedBook.setStatus(i + 1);
-                          });
+                          if(!widget.justView) {
+                            setState(() {
+                              widget.insertedBook.setStatus(i + 1);
+                            });
+                          }
                         })
                     )
                 ],

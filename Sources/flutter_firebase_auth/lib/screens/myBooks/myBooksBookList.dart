@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -9,99 +13,124 @@ import 'package:flutter_firebase_auth/services/database.dart';
 
 class MyBooksBookList extends StatelessWidget {
 
-  final String genre;
-  final List<dynamic> books;
+  final AuthService _auth = AuthService();
 
-  const MyBooksBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
+  final Map<int, dynamic> books;
+
+  MyBooksBookList({Key key, @required this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
-    List<PerGenreBook> perGenreBooks = List<PerGenreBook>();
-    for(dynamic b in books) {
-      if(b != null) {
-        perGenreBooks.add(
-            PerGenreBook(
-              id: b["id"],
-              title: b["title"],
-              author: b["author"],
-              thumbnail: b["thumbnail"],
-            )
-        );
-      }
-    }
+    CustomUser user = Provider.of<CustomUser>(context);
+    final DatabaseService _db = DatabaseService(user: user);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Text(
-            genre,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+    return GridView.count(
+      crossAxisCount: 2,
+      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 0.0),//2// columns
+      mainAxisSpacing: 25.0,
+      scrollDirection: Axis.vertical,
+      //itemCount: books.keys.length,
+      //itemBuilder: (BuildContext context, int index) {
+      children: List.generate(books.keys.length, (index) {
+        return GestureDetector(
+          onTap: () async {
+            InsertedBook book = await _db.getBook(index);
+            bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
+            bool wasExchangeable = book.exchangeable;
+            Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+            List<String> bookPickedFilePaths = List<String>();
+            ListResult lr = await bookRef.listAll();
+            int count = 0;
+            for(Reference r in lr.items) {
+              try {
+                String filePath = await _db.storageService.toDownloadFile(r, count);
+                if(filePath != null) {
+                  bookPickedFilePaths.add(filePath);
+                }
+              } on FirebaseException catch (e) {
+                e.toString();
+              }
+              count = count + 1;
+            }
+            book.imagesPath = bookPickedFilePaths;
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (newContext) =>
+                        Scaffold(
+                          appBar: AppBar(
+                            backgroundColor: Colors.black,
+                            elevation: 0.0,
+                            title: Text('BookYourBook', style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24.0,
+                              letterSpacing: 1.0,
+                            ),),
+                            actions: <Widget>[
+                              TextButton.icon(
+                                icon: Icon(Icons.logout, color: Colors.white,),
+                                label: Text(''),
+                                onPressed: () async {
+                                  await _auth.signOut();
+                                },
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Colors.black,
+                          body: AddBookUserInfo(
+                            insertedBook: book,
+                            edit: false,
+                            justView: true,
+                          ),
+                        )
+                )
+            );
+          },
+          child: Center(
+            child: Container(
+              decoration: books[books.keys.elementAt(index)]['thumbnail'] != null &&
+                  books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
+              null : BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/no_image_available.png"),
+                    //fit: BoxFit.cover,
+                  )
+              ),
+              height: imageHeight,
+              width: imageWidth,
+              child: books[books.keys.elementAt(index)]['thumbnail'] != null &&
+                  books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
+              CachedNetworkImage(
+                imageUrl: books[books.keys.elementAt(index)]['thumbnail'],
+                placeholder: (context, url) => Loading(),
+                //width: imageWidth,
+                //height: imageHeight,
+                imageBuilder: (context, imageProvider) {
+                  return Container(
+                    width: imageWidth,
+                    height: imageHeight,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          //fit: BoxFit.cover,
+                        )
+                    ),
+                  );
+                },
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ) : Container(),
             ),
           ),
-        ),
-        Container(
-          height: imageHeight,
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
-            scrollDirection: Axis.horizontal,
-            itemCount: perGenreBooks.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () => print('Tapped My Book - TODO: open edit'),
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: perGenreBooks[index].thumbnail != null &&
-                          perGenreBooks[index].thumbnail.toString() != "" ?
-                      null : BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/no_image_available.png"),
-                            //fit: BoxFit.cover,
-                          )
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      height: imageHeight,
-                      width: imageWidth,
-                      child: perGenreBooks[index].thumbnail != null &&
-                          perGenreBooks[index].thumbnail.toString() != "" ?
-                      CachedNetworkImage(
-                        imageUrl: perGenreBooks[index].thumbnail,
-                        placeholder: (context, url) => Loading(),
-                        //width: imageWidth,
-                        //height: imageHeight,
-                        imageBuilder: (context, imageProvider) {
-                          return Container(
-                            width: imageWidth,
-                            height: imageHeight,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  //fit: BoxFit.cover,
-                                )
-                            ),
-                          );
-                        },
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ) : Container(),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+        );
+      }),
     );
 
   }
+
 }
