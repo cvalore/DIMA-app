@@ -5,3 +5,4 @@ const imageHeight = 198.0;
 
 const editBookPopupIndex = 1;
 const deleteBookPopupIndex = 2;
+const deleteBookPopupOnLongPressIndex = 1;

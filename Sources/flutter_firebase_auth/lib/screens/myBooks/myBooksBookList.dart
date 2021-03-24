@@ -6,6 +6,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
@@ -15,10 +16,15 @@ import 'package:flutter_firebase_auth/services/database.dart';
 class MyBooksBookList extends StatelessWidget {
 
   final AuthService _auth = AuthService();
-
   final Map<int, dynamic> books;
 
   MyBooksBookList({Key key, @required this.books}) : super(key: key);
+
+  var _tapPosition;
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +42,42 @@ class MyBooksBookList extends StatelessWidget {
       //itemBuilder: (BuildContext context, int index) {
       children: List.generate(books.keys.length, (index) {
         return GestureDetector(
+          onTapDown: _storePosition,
+          onLongPress: () {
+            final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+            showMenu(
+              context: context,
+              color: Colors.white10,
+              items: [
+                PopupMenuItem(
+                  value: deleteBookPopupOnLongPressIndex,
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                        child: Icon(Icons.remove_circle, color: Colors.white,),
+                      ),
+                      Text('Delete', style: TextStyle(color: Colors.white),),
+                    ],
+                  ),
+                ),
+              ],
+              position: RelativeRect.fromRect(
+                _tapPosition & const Size(40, 40),
+                Offset.zero & overlay.size
+              ),
+            ).then((value) async {
+              if(value == deleteBookPopupOnLongPressIndex) {
+                print("Delete book");
+                InsertedBook book = await _db.getBook(index);
+                dynamic result = await _db.removeBook(index, book);
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(duration: Duration(seconds: 1), content: Text(
+                    'Book removed: ' + '${book.title}',), backgroundColor: Colors.white24,),
+                );
+              }
+            });
+          },
           onTap: () async {
             InsertedBook book = await _db.getBook(index);
             bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
@@ -59,66 +101,15 @@ class MyBooksBookList extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (newContext) =>
-                        Scaffold(
-                          appBar: AppBar(
-                            backgroundColor: Colors.black,
-                            elevation: 0.0,
-                            title: Text(book.title,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24.0,
-                                letterSpacing: 1.0,
-                              ),
-                            ),
-                            actions: <Widget>[
-                              PopupMenuButton(
-                                onSelected: (value) {
-                                  if(value == editBookPopupIndex) {
-                                    print("Edit book");
-                                  }
-                                  else if(value == deleteBookPopupIndex) {
-                                    print("Delete book");
-                                  }
-                                },
-                                color: Colors.white10,
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    value: editBookPopupIndex,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                          child: Icon(Icons.edit, color: Colors.white,),
-                                        ),
-                                        Text('Edit', style: TextStyle(color: Colors.white),),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: deleteBookPopupIndex,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                                          child: Icon(Icons.remove_circle, color: Colors.white,),
-                                        ),
-                                        Text('Delete', style: TextStyle(color: Colors.white),),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                          backgroundColor: Colors.black,
-                          body: AddBookUserInfo(
-                            insertedBook: book,
-                            edit: false,
-                            justView: true,
-                          ),
-                        )
+                  builder: (newContext) => ViewBookPage(
+                    book: book,
+                    index: index,
+                    hadImages: hadImages,
+                    wasExchangeable: wasExchangeable,
+                    edit: false,
+                    justView: true,
+                    fatherContext: context,
+                  )
                 )
             );
           },
