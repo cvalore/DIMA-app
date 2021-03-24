@@ -81,7 +81,7 @@ void main() {
              CommentBox.routeName: (context) => CommentBox(),
              CategoryBox.routeName: (context) => CategoryBox(),
              PriceBox.routeName: (context) => PriceBox(),
-             ProfileHomePage.routeName: (context) => ProfileHomePage(),
+             //ProfileHomePage.routeName: (context) => ProfileHomePage(),
              FavoritesPage.routeName: (context) => FavoritesPage(),
              OrdersPage.routeName: (context) => OrdersPage(),
            }

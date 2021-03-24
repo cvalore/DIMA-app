@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 class VisualizeMyProfile extends StatefulWidget {
 
   double height;
-  CustomUser user;
   //Image avatar;
 
   VisualizeMyProfile({Key key, @required this.height}) : super(key: key);
@@ -28,8 +27,9 @@ class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
       height: widget.height,
       child: GestureDetector(
         onTap: () async {
-          dynamic result = await Navigator.pushNamed(context, ProfileHomePage.routeName,
-              //arguments: widget.insertedBook.category
+          dynamic result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileHomePage(user: user, self: true))
           );
           setState(() {
             if(result != null)
