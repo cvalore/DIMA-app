@@ -75,8 +75,10 @@ class MyBooksBookList extends StatelessWidget {
     return GridView.count(
       crossAxisCount: 2,
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 0.0),//2// columns
-      mainAxisSpacing: 25.0,
+      mainAxisSpacing: 0.0,
+      crossAxisSpacing: 30.0,
       scrollDirection: Axis.vertical,
+      childAspectRatio: (imageWidth)/imageHeight,
       //itemCount: books.keys.length,
       //itemBuilder: (BuildContext context, int index) {
       children: List.generate(books.keys.length, (index) {
@@ -136,42 +138,62 @@ class MyBooksBookList extends StatelessWidget {
             _pushBookPage(false, index, context);
           },
           child: Center(
-            child: Container(
-              decoration: books[books.keys.elementAt(index)]['thumbnail'] != null &&
-                  books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
-              null : BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/no_image_available.png"),
-                    //fit: BoxFit.cover,
-                  )
-              ),
-              height: imageHeight,
-              width: imageWidth,
-              child: books[books.keys.elementAt(index)]['thumbnail'] != null &&
-                  books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
-              CachedNetworkImage(
-                imageUrl: books[books.keys.elementAt(index)]['thumbnail'],
-                placeholder: (context, url) => Loading(),
-                //width: imageWidth,
-                //height: imageHeight,
-                imageBuilder: (context, imageProvider) {
-                  return Container(
-                    width: imageWidth,
-                    height: imageHeight,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        image: DecorationImage(
-                          image: imageProvider,
-                          //fit: BoxFit.cover,
-                        )
-                    ),
-                  );
-                },
-                errorWidget: (context, url, error) => Icon(Icons.error),
-              ) : Container(),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  decoration: books[books.keys.elementAt(index)]['thumbnail'] != null &&
+                      books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
+                  null : BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/no_image_available.png"),
+                        //fit: BoxFit.cover,
+                      )
+                  ),
+                  height: imageHeight,
+                  width: imageWidth,
+                  child: books[books.keys.elementAt(index)]['thumbnail'] != null &&
+                      books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
+                    CachedNetworkImage(
+                      imageUrl: books[books.keys.elementAt(index)]['thumbnail'],
+                      placeholder: (context, url) => Loading(),
+                      //width: imageWidth,
+                      //height: imageHeight,
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          width: imageWidth,
+                          height: imageHeight,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                //fit: BoxFit.cover,
+                              )
+                          ),
+                        );
+                      },
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ) : Container(),
+                ),
+                Center(
+                  child: Text(
+                    books[index]["title"],
+                    style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    books[index]["author"],
+                    style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+              ],
             ),
           ),
         );
