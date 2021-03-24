@@ -20,18 +20,57 @@ class MyBooksBookList extends StatelessWidget {
 
   MyBooksBookList({Key key, @required this.books}) : super(key: key);
 
+  DatabaseService _db;
+  CustomUser user;
   var _tapPosition;
 
   void _storePosition(TapDownDetails details) {
     _tapPosition = details.globalPosition;
   }
 
+  void _pushBookPage(bool edit, int index, BuildContext context) async {
+    InsertedBook book = await _db.getBook(index);
+    bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
+    bool wasExchangeable = book.exchangeable;
+    Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+    List<String> bookPickedFilePaths = List<String>();
+    ListResult lr = await bookRef.listAll();
+    int count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await _db.storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    book.imagesPath = bookPickedFilePaths;
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (newContext) => ViewBookPage(
+              book: book,
+              index: index,
+              hadImages: hadImages,
+              wasExchangeable: wasExchangeable,
+              edit: edit,
+              justView: !edit,
+              fatherContext: context,
+            )
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
-    DatabaseService _db = DatabaseService(user: user);
+    user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    _db = DatabaseService(user: user);
 
     return GridView.count(
       crossAxisCount: 2,
@@ -47,10 +86,22 @@ class MyBooksBookList extends StatelessWidget {
             final RenderBox overlay = Overlay.of(context).context.findRenderObject();
             showMenu(
               context: context,
-              color: Colors.white10,
+              color: Colors.white24,
               items: [
                 PopupMenuItem(
-                  value: deleteBookPopupOnLongPressIndex,
+                  value: editBookPopupIndex,
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                        child: Icon(Icons.edit, color: Colors.white,),
+                      ),
+                      Text('Edit', style: TextStyle(color: Colors.white),),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: deleteBookPopupIndex,
                   child: Row(
                     children: <Widget>[
                       Padding(
@@ -67,7 +118,10 @@ class MyBooksBookList extends StatelessWidget {
                 Offset.zero & overlay.size
               ),
             ).then((value) async {
-              if(value == deleteBookPopupOnLongPressIndex) {
+              if(value == editBookPopupIndex) {
+                _pushBookPage(true, index, context);
+              }
+              else if(value == deleteBookPopupIndex) {
                 print("Delete book");
                 InsertedBook book = await _db.getBook(index);
                 dynamic result = await _db.removeBook(index, book);
@@ -78,40 +132,8 @@ class MyBooksBookList extends StatelessWidget {
               }
             });
           },
-          onTap: () async {
-            InsertedBook book = await _db.getBook(index);
-            bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
-            bool wasExchangeable = book.exchangeable;
-            Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
-            List<String> bookPickedFilePaths = List<String>();
-            ListResult lr = await bookRef.listAll();
-            int count = 0;
-            for(Reference r in lr.items) {
-              try {
-                String filePath = await _db.storageService.toDownloadFile(r, count);
-                if(filePath != null) {
-                  bookPickedFilePaths.add(filePath);
-                }
-              } on FirebaseException catch (e) {
-                e.toString();
-              }
-              count = count + 1;
-            }
-            book.imagesPath = bookPickedFilePaths;
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (newContext) => ViewBookPage(
-                    book: book,
-                    index: index,
-                    hadImages: hadImages,
-                    wasExchangeable: wasExchangeable,
-                    edit: false,
-                    justView: true,
-                    fatherContext: context,
-                  )
-                )
-            );
+          onTap: () {
+            _pushBookPage(false, index, context);
           },
           child: Center(
             child: Container(

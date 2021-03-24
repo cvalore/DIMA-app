@@ -42,7 +42,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             letterSpacing: 1.0,
           ),
         ),
-        actions: <Widget>[
+        actions: widget.edit ? [] : <Widget>[
           PopupMenuButton(
             onSelected: (value) async {
               if(value == editBookPopupIndex) {
