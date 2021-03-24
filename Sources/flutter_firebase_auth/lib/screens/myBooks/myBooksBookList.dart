@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
@@ -63,20 +64,52 @@ class MyBooksBookList extends StatelessWidget {
                           appBar: AppBar(
                             backgroundColor: Colors.black,
                             elevation: 0.0,
-                            title: Text('BookYourBook', style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24.0,
-                              letterSpacing: 1.0,
-                            ),),
-                            actions: <Widget>[
-                              TextButton.icon(
-                                icon: Icon(Icons.logout, color: Colors.white,),
-                                label: Text(''),
-                                onPressed: () async {
-                                  await _auth.signOut();
-                                },
+                            title: Text(book.title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24.0,
+                                letterSpacing: 1.0,
                               ),
+                            ),
+                            actions: <Widget>[
+                              PopupMenuButton(
+                                onSelected: (value) {
+                                  if(value == editBookPopupIndex) {
+                                    print("Edit book");
+                                  }
+                                  else if(value == deleteBookPopupIndex) {
+                                    print("Delete book");
+                                  }
+                                },
+                                color: Colors.white10,
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: editBookPopupIndex,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                                          child: Icon(Icons.edit, color: Colors.white,),
+                                        ),
+                                        Text('Edit', style: TextStyle(color: Colors.white),),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: deleteBookPopupIndex,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                                          child: Icon(Icons.remove_circle, color: Colors.white,),
+                                        ),
+                                        Text('Delete', style: TextStyle(color: Colors.white),),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                           backgroundColor: Colors.black,
