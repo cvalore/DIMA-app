@@ -44,7 +44,7 @@ class HomePageBookList extends StatelessWidget {
           ),
         ),
         Container(
-          height: imageHeight,
+          height: imageHeight + 75,
           child: ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
             scrollDirection: Axis.horizontal,
@@ -52,7 +52,7 @@ class HomePageBookList extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () => print('Tapped'),
-                child: Stack(
+                child: Column(
                   children: [
                     Container(
                       decoration: perGenreBooks[index].thumbnail != null &&
@@ -92,6 +92,29 @@ class HomePageBookList extends StatelessWidget {
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       ) : Container(),
                     ),
+                    Container(
+                      width: imageWidth,
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              perGenreBooks[index].title,
+                              style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              perGenreBooks[index].author,
+                              style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               );

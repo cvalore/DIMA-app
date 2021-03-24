@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
         slivers: [
           for(int i = 0; i < books.length; i++)
             SliverPadding(
-              padding: EdgeInsets.only(top: 8.0),
+              padding: EdgeInsets.only(top: 24.0),
               sliver: SliverToBoxAdapter(
                 child: HomePageBookList(
                     genre: books.keys.elementAt(i).toString(),
