@@ -19,7 +19,7 @@ class AddBookUserInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
+      padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -40,23 +40,14 @@ class AddBookUserInfo extends StatelessWidget {
                     Price(insertedBook: insertedBook, height: 60, justView: justView),
                     customSizedBox(1.0),
                     Exchange(insertedBook: insertedBook, height: 60, justView: justView),
-                    SizedBox(height: 100)
-                    /*
-                    Flexible(
-                      flex: 4,
-                      child: SizedBox(height: 20.0,),
-                    ),
-                    Flexible(
-                      flex: 4,
-                      child: SizedBox(height: 20.0,),
-                    ),
-                     */
+                    customSizedBox(1.0),
+                    SizedBox(height: 60,),
                   ],
                 ),
               )
             ),
           ),
-          edit ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,)
+          (edit || justView) ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,)
         ],
       ),
     );
