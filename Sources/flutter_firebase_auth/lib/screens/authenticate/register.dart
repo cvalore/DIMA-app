@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 
 class Register extends StatefulWidget {
@@ -48,6 +47,7 @@ class _RegisterState extends State<Register> {
                     Expanded(
                       flex: 4,
                       child: TextFormField(
+                        key: Key('signUpEmailField'),
                         cursorColor: Colors.black,
                         //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                         decoration: InputDecoration(
@@ -85,6 +85,7 @@ class _RegisterState extends State<Register> {
                       Expanded(
                         flex: 4,
                         child: TextFormField(
+                          key: Key('signUpPasswordField'),
                           cursorColor: Colors.black,
                           //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                           decoration: InputDecoration(
@@ -129,6 +130,7 @@ class _RegisterState extends State<Register> {
                           Expanded(
                             flex: 5,
                             child: TextButton(
+                              key: Key('signUpButton'),
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                                         (Set<MaterialState> states) {

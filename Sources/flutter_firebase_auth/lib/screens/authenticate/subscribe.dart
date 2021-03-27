@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
-
-import 'package:flutter_firebase_auth/services/auth.dart';
 
 
 
@@ -9,16 +6,15 @@ class Subscribe extends StatefulWidget {
   static const routeName = '/subscribe';
 
   @override
-  _SubscribeState createState() => _SubscribeState();
+  SubscribeState createState() => SubscribeState();
 }
 
-class _SubscribeState extends State<Subscribe> {
+class SubscribeState extends State<Subscribe> {
 
-  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
 
-  String _username = '';
+  String username = '';
   String _error = '';
 
   @override
@@ -44,7 +40,7 @@ class _SubscribeState extends State<Subscribe> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: _username,
+                      initialValue: username,
                       cursorColor: Colors.black,
                       //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                       decoration: InputDecoration(
@@ -70,7 +66,7 @@ class _SubscribeState extends State<Subscribe> {
                       value.isEmpty ? 'Enter a valid username' : null,
                       onChanged: (value) {
                         setState(() {
-                          _username = value;
+                          username = value;
                         });
                       },
                     ),
@@ -97,7 +93,7 @@ class _SubscribeState extends State<Subscribe> {
                             setState(() {
                               _loading = true;
                             });
-                            Navigator.pop(context, _username);
+                            Navigator.pop(context, username);
                           }
                         },
                       ),

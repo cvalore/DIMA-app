@@ -7,7 +7,6 @@ import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/profile/favorites.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/profileHomePage.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
@@ -19,6 +18,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(App());
   }
+
   
  class App extends StatefulWidget {
    @override

@@ -76,10 +76,10 @@ class PriceBox extends StatefulWidget {
   static const routeName = '/priceBox';
 
   @override
-  _PriceBoxState createState() => _PriceBoxState();
+  PriceBoxState createState() => PriceBoxState();
 }
 
-class _PriceBoxState extends State<PriceBox> {
+class PriceBoxState extends State<PriceBox> {
 
   String price;
   final _formKey = GlobalKey<FormState>();
@@ -149,7 +149,6 @@ class _PriceBoxState extends State<PriceBox> {
                     if(value != '') {
                       setState(() {
                         price = value;
-                        //print(price);
                       });
                     }
                   },

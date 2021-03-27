@@ -45,6 +45,7 @@ class _StatusState extends State<Status> {
                     Container(
                       width: (MediaQuery.of(context).size.width - widget.offset) / 10,
                       child: IconButton(
+                        key: ValueKey(i),
                         padding: EdgeInsets.symmetric(vertical: 1.0),
                         icon: widget.insertedBook.status > i ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border, color: Colors.yellow,),
                         onPressed: () {

@@ -23,9 +23,9 @@ class ViewBookPage extends StatefulWidget {
 }
 
 class _ViewBookPageState extends State<ViewBookPage> {
+
   @override
   Widget build(BuildContext context) {
-
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
