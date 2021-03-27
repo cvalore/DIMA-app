@@ -154,6 +154,7 @@ class _BookListState extends State<BookList> {
                         body: AddBookUserInfo(
                           insertedBook: book,
                           edit: true,
+                          justView: false,
                         ),
                       )
                     )

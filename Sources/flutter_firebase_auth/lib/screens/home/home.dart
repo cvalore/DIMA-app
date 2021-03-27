@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
@@ -21,6 +22,7 @@ class _HomeState extends State<Home> {
 
   final AuthService _auth = AuthService();
   DatabaseService _db;
+  bool _isTablet;
 
   int _selectedBottomTab = 0;
 
@@ -36,6 +38,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
+    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),
       Center(child: Text('TODO:// Search books',
@@ -91,8 +96,16 @@ class _HomeState extends State<Home> {
                 TabBar(
                   indicatorColor: Colors.white,
                   tabs: <Widget>[
-                    Container(height: 40.0, child: Center(child: Text('For Sale',))),
-                    Container(height: 40.0, child: Center(child: Text('My Books',))),
+                    Container(
+                      height: _isTablet ? 60.0 : 40.0,
+                      child: Center(child: Text('For Sale',
+                        style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
+                    ),
+                    Container(
+                      height: _isTablet ? 60.0 : 40.0,
+                      child: Center(child: Text('My Books',
+                        style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
+                    ),
                   ],
                 ) :
                 null,

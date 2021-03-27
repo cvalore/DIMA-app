@@ -1,43 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
 
 class BottomTabs extends StatelessWidget {
 
   final int Function() getIndex;
   final void Function(int) setIndex;
+  bool _isTablet;
 
-  const BottomTabs({Key key, this.getIndex, this.setIndex}) : super(key: key);
+  BottomTabs({Key key, this.getIndex, this.setIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     AuthCustomUser user = Provider.of<AuthCustomUser>(context);
 
+    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return BottomNavigationBar(
       backgroundColor: Colors.black,
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: false,
       showSelectedLabels: true,
+      selectedLabelStyle: TextStyle(fontSize: _isTablet ? 22.0 : 14.0),
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined),
+          icon: Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined,
+            size: _isTablet ? 48.0 : 24.0,),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined),
+            icon: Icon(getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined,
+              size: _isTablet ? 48.0 : 24.0,),
             label: 'Search'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined),
+            icon: Icon(getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined,
+              size: _isTablet ? 48.0 : 24.0,),
             label: 'Insert Book'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined),
+            icon: Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined,
+              size: _isTablet ? 48.0 : 24.0,),
             label: 'Forum'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined),
+            icon: Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined,
+              size: _isTablet ? 48.0 : 24.0,),
             label: 'Profile'
         ),
       ],

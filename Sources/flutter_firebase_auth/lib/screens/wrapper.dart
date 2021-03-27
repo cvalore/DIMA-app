@@ -9,15 +9,29 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<AuthCustomUser>(context);
 
-    if(user == null) {
-      return Container(
-        child: Authenticate()
-      );
-    }
-    else {
-      return Container(
-        child: Home(),
-      );
-    }
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if(orientation == Orientation.portrait) {
+          if(user == null) {
+            return Container(
+                child: Authenticate()
+            );
+          }
+          else {
+            return Container(
+              child: Home(),
+            );
+          }
+        }
+        else {
+          return Center(
+            child: Text('Landscape mode still WIP',
+              textDirection: TextDirection.ltr,
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+      },
+    );
   }
 }
