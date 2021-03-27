@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/home/homePageBookList.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ScrollController _scrollController;
   double _scrollOffset = 0.0;
+  bool _isTablet;
 
   DatabaseService _db;
 
@@ -41,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
+    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     Map<String,dynamic> books = Provider.of<BookPerGenreMap>(context) != null ?
       Provider.of<BookPerGenreMap>(context).result : null;
@@ -60,8 +63,9 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text('No books yet, the books for sale will appear here',
-            style: TextStyle(color: Colors.white),),
-          Icon(Icons.menu_book_rounded, color: Colors.white,),
+            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 28.0 : 14.0,),
+            textAlign: TextAlign.center,),
+          Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 40.0 : 20.0,),
         ],
       ),
     ) :

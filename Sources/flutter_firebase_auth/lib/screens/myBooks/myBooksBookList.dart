@@ -13,10 +13,13 @@ import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 
+import 'bookHomePageView.dart';
+
 class MyBooksBookList extends StatelessWidget {
 
   final AuthService _auth = AuthService();
   final Map<int, dynamic> books;
+  bool _isTablet;
 
   MyBooksBookList({Key key, @required this.books}) : super(key: key);
 
@@ -67,6 +70,8 @@ class MyBooksBookList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    //print("IsLargeScreen? " + (_isTablet ? "True" : "False"));
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
@@ -74,13 +79,11 @@ class MyBooksBookList extends StatelessWidget {
 
     return GridView.count(
       crossAxisCount: 2,
-      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 0.0),//2// columns
-      mainAxisSpacing: 0.0,
-      crossAxisSpacing: 30.0,
+      padding: EdgeInsets.symmetric(vertical: 36.0 * (_isTablet ? 4 : 1), horizontal: 24.0 * (_isTablet ? 6 : 1)),//2// columns
+      mainAxisSpacing: 36.0 * (_isTablet ? 2.5 : 1),
+      crossAxisSpacing: 36.0 * (_isTablet ? 3 : 1),
       scrollDirection: Axis.vertical,
-      childAspectRatio: (imageWidth)/imageHeight,
-      //itemCount: books.keys.length,
-      //itemBuilder: (BuildContext context, int index) {
+      childAspectRatio: imageWidth / (imageHeight*1.1),
       children: List.generate(books.keys.length, (index) {
         return GestureDetector(
           onTapDown: _storePosition,
@@ -116,8 +119,8 @@ class MyBooksBookList extends StatelessWidget {
                 ),
               ],
               position: RelativeRect.fromRect(
-                _tapPosition & const Size(40, 40),
-                Offset.zero & overlay.size
+                  _tapPosition & const Size(40, 40),
+                  Offset.zero & overlay.size
               ),
             ).then((value) async {
               if(value == editBookPopupIndex) {
@@ -137,67 +140,9 @@ class MyBooksBookList extends StatelessWidget {
           onTap: () {
             _pushBookPage(false, index, context);
           },
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  decoration: books[books.keys.elementAt(index)]['thumbnail'] != null &&
-                      books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
-                  null : BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/no_image_available.png"),
-                        //fit: BoxFit.cover,
-                      )
-                  ),
-                  height: imageHeight,
-                  width: imageWidth,
-                  child: books[books.keys.elementAt(index)]['thumbnail'] != null &&
-                      books[books.keys.elementAt(index)]['thumbnail'].toString() != "" ?
-                    CachedNetworkImage(
-                      imageUrl: books[books.keys.elementAt(index)]['thumbnail'],
-                      placeholder: (context, url) => Loading(),
-                      //width: imageWidth,
-                      //height: imageHeight,
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          width: imageWidth,
-                          height: imageHeight,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                //fit: BoxFit.cover,
-                              )
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ) : Container(),
-                ),
-                Center(
-                  child: Text(
-                    books[index]["title"],
-                    style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    books[index]["author"],
-                    style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                )
-              ],
-            ),
-          ),
+          child: BookHomePageView(books: books, index: index, isTablet: _isTablet,),
         );
-      }),
+      })
     );
 
   }

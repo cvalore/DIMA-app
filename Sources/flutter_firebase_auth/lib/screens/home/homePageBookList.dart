@@ -9,8 +9,9 @@ class HomePageBookList extends StatelessWidget {
 
   final String genre;
   final List<dynamic> books;
+  bool _isTablet;
 
-  const HomePageBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
+  HomePageBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,8 @@ class HomePageBookList extends StatelessWidget {
       }
     }
 
+    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -38,19 +41,21 @@ class HomePageBookList extends StatelessWidget {
             genre,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20.0,
+              fontSize: _isTablet ? 32.0 : 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         Container(
-          height: imageHeight + 75,
+          height: _isTablet ? imageHeight*2.2 : imageHeight*1.2,
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
-            scrollDirection: Axis.horizontal,
-            itemCount: perGenreBooks.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
+          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
+          scrollDirection: Axis.horizontal,
+          itemCount: perGenreBooks.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: _isTablet ? 24.0 : 5.0),
+              child: GestureDetector(
                 onTap: () => print('Tapped'),
                 child: Column(
                   children: [
@@ -58,34 +63,30 @@ class HomePageBookList extends StatelessWidget {
                       decoration: perGenreBooks[index].thumbnail != null &&
                           perGenreBooks[index].thumbnail.toString() != "" ?
                       null : BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/no_image_available.png"),
-                          //fit: BoxFit.cover,
-                        )
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/no_image_available.png"),
+                            fit: BoxFit.cover,
+                          )
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      height: imageHeight,
-                      width: imageWidth,
+                      height: _isTablet ? imageHeight*1.8 : imageHeight*0.9,
+                      width: (_isTablet ? (imageHeight*1.8) : (imageHeight*0.9)) * imageWidth/imageHeight,
                       child: perGenreBooks[index].thumbnail != null &&
                           perGenreBooks[index].thumbnail.toString() != "" ?
                       CachedNetworkImage(
                         imageUrl: perGenreBooks[index].thumbnail,
                         placeholder: (context, url) => Loading(),
-                        //width: imageWidth,
-                        //height: imageHeight,
                         imageBuilder: (context, imageProvider) {
                           return Container(
-                            width: imageWidth,
-                            height: imageHeight,
                             decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                //fit: BoxFit.cover,
-                              )
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                )
                             ),
                           );
                         },
@@ -93,13 +94,13 @@ class HomePageBookList extends StatelessWidget {
                       ) : Container(),
                     ),
                     Container(
-                      width: imageWidth,
+                      width: (_isTablet ? (imageHeight*1.8) : (imageHeight*0.9)) * imageWidth/imageHeight,
                       child: Column(
                         children: [
                           Center(
                             child: Text(
                               perGenreBooks[index].title,
-                              style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
+                              style: TextStyle(color: Colors.white, fontSize: _isTablet ? 24 : 16, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -107,7 +108,7 @@ class HomePageBookList extends StatelessWidget {
                           Center(
                             child: Text(
                               perGenreBooks[index].author,
-                              style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                              style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20 : 12, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -117,10 +118,10 @@ class HomePageBookList extends StatelessWidget {
                     )
                   ],
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            );
+          }),
+        )
       ],
     );
   }

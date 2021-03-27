@@ -56,7 +56,6 @@ class _MyBooksState extends State<MyBooks> {
     Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text('No books yet, the books you add will appear here',
             style: TextStyle(color: Colors.white),),
