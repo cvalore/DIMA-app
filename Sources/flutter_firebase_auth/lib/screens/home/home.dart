@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
       Container(),
       Center(child: Text('TODO:// Search books',
         style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
-      BookInsert(
+      /*BookInsert(
         param: AddBookParameters(false,
           bookIndex: -1,
           editPurpose: "",
@@ -53,7 +53,8 @@ class _HomeState extends State<Home> {
 
         ),
         setIndex: setIndex,
-      ),
+      ),*/
+      Container(),
       Center(child: Text('TODO:// Forum',
         style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
       Profile(),
@@ -142,8 +143,8 @@ class _HomeState extends State<Home> {
               },
             ),
             bottomNavigationBar: BottomTabs(
-                getIndex: getIndex,
-                setIndex: setIndex,
+              getIndex: getIndex,
+              setIndex: setIndex,
             ),
           ),
         ),

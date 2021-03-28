@@ -37,8 +37,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
     _title = title;
   }
 
-  void setAuthor(String title) {
-    _title = title;
+  void setAuthor(String author) {
+    _author = author;
   }
 
   GlobalKey getFormKey() {

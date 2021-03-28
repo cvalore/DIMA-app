@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
+
+import 'addBookParameters.dart';
 
 class BottomTabs extends StatelessWidget {
 
@@ -60,14 +63,32 @@ class BottomTabs extends StatelessWidget {
         bool success = true;
 
         //add every page you can NOT access without being logged
-        if(index == 2 || index == 3) {
+        if(index == 2 || index == 4) {
           if(user == null || user.isAnonymous) {
             success = false;
           }
         }
 
         if(success) {
-          setIndex(index);
+          if(index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) {
+                return BookInsert(
+                  param: AddBookParameters(false,
+                    bookIndex: -1,
+                    editPurpose: "",
+                    editGenre: "",
+                  ),
+                  setIndex: setIndex,
+                );
+              })
+            );
+            //setIndex(0);
+          }
+          else {
+            setIndex(index);
+          }
         }
         else {
           final snackBar = SnackBar(

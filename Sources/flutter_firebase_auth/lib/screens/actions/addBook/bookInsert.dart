@@ -5,6 +5,8 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
+import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
@@ -30,7 +32,6 @@ class _BookInsertState extends State<BookInsert> {
   int currentPageValue = 0;
   final pageViewSize = 2;
   InsertedBook _insertedBook = InsertedBook();
-  DatabaseService _db;
 
   void setSelected(dynamic sel) {
     setState(() {
@@ -46,63 +47,28 @@ class _BookInsertState extends State<BookInsert> {
     DatabaseService _db = DatabaseService(user: user);
 
     return Scaffold(
-      backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0.0,
+        title: Text('BookYourBook', style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 24.0,
+          letterSpacing: 1.0,
+        ),),
+      ),
       floatingActionButton: currentPageValue == pageViewSize - 1 ?
-          FloatingActionButton.extended(
-            backgroundColor: Colors.white24,
-            heroTag: "saveBtn",
-            onPressed: () async {
-              if (widget.selectedBook.title != null) {
-                if ( _insertedBook.category == null || _insertedBook.category == '') {
-                  final snackBar = SnackBar(
-                    backgroundColor: Colors.white24,
-                    duration: Duration(seconds: 1),
-                    content: Text(
-                      'You need to insert book category',
-                      ),
-                    );
-                    // Find the Scaffold in the widget tree and use
-                    // it to show a SnackBar.
-                  Scaffold.of(context).showSnackBar(snackBar);
-              } else if (_insertedBook.price == null || _insertedBook.price == 0.0) {
-                  final snackBar = SnackBar(
-                    backgroundColor: Colors.white24,
-                    duration: Duration(seconds: 1),
-                    content: Text(
-                      'You need to insert a price for the book',
-                    ),
-                  );
-                  // Find the Scaffold in the widget tree and use
-                  // it to show a SnackBar.
-                  Scaffold.of(context).showSnackBar(snackBar);
-              } else {
-                  _insertedBook.setIdTitleAuthorIsbn(
-                      widget.selectedBook.id,
-                      widget.selectedBook.title,
-                      widget.selectedBook.author,
-                      widget.selectedBook.isbn13);
-                  _insertedBook.setBookGeneralInfo(widget.selectedBook);
-                  //_insertedBook.printBook();
-                  await _db.addUserBook(_insertedBook);
-                  widget.setIndex(0);
-                  final snackBar = SnackBar(
-                    backgroundColor: Colors.white24,
-                    duration: Duration(seconds: 1),
-                    content: Text(
-                      'Book added successfully',
-                    ),
-                  );
-                  // Find the Scaffold in the widget tree and use
-                  // it to show a SnackBar.
-                  Scaffold.of(context).showSnackBar(snackBar);
-                }
-              }
-            },
-            icon: Icon(Icons.save, color: Colors.white),
-            label: Text("Save", style: TextStyle(color: Colors.white),),
+        SaveButtonAddBook(
+            insertedBook: _insertedBook,
+            db: _db,
+            selectedBook: widget.selectedBook,
+            setIndex: widget.setIndex,
           ) : null,
-      body: widget.selectedBook != null ?
+      body: Builder(
+        builder: (BuildContext context) {
+        return widget.selectedBook != null ?
         PageView(
           controller: controller,
           onPageChanged: (index) {
@@ -132,7 +98,8 @@ class _BookInsertState extends State<BookInsert> {
               appBarHeight: Scaffold.of(context).appBarMaxHeight,
             ),
           ],
-        )
+        );
+      }),
     );
   }
 }
