@@ -13,11 +13,10 @@ class AddBookSelection extends StatefulWidget {
   final Function(dynamic sel) setSelected;
   dynamic selectedBook;
   final bool showDots;
-  PageController controller;
   bool loading = false;
   final appBarHeight;
 
-  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.controller, this.appBarHeight}) : super(key: key);
+  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.appBarHeight}) : super(key: key);
 
   @override
   _AddBookSelectionState createState() => _AddBookSelectionState();
@@ -26,8 +25,8 @@ class AddBookSelection extends StatefulWidget {
 class _AddBookSelectionState extends State<AddBookSelection> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = ''; //'il signore degli anelli';
-  String _author = '';//'''tolkien';
+  String _title = 'narnia';
+  String _author = 'lewis';
 
   final booksAPI = GoogleBooksAPI();
 
@@ -47,12 +46,15 @@ class _AddBookSelectionState extends State<AddBookSelection> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height - widget.appBarHeight,
         padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: _isTablet ? MainAxisAlignment.start : MainAxisAlignment.end,
           children: <Widget>[
             Flexible(
               flex:10,
@@ -60,7 +62,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    width: MediaQuery.of(context).size.width - 100,
+                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
                     child: SearchBookForm(
                       setTitle: setTitle,
                       setAuthor: setAuthor,
@@ -132,9 +134,9 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       return Container(
                         child: ListTile(
                           title: Text(listItems[index]['volumeInfo']['title'],
-                            style: TextStyle(color: Colors.white),),
+                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0),),
                           subtitle: Text(listItems[index]['volumeInfo']['authors'].toString(),
-                            style: TextStyle(color: Colors.white),),
+                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0),),
                           onTap: () {
                             setState(() {
                               widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);

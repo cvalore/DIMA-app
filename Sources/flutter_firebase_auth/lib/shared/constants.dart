@@ -6,5 +6,5 @@ const imageHeight = 198.0;
 const editBookPopupIndex = 1;
 const deleteBookPopupIndex = 2;
 
-const mobileMaxWidth = 500;
+const mobileMaxWidth = 540;
 const tabletMaxWidth = 1280;

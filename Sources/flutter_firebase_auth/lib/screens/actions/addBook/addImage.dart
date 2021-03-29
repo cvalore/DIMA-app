@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -87,6 +88,8 @@ class _ImageServiceState extends State<ImageService> {
   @override
   Widget build(BuildContext context) {
 
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
@@ -119,7 +122,7 @@ class _ImageServiceState extends State<ImageService> {
                 .height * 0.4,
             child: Column(
                 children: [
-                  Text(widget.justView ? "":"Insert here the images of your book", style: TextStyle(color: Colors.white),),
+                  Text(widget.justView ? "":"Insert here the images of your book", style: TextStyle(color: Colors.white, fontSize: _isTablet ? 16.0 : 12.0),),
                   Flexible(
                     flex: 1,
                     child: SizedBox(height: 20.0,),

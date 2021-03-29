@@ -6,8 +6,10 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/tablet/bookInsertTablet.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +47,7 @@ class _BookInsertState extends State<BookInsert> {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -59,7 +62,8 @@ class _BookInsertState extends State<BookInsert> {
           letterSpacing: 1.0,
         ),),
       ),
-      floatingActionButton: currentPageValue == pageViewSize - 1 ?
+      floatingActionButton:
+        ((currentPageValue == pageViewSize - 1) || (_isTablet && widget.selectedBook != null)) ?
         SaveButtonAddBook(
             insertedBook: _insertedBook,
             db: _db,
@@ -68,42 +72,48 @@ class _BookInsertState extends State<BookInsert> {
           ) : null,
       body: Builder(
         builder: (BuildContext context) {
-        return widget.selectedBook != null ?
-        PageView(
-          controller: controller,
-          onPageChanged: (index) {
-            //print("the index is $index");
-            setState(() {
-              currentPageValue = index;
-            });
-          },
-          children: <Widget>[
-            AddBookSelection(
-              setSelected: setSelected,
+        return
+          _isTablet ?
+            BookInsertTablet(
               selectedBook: widget.selectedBook,
-              showDots: true,
-              controller: controller,
-              appBarHeight: Scaffold.of(context).appBarMaxHeight,
-            ),
-            AddBookUserInfo(
               insertedBook: _insertedBook,
-              edit: false,
-              justView: false,
-              appBarHeight: Scaffold.of(context).appBarMaxHeight,
-            ),
-          ],
-        ) :
-        PageView(
-          controller: controller,
-          children: <Widget>[
-            AddBookSelection(
-              setSelected: setSelected,
-              selectedBook: widget.selectedBook,
-              showDots: false,
-              appBarHeight: Scaffold.of(context).appBarMaxHeight,
-            ),
-          ],
-        );
+              setFatherSelected: setSelected,
+            ) :
+            widget.selectedBook != null ?
+              PageView(
+                controller: controller,
+                onPageChanged: (index) {
+                  //print("the index is $index");
+                  setState(() {
+                    currentPageValue = index;
+                  });
+                },
+                children: <Widget>[
+                  AddBookSelection(
+                    setSelected: setSelected,
+                    selectedBook: widget.selectedBook,
+                    showDots: true,
+                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                  ),
+                  AddBookUserInfo(
+                    insertedBook: _insertedBook,
+                    edit: false,
+                    justView: false,
+                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                  ),
+                ],
+              ) :
+              PageView(
+                controller: controller,
+                children: <Widget>[
+                  AddBookSelection(
+                    setSelected: setSelected,
+                    selectedBook: widget.selectedBook,
+                    showDots: false,
+                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                  ),
+                ],
+              );
       }),
     );
   }

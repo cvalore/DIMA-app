@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/exchange.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 
@@ -19,37 +20,38 @@ class AddBookUserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Container(
       height: MediaQuery.of(context).size.height - appBarHeight,
       padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  children: [
-                    //Expanded(flex: 50, child: ImageService(insertedBook: insertedBook)),
-                    ImageService(insertedBook: insertedBook, justView: justView),
-                    customSizedBox(1.0),
-                    Status(insertedBook: insertedBook, height: 55, offset: 50.0, justView: justView),
-                    customSizedBox(1.0),
-                    edit ? Container() : Category(insertedBook: insertedBook, height: 55, justView: justView),
-                    edit ? Container() : customSizedBox(1.0),
-                    Comment(insertedBook: insertedBook, height: 55, justView: justView),
-                    customSizedBox(1.0),
-                    Price(insertedBook: insertedBook, height: 55, justView: justView),
-                    customSizedBox(1.0),
-                    Exchange(insertedBook: insertedBook, height: 55, justView: justView),
-                    customSizedBox(1.0),
-                    SizedBox(height: 55,),
-                  ],
-                ),
-              )
+          SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: [
+                  //Expanded(flex: 50, child: ImageService(insertedBook: insertedBook)),
+                  ImageService(insertedBook: insertedBook, justView: justView),
+                  customSizedBox(1.0),
+                  Status(insertedBook: insertedBook, height: 55, offset: 50.0, justView: justView),
+                  customSizedBox(1.0),
+                  edit ? Container() : Category(insertedBook: insertedBook, height: 55, justView: justView),
+                  edit ? Container() : customSizedBox(1.0),
+                  Comment(insertedBook: insertedBook, height: 55, justView: justView),
+                  customSizedBox(1.0),
+                  Price(insertedBook: insertedBook, height: 55, justView: justView),
+                  customSizedBox(1.0),
+                  Exchange(insertedBook: insertedBook, height: 55, justView: justView),
+                  customSizedBox(1.0),
+                  SizedBox(height: 55,),
+                ],
+              ),
             ),
           ),
-          (edit || justView) ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,),
+          (edit || justView || _isTablet) ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class SearchBookForm extends StatelessWidget {
 
@@ -10,6 +11,8 @@ class SearchBookForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Form(
       key: getKey(),
       child: Column(
@@ -41,8 +44,8 @@ class SearchBookForm extends StatelessWidget {
                   ),
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 17.0,),
-                  initialValue: '', //'il signore degli anelli',//just to debug easily,
+                  style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0,),
+                  initialValue: 'narnia',
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book title' : null,
                   onChanged: (value) {
@@ -80,8 +83,8 @@ class SearchBookForm extends StatelessWidget {
                   ),
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 17.0),
-                  initialValue: '', //'''tolkien',//just to debug easily,
+                  style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0),
+                  initialValue: 'lewis',
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book author' : null,
                   onChanged: (value) {
