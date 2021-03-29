@@ -27,7 +27,7 @@ class SearchBookForm extends StatelessWidget {
                     hintText: 'Title',
                     hintStyle: TextStyle(color: Colors.grey[500]),
                     filled: true,
-                    fillColor: Colors.white24,
+                    fillColor: Colors.white12,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(7.0),
@@ -37,12 +37,12 @@ class SearchBookForm extends StatelessWidget {
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         borderSide: BorderSide(color: Colors.white)
                     ),
-                    contentPadding: EdgeInsets.only(top: 25.0),
+                    contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                   ),
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: 17.0,),
-                  initialValue: 'il signore degli anelli',//just to debug easily,
+                  initialValue: '', //'il signore degli anelli',//just to debug easily,
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book title' : null,
                   onChanged: (value) {
@@ -66,7 +66,7 @@ class SearchBookForm extends StatelessWidget {
                     hintText: 'Author',
                     hintStyle: TextStyle(color: Colors.grey[500]),
                     filled: true,
-                    fillColor: Colors.white24,
+                    fillColor: Colors.white12,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(7.0),
@@ -76,12 +76,12 @@ class SearchBookForm extends StatelessWidget {
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         borderSide: BorderSide(color: Colors.white)
                     ),
-                    contentPadding: EdgeInsets.only(top: 25.0),
+                    contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                   ),
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: 17.0),
-                  initialValue: 'tolkien',//just to debug easily,
+                  initialValue: '', //'''tolkien',//just to debug easily,
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book author' : null,
                   onChanged: (value) {

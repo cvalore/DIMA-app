@@ -1,5 +1,6 @@
+/*/import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';*/
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
@@ -78,7 +79,7 @@ class _AppState extends State<App> {
        value: AuthService().userStream,
        child: MaterialApp(
          //locale: DevicePreview.locale(context),
-        // builder: DevicePreview.appBuilder,
+         //builder: DevicePreview.appBuilder,
          theme: ThemeData(
            buttonColor: Colors.white12,
            //primarySwatch: Colors.blueGrey[600],

@@ -52,7 +52,7 @@ class _BookInsertState extends State<BookInsert> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0.0,
-        title: Text('BookYourBook', style: TextStyle(
+        title: Text('Insert book', style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 24.0,
@@ -85,7 +85,12 @@ class _BookInsertState extends State<BookInsert> {
               controller: controller,
               appBarHeight: Scaffold.of(context).appBarMaxHeight,
             ),
-            AddBookUserInfo(insertedBook: _insertedBook, edit: false, justView: false,),
+            AddBookUserInfo(
+              insertedBook: _insertedBook,
+              edit: false,
+              justView: false,
+              appBarHeight: Scaffold.of(context).appBarMaxHeight,
+            ),
           ],
         ) :
         PageView(

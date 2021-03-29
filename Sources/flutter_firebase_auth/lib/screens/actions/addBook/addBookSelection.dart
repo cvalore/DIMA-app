@@ -26,8 +26,8 @@ class AddBookSelection extends StatefulWidget {
 class _AddBookSelectionState extends State<AddBookSelection> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = 'il signore degli anelli';
-  String _author = 'tolkien';
+  String _title = ''; //'il signore degli anelli';
+  String _author = '';//'''tolkien';
 
   final booksAPI = GoogleBooksAPI();
 
@@ -49,14 +49,59 @@ class _AddBookSelectionState extends State<AddBookSelection> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height - widget.appBarHeight - kBottomNavigationBarHeight,
+        height: MediaQuery.of(context).size.height - widget.appBarHeight,
         padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Flexible(
               flex:10,
-              child: SearchBookForm(setTitle: setTitle, setAuthor: setAuthor, getKey: getFormKey,),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: SearchBookForm(
+                      setTitle: setTitle,
+                      setAuthor: setAuthor,
+                      getKey: getFormKey,
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: FloatingActionButton(
+                      heroTag: "searchBookBtn",
+                      elevation: 0.0,
+                      focusElevation: 0.0,
+                      hoverElevation: 0.0,
+                      highlightElevation: 0.0,
+                      backgroundColor: Colors.white24,
+                      child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                      onPressed: () async {
+                        if(_formKey.currentState.validate()) {
+                          setState(() {
+                            widget.loading = true;
+                          });
+                          print('Searching for \"' + _title + '\" by \"' + _author + '\"');
+                          final result = await booksAPI.performSearch(_title, _author);
+                          if(result != null) {
+                            setState(() {
+                              widget.loading = false;
+                              widget.selectedBook = null;
+                              if(widget.setSelected != null) {
+                                widget.setSelected(widget.selectedBook);
+                              }
+                              //TestPage.of(context).selected = null;
+                              listItems = result['items'];
+                              //print(listItems);
+                            });
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              )
             ),
             Flexible(
               flex: 2,
@@ -115,45 +160,12 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   child: BookGeneralInfoListView(selectedBook: widget.selectedBook,)
                 ))
             ),
-            Flexible(
+            /*Flexible(
               flex: 2,
               child: SizedBox(
                 height: 20.0,
               ),
-            ),
-            Flexible(
-              flex: 4,
-              child: FloatingActionButton(
-                heroTag: "searchBookBtn",
-                elevation: 0.0,
-                focusElevation: 0.0,
-                hoverElevation: 0.0,
-                highlightElevation: 0.0,
-                backgroundColor: Colors.transparent,
-                child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                onPressed: () async {
-                  if(_formKey.currentState.validate()) {
-                    setState(() {
-                      widget.loading = true;
-                    });
-                    print('Searching for \"' + _title + '\" by \"' + _author + '\"');
-                    final result = await booksAPI.performSearch(_title, _author);
-                    if(result != null) {
-                      setState(() {
-                        widget.loading = false;
-                        widget.selectedBook = null;
-                        if(widget.setSelected != null) {
-                          widget.setSelected(widget.selectedBook);
-                        }
-                        //TestPage.of(context).selected = null;
-                        listItems = result['items'];
-                        //print(listItems);
-                      });
-                    }
-                  }
-                },
-              ),
-            ),
+            ),*/
             Flexible(
               flex: 2,
               child: SizedBox(
