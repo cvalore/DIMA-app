@@ -1,5 +1,6 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
@@ -17,13 +18,13 @@ import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  /*runApp(
+  runApp(
     DevicePreview(
       enabled: !kReleaseMode,
       builder: (context) => App(),
     )
-  );*/
-  runApp(App());
+  );
+  //runApp(App());
 }
   
 class App extends StatefulWidget {
@@ -77,8 +78,8 @@ class _AppState extends State<App> {
      return StreamProvider<AuthCustomUser>.value(
        value: AuthService().userStream,
        child: MaterialApp(
-         //locale: DevicePreview.locale(context),
-        // builder: DevicePreview.appBuilder,
+         locale: DevicePreview.locale(context),
+         builder: DevicePreview.appBuilder,
          theme: ThemeData(
            primarySwatch: Colors.blueGrey,
            brightness: Brightness.dark,

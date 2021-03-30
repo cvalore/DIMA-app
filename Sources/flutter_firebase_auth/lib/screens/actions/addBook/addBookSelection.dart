@@ -11,11 +11,10 @@ class AddBookSelection extends StatefulWidget {
   final Function(dynamic sel) setSelected;
   dynamic selectedBook;
   final bool showDots;
-  PageController controller;
   bool loading = false;
   final appBarHeight;
 
-  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.controller, this.appBarHeight}) : super(key: key);
+  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.appBarHeight}) : super(key: key);
 
   @override
   _AddBookSelectionState createState() => _AddBookSelectionState();
@@ -24,8 +23,8 @@ class AddBookSelection extends StatefulWidget {
 class _AddBookSelectionState extends State<AddBookSelection> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = 'il signore degli anelli';
-  String _author = 'tolkien';
+  String _title = 'narnia';
+  String _author = 'lewis';
 
   final booksAPI = GoogleBooksAPI();
 
@@ -45,16 +44,64 @@ class _AddBookSelectionState extends State<AddBookSelection> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height - widget.appBarHeight - kBottomNavigationBarHeight,
+        height: MediaQuery.of(context).size.height - widget.appBarHeight,
         padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: _isTablet ? MainAxisAlignment.start : MainAxisAlignment.end,
           children: <Widget>[
             Flexible(
               flex:10,
-              child: SearchBookForm(setTitle: setTitle, setAuthor: setAuthor, getKey: getFormKey,),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
+                    child: SearchBookForm(
+                      setTitle: setTitle,
+                      setAuthor: setAuthor,
+                      getKey: getFormKey,
+                    ),
+                  ),
+                  Flexible(
+                    flex: 4,
+                    child: FloatingActionButton(
+                      heroTag: "searchBookBtn",
+                      elevation: 0.0,
+                      focusElevation: 0.0,
+                      hoverElevation: 0.0,
+                      highlightElevation: 0.0,
+                      backgroundColor: Colors.white24,
+                      child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                      onPressed: () async {
+                        if(_formKey.currentState.validate()) {
+                          setState(() {
+                            widget.loading = true;
+                          });
+                          print('Searching for \"' + _title + '\" by \"' + _author + '\"');
+                          final result = await booksAPI.performSearch(_title, _author);
+                          if(result != null) {
+                            setState(() {
+                              widget.loading = false;
+                              widget.selectedBook = null;
+                              if(widget.setSelected != null) {
+                                widget.setSelected(widget.selectedBook);
+                              }
+                              //TestPage.of(context).selected = null;
+                              listItems = result['items'];
+                              //print(listItems);
+                            });
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              )
             ),
             Flexible(
               flex: 2,
@@ -85,9 +132,9 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       return Container(
                         child: ListTile(
                           title: Text(listItems[index]['volumeInfo']['title'],
-                            style: TextStyle(color: Colors.white),),
+                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0),),
                           subtitle: Text(listItems[index]['volumeInfo']['authors'].toString(),
-                            style: TextStyle(color: Colors.white),),
+                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0),),
                           onTap: () {
                             setState(() {
                               widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);
@@ -113,45 +160,12 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   child: BookGeneralInfoListView(selectedBook: widget.selectedBook,)
                 ))
             ),
-            Flexible(
+            /*Flexible(
               flex: 2,
               child: SizedBox(
                 height: 20.0,
               ),
-            ),
-            Flexible(
-              flex: 4,
-              child: FloatingActionButton(
-                heroTag: "searchBookBtn",
-                elevation: 0.0,
-                focusElevation: 0.0,
-                hoverElevation: 0.0,
-                highlightElevation: 0.0,
-                backgroundColor: Colors.transparent,
-                child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                onPressed: () async {
-                  if(_formKey.currentState.validate()) {
-                    setState(() {
-                      widget.loading = true;
-                    });
-                    print('Searching for \"' + _title + '\" by \"' + _author + '\"');
-                    final result = await booksAPI.performSearch(_title, _author);
-                    if(result != null) {
-                      setState(() {
-                        widget.loading = false;
-                        widget.selectedBook = null;
-                        if(widget.setSelected != null) {
-                          widget.setSelected(widget.selectedBook);
-                        }
-                        //TestPage.of(context).selected = null;
-                        listItems = result['items'];
-                        //print(listItems);
-                      });
-                    }
-                  }
-                },
-              ),
-            ),
+            ),*/
             Flexible(
               flex: 2,
               child: SizedBox(

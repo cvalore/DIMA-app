@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class Status extends StatefulWidget {
 
@@ -16,9 +17,11 @@ class Status extends StatefulWidget {
 }
 
 class _StatusState extends State<Status> {
-
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Container(
       height: widget.height,
       child: Row(
@@ -43,7 +46,7 @@ class _StatusState extends State<Status> {
                 children: [
                   for(int i = 0; i < 5; i++)
                     Container(
-                      width: (MediaQuery.of(context).size.width - widget.offset) / 10,
+                      width: ((_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width) - widget.offset) / 10,
                       child: IconButton(
                         key: ValueKey(i),
                         padding: EdgeInsets.symmetric(vertical: 1.0),
