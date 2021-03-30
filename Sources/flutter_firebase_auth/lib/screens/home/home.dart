@@ -10,7 +10,7 @@ import 'package:flutter_firebase_auth/utils/addBookParameters.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
-import 'package:flutter_firebase_auth/screens/profile/profile.dart';
+import 'package:flutter_firebase_auth/screens/profile/profileMainPage.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
       Container(),
       Center(child: Text('TODO:// Forum',
         style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
-      Profile(),
+      ProfileMainPage(),
     ];
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);

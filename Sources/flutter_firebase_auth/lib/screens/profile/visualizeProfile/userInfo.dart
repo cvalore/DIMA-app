@@ -21,22 +21,32 @@ class _UserInfoState extends State<UserInfo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            widget.user.userProfileImagePath != null ?
-              Text('//TODO insert use image') :
-              Container(
-                height: MediaQuery.of(context).size.height * 2 / 4,
-                padding: EdgeInsets.all(10.0),
-                color: Colors.green,
-                child: Text(
-                  widget.user.username[0].toUpperCase(),
-                  textScaleFactor: 5,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50
-                  ),
-                ),
-                ),
+            widget.user.userProfileImageURL != '' ?
+                    Container(
+                      height: MediaQuery.of(context).size.height * 2 / 4,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(widget.user.userProfileImageURL),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ) :
+                    Container(
+                      height: MediaQuery.of(context).size.height * 2 / 4,
+                      padding: EdgeInsets.all(10.0),
+                      color: Colors.green,
+                      child: widget.user.userProfileImageURL != '' ?
+                        NetworkImage(widget.user.userProfileImageURL)
+                          : Text(
+                              widget.user.username[0].toUpperCase(),
+                              textScaleFactor: 5,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 50
+                              ),
+                      ),
+                      ),
             Container(
               //height: MediaQuery.of(context).size.height / 10,
               child: Column(

@@ -31,6 +31,29 @@ class DatabaseService {
   }
 
 
+  Future<void> updateUserInfo(String imageProfilePic) async {
+
+    Reference reference = await storageService.addUserProfilePic(user.uid, imageProfilePic);
+    String imgUrl = await storageService.getUrlPicture(reference);
+    //TODO add imgurl to userProfileImageURL
+    print(imgUrl);
+
+    usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        usersCollection.doc(user.uid).update({
+          'userProfileImageURL': imgUrl
+        })
+        .then((value) => print("image profile added"))
+        .catchError((error) => print("Failed to add image profile: $error"));
+      }
+    });
+    return null;
+  }
+
+
+
+
+
   Future addUserBook(InsertedBook book) async {
     int numberOfInsertedItems;
 
@@ -38,8 +61,6 @@ class DatabaseService {
             (userDoc) {
           numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
         });
-
-
     // add book to book collection
     var generalInfoBookMap = book.generalInfoToMap();
     await bookCollection
@@ -343,8 +364,19 @@ class DatabaseService {
         books.add(insertedBook);
       }
        */
-      user = CustomUser(userMap['uid'], userMap['email'], userMap['isAnonymous'],
-          username: userMap['username'], numberOfInsertedItems: userMap['numberOfInsertedItems']);
+      user = CustomUser(
+          userMap['uid'],
+          userMap['email'],
+          userMap['isAnonymous'],
+          username: userMap['username'],
+          bio: userMap['bio'],
+          city: userMap['city'],
+          followers: userMap['followers'],
+          following: userMap['following'],
+          userProfileImageURL: userMap['userProfileImageURL'],
+          numberOfInsertedItems: userMap['numberOfInsertedItems'],
+      );
+
     }
     return user;
   }

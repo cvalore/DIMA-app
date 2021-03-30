@@ -13,10 +13,11 @@ class CustomUser {
   final bool isAnonymous;
   final List<InsertedBook> books;
   final List<Review> reviews;
-  String userProfileImagePath;    //TODO
+  String userProfileImagePath;
+  String userProfileImageURL;
   int numberOfInsertedItems;
 
-  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems, this.userProfileImagePath, this.reviews, this.bio, this.followers, this.following, this.city});
+  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems, this.userProfileImagePath, this.userProfileImageURL, this.reviews, this.bio, this.followers, this.following, this.city});
 
   void setNumberOfInsertedItems(int num){
     this.numberOfInsertedItems = num;
@@ -46,6 +47,7 @@ class CustomUser {
     user['city'] = city != null ? city : '';
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;
+    user['userProfileImageURL'] = userProfileImageURL != null ? userProfileImageURL : '';
     user['books'] = [];
     user['numberOfInsertedItems'] = books != null ? books.length : user['numberOfInsertedItems'] = 0;
     return user;

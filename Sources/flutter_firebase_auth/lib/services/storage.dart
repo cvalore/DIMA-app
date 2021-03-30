@@ -11,6 +11,23 @@ class StorageService {
 
   final FirebaseStorage storage = FirebaseStorage.instance;
 
+
+  Future addUserProfilePic(String useruid, String imagePath) async {
+
+    String basePath = useruid + "/";
+    String fileName = 'userProfilePic';
+    Reference reference = storage.ref().child("$basePath/$fileName");
+
+    try {
+      await reference.putFile(File(imagePath));
+    } on FirebaseException catch (e) {
+      e.toString();
+    }
+
+    return reference;
+  }
+
+
   Future addBookPicture(String useruid, String bookTitle,
       int numberOfInsertedItems, String imagePath, int index) async {
 

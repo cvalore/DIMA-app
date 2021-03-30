@@ -103,7 +103,12 @@ class _ReviewsState extends State<Reviews> {
                           ),
                           Expanded(
                               flex: 4,
-                              child: Text(widget.reviews[index].review))
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(widget.reviews[index].review),
+                                ],
+                              ))
                         ],
                       ),
                     )

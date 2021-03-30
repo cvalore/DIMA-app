@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/profileHomePage.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -28,15 +28,17 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
       height: widget.height,
       child: GestureDetector(
         onTap: () async {
-          dynamic result = await Navigator.push(
+          Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfileHomePage(user: user, self: true))
+              MaterialPageRoute(builder: (context) => VisualizeProfileMainPage(user: user, self: true))
           );
+          /*
           setState(() {
             if(result != null)
               print('to modify');
-             // widget.insertedBook.setCategory(result);
           });
+
+           */
         },
         child: user == null ? Loading() :
         Row(
@@ -51,10 +53,10 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                         backgroundColor: Colors.white,
                         radius: 60.0,
                         child: CircleAvatar(
-                          backgroundImage: user.userProfileImagePath == null ?
-                            AssetImage('assets/images/no_image_available.png') :
+                          backgroundImage: user.userProfileImageURL != '' ?
+                            NetworkImage(user.userProfileImageURL) :
                             AssetImage('assets/images/no_image_available.png'),
-                          radius: 50.0,
+                          radius: 60.0,
                         ),
                       ),
                     ),
