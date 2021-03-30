@@ -80,11 +80,18 @@ class _AppState extends State<App> {
          //locale: DevicePreview.locale(context),
         // builder: DevicePreview.appBuilder,
          theme: ThemeData(
-           buttonColor: Colors.white12,
-           //primarySwatch: Colors.blueGrey[600],
-           buttonTheme: const ButtonThemeData(
-             textTheme: ButtonTextTheme.primary
-           )
+           primarySwatch: Colors.blueGrey,
+           brightness: Brightness.dark,
+           //scaffoldBackgroundColor: Colors.grey,
+           textTheme: TextTheme(
+             headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+             headline2: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+             bodyText1: TextStyle(fontSize: 14.0),
+             bodyText2: TextStyle(fontSize: 14.0,),
+           ),
+
+           //buttonColor: Colors.white12,
+           //buttonTheme: const ButtonThemeData()
          ),
          home: Wrapper(),
          routes: {

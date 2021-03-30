@@ -32,7 +32,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         elevation: 0.0,
         title: Text(widget.book.title,
           style: TextStyle(
@@ -111,7 +111,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
         icon: Icon(Icons.save),
         label: Text("Save"),
       ) : null,
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       body: AddBookUserInfo(
         insertedBook: widget.book,
         edit: widget.edit,

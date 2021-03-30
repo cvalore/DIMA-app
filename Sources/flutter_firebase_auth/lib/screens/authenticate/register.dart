@@ -26,9 +26,9 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return _loading ? Loading() : Scaffold(
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         elevation: 0.0,
         title: Text('Sign up to BookYourBook', style: TextStyle(color: Colors.white),),
       ),

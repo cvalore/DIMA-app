@@ -106,10 +106,10 @@ class _CommentBoxState extends State<CommentBox> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         title: Text("Book comment"),
       ),
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       floatingActionButton : FloatingActionButton(
         heroTag: "saveCommentButt",
         child: Icon(Icons.check_outlined),

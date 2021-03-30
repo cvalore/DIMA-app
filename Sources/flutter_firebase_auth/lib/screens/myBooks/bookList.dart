@@ -112,7 +112,7 @@ class _BookListState extends State<BookList> {
                     builder: (newContext) =>
                       Scaffold(
                         appBar: AppBar(
-                          backgroundColor: Colors.black,
+                          //backgroundColor: Colors.black,
                           elevation: 0.0,
                           title: Text('BookYourBook', style: TextStyle(
                             color: Colors.white,
@@ -130,7 +130,7 @@ class _BookListState extends State<BookList> {
                             ),
                           ],
                         ),
-                        backgroundColor: Colors.black,
+                        //backgroundColor: Colors.black,
                         floatingActionButton: FloatingActionButton.extended(
                           backgroundColor: Colors.white24,
                           heroTag: "editSaveBtn",

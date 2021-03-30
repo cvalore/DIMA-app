@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/reviews.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/userInfo.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviews.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.dart';
 
 
 class ProfileHomePage extends StatefulWidget {

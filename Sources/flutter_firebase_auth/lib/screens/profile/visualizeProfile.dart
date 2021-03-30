@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile/profileHomePage.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/profileHomePage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 
-class VisualizeMyProfile extends StatefulWidget {
+class VisualizeProfile extends StatefulWidget {
 
   double height;
   //Image avatar;
 
-  VisualizeMyProfile({Key key, @required this.height}) : super(key: key);
+  VisualizeProfile({Key key, @required this.height}) : super(key: key);
 
   @override
-  _VisualizeMyProfileState createState() => _VisualizeMyProfileState();
+  _VisualizeProfileState createState() => _VisualizeProfileState();
 }
 
-class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
+class _VisualizeProfileState extends State<VisualizeProfile> {
   @override
   Widget build(BuildContext context) {
 
@@ -24,6 +24,7 @@ class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
     DatabaseService _db = DatabaseService(user: user);
 
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
       height: widget.height,
       child: GestureDetector(
         onTap: () async {
@@ -66,7 +67,6 @@ class _VisualizeMyProfileState extends State<VisualizeMyProfile> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white70
                             ),
                           )
                         ],

@@ -26,10 +26,10 @@ class SubscribeState extends State<Subscribe> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Subscribe"),
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         elevation: 0.0,
       ),
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),

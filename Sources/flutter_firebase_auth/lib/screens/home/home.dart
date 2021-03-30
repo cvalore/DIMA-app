@@ -74,9 +74,9 @@ class _HomeState extends State<Home> {
           child: Scaffold(
             key: scaffoldKey,
             resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.black,
+            //backgroundColor: Colors.black,
             appBar: AppBar(
-              backgroundColor: Colors.black,
+              //backgroundColor: Colors.black,
               elevation: 0.0,
               title: Text('BookYourBook', style: TextStyle(
                 color: Colors.white,

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/services/googleBooksAPI.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_firebase_auth/utils/bookGeneralInfoListView.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
@@ -67,7 +65,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 child: widget.loading == true ?
                 Container(
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      //color: Colors.black,
                       border: Border.symmetric(
                         vertical: BorderSide(color: Colors.white),
                       ),

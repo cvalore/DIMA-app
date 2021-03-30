@@ -96,10 +96,10 @@ class _CategoryBoxState extends State<CategoryBox> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         title: Text("Categories"),
       ),
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       body: Theme(
         data: Theme.of(context).copyWith(
             unselectedWidgetColor: Colors.white,

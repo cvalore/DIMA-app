@@ -22,7 +22,7 @@ class BottomTabs extends StatelessWidget {
     _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return BottomNavigationBar(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black54,
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: false,
       showSelectedLabels: true,

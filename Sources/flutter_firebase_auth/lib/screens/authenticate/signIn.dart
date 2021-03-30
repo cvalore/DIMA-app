@@ -29,11 +29,11 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return _loading ? Loading() : Scaffold (
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         elevation: 0.0,
         title: Text('Sign in to BookYourBook'),
       ),
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       body: Container(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 35.0),

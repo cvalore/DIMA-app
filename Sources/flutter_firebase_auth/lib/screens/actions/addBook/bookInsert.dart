@@ -48,9 +48,9 @@ class _BookInsertState extends State<BookInsert> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         elevation: 0.0,
         title: Text('BookYourBook', style: TextStyle(
           color: Colors.white,

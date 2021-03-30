@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 
@@ -68,7 +67,7 @@ class _ReviewsState extends State<Reviews> {
                                   child: Text(
                                     widget.reviews[index].reviewerUsername,
                                     style: TextStyle(
-                                        color: Colors.black38,
+                                        //color: Colors.black38,
                                         fontWeight: FontWeight.bold
                                     ),
                                   ),
@@ -79,7 +78,7 @@ class _ReviewsState extends State<Reviews> {
                                     computeHowLongAgo(widget.reviews[index].time),
                                     style: TextStyle(
                                         fontSize: 9,
-                                        color: Colors.grey[600],
+                                        //color: Colors.grey[600],
                                         fontWeight: FontWeight.normal
                                     ),
                                   ),

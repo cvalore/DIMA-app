@@ -57,7 +57,7 @@ class _ImageServiceState extends State<ImageService> {
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
-              color: Colors.black,
+              //color: Colors.black,
               child: new Wrap(
                 children: <Widget>[
                   new ListTile(
@@ -126,8 +126,8 @@ class _ImageServiceState extends State<ImageService> {
                   ),
                   !widget.justView && (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
                     heroTag: "addImageBtn",
-                    backgroundColor: Colors.white24,
-                    foregroundColor: Colors.black,
+                    //backgroundColor: Colors.white24,
+                    //foregroundColor: Colors.black,
                     onPressed: () {
                       _showPicker(context);
                     },

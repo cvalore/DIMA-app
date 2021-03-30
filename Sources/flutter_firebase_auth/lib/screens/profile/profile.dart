@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/favorites.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeMyProfile.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
 
@@ -33,15 +33,18 @@ class _ProfileState extends State<Profile> {
                     child: Column(
                       children: [
                         //do a sliver appbar with visualize profile??
-                        VisualizeMyProfile(height: 120.0),
-                        customSizedBox(10.0, Colors.black),
-                        customSizedBox(1.0, Colors.white),
+                        VisualizeProfile(height: 120.0),
+                        Divider(height: 15, thickness: 2,),
+                        //customSizedBox(10.0, Colors.black),
+                        //customSizedBox(1.0, Colors.white),
                         Favorites(height: 60.0),
-                        customSizedBox(10.0, Colors.black),
-                        customSizedBox(1.0, Colors.white),
+                        Divider(height: 15, thickness: 2,),
+                        //customSizedBox(10.0, Colors.black),
+                        //customSizedBox(1.0, Colors.white),
                         Orders(height: 60.0),
-                        customSizedBox(10.0, Colors.black),
-                        customSizedBox(1.0, Colors.white),
+                        Divider(height: 15, thickness: 2,),
+                        //customSizedBox(10.0, Colors.black),
+                        //customSizedBox(1.0, Colors.white),
                         // modalità vacanza ??
                         // invita amici // followers/following
                         // dettagli pagamento

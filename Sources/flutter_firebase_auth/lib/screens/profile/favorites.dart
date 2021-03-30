@@ -34,10 +34,8 @@ class _FavoritesState extends State<Favorites> {
                       Expanded(
                           flex: 1,
                           child: Container(
-                              color : Colors.black,
                               child: Icon(
                                 Icons.favorite_border_outlined,
-                                color: Colors.red,
                               ),
                           )
                       ),
@@ -50,7 +48,6 @@ class _FavoritesState extends State<Favorites> {
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white70
                             ),
                           ),
                         ),

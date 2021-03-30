@@ -92,10 +92,10 @@ class PriceBoxState extends State<PriceBox> {
 
     return  Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        //backgroundColor: Colors.black,
         title: Text("Price"),
       ),
-      backgroundColor: Colors.black,
+      //backgroundColor: Colors.black,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white24,
         onPressed: () {

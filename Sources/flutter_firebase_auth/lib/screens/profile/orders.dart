@@ -34,10 +34,8 @@ class _OrdersState extends State<Orders> {
                       Expanded(
                           flex: 1,
                           child: Container(
-                            color : Colors.black,
                             child: Icon(
                               Icons.shopping_cart_outlined,
-                              color: Colors.white70,
                             ),
                           )
                       ),
@@ -50,7 +48,6 @@ class _OrdersState extends State<Orders> {
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white70
                             ),
                           ),
                         ),
