@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/services/googleBooksAPI.dart';
@@ -76,7 +77,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       focusElevation: 0.0,
                       hoverElevation: 0.0,
                       highlightElevation: 0.0,
-                      backgroundColor: Colors.white24,
+                      backgroundColor: Colors.transparent,
                       child: Icon(Icons.search, color: Colors.white,size: 35.0),
                       onPressed: () async {
                         if(_formKey.currentState.validate()) {
@@ -133,9 +134,9 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       return Container(
                         child: ListTile(
                           title: Text(listItems[index]['volumeInfo']['title'],
-                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0),),
+                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0, fontWeight: FontWeight.bold),),
                           subtitle: Text(listItems[index]['volumeInfo']['authors'].toString(),
-                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0),),
+                            style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 15.0, fontStyle: FontStyle.italic),),
                           onTap: () {
                             setState(() {
                               widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);
@@ -174,6 +175,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
               ),
             ),
             widget.showDots ? BottomTwoDots(darkerIndex: 0, size: 9.0,) : Container(),
+            SizedBox(height: 15,)
           ],
         ),
       ),

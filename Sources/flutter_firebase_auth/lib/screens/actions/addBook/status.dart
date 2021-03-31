@@ -46,7 +46,7 @@ class _StatusState extends State<Status> {
                 children: [
                   for(int i = 0; i < 5; i++)
                     Container(
-                      width: ((_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width) - widget.offset) / 10,
+                      width: ((_isTablet ? MediaQuery.of(context).size.width*3 : MediaQuery.of(context).size.width) - widget.offset) / (_isTablet ? 38 : 10),
                       child: IconButton(
                         key: ValueKey(i),
                         padding: EdgeInsets.symmetric(vertical: 1.0),

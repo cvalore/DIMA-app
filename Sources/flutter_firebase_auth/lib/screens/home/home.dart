@@ -61,11 +61,16 @@ class _HomeState extends State<Home> {
     ];
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(
+        userFromAuth != null ? userFromAuth.uid : "",
+        userFromAuth != null ? userFromAuth.email : "",
+        userFromAuth != null ? userFromAuth.isAnonymous : false);
     _db = DatabaseService(user: user);
     GlobalKey scaffoldKey = GlobalKey();
 
-    return StreamProvider<BookPerGenreMap>.value(
+    return userFromAuth == null ?
+      Container() :
+      StreamProvider<BookPerGenreMap>.value(
       value: _db.perGenreBooks,
       child: StreamProvider<BookPerGenreUserMap>.value(
         value: _db.userBooksPerGenre,

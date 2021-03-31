@@ -41,20 +41,20 @@ class HomePageBookList extends StatelessWidget {
             genre,
             style: TextStyle(
               color: Colors.white,
-              fontSize: _isTablet ? 32.0 : 20.0,
+              fontSize: _isTablet ? 26.0 : 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         Container(
-          height: _isTablet ? imageHeight*2.2 : imageHeight*1.2,
+          height: _isTablet ? imageHeight*2 : imageHeight*1.2,
           child: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
+          padding: EdgeInsets.symmetric(vertical: _isTablet ? 16.0 : 12.0, horizontal: 14.0),
           scrollDirection: Axis.horizontal,
           itemCount: perGenreBooks.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: _isTablet ? 24.0 : 5.0),
+              padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12.0 : 5.0),
               child: GestureDetector(
                 onTap: () => print('Tapped'),
                 child: Column(
@@ -71,8 +71,8 @@ class HomePageBookList extends StatelessWidget {
                           )
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      height: _isTablet ? imageHeight*1.8 : imageHeight*0.9,
-                      width: (_isTablet ? (imageHeight*1.8) : (imageHeight*0.9)) * imageWidth/imageHeight,
+                      height: _isTablet ? imageHeight*1.5 : imageHeight*0.9,
+                      width: (_isTablet ? (imageHeight*1.5) : (imageHeight*0.9)) * imageWidth/imageHeight,
                       child: perGenreBooks[index].thumbnail != null &&
                           perGenreBooks[index].thumbnail.toString() != "" ?
                       CachedNetworkImage(

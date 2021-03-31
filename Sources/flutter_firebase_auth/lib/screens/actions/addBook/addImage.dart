@@ -122,11 +122,11 @@ class _ImageServiceState extends State<ImageService> {
                 .height * 0.4,
             child: Column(
                 children: [
-                  Text(widget.justView ? "":"Insert here the images of your book", style: TextStyle(color: Colors.white, fontSize: _isTablet ? 16.0 : 12.0),),
-                  Flexible(
+                  //Text(widget.justView ? "":"Insert here the images of your book", style: TextStyle(color: Colors.white, fontSize: _isTablet ? 16.0 : 12.0),),
+                  /*Flexible(
                     flex: 1,
                     child: SizedBox(height: 20.0,),
-                  ),
+                  ),*/
                   !widget.justView && (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
                     heroTag: "addImageBtn",
                     //backgroundColor: Colors.white24,
@@ -143,7 +143,7 @@ class _ImageServiceState extends State<ImageService> {
                         child: Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 1.0,
-                            maxHeight: MediaQuery.of(context).size.height * 0.35,
+                            maxHeight: MediaQuery.of(context).size.height * 0.39,
                           ),
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,

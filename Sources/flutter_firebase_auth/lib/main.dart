@@ -18,13 +18,13 @@ import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
+  /*runApp(
     DevicePreview(
       enabled: !kReleaseMode,
       builder: (context) => App(),
     )
-  );
-  //runApp(App());
+  );*/
+  runApp(App());
 }
   
 class App extends StatefulWidget {
@@ -78,8 +78,8 @@ class _AppState extends State<App> {
      return StreamProvider<AuthCustomUser>.value(
        value: AuthService().userStream,
        child: MaterialApp(
-         locale: DevicePreview.locale(context),
-         builder: DevicePreview.appBuilder,
+         //locale: DevicePreview.locale(context),
+         //builder: DevicePreview.appBuilder,
          theme: ThemeData(
            primarySwatch: Colors.blueGrey,
            brightness: Brightness.dark,

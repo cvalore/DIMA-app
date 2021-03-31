@@ -30,7 +30,6 @@ class DatabaseService {
     });
   }
 
-
   Future<void> updateUserInfo(String imageProfilePic) async {
 
     Reference reference = await storageService.addUserProfilePic(user.uid, imageProfilePic);
@@ -49,10 +48,6 @@ class DatabaseService {
     });
     return null;
   }
-
-
-
-
 
   Future addUserBook(InsertedBook book) async {
     int numberOfInsertedItems;
@@ -315,7 +310,6 @@ class DatabaseService {
     print("Book updated");
   }
 
-
   BookPerGenreUserMap _bookPerGenreUserListFromSnapshot(DocumentSnapshot documentSnapshot) {
     Map<int,dynamic> result = Map<int,dynamic>();
     if (documentSnapshot.exists) {
@@ -380,7 +374,6 @@ class DatabaseService {
     }
     return user;
   }
-
 
   Stream<BookPerGenreMap> get perGenreBooks {
     Stream<BookPerGenreMap> result = booksPerGenreCollection.snapshots()

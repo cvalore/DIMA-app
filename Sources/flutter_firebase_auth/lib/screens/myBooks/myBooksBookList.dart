@@ -79,9 +79,9 @@ class MyBooksBookList extends StatelessWidget {
 
     return GridView.count(
       crossAxisCount: 2,
-      padding: EdgeInsets.symmetric(vertical: 36.0 * (_isTablet ? 4 : 1), horizontal: 24.0 * (_isTablet ? 6 : 1)),//2// columns
+      padding: EdgeInsets.symmetric(vertical: 36.0 * (_isTablet ? 3 : 1), horizontal: 24.0 * (_isTablet ? 5 : 1)),//2// columns
       mainAxisSpacing: 36.0 * (_isTablet ? 2.5 : 1),
-      crossAxisSpacing: 36.0 * (_isTablet ? 3 : 1),
+      crossAxisSpacing: 36.0 * (_isTablet ? 4.5 : 1),
       scrollDirection: Axis.vertical,
       childAspectRatio: imageWidth / (imageHeight*1.1),
       children: List.generate(books.keys.length, (index) {
