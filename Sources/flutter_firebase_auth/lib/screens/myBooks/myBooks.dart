@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/bookList.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooksBookList.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +45,8 @@ class _MyBooksState extends State<MyBooks> {
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
 
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     Map<int,dynamic> books = Provider.of<BookPerGenreUserMap>(context) != null ?
       Provider.of<BookPerGenreUserMap>(context).result : null;
 
@@ -58,8 +61,8 @@ class _MyBooksState extends State<MyBooks> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text('No books yet, the books you add will appear here',
-            style: TextStyle(color: Colors.white),),
-          Icon(Icons.menu_book_rounded, color: Colors.white,),
+            style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
+          Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
         ],
       ),
     ) :

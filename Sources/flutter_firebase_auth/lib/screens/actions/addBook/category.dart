@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 
 
@@ -41,7 +42,7 @@ class _CategoryState extends State<Category> {
                       Expanded(
                         flex: 5,
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text("Category",
                             style: TextStyle(
                                 fontSize: 20,
@@ -94,6 +95,8 @@ class _CategoryBoxState extends State<CategoryBox> {
     chosenGenre = ModalRoute.of(context).settings.arguments != null ?
             ModalRoute.of(context).settings.arguments : '';
 
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Scaffold(
       appBar: AppBar(
         //backgroundColor: Colors.black,
@@ -105,31 +108,37 @@ class _CategoryBoxState extends State<CategoryBox> {
             unselectedWidgetColor: Colors.white,
             disabledColor: Colors.white10,
         ),
-        child: ListView.separated(
-          separatorBuilder: (context, index) {
-            return Divider(
-              color: Colors.white,
-              indent: 15.0,
-              endIndent: 15.0,
-            );
-          },
-          itemCount: genres.length,
-          itemBuilder: (context, index) {
-            final genre = genres[index];
-            return RadioListTile(
-              activeColor: Colors.white,
-              title: Text(genre, style: TextStyle(color: Colors.white),),
-              value: genre,
-              controlAffinity: ListTileControlAffinity.trailing,
-              groupValue: chosenGenre,
-              onChanged: (value) {
-                setState(() {
-                  chosenGenre = value;
-                });
-                Navigator.pop(context, chosenGenre);
-              },
-            );
-          }
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: _isTablet ? 30.0 : 0.0),
+          child: ListView.separated(
+            separatorBuilder: (context, index) {
+              return Divider(
+                color: Colors.white,
+                indent: _isTablet ? 150.0 : 15.0,
+                endIndent: _isTablet ? 150.0 : 15.0,
+              );
+            },
+            itemCount: genres.length,
+            itemBuilder: (context, index) {
+              final genre = genres[index];
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: _isTablet ? 150.0 : 0.0),
+                child: RadioListTile(
+                  activeColor: Colors.white,
+                  title: Text(genre, style: TextStyle(color: Colors.white),),
+                  value: genre,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  groupValue: chosenGenre,
+                  onChanged: (value) {
+                    setState(() {
+                      chosenGenre = value;
+                    });
+                    Navigator.pop(context, chosenGenre);
+                  },
+                ),
+              );
+            }
+          ),
         ),
       ),
     );

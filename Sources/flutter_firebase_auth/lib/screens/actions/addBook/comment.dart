@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 
 
@@ -103,6 +104,7 @@ class _CommentBoxState extends State<CommentBox> {
   Widget build(BuildContext context) {
 
     final String args = ModalRoute.of(context).settings.arguments;
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Scaffold(
       appBar: AppBar(
@@ -119,32 +121,35 @@ class _CommentBoxState extends State<CommentBox> {
         },
       ),
       //resizeToAvoidBottomInset: false,
-      body: Column(
-        children: <Widget>[
-          Card(
-              color: Colors.white24,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  initialValue: args,
-                  maxLines: 8,
-                  decoration: InputDecoration.collapsed(
-                    hintText: "Enter your comment here",
-                    hintStyle: TextStyle(color: Colors.grey[500]),
+      body: Padding(
+        padding: EdgeInsets.all(_isTablet ? 30.0 : 0.0),
+        child: Column(
+          children: <Widget>[
+            Card(
+                color: Colors.white24,
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: TextFormField(
+                    initialValue: args,
+                    maxLines: 8,
+                    decoration: InputDecoration.collapsed(
+                      hintText: "Enter your comment here",
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                    onChanged: (value) {
+                      setState(() {
+                        comment = value;
+                      });
+                    },
                   ),
-                  style: TextStyle(color: Colors.white),
-                  onChanged: (value) {
-                    setState(() {
-                      comment = value;
-                    });
-                  },
-                ),
-              )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 5,
-          ),
-        ],
+                )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 5,
+            ),
+          ],
+        ),
       ),
     );
   }
