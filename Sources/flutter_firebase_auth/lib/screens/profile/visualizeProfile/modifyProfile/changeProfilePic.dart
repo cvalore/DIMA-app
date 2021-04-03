@@ -10,9 +10,9 @@ class ChangeProfilePic extends StatefulWidget {
   double height;
   String username;
   StringWrapper newImagePath;
-  String oldImageURL;
+  String oldImagePath;
 
-  ChangeProfilePic({Key key, @required this.height, @required this.username, @required this.newImagePath, @required this.oldImageURL});
+  ChangeProfilePic({Key key, @required this.height, @required this.username, @required this.newImagePath, @required this.oldImagePath});
 
   @override
   _ChangeProfilePicState createState() => _ChangeProfilePicState();
@@ -45,6 +45,7 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
     if(image != null) {
       setState(() {
           widget.newImagePath.value = image.path;
+          print(image.path);
           //widget.user.userProfileImagePath = image.path;
       });
     }
@@ -84,7 +85,6 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
   @override
   Widget build(BuildContext context) {
 
-
     return Container(
         height: widget.height,
         child: GestureDetector(
@@ -99,18 +99,18 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                     children: [
                       Expanded(
                         flex: 3,
-                        child: widget.newImagePath.value != null ?
+                        child: widget.newImagePath.value != '' ?
                         CircleAvatar(
                           radius: 50,
                           child: CircleAvatar(
                               radius: 50,
                             backgroundImage: FileImage(File(widget.newImagePath.value))
                           ),
-                        ) : widget.oldImageURL != '' ?  CircleAvatar(
+                        ) : widget.oldImagePath != '' ?  CircleAvatar(
                           radius: 50,
                           child: CircleAvatar(
                               radius: 50,
-                              backgroundImage: NetworkImage(widget.oldImageURL)
+                              backgroundImage: FileImage(File(widget.oldImagePath))
                           ),
                         ) : CircleAvatar(
                           radius: 50,
@@ -135,7 +135,9 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
               ),
               Expanded(
                 flex: 1,
-                child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                child: Icon(Icons.arrow_forward_ios,
+                    //color: Colors.white
+                ),
               )
             ],
           ),

@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
     _db = DatabaseService(user: user);
     GlobalKey scaffoldKey = GlobalKey();
 
-    return userFromAuth == null ?
+   return userFromAuth == null ?
       Container() :
       StreamProvider<BookPerGenreMap>.value(
       value: _db.perGenreBooks,

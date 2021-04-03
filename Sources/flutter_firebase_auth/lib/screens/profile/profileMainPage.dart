@@ -19,8 +19,6 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
-    print('profilepic url is ');
-    print(user.userProfileImageURL);
 
     return StreamProvider<CustomUser>.value(
       value: _db.userInfo,

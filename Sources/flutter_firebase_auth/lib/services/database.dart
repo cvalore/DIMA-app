@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
 
@@ -30,20 +36,27 @@ class DatabaseService {
     });
   }
 
-  Future<void> updateUserInfo(String imageProfilePic) async {
-
-    Reference reference = await storageService.addUserProfilePic(user.uid, imageProfilePic);
-    String imgUrl = await storageService.getUrlPicture(reference);
-    //TODO add imgurl to userProfileImageURL
-    print(imgUrl);
+  Future<void> updateUserInfo(String imageProfilePath, String fullName, String birthday, String bio, String city) async {
+    Map<String,dynamic> updates = Map<String,dynamic>();
+    updates['fullName'] = fullName;
+    updates['birthday'] = birthday;
+    updates['bio'] = bio;
+    updates['city'] = city;
+    if (imageProfilePath != '') {
+      Reference reference = await storageService.addUserProfilePic(
+          user.uid, imageProfilePath);
+      String imgUrl = await storageService.getUrlPicture(reference);
+      updates['userProfileImageURL'] = imgUrl;
+    }
 
     usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
-      if(doc.exists) {
-        usersCollection.doc(user.uid).update({
-          'userProfileImageURL': imgUrl
-        })
+      if (doc.exists) {
+        usersCollection.doc(user.uid).update(
+          updates
+        )
         .then((value) => print("image profile added"))
-        .catchError((error) => print("Failed to add image profile: $error"));
+        .catchError((error) =>
+        print("Failed to add image profile: $error"));
       }
     });
     return null;
@@ -346,23 +359,13 @@ class DatabaseService {
 
     if (documentSnapshot.exists) {
       userMap = documentSnapshot.data();
-      /*
-      for (var book in userMap["books"]) {
-        InsertedBook insertedBook = InsertedBook(
-            title: book['title'],
-            author: book['author'],
-            isbn13: book['isbn'],
-            status: book['status']
-            //TODO add also other info??
-        );
-        books.add(insertedBook);
-      }
-       */
       user = CustomUser(
           userMap['uid'],
           userMap['email'],
           userMap['isAnonymous'],
           username: userMap['username'],
+          fullName: userMap['fullName'],
+          birthday: userMap['birthday'],
           bio: userMap['bio'],
           city: userMap['city'],
           followers: userMap['followers'],
@@ -370,7 +373,6 @@ class DatabaseService {
           userProfileImageURL: userMap['userProfileImageURL'],
           numberOfInsertedItems: userMap['numberOfInsertedItems'],
       );
-
     }
     return user;
   }

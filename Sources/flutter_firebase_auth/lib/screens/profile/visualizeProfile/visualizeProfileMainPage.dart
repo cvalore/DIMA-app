@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/modifyProfile/modifyProfile.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/modifyProfile/modifyProfileMainPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviews.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.dart';
 
@@ -61,7 +61,7 @@ Widget myPopUpMenu(BuildContext context, CustomUser user) {
         case 'Modify profile':
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ModifyProfile(user: user,))
+              MaterialPageRoute(builder: (context) => ModifyProfileMainPage(user: user))
           );
           break;
       }

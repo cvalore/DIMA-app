@@ -47,22 +47,29 @@ class _UserInfoState extends State<UserInfo> {
                               ),
                       ),
                       ),
+            Divider(height: 10),
             Container(
               //height: MediaQuery.of(context).size.height / 10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.user.username,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.subtitle2,
-                    textScaleFactor: 3,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      widget.user.username,
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textScaleFactor: 3,
+                    ),
                   ),
-                  Text(
-                    //widget.user.bio == '' ? 'user bio here' : widget.user.bio,
-                      'user bio here',
-                      style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  widget.user.bio != null && widget.user.bio != '' ?
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    child: Text(
+                      widget.user.bio,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ) : Container(),
                   Divider(height: 10, thickness: 2,),
 
                   Container(
@@ -73,13 +80,11 @@ class _UserInfoState extends State<UserInfo> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            //widget.user.followers.toString() + ' followers',
-                            '<num_followers> followers',
+                            widget.user.followers.toString() + '  followers',
                             style: Theme.of(context).textTheme.subtitle2,
                           ),
                           Text(
-                            //widget.user.following.toString() + ' following',
-                            '<num_following> following',
+                            widget.user.following.toString() + '  following',
                             style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ],
@@ -87,21 +92,29 @@ class _UserInfoState extends State<UserInfo> {
                     ),
                   ),
                   Divider(height: 10, thickness: 2,),
+                  widget.user.fullName != null && widget.user.fullName != '' ?
                   Container(
                     child: ListTile(
-                      leading: Icon(Icons.place_outlined),
+                      leading: Icon(Icons.drive_file_rename_outline),
                       dense: true,
                       title: Text(
-                        //widget.user.city,
-                        'user city',
+                        widget.user.fullName,
                         style: Theme.of(context).textTheme.subtitle2,
                       ),
                     ),
-                  ),
-
-
-
-
+                  ) : Container(),
+                  Divider(height: 10, thickness: 2,),
+                  widget.user.city != null && widget.user.city != '' ?
+                    Container(
+                      child: ListTile(
+                        leading: Icon(Icons.place_outlined),
+                        dense: true,
+                        title: Text(
+                          widget.user.city,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                      ),
+                    ) : Container(),
                   Divider(height: 10, thickness: 2,),
                   Container(
                     child: ListTile(

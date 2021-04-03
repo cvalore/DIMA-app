@@ -13,6 +13,7 @@ import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 
@@ -56,6 +57,7 @@ class _AppState extends State<App> {
    @override
    void initState() {
      initializeFlutterFire();
+     Utils.init();
      super.initState();
    }
 
@@ -87,7 +89,7 @@ class _AppState extends State<App> {
            textTheme: TextTheme(
              headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
              headline2: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-             bodyText1: TextStyle(fontSize: 14.0),
+             bodyText1: TextStyle(fontSize: 22.0),
              bodyText2: TextStyle(fontSize: 14.0,),
            ),
            //buttonColor: Colors.white12,

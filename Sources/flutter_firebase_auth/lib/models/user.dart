@@ -8,6 +8,8 @@ class CustomUser {
   final String username;
   final String city;
   final String bio;
+  final String fullName;
+  final String birthday;
   final int followers;
   final int following;
   final bool isAnonymous;
@@ -17,7 +19,7 @@ class CustomUser {
   String userProfileImageURL;
   int numberOfInsertedItems;
 
-  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems, this.userProfileImagePath, this.userProfileImageURL, this.reviews, this.bio, this.followers, this.following, this.city});
+  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems, this.userProfileImagePath, this.userProfileImageURL, this.reviews, this.bio, this.followers, this.following, this.city, this.fullName, this.birthday});
 
   void setNumberOfInsertedItems(int num){
     this.numberOfInsertedItems = num;
@@ -44,10 +46,13 @@ class CustomUser {
     user['email'] = email;
     user['username'] = username;
     user['bio'] = bio != null ? bio : '';
+    user['fullName'] = fullName != null ? fullName : '';
+    user['birthday'] = birthday != null ? birthday : '';
     user['city'] = city != null ? city : '';
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;
     user['userProfileImageURL'] = userProfileImageURL != null ? userProfileImageURL : '';
+    user['userProfileImagePath'] = '';
     user['books'] = [];
     user['numberOfInsertedItems'] = books != null ? books.length : user['numberOfInsertedItems'] = 0;
     return user;
