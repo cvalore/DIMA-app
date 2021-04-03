@@ -24,15 +24,13 @@ class _CommentState extends State<Comment> {
         height: widget.height,
         child: GestureDetector(
           onTap: () async {
-            if(!widget.justView) {
-              dynamic result = await Navigator.pushNamed(
-                  context, CommentBox.routeName,
-                  arguments: widget.insertedBook.comment);
-              setState(() {
-                if (result != null)
-                  widget.insertedBook.setComment(result);
-              });
-            }
+            dynamic result = await Navigator.pushNamed(
+                context, CommentBox.routeName,
+                arguments: CommentBoxArgs(widget.insertedBook.comment, widget.justView));
+            setState(() {
+              if (result != null)
+                widget.insertedBook.setComment(result);
+            });
           },
           child: Row(
             children: [
@@ -90,6 +88,13 @@ class _CommentState extends State<Comment> {
   }
 }
 
+class CommentBoxArgs {
+  final String comment;
+  final bool justView;
+
+  CommentBoxArgs(this.comment, this.justView);
+}
+
 class CommentBox extends StatefulWidget {
   static const routeName = '/commentBox';
   @override
@@ -103,7 +108,7 @@ class _CommentBoxState extends State<CommentBox> {
   @override
   Widget build(BuildContext context) {
 
-    final String args = ModalRoute.of(context).settings.arguments;
+    final CommentBoxArgs args = ModalRoute.of(context).settings.arguments;
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Scaffold(
@@ -112,7 +117,7 @@ class _CommentBoxState extends State<CommentBox> {
         title: Text("Book comment"),
       ),
       //backgroundColor: Colors.black,
-      floatingActionButton : FloatingActionButton(
+      floatingActionButton : args.justView ? null : FloatingActionButton(
         heroTag: "saveCommentButt",
         child: Icon(Icons.check_outlined),
         backgroundColor: Colors.white24,
@@ -130,7 +135,7 @@ class _CommentBoxState extends State<CommentBox> {
                 child: Padding(
                   padding: EdgeInsets.all(12.0),
                   child: TextFormField(
-                    initialValue: args,
+                    initialValue: args.comment,
                     maxLines: 8,
                     decoration: InputDecoration.collapsed(
                       hintText: "Enter your comment here",

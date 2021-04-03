@@ -14,9 +14,10 @@ class ViewBookPage extends StatefulWidget {
   bool wasExchangeable;
   bool justView;
   bool edit;
+  bool sell;
   BuildContext fatherContext;
 
-  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.wasExchangeable, this.justView, this.edit, this.fatherContext}) : super(key: key);
+  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.sell, this.wasExchangeable, this.justView, this.edit, this.fatherContext}) : super(key: key);
 
   @override
   _ViewBookPageState createState() => _ViewBookPageState();
@@ -42,7 +43,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             letterSpacing: 0.5,
           ),
         ),
-        actions: widget.edit ? [] : <Widget>[
+        actions: widget.edit || widget.sell ? [] : <Widget>[
           PopupMenuButton(
             onSelected: (value) async {
               if(value == editBookPopupIndex) {
@@ -110,7 +111,19 @@ class _ViewBookPageState extends State<ViewBookPage> {
         },
         icon: Icon(Icons.save),
         label: Text("Save"),
-      ) : null,
+      ) : (
+        widget.sell ?
+          FloatingActionButton.extended(
+            backgroundColor: Colors.white24,
+            heroTag: "addToCartBtn",
+            onPressed: () {
+              print("TODO: --- Add to Cart");
+            },
+            icon: Icon(Icons.add_shopping_cart),
+            label: Text("Add to Cart"),
+          ) :
+          null
+      ),
       //backgroundColor: Colors.black,
       body: AddBookUserInfo(
         insertedBook: widget.book,
