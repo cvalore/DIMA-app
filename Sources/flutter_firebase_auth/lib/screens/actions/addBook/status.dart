@@ -26,13 +26,13 @@ class _StatusState extends State<Status> {
       height: widget.height,
       child: Row(
         children: [
-          Expanded(
-            flex: 1,
+          Flexible(
+            flex: 2,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text("Status",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.bold,
                   color: Colors.white
@@ -40,33 +40,29 @@ class _StatusState extends State<Status> {
               ),
             )
           ),
-          Expanded(
-            flex: _isTablet ? 2 : 3,
-            child: Container(
-              height: 50,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  for(int i = 0; i < 5; i++)
-                    IconButton(
-                      key: ValueKey(i),
-                      splashRadius: 22.5,
-                      padding: EdgeInsets.symmetric(vertical: 1.0),
-                      icon: widget.insertedBook.status > i ?
-                        Icon(Icons.star, color: Colors.yellow,) :
-                        Icon(Icons.star_border, color: Colors.yellow,),
-                      onPressed: () {
-                        if(!widget.justView) {
-                          setState(() {
-                            widget.insertedBook.setStatus(i + 1);
-                          });
+          Flexible(
+            flex: _isTablet ? 2 : 5,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    for(int i = 0; i < 5; i++)
+                      IconButton(
+                        key: ValueKey(i),
+                        splashRadius: 10,
+                        icon: widget.insertedBook.status > i ?
+                          Icon(Icons.star, color: Colors.yellow,) :
+                          Icon(Icons.star_border, color: Colors.yellow,),
+                        onPressed: () {
+                          if(!widget.justView) {
+                            setState(() {
+                              widget.insertedBook.setStatus(i + 1);
+                            });
+                          }
                         }
-                      }
-                    )
-                ],
-              ),
-            )
+                      )
+                  ],
+                ),
+
           )
         ],
       )

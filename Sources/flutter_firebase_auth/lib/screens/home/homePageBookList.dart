@@ -5,6 +5,8 @@ import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 
+import 'homeBookInfo.dart';
+
 class HomePageBookList extends StatelessWidget {
 
   final String genre;
@@ -12,6 +14,20 @@ class HomePageBookList extends StatelessWidget {
   bool _isTablet;
 
   HomePageBookList({Key key, @required this.genre, @required this.books}) : super(key: key);
+
+
+  void _pushBookPage(List<PerGenreBook> perGenreBooks, int index, BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (newContext) =>
+          HomeBookInfo(
+            book: perGenreBooks[index],
+          )
+      )
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +72,9 @@ class HomePageBookList extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12.0 : 5.0),
               child: GestureDetector(
-                onTap: () => print('Tapped'),
+                onTap: () {
+                  _pushBookPage(perGenreBooks, index, context);
+                },
                 child: Column(
                   children: [
                     Container(
