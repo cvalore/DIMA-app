@@ -31,7 +31,6 @@ class AddBookUserInfo extends StatelessWidget {
           (justView || edit ? MainAxisAlignment.start : MainAxisAlignment.end),
         children: [
           SingleChildScrollView(
-            child: Container(
               child: Column(
                 mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
                 children: [
@@ -50,7 +49,6 @@ class AddBookUserInfo extends StatelessWidget {
                   SizedBox(height: 50,),
                 ],
               ),
-            )
           ),
           (edit || justView || _isTablet) ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,),
           SizedBox(height: 15,),
