@@ -38,7 +38,7 @@ class DatabaseService {
     });
   }
 
-  Future<void> updateUserInfo(String imageProfilePath, String fullName, String birthday, String bio, String city) async {
+  Future<bool> updateUserInfo(String imageProfilePath, String fullName, String birthday, String bio, String city) async {
     Map<String,dynamic> updates = Map<String,dynamic>();
     updates['fullName'] = fullName;
     updates['birthday'] = birthday;
@@ -60,8 +60,9 @@ class DatabaseService {
         .catchError((error) =>
         print("Failed to add image profile: $error"));
       }
-    });
-    return null;
+     }
+    );
+    return true;
   }
 
   Future addUserBook(InsertedBook book) async {

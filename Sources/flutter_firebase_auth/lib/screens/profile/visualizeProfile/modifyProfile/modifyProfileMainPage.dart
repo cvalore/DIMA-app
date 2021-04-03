@@ -52,7 +52,13 @@ class _ModifyProfileMainPageState extends State<ModifyProfileMainPage> {
               onPressed: () async {
                 if (widget.birthdayString != '')
                   widget.birthdayString = Utils.isDateValid(widget.birthdayString) ? widget.birthdayString : '';
-                await _db.updateUserInfo(widget.newImagePath.value, widget.fullName, widget.birthdayString, widget.bio, widget.city);
+                if (widget.newImagePath.value != '')
+                  await Utils.saveNewImageProfile(widget.newImagePath.value);
+                await _db.updateUserInfo(widget.newImagePath.value,
+                    widget.fullName,
+                    widget.birthdayString,
+                    widget.bio,
+                    widget.city);
                 Navigator.pop(context);
               }
           )

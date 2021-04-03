@@ -20,20 +20,33 @@ class Utils {
   }
 
 
-  static setUserProfileImagePath(CustomUser user) async {
+  // the following two methods are useless if using network image
+  static saveNewImageProfile(String imagePath) async {
+    print(imagePath);
+    File image = File(imagePath);
+    var imageDirectoryPath = imageDirectory.path;
+    File newImageFile = await image.copy('$imageDirectoryPath/imageProfilePic.png');
+    print(newImageFile.path);
+    print('new copy of the image has been set');
+  }
 
+  static Future setUserProfileImagePath(CustomUser user) async {
     if(user.userProfileImageURL != ''){
       var imageDirectoryPath = imageDirectory.path;
       var imageProfilePath = imageDirectoryPath + '/imageProfilePic.png';
-      if (File(imageProfilePath).existsSync())
+      if (File(imageProfilePath).existsSync()) {
+        print('Image already exists in local');
         user.setUserProfileImagePath(imageProfilePath);
+      }
       else {
         var response = await get(user.userProfileImageURL);
         File imageFile = new File(imageProfilePath);
         imageFile.writeAsBytesSync(response.bodyBytes);
         user.setUserProfileImagePath(imageProfilePath);
+        print('Image has been downloaded and set');
       }
     }
+    return true;
   }
 
   static bool isDateValid(String birthDateString) {
