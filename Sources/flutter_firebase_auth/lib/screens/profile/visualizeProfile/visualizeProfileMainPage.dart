@@ -34,12 +34,9 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
       future: Utils.setUserProfileImagePath(user),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          print('While connection is waiting');
-          print(user.userProfileImagePath);
           return Container();
         }
         else {
-          print('Connection is over');
           return DefaultTabController(
             length: 3,
             child: Scaffold(

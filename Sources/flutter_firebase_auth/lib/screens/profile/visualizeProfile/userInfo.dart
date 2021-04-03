@@ -51,18 +51,16 @@ class _UserInfoState extends State<UserInfo> {
                       height: MediaQuery.of(context).size.height * 2 / 4,
                       padding: EdgeInsets.all(10.0),
                       color: Colors.green,
-                      child: widget.user.userProfileImageURL != '' ?
-                        NetworkImage(widget.user.userProfileImageURL)
-                          : Text(
-                              widget.user.username[0].toUpperCase(),
-                              textScaleFactor: 5,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50
-                              ),
+                      child: Text(
+                        widget.user.username[0].toUpperCase(),
+                        textScaleFactor: 5,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 50
+                        ),
                       ),
-                      ),
+                    ),
             Divider(height: 10),
             Container(
               //height: MediaQuery.of(context).size.height / 10,
@@ -86,6 +84,21 @@ class _UserInfoState extends State<UserInfo> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ) : Container(),
+                  Divider(height: 10, thickness: 2,),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                            //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
+                            onPressed: null,
+                            child: Text('FOLLOW')),
+                        ElevatedButton(
+                            onPressed: null,
+                            child: Text('SEND MSG')),
+                      ],
+                    ),
+                  ),
                   Divider(height: 10, thickness: 2,),
                   Container(
                     child: ListTile(

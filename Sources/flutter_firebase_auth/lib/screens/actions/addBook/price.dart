@@ -89,6 +89,8 @@ class PriceBoxState extends State<PriceBox> {
 
     final String args = ModalRoute.of(context).settings.arguments != null ?
     ModalRoute.of(context).settings.arguments.toString() : '';
+    print(args);
+    print('quantiii');
 
     return  Scaffold(
       appBar: AppBar(
@@ -100,6 +102,9 @@ class PriceBoxState extends State<PriceBox> {
         backgroundColor: Colors.white24,
         onPressed: () {
           if (_formKey.currentState.validate()){
+            //this is for the case when user selects an already defined price and press done without changing it
+            if(price == null && args != '')
+              price = args;
             //print("price as string is $price");
             if(!price.contains('.'))
               price = price + '.0';

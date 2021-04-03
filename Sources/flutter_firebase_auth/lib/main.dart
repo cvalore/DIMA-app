@@ -92,6 +92,13 @@ class _AppState extends State<App> {
              bodyText1: TextStyle(fontSize: 22.0),
              bodyText2: TextStyle(fontSize: 14.0,),
            ),
+           buttonColor: Colors.blueAccent,
+           floatingActionButtonTheme: FloatingActionButtonThemeData(
+             backgroundColor: Colors.blueAccent
+           ),
+           snackBarTheme: SnackBarThemeData(
+             actionTextColor: Colors.white
+           )
            //buttonColor: Colors.white12,
            //buttonTheme: const ButtonThemeData()
          ),

@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
@@ -27,6 +29,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
 
   String _title = 'narnia';
   String _author = 'lewis';
+  bool searchButtonPressed = false;   //check needed to display 'No results found'
 
   final booksAPI = GoogleBooksAPI();
 
@@ -81,6 +84,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       child: Icon(Icons.search, color: Colors.white,size: 35.0),
                       onPressed: () async {
                         if(_formKey.currentState.validate()) {
+                          searchButtonPressed = true;
                           setState(() {
                             widget.loading = true;
                           });
@@ -128,9 +132,17 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       vertical: BorderSide(color: Colors.white),
                     ),
                   ),
-                  child: ListView.builder(
+                  child: searchButtonPressed && (listItems == null || listItems.length == 0) ?
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'No results found',
+                        style: Theme.of(context).textTheme.headline6),
+                    ) : ListView.builder(
                     itemCount: listItems != null ? listItems.length : 0,
                     itemBuilder: (BuildContext context, int index) {
+                      print(searchButtonPressed);
+                      print('button pressed');
                       return Container(
                         child: ListTile(
                           title: Text(listItems[index]['volumeInfo']['title'],

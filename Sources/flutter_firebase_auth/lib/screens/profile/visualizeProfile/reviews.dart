@@ -86,9 +86,7 @@ class _ReviewsState extends State<Reviews> {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 2.0,
-                          ),
+                          Divider(height: 10.0, thickness: 0.0),
                           Expanded(
                             flex: 1,
                             child: Row(
@@ -98,17 +96,11 @@ class _ReviewsState extends State<Reviews> {
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
+                          Divider(height: 20.0, thickness: 0.0),
                           Expanded(
                               flex: 4,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(widget.reviews[index].review),
-                                ],
-                              ))
+                              child: Text(widget.reviews[index].review,
+                                  maxLines: 3))
                         ],
                       ),
                     )
