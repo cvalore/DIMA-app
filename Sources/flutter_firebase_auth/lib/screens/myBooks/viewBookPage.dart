@@ -39,7 +39,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 24.0,
-            letterSpacing: 1.0,
+            letterSpacing: 0.5,
           ),
         ),
         actions: widget.edit ? [] : <Widget>[

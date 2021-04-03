@@ -17,6 +17,8 @@ import 'package:path_provider/path_provider.dart';
 class DatabaseService {
 
   final CustomUser user;
+
+  //int idGeneralInfoToSearch;
   DatabaseService({ this.user });
   StorageService storageService = StorageService();
 
@@ -558,4 +560,46 @@ class DatabaseService {
         );
   }
 
+  /*void setIdToSearchGeneralInfoFor(int id) {
+    this.idGeneralInfoToSearch = id;
+  }*/
+
+  Future<dynamic> getGeneralBookInfo(String bookId) async {
+    dynamic book;
+    await bookCollection.doc(bookId).get().then((value) {
+      book = value.data();
+    });
+    return book;
+  }
+
+  Future<dynamic> getBookSoldBy(String bookId) async {
+    var usersData = [];
+    await bookCollection.doc(bookId).get().then((value) async {
+      for(int i = 0; i < value.data()['owners'].length; i++) {
+        String own = value.data()['owners'][i];
+        await usersCollection.doc(own).get().then((value) {
+          dynamic userData = value.data();
+          dynamic userBook = userData['books'];
+          for(int j = 0; j < userBook.length; j++) {
+            if(userBook[j]['id'] == bookId) {
+              userBook = userBook[j];
+              break;
+            }
+          }
+          userBook = userBook.length >= 1 ? userBook : null;
+
+          usersData.add(
+            {
+              "uid": userData["uid"],
+              "username": userData["username"],
+              "email": userData["email"],
+              "book": userBook,
+            }
+          );
+        });
+      }
+    });
+
+    return usersData;
+  }
 }

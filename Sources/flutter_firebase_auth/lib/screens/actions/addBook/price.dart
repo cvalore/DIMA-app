@@ -43,7 +43,7 @@ class _PriceState extends State<Price> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Text("Price",
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.bold,
                               color: Colors.white

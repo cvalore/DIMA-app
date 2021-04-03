@@ -46,7 +46,7 @@ class _CommentState extends State<Comment> {
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: Text("Comment",
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white
