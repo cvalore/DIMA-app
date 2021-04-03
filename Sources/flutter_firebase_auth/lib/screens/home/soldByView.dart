@@ -1,7 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:provider/provider.dart';
 
 class SoldByView extends StatelessWidget {
 
@@ -13,6 +19,10 @@ class SoldByView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    DatabaseService _db = DatabaseService(user: user);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Column(
@@ -52,8 +62,48 @@ class SoldByView extends StatelessWidget {
                             ),
                             IconButton(
                               splashRadius: 18.0,
-                              onPressed: () {
+                              onPressed: () async {
                                 print("To the book \"" + books[i]['book']['title'].toString() + "\" sold by user " + books[i]['uid'].toString());
+                                InsertedBook book = InsertedBook(
+                                  id: books[i]['book']['id'],
+                                  title: books[i]['book']['title'],
+                                  author: books[i]['book']['author'],
+                                  isbn13: books[i]['book']['isbn'],
+                                  status: books[i]['book']['status'],
+                                  category: books[i]['book']['category'],
+                                  imagesUrl: List.from(books[i]['book']['imagesUrl']),
+                                  comment: books[i]['book']['comment'],
+                                  insertionNumber: books[i]['book']['insertionNumber'],
+                                  price: books[i]['book']['price'],
+                                  exchangeable: books[i]['book']['exchangeable'],
+                                );
+                                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+                                List<String> bookPickedFilePaths = List<String>();
+                                ListResult lr = await bookRef.listAll();
+                                int count = 0;
+                                for(Reference r in lr.items) {
+                                  try {
+                                    String filePath = await _db.storageService.toDownloadFile(r, count);
+                                    if(filePath != null) {
+                                      bookPickedFilePaths.add(filePath);
+                                    }
+                                  } on FirebaseException catch (e) {
+                                    e.toString();
+                                  }
+                                  count = count + 1;
+                                }
+                                book.imagesPath = bookPickedFilePaths;
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (newContext) => ViewBookPage(
+                                          book: book,
+                                          sell: true,
+                                          justView: true,
+                                          edit: false,
+                                        )
+                                    )
+                                );
                               },
                               icon: Icon(Icons.subdirectory_arrow_right_rounded)
                             ),

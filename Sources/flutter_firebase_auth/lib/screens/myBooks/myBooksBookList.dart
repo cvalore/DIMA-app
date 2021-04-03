@@ -63,6 +63,7 @@ class MyBooksBookList extends StatelessWidget {
               edit: edit,
               justView: !edit,
               fatherContext: context,
+              sell: false,
             )
         )
     );
