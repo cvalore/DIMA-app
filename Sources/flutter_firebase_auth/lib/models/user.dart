@@ -6,12 +6,12 @@ class CustomUser {
   final String uid;
   final String email;
   final String username;
-  final String city;
-  final String bio;
-  final String fullName;
-  final String birthday;
-  final int followers;
-  final int following;
+  String city;
+  String bio;
+  String fullName;
+  String birthday;
+  int followers;
+  int following;
   final bool isAnonymous;
   final List<InsertedBook> books;
   final List<Review> reviews;

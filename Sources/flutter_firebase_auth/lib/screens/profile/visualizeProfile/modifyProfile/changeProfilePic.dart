@@ -85,6 +85,9 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
   @override
   Widget build(BuildContext context) {
 
+    print('old image path is');
+    print(widget.oldImagePath);
+
     return Container(
         height: widget.height,
         child: GestureDetector(

@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class UserInfo extends StatefulWidget {
 
   CustomUser user;
   bool self;
+  String imagePath;
 
   UserInfo({Key key, @required this.user, @required this.self}) : super(key : key);
 
@@ -14,23 +18,35 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfoState extends State<UserInfo> {
+
+
   @override
   Widget build(BuildContext context) {
+
+    Image image;
+
+    if (widget.user.userProfileImageURL != ''){
+      image = Image.network(widget.user.userProfileImageURL);
+    }
+
     return Container(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             widget.user.userProfileImageURL != '' ?
-                    Container(
-                      height: MediaQuery.of(context).size.height * 2 / 4,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(widget.user.userProfileImageURL),
-                          fit: BoxFit.fill,
-                        ),
+                  Container(
+                    //child: Image.network(widget.user.userProfileImageURL),
+                    height: MediaQuery.of(context).size.height * 6/10,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(widget.user.userProfileImageURL),
+                        //FileImage(Utils.imageProfilePicFile),
+                        fit: BoxFit.contain,
                       ),
-                    ) :
+                    ),
+
+                ) :
                     Container(
                       height: MediaQuery.of(context).size.height * 2 / 4,
                       padding: EdgeInsets.all(10.0),
@@ -71,7 +87,6 @@ class _UserInfoState extends State<UserInfo> {
                     ),
                   ) : Container(),
                   Divider(height: 10, thickness: 2,),
-
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.people_alt_outlined),
