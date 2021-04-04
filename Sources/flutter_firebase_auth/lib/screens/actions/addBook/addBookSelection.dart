@@ -17,8 +17,9 @@ class AddBookSelection extends StatefulWidget {
   final bool showDots;
   bool loading = false;
   final appBarHeight;
+  final bool showGeneralInfo;
 
-  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.appBarHeight}) : super(key: key);
+  AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.appBarHeight, this.showGeneralInfo}) : super(key: key);
 
   @override
   _AddBookSelectionState createState() => _AddBookSelectionState();
@@ -125,7 +126,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       ),
                     ),
                     child: Loading()
-                ) : (widget.selectedBook == null ?
+                ) : ((!_isTablet && !widget.showGeneralInfo) || (_isTablet && widget.selectedBook == null) ?
                 Container(
                   decoration: BoxDecoration(
                     //color: Colors.white,

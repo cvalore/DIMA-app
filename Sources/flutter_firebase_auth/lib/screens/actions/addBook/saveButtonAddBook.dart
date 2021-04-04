@@ -35,7 +35,11 @@ class SaveButtonAddBook extends StatelessWidget {
           bool hadImages = insertedBook.imagesUrl != null && insertedBook.imagesUrl.length != 0;
           bool wasExchangeable = insertedBook.exchangeable;
           await db.updateBook(insertedBook, editIndex, hadImages, wasExchangeable);
-          updateBook(insertedBook);
+
+          if(updateBook != null) {
+            updateBook(insertedBook);
+          }
+
           final snackBar = SnackBar(
             backgroundColor: Colors.white24,
             duration: Duration(seconds: 1),

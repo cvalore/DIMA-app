@@ -25,25 +25,35 @@ class AddBookUserInfo extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height,// - appBarHeight,
       padding: EdgeInsets.fromLTRB(_isTablet && !isInsert ? 100.0 : 20.0, 0.0, _isTablet && !isInsert ? 100.0 : 20.0, 0.0),
-      child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
-            children: [
-              ImageService(insertedBook: insertedBook, justView: false),
-              Divider(height: 5, thickness: 2,),
-              Status(insertedBook: insertedBook, height: 50, offset: 50.0, justView: false),
-              Divider(height: 5, thickness: 2,),
-              !isInsert ? Container() : Category(insertedBook: insertedBook, height: 50, justView: false),
-              !isInsert ? Container() : Divider(height: 5, thickness: 2,),
-              Comment(insertedBook: insertedBook, height: 50, justView: false),
-              Divider(height: 5, thickness: 2,),
-              Price(insertedBook: insertedBook, height: 50, justView: false),
-              Divider(height: 5, thickness: 2,),
-              Exchange(insertedBook: insertedBook, height: 50, justView: false),
-              Divider(height: 5, thickness: 2,),
-              SizedBox(height: 70,),
-            ],
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
+                  children: [
+                    ImageService(insertedBook: insertedBook, justView: false),
+                    Divider(height: 5, thickness: 2,),
+                    Status(insertedBook: insertedBook, height: 50, offset: 50.0, justView: false),
+                    Divider(height: 5, thickness: 2,),
+                    !isInsert ? Container() : Category(insertedBook: insertedBook, height: 50, justView: false),
+                    !isInsert ? Container() : Divider(height: 5, thickness: 2,),
+                    Comment(insertedBook: insertedBook, height: 50, justView: false),
+                    Divider(height: 5, thickness: 2,),
+                    Price(insertedBook: insertedBook, height: 50, justView: false),
+                    Divider(height: 5, thickness: 2,),
+                    Exchange(insertedBook: insertedBook, height: 50, justView: false),
+                    Divider(height: 5, thickness: 2,),
+                    SizedBox(height: 70,),
+                  ],
+                ),
+              ),
+            ),
           ),
+          (_isTablet || !isInsert) ? Container(): BottomTwoDots(darkerIndex: 2, size: 9.0,),
+          SizedBox(height: 15,),
+        ]
       ),
     );
   }
