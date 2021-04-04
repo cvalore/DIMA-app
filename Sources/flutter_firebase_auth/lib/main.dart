@@ -97,7 +97,7 @@ class _AppState extends State<App> {
              backgroundColor: Colors.blueAccent
            ),
            snackBarTheme: SnackBarThemeData(
-             actionTextColor: Colors.white
+             actionTextColor: Colors.white,
            )
            //buttonColor: Colors.white12,
            //buttonTheme: const ButtonThemeData()

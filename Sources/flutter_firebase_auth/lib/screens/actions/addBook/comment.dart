@@ -117,6 +117,7 @@ class _CommentBoxState extends State<CommentBox> {
         title: Text("Book comment"),
       ),
       //backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: false,
       floatingActionButton : args.justView ? null : FloatingActionButton(
         heroTag: "saveCommentButt",
         child: Icon(Icons.check_outlined),
@@ -149,9 +150,6 @@ class _CommentBoxState extends State<CommentBox> {
                     },
                   ),
                 )
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 5,
             ),
           ],
         ),

@@ -12,6 +12,8 @@ class CustomUser {
   String birthday;
   int followers;
   int following;
+  List<String> usersFollowedByMe;   //users by uid
+  List<String> usersFollowingMe;
   final bool isAnonymous;
   final List<InsertedBook> books;
   final List<Review> reviews;
@@ -19,7 +21,20 @@ class CustomUser {
   String userProfileImageURL;
   int numberOfInsertedItems;
 
-  CustomUser(this.uid, this.email, this.isAnonymous, {this.username, this.books, this.numberOfInsertedItems, this.userProfileImagePath, this.userProfileImageURL, this.reviews, this.bio, this.followers, this.following, this.city, this.fullName, this.birthday});
+  CustomUser(this.uid, this.email, this.isAnonymous, {this.username,
+    this.books,
+    this.numberOfInsertedItems,
+    this.userProfileImagePath,
+    this.userProfileImageURL,
+    this.reviews, this.bio,
+    this.followers,
+    this.following,
+    this.city,
+    this.fullName,
+    this.birthday,
+    this.usersFollowedByMe,
+    this.usersFollowingMe
+  });
 
   void setNumberOfInsertedItems(int num){
     this.numberOfInsertedItems = num;
@@ -49,6 +64,8 @@ class CustomUser {
     user['fullName'] = fullName != null ? fullName : '';
     user['birthday'] = birthday != null ? birthday : '';
     user['city'] = city != null ? city : '';
+    user['usersFollowedByMe'] = usersFollowedByMe != null ? usersFollowedByMe : [];
+    user['usersFollowingMe'] = usersFollowingMe != null ? usersFollowingMe : [];
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;
     user['userProfileImageURL'] = userProfileImageURL != null ? userProfileImageURL : '';

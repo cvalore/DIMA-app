@@ -47,7 +47,7 @@ class _ExchangeState extends State<Exchange> {
               child: widget.insertedBook.exchangeable ?
                   Icon(Icons.check_box_outlined, color: Colors.white) :
                   Icon(Icons.check_box_outline_blank, color: Colors.white)
-            )
+              )
           ],
         ),
       ),

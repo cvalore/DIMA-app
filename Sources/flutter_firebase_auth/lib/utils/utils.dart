@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -8,6 +9,14 @@ class Utils {
 
   static Directory applicationDocumentDirectory;
   static Directory imageDirectory;
+  static DatabaseService databaseService;
+
+
+  static initDatabaseService(AuthCustomUser authCustomUser){
+    CustomUser customUser = CustomUser(authCustomUser.uid, authCustomUser.email, authCustomUser.isAnonymous);
+    databaseService = DatabaseService(user: customUser);
+  }
+
 
   static init() async{
     applicationDocumentDirectory = await getApplicationDocumentsDirectory();

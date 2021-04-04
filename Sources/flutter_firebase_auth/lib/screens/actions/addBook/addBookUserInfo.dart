@@ -41,7 +41,7 @@ class AddBookUserInfo extends StatelessWidget {
               Divider(height: 5, thickness: 2,),
               Exchange(insertedBook: insertedBook, height: 50, justView: false),
               Divider(height: 5, thickness: 2,),
-              SizedBox(height: 50,),
+              SizedBox(height: 70,),
             ],
           ),
       ),
