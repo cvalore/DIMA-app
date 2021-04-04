@@ -55,13 +55,14 @@ class _AddBookSelectionState extends State<AddBookSelection> {
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height - widget.appBarHeight,
-        padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
+        padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
         child: Column(
           mainAxisAlignment: _isTablet ? MainAxisAlignment.start : MainAxisAlignment.end,
           children: <Widget>[
             Flexible(
               flex:10,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
@@ -141,8 +142,6 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                     ) : ListView.builder(
                     itemCount: listItems != null ? listItems.length : 0,
                     itemBuilder: (BuildContext context, int index) {
-                      print(searchButtonPressed);
-                      print('button pressed');
                       return Container(
                         child: ListTile(
                           title: Text(listItems[index]['volumeInfo']['title'],
