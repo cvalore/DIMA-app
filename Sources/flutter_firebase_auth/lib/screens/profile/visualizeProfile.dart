@@ -42,7 +42,7 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => StreamProvider<CustomUser>.value(
-                                                                  value: DatabaseService().userInfo,
+                                                                  value: _db.userInfo,
                                                                   child: VisualizeProfileMainPage(self: true))
                     )
                   );
