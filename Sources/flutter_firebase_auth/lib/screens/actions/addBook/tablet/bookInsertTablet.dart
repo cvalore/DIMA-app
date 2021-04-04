@@ -43,8 +43,7 @@ class _BookInsertTabletState extends State<BookInsertTablet> {
           child: widget.selectedBook != null ?
             AddBookUserInfo(
               insertedBook: widget.insertedBook,
-              edit: false,
-              justView: false,
+              isInsert: true,
               appBarHeight: Scaffold.of(context).appBarMaxHeight,
             ) : Container(),
         ),

@@ -1,25 +1,52 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:provider/provider.dart';
 
 class SaveButtonAddBook extends StatelessWidget {
 
   final InsertedBook insertedBook;
   final DatabaseService db;
   final BookGeneralInfo selectedBook;
-  final Function(int) setIndex;
+  final bool edit;
+  final int editIndex;
+  final Function(InsertedBook) updateBook;
 
-  const SaveButtonAddBook({Key key, this.insertedBook, this.db, this.selectedBook, this.setIndex}) : super(key: key);
+  const SaveButtonAddBook({Key key, this.insertedBook, this.db, this.selectedBook, this.edit, this.editIndex, this.updateBook}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
+
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    DatabaseService _db = DatabaseService(user: user);
+
     return FloatingActionButton.extended(
       backgroundColor: Colors.white24,
       heroTag: "saveBtn",
       onPressed: () async {
-        if (selectedBook.title != null) {
+        if(edit) {
+          bool hadImages = insertedBook.imagesUrl != null && insertedBook.imagesUrl.length != 0;
+          bool wasExchangeable = insertedBook.exchangeable;
+          await db.updateBook(insertedBook, editIndex, hadImages, wasExchangeable);
+          updateBook(insertedBook);
+          final snackBar = SnackBar(
+            backgroundColor: Colors.white24,
+            duration: Duration(seconds: 1),
+            content: Text(
+              'Book updated successfully',
+            ),
+          );
+          // Find the Scaffold in the widget tree and use
+          // it to show a SnackBar.
+          Scaffold.of(context).showSnackBar(snackBar);
+          Navigator.pop(context);
+        }
+        else if (selectedBook.title != null) {
           if (insertedBook.category == null || insertedBook.category == '') {
             final snackBar = SnackBar(
               backgroundColor: Colors.white24,
@@ -51,7 +78,6 @@ class SaveButtonAddBook extends StatelessWidget {
             insertedBook.setBookGeneralInfo(selectedBook);
             //_insertedBook.printBook();
             await db.addUserBook(insertedBook);
-            //setIndex(0);
             final snackBar = SnackBar(
               backgroundColor: Colors.white24,
               duration: Duration(seconds: 1),

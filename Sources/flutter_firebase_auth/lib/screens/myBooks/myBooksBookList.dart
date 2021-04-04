@@ -6,6 +6,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
@@ -31,7 +32,7 @@ class MyBooksBookList extends StatelessWidget {
     _tapPosition = details.globalPosition;
   }
 
-  void _pushBookPage(bool edit, int index, BuildContext context) async {
+  void _pushBookPage(int index, BuildContext context) async {
     InsertedBook book = await _db.getBook(index);
     bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
     bool wasExchangeable = book.exchangeable;
@@ -60,10 +61,8 @@ class MyBooksBookList extends StatelessWidget {
               index: index,
               hadImages: hadImages,
               wasExchangeable: wasExchangeable,
-              edit: edit,
-              justView: !edit,
               fatherContext: context,
-              sell: false,
+              isSell: false,
             )
         )
     );
@@ -125,7 +124,33 @@ class MyBooksBookList extends StatelessWidget {
               ),
             ).then((value) async {
               if(value == editBookPopupIndex) {
-                _pushBookPage(true, index, context);
+                InsertedBook book = await _db.getBook(index);
+                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+                List<String> bookPickedFilePaths = List<String>();
+                ListResult lr = await bookRef.listAll();
+                int count = 0;
+                for(Reference r in lr.items) {
+                  try {
+                    String filePath = await _db.storageService.toDownloadFile(r, count);
+                    if(filePath != null) {
+                      bookPickedFilePaths.add(filePath);
+                    }
+                  } on FirebaseException catch (e) {
+                    e.toString();
+                  }
+                  count = count + 1;
+                }
+                book.imagesPath = bookPickedFilePaths;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (newContext) => BookInsert(
+                          insertedBook: book,
+                          edit: true,
+                          editIndex: index,
+                        )
+                    )
+                );
               }
               else if(value == deleteBookPopupIndex) {
                 print("Delete book");
@@ -139,7 +164,7 @@ class MyBooksBookList extends StatelessWidget {
             });
           },
           onTap: () {
-            _pushBookPage(false, index, context);
+            _pushBookPage(index, context);
           },
           child: BookHomePageView(books: books, index: index, isTablet: _isTablet,),
         );

@@ -110,9 +110,7 @@ class SoldByView extends StatelessWidget {
                                     MaterialPageRoute(
                                         builder: (newContext) => ViewBookPage(
                                           book: book,
-                                          sell: true,
-                                          justView: true,
-                                          edit: false,
+                                          isSell: true,
                                         )
                                     )
                                 );

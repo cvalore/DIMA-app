@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
 
-import 'addBookParameters.dart';
 
 class BottomTabs extends StatelessWidget {
 
@@ -76,12 +76,9 @@ class BottomTabs extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (BuildContext context) {
                 return BookInsert(
-                  param: AddBookParameters(false,
-                    bookIndex: -1,
-                    editPurpose: "",
-                    editGenre: "",
-                  ),
-                  setIndex: setIndex,
+                  insertedBook: InsertedBook(),
+                  edit: false,
+                  editIndex: -1,
                 );
               })
             );

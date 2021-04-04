@@ -13,35 +13,33 @@ class AddBookUserInfo extends StatelessWidget {
 
   final appBarHeight;
   InsertedBook insertedBook;
-  bool edit;
-  bool justView;
+  final bool isInsert;
 
-  AddBookUserInfo({@required this.insertedBook, @required this.edit, @required this.justView, this.appBarHeight});
+  AddBookUserInfo({@required this.insertedBook, this.appBarHeight, @required this.isInsert});
 
   @override
   Widget build(BuildContext context) {
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
-    print(_isTablet);
 
     return Container(
       height: MediaQuery.of(context).size.height,// - appBarHeight,
-      padding: EdgeInsets.fromLTRB(_isTablet && (justView || edit) ? 100.0 : 5.0, 0.0, _isTablet && (justView || edit) ? 100.0 : 5.0, 0.0),
+      padding: EdgeInsets.fromLTRB(_isTablet && !isInsert ? 100.0 : 5.0, 0.0, _isTablet && !isInsert ? 100.0 : 5.0, 0.0),
       child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
             children: [
-              ImageService(insertedBook: insertedBook, justView: justView),
+              ImageService(insertedBook: insertedBook, justView: false),
               Divider(height: 5, thickness: 2,),
-              Status(insertedBook: insertedBook, height: 50, offset: 50.0, justView: justView),
+              Status(insertedBook: insertedBook, height: 50, offset: 50.0, justView: false),
               Divider(height: 5, thickness: 2,),
-              edit ? Container() : Category(insertedBook: insertedBook, height: 50, justView: justView),
-              edit ? Container() : Divider(height: 5, thickness: 2,),
-              Comment(insertedBook: insertedBook, height: 50, justView: justView),
+              !isInsert ? Container() : Category(insertedBook: insertedBook, height: 50, justView: false),
+              !isInsert ? Container() : Divider(height: 5, thickness: 2,),
+              Comment(insertedBook: insertedBook, height: 50, justView: false),
               Divider(height: 5, thickness: 2,),
-              Price(insertedBook: insertedBook, height: 50, justView: justView),
+              Price(insertedBook: insertedBook, height: 50, justView: false),
               Divider(height: 5, thickness: 2,),
-              Exchange(insertedBook: insertedBook, height: 50, justView: justView),
+              Exchange(insertedBook: insertedBook, height: 50, justView: false),
               Divider(height: 5, thickness: 2,),
               SizedBox(height: 50,),
             ],

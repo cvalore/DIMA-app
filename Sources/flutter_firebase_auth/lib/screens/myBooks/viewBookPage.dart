@@ -1,7 +1,15 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/exchange.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +20,10 @@ class ViewBookPage extends StatefulWidget {
   int index;
   bool hadImages;
   bool wasExchangeable;
-  bool justView;
-  bool edit;
-  bool sell;
+  bool isSell;
   BuildContext fatherContext;
 
-  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.sell, this.wasExchangeable, this.justView, this.edit, this.fatherContext}) : super(key: key);
+  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.isSell, this.wasExchangeable, this.fatherContext}) : super(key: key);
 
   @override
   _ViewBookPageState createState() => _ViewBookPageState();
@@ -25,11 +31,19 @@ class ViewBookPage extends StatefulWidget {
 
 class _ViewBookPageState extends State<ViewBookPage> {
 
+  void updateBook(InsertedBook updatedBook) {
+    setState(() {
+      widget.book = updatedBook;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Scaffold(
       appBar: AppBar(
@@ -43,15 +57,40 @@ class _ViewBookPageState extends State<ViewBookPage> {
             letterSpacing: 0.5,
           ),
         ),
-        actions: widget.edit || widget.sell ? [] : <Widget>[
+        actions: widget.isSell ? [] : <Widget>[
           PopupMenuButton(
             onSelected: (value) async {
               if(value == editBookPopupIndex) {
                 print("Edit book");
-                setState(() {
-                  widget.justView = false;
-                  widget.edit = true;
-                });
+                //Navigator.pop(context);
+                InsertedBook book = await _db.getBook(widget.index);
+                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+                List<String> bookPickedFilePaths = List<String>();
+                ListResult lr = await bookRef.listAll();
+                int count = 0;
+                for(Reference r in lr.items) {
+                  try {
+                    String filePath = await _db.storageService.toDownloadFile(r, count);
+                    if(filePath != null) {
+                      bookPickedFilePaths.add(filePath);
+                    }
+                  } on FirebaseException catch (e) {
+                    e.toString();
+                  }
+                  count = count + 1;
+                }
+                book.imagesPath = bookPickedFilePaths;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (newContext) => BookInsert(
+                          insertedBook: book,
+                          edit: true,
+                          editIndex: widget.index,
+                          updateBook: updateBook,
+                        )
+                    )
+                );
               }
               else if(value == deleteBookPopupIndex) {
                 print("Delete book");
@@ -94,25 +133,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
           )
         ],
       ),
-      floatingActionButton: widget.edit ? FloatingActionButton.extended(
-        backgroundColor: Colors.white24,
-        heroTag: "editSaveBtn",
-        onPressed: () async {
-          await _db.updateBook(widget.book, widget.index, widget.hadImages, widget.wasExchangeable);
-          final snackBar = SnackBar(
-            duration: Duration(seconds: 1),
-            content: Text(
-              'Book updated successfully',
-            ),
-            backgroundColor: Colors.white24,
-          );
-          Navigator.pop(context);
-          Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
-        },
-        icon: Icon(Icons.save),
-        label: Text("Save"),
-      ) : (
-        widget.sell ?
+      floatingActionButton: widget.isSell ?
           FloatingActionButton.extended(
             backgroundColor: Colors.white24,
             heroTag: "addToCartBtn",
@@ -122,13 +143,31 @@ class _ViewBookPageState extends State<ViewBookPage> {
             icon: Icon(Icons.add_shopping_cart),
             label: Text("Add to Cart"),
           ) :
-          null
-      ),
+          null,
       //backgroundColor: Colors.black,
-      body: AddBookUserInfo(
-        insertedBook: widget.book,
-        edit: widget.edit,
-        justView: widget.justView,
+      body: Container(
+        height: MediaQuery.of(context).size.height,// - appBarHeight,
+        padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 5.0, 0.0, _isTablet ? 100.0 : 5.0, 0.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
+            children: [
+              ImageService(insertedBook: widget.book, justView: true),
+              Divider(height: 5, thickness: 2,),
+              Status(insertedBook: widget.book, height: 50, offset: 50.0, justView: true),
+              Divider(height: 5, thickness: 2,),
+              Category(insertedBook: widget.book, height: 50, justView: true),
+              Divider(height: 5, thickness: 2,),
+              Comment(insertedBook: widget.book, height: 50, justView: true),
+              Divider(height: 5, thickness: 2,),
+              Price(insertedBook: widget.book, height: 50, justView: true),
+              Divider(height: 5, thickness: 2,),
+              Exchange(insertedBook: widget.book, height: 50, justView: true),
+              Divider(height: 5, thickness: 2,),
+              SizedBox(height: 50,),
+            ],
+          ),
+        ),
       ),
     );
   }
