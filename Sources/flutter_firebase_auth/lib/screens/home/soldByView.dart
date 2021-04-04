@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
@@ -56,14 +57,25 @@ class SoldByView extends StatelessWidget {
                             IconButton(
                               splashRadius: 18.0,
                               onPressed: () {
-                                print("To profile of user " + books[i]['uid'].toString());
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (newContext) => StreamProvider<CustomUser>.value(
+                                            value: DatabaseService(user: CustomUser(
+                                              books[i]['uid'].toString(),
+                                              books[i]['email'].toString(), //non dovrebbe importare
+                                              false, //non dovrebbe importare
+                                            )).userInfo,
+                                            child: VisualizeProfileMainPage(self: false)
+                                        )
+                                    )
+                                );
                               },
                               icon: Icon(Icons.person),
                             ),
                             IconButton(
                               splashRadius: 18.0,
                               onPressed: () async {
-                                print("To the book \"" + books[i]['book']['title'].toString() + "\" sold by user " + books[i]['uid'].toString());
                                 InsertedBook book = InsertedBook(
                                   id: books[i]['book']['id'],
                                   title: books[i]['book']['title'],

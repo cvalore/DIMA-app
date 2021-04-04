@@ -48,7 +48,7 @@ class _StatusState extends State<Status> {
                     for(int i = 0; i < 5; i++)
                       IconButton(
                         key: ValueKey(i),
-                        splashRadius: 10,
+                        splashRadius: 14,
                         icon: widget.insertedBook.status > i ?
                           Icon(Icons.star, color: Colors.yellow,) :
                           Icon(Icons.star_border, color: Colors.yellow,),
