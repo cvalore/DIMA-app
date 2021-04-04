@@ -89,8 +89,6 @@ class PriceBoxState extends State<PriceBox> {
 
     final String args = ModalRoute.of(context).settings.arguments != null ?
     ModalRoute.of(context).settings.arguments.toString() : '';
-    print(args);
-    print('quantiii');
 
     return  Scaffold(
       appBar: AppBar(
@@ -98,6 +96,7 @@ class PriceBoxState extends State<PriceBox> {
         title: Text("Price"),
       ),
       //backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white24,
         onPressed: () {

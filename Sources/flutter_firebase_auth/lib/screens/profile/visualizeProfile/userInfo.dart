@@ -34,36 +34,36 @@ class _UserInfoState extends State<UserInfo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            widget.user.userProfileImageURL != '' ?
-                  Container(
-                    //child: Image.network(widget.user.userProfileImageURL),
-                    height: MediaQuery.of(context).size.height * 6/10,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(widget.user.userProfileImageURL),
-                        //FileImage(Utils.imageProfilePicFile),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-
-                ) :
-                    Container(
-                      height: MediaQuery.of(context).size.height * 2 / 4,
-                      padding: EdgeInsets.all(10.0),
-                      color: Colors.green,
-                      child: Text(
-                        widget.user.username[0].toUpperCase(),
-                        textScaleFactor: 5,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 50
-                        ),
-                      ),
-                    ),
+            Divider(height: 10.0, thickness: 0.0,),
+            CircleAvatar(
+              backgroundColor: Colors.brown.shade800,
+              radius: 120.0,
+              child: GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return LargerImage(imageUrl: widget.user.userProfileImageURL, username: widget.user.username);
+                }));
+              },
+              child: Hero(
+                tag: 'userProfileHero',
+                child: widget.user.userProfileImageURL != '' ?
+                CircleAvatar(
+                  radius: 120.0,
+                  backgroundImage: NetworkImage(widget.user.userProfileImageURL),
+                ) : Text(
+                  widget.user.username[0].toUpperCase(),
+                  textScaleFactor: 5,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 50
+                  ),
+                ),
+              ),
+              )
+            ),
             Divider(height: 10),
             Container(
-              //height: MediaQuery.of(context).size.height / 10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -84,21 +84,24 @@ class _UserInfoState extends State<UserInfo> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ) : Container(),
-                  Divider(height: 10, thickness: 2,),
-                  Container(
+                  !widget.self ? Divider(height: 10, thickness: 2,) : Container(),
+                  !widget.self ? Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
                             //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
-                            onPressed: null,
+                            onPressed: () {
+                              //TODO aggiungere il caso di unfollow
+                              Utils.databaseService.followUser(widget.user);
+                            },
                             child: Text('FOLLOW')),
                         ElevatedButton(
                             onPressed: null,
                             child: Text('SEND MSG')),
                       ],
                     ),
-                  ),
+                  ) : Container(),
                   Divider(height: 10, thickness: 2,),
                   Container(
                     child: ListTile(
@@ -119,7 +122,8 @@ class _UserInfoState extends State<UserInfo> {
                       ),
                     ),
                   ),
-                  Divider(height: 10, thickness: 2,),
+                  widget.user.fullName != null && widget.user.fullName != '' ?
+                    Divider(height: 10, thickness: 2,) : Container(),
                   widget.user.fullName != null && widget.user.fullName != '' ?
                   Container(
                     child: ListTile(
@@ -131,7 +135,8 @@ class _UserInfoState extends State<UserInfo> {
                       ),
                     ),
                   ) : Container(),
-                  Divider(height: 10, thickness: 2,),
+                  widget.user.city != null && widget.user.city != '' ?
+                    Divider(height: 10, thickness: 2,) : Container(),
                   widget.user.city != null && widget.user.city != '' ?
                     Container(
                       child: ListTile(
@@ -157,9 +162,57 @@ class _UserInfoState extends State<UserInfo> {
                 ],
               )
             ),
-            ],
+          ],
         ),
       )
     );
   }
 }
+
+
+class LargerImage extends StatelessWidget {
+
+  String imageUrl;
+  String username;
+
+  LargerImage({Key key, @required this.imageUrl, @required this.username});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Hero(
+          tag: 'userProfileHero',
+          child: imageUrl != '' ? Container(
+            //child: Image.network(widget.user.userProfileImageURL),
+            //height: MediaQuery.of(context).size.height * 6/10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(imageUrl),
+                //FileImage(Utils.imageProfilePicFile),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ) : Container(
+            //height: MediaQuery.of(context).size.height * 2 / 4,
+            padding: EdgeInsets.all(10.0),
+            color: Colors.green,
+            child: Text(
+              username[0].toUpperCase(),
+              textScaleFactor: 5,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
