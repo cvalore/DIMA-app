@@ -24,7 +24,7 @@ class AddBookUserInfo extends StatelessWidget {
 
     return Container(
       height: MediaQuery.of(context).size.height,// - appBarHeight,
-      padding: EdgeInsets.fromLTRB(_isTablet && !isInsert ? 100.0 : 5.0, 0.0, _isTablet && !isInsert ? 100.0 : 5.0, 0.0),
+      padding: EdgeInsets.fromLTRB(_isTablet && !isInsert ? 100.0 : 20.0, 0.0, _isTablet && !isInsert ? 100.0 : 20.0, 0.0),
       child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
