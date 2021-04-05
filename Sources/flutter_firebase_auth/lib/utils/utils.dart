@@ -10,10 +10,12 @@ class Utils {
   static Directory applicationDocumentDirectory;
   static Directory imageDirectory;
   static DatabaseService databaseService;
+  static CustomUser mySelf;
 
 
   static initDatabaseService(AuthCustomUser authCustomUser){
     CustomUser customUser = CustomUser(authCustomUser.uid, authCustomUser.email, authCustomUser.isAnonymous);
+    mySelf = customUser;
     databaseService = DatabaseService(user: customUser);
   }
 
@@ -44,7 +46,7 @@ class Utils {
       var imageDirectoryPath = imageDirectory.path;
       var imageProfilePath = imageDirectoryPath + '/imageProfilePic.png';
       if (File(imageProfilePath).existsSync()) {
-        print('Image already exists in local');
+        //print('Image already exists in local');
         user.setUserProfileImagePath(imageProfilePath);
       }
       else {

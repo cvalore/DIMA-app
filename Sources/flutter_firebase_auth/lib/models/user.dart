@@ -66,6 +66,7 @@ class CustomUser {
     user['city'] = city != null ? city : '';
     user['usersFollowedByMe'] = usersFollowedByMe != null ? usersFollowedByMe : [];
     user['usersFollowingMe'] = usersFollowingMe != null ? usersFollowingMe : [];
+    user['reviews'] = reviews != null ? reviews : [];
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;
     user['userProfileImageURL'] = userProfileImageURL != null ? userProfileImageURL : '';

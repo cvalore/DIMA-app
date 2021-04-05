@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class UserInfo extends StatefulWidget {
@@ -92,15 +93,21 @@ class _UserInfoState extends State<UserInfo> {
                         ElevatedButton(
                             //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
                             onPressed: () {
-                              //TODO aggiungere il caso di unfollow
-                              print(widget.user.username);
-                              print(widget.user.city);
-                              Utils.databaseService.followUser(widget.user);
+                              widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
+                                Utils.databaseService.unFollowUser(widget.user) :
+                                Utils.databaseService.followUser(widget.user);
                             },
-                            child: Text('FOLLOW')),
+                            child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
+                              Text('UNFOLLOW') : Text('FOLLOW')),
                         ElevatedButton(
                             onPressed: null,
                             child: Text('SEND MSG')),
+                        ElevatedButton(
+                            onPressed: () {
+                              print(widget.user.uid);
+                              Navigator.pushNamed(context, AddUserReview.routeName, arguments: widget.user);
+                            },
+                            child: Text('REVIEW')),
                       ],
                     ),
                   ) : Container(),

@@ -145,9 +145,11 @@ class PriceBoxState extends State<PriceBox> {
                   style: TextStyle(color: Colors.white),
                   validator: (value) =>
                     (value.isEmpty ||
-                    value.startsWith('0') ||
-                    value.contains(',') ||
-                    (value.contains('.') && (value.substring(value.indexOf('.')).length > 3))) ?
+                     value.startsWith('0') ||
+                     //!value.contains('/\d/') ||
+                        //value.contains('/\d+\.\d{1,2}/')  ||  '/[0-9]\.[^0]{1,2}/'
+                     value.contains(',') ||
+                     (value.contains('.') && (value.substring(value.indexOf('.')).length > 3))) ?
                       'Enter a valid price' : null,
                   onChanged: (value) {
                     if(value != '') {

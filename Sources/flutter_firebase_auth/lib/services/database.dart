@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class DatabaseService {
 
@@ -367,9 +370,27 @@ class DatabaseService {
     CustomUser user;
     Map<String, dynamic> userMap;
     List<InsertedBook> books = [];
+    List<String> followedByMe = List<String>();
+    List<String> followingMe = List<String>();
+    List<Review> reviews = List<Review>();
+
 
     if (documentSnapshot.exists) {
       userMap = documentSnapshot.data();
+      for (int i = 0; i < userMap['usersFollowedByMe'].length; i++) {
+        followedByMe.add(userMap['usersFollowedByMe'][i] as String);
+      }
+      for (int i = 0; i < userMap['usersFollowingMe'].length; i++) {
+        followingMe.add(userMap['usersFollowingMe'][i] as String);
+      }
+      for (int i = 0; i < userMap['reviews'].length; i++) {
+        reviews.add(Review(stars: userMap['reviews'][i]['stars'],
+            review: userMap['reviews'][i]['review'],
+            reviewerUid: userMap['reviews'][i]['reviewer'],
+            time: DateTime.parse(userMap['reviews'][i]['time'])
+        ));
+      }
+
       user = CustomUser(
         userMap['uid'],
         userMap['email'],
@@ -379,15 +400,17 @@ class DatabaseService {
         birthday: userMap['birthday'],
         bio: userMap['bio'],
         city: userMap['city'],
-        //usersFollowedByMe: userMap['usersFollowedByMe'],
-        //TODO to test
-        //usersFollowingMe: userMap['usersFollowingMe'],
-        //TODO to test
+        usersFollowedByMe: followedByMe,
+        usersFollowingMe: followingMe,
+        reviews: reviews,
         followers: userMap['followers'],
         following: userMap['following'],
         userProfileImageURL: userMap['userProfileImageURL'],
         numberOfInsertedItems: userMap['numberOfInsertedItems'],
       );
+
+      if (user.uid == Utils.mySelf.uid)
+        Utils.mySelf = user;
     }
     return user;
   }
@@ -630,6 +653,43 @@ class DatabaseService {
       'usersFollowingMe': FieldValue.arrayUnion([user.uid]),
       'followers': FieldValue.increment(1),
     });
+  }
+
+  Future<void> unFollowUser(CustomUser followed) async {
+    await usersCollection.doc(user.uid)
+        .update({
+      'usersFollowedByMe': FieldValue.arrayRemove([followed.uid]),
+      'following': FieldValue.increment(-1),
+    });
+
+    await usersCollection.doc(followed.uid)
+        .update({
+      'usersFollowingMe': FieldValue.arrayRemove([user.uid]),
+      'followers': FieldValue.increment(-1),
+    });
+  }
+
+  Future<void> addReview(Review review) async {
+    await usersCollection.doc(user.uid)
+        .update({
+      'reviews': FieldValue.arrayUnion([review.toMap()]),
+    });
+  }
+
+  Future<Map<String, Map<String, dynamic>>> getReviewersInfoByUid(List<String> usersUid) async {
+    Map<String, Map<String, dynamic>> result =  Map<String, Map<String, dynamic>>();
+    await usersCollection.where(
+        'uid', whereIn: usersUid
+    ).get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic> partialMap = Map<String, dynamic>();
+        partialMap['username'] = doc.data()['username'];
+        partialMap['userProfileImageURL'] = doc.data()['userProfileImageURL'];
+        result[doc.data()['uid']] = partialMap;
+      });
+      }
+    );
+    return result;
   }
 
 }

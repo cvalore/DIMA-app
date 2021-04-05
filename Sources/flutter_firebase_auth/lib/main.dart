@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
+import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/profile/favorites.dart';
@@ -112,6 +113,7 @@ class _AppState extends State<App> {
            //ProfileHomePage.routeName: (context) => ProfileHomePage(),
            FavoritesPage.routeName: (context) => FavoritesPage(),
            OrdersPage.routeName: (context) => OrdersPage(),
+           AddUserReview.routeName: (context) => AddUserReview(),
          }
        ),
      );
