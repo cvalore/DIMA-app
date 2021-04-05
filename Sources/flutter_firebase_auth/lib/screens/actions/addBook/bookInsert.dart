@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsertSelected.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/tablet/bookInsertTablet.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -21,6 +22,10 @@ class BookInsert extends StatefulWidget {
   final int editIndex;
   final Function(InsertedBook) updateBook;
 
+  int currentPageValue = 0;
+  final pageViewSize = 2;
+
+
   BookInsert({Key key, this.selectedBook, this.insertedBook, this.edit, this.editIndex, this.updateBook}) : super(key: key);
 
   @override
@@ -32,12 +37,26 @@ class BookInsert extends StatefulWidget {
 class _BookInsertState extends State<BookInsert> {
 
   final PageController controller = PageController();
-  int currentPageValue = 0;
-  final pageViewSize = 2;
+
+  bool _isTablet;
+  DatabaseService _db;
 
   void setSelected(dynamic sel) {
     setState(() {
       widget.selectedBook = sel;
+      if(sel == null) {
+        return;
+      }
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (newContext) => BookInsertSelected(
+                db: _db,
+                insertedBook: widget.insertedBook,
+                selectedBook: widget.selectedBook,
+              )
+          )
+      );
     });
   }
 
@@ -46,8 +65,8 @@ class _BookInsertState extends State<BookInsert> {
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
-    DatabaseService _db = DatabaseService(user: user);
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    _db = DatabaseService(user: user);
+    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -63,7 +82,7 @@ class _BookInsertState extends State<BookInsert> {
         ),),
       ),
       floatingActionButton:
-        ((currentPageValue == pageViewSize - 1) || (_isTablet && widget.selectedBook != null) || widget.edit) ?
+        ((_isTablet && widget.selectedBook != null) || widget.edit) ?
         SaveButtonAddBook(
           insertedBook: widget.insertedBook,
           db: _db,
@@ -81,36 +100,13 @@ class _BookInsertState extends State<BookInsert> {
               insertedBook: widget.insertedBook,
               setFatherSelected: setSelected,
             ) :
-            widget.selectedBook != null ?
-              PageView(
-                controller: controller,
-                onPageChanged: (index) {
-                  //print("the index is $index");
-                  setState(() {
-                    currentPageValue = index;
-                  });
-                },
-                children: <Widget>[
-                  AddBookSelection(
-                    setSelected: setSelected,
-                    selectedBook: widget.selectedBook,
-                    showDots: true,
-                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
-                  ),
-                  AddBookUserInfo(
-                    insertedBook: widget.insertedBook,
-                    isInsert: true,
-                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
-                  ),
-                ],
+            (widget.edit ?
+              AddBookUserInfo(
+                insertedBook: widget.insertedBook,
+                isInsert: false,
+                appBarHeight: Scaffold.of(context).appBarMaxHeight,
               ) :
-              (widget.edit ?
-                AddBookUserInfo(
-                  insertedBook: widget.insertedBook,
-                  isInsert: false,
-                  appBarHeight: Scaffold.of(context).appBarMaxHeight,
-                ) :
-                PageView(
+              PageView(
                 controller: controller,
                 children: <Widget>[
                   AddBookSelection(
@@ -118,6 +114,7 @@ class _BookInsertState extends State<BookInsert> {
                     selectedBook: widget.selectedBook,
                     showDots: false,
                     appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                    showGeneralInfo: false,
                   ),
                 ],
               )

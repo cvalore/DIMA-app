@@ -37,6 +37,10 @@ class _ViewBookPageState extends State<ViewBookPage> {
     });
   }
 
+  Widget trailingIconCategory = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
+  Widget trailingIconComment = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
+  Widget trailingIconPrice = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
+
   @override
   Widget build(BuildContext context) {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
@@ -147,7 +151,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
       //backgroundColor: Colors.black,
       body: Container(
         height: MediaQuery.of(context).size.height,// - appBarHeight,
-        padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 5.0, 0.0, _isTablet ? 100.0 : 5.0, 0.0),
+        padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 20.0, 0.0, _isTablet ? 100.0 : 20.0, 0.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
@@ -156,11 +160,119 @@ class _ViewBookPageState extends State<ViewBookPage> {
               Divider(height: 5, thickness: 2,),
               Status(insertedBook: widget.book, height: 50, offset: 50.0, justView: true),
               Divider(height: 5, thickness: 2,),
-              Category(insertedBook: widget.book, height: 50, justView: true),
+              Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  trailing: trailingIconCategory,
+                  onExpansionChanged: (bool open) {
+                    if(open) {
+                      setState(() {
+                        trailingIconCategory = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
+                      });
+                    }
+                    else {
+                      setState(() {
+                        trailingIconCategory = Icon(Icons.arrow_forward_ios, color: Colors.white);
+                      });
+                    }
+                  },
+                  title: Text("Category",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),
+                  ),
+                  children: <Widget>[
+                    widget.book.category != null && widget.book.category != '' ?
+                    Text(
+                      widget.book.category,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ) :
+                    Text('No category available', style: TextStyle(fontStyle: FontStyle.italic),),
+                  ],
+                ),
+              ),
               Divider(height: 5, thickness: 2,),
-              Comment(insertedBook: widget.book, height: 50, justView: true),
+              Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  trailing: trailingIconComment,
+                  onExpansionChanged: (bool open) {
+                    if(open) {
+                      setState(() {
+                        trailingIconComment = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
+                      });
+                    }
+                    else {
+                      setState(() {
+                        trailingIconComment = Icon(Icons.arrow_forward_ios, color: Colors.white);
+                      });
+                    }
+                  },
+                  title: Text("Comment",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),
+                  ),
+                  children: <Widget>[
+                    widget.book.comment != null && widget.book.comment != '' ?
+                    Text(
+                      widget.book.comment,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ) :
+                    Text('No comment available', style: TextStyle(fontStyle: FontStyle.italic),),
+                  ],
+                ),
+              ),
               Divider(height: 5, thickness: 2,),
-              Price(insertedBook: widget.book, height: 50, justView: true),
+              Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  trailing: trailingIconPrice,
+                  onExpansionChanged: (bool open) {
+                    if(open) {
+                      setState(() {
+                        trailingIconPrice = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
+                      });
+                    }
+                    else {
+                      setState(() {
+                        trailingIconPrice = Icon(Icons.arrow_forward_ios, color: Colors.white);
+                      });
+                    }
+                  },
+                  title: Text("Price",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),
+                  ),
+                  children: <Widget>[
+                    widget.book.price != null && widget.book.price != '' ?
+                    Text(
+                      widget.book.price.toString() + ' €',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ) :
+                    Text('No price available', style: TextStyle(fontStyle: FontStyle.italic),),
+                  ],
+                ),
+              ),
               Divider(height: 5, thickness: 2,),
               Exchange(insertedBook: widget.book, height: 50, justView: true),
               Divider(height: 5, thickness: 2,),

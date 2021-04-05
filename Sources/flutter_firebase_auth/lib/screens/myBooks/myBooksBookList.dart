@@ -148,6 +148,7 @@ class MyBooksBookList extends StatelessWidget {
                           insertedBook: book,
                           edit: true,
                           editIndex: index,
+                          updateBook: null,
                         )
                     )
                 );
