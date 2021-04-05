@@ -93,6 +93,8 @@ class _UserInfoState extends State<UserInfo> {
                             //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
                             onPressed: () {
                               //TODO aggiungere il caso di unfollow
+                              print(widget.user.username);
+                              print(widget.user.city);
                               Utils.databaseService.followUser(widget.user);
                             },
                             child: Text('FOLLOW')),

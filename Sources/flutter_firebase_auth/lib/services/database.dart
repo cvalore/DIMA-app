@@ -379,9 +379,9 @@ class DatabaseService {
         birthday: userMap['birthday'],
         bio: userMap['bio'],
         city: userMap['city'],
-        usersFollowedByMe: userMap['usersFollowedByMe'],
+        //usersFollowedByMe: userMap['usersFollowedByMe'],
         //TODO to test
-        usersFollowingMe: userMap['usersFollowingMe'],
+        //usersFollowingMe: userMap['usersFollowingMe'],
         //TODO to test
         followers: userMap['followers'],
         following: userMap['following'],
