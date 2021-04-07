@@ -17,18 +17,22 @@ class CustomUser {
   final bool isAnonymous;
   final List<InsertedBook> books;
   final List<Review> reviews;
+  double averageRating;
   String userProfileImagePath;
   String userProfileImageURL;
   int numberOfInsertedItems;
 
-  CustomUser(this.uid, this.email, this.isAnonymous, {this.username,
+  CustomUser(this.uid, this.email, this.isAnonymous, {
+    this.username,
     this.books,
     this.numberOfInsertedItems,
     this.userProfileImagePath,
     this.userProfileImageURL,
-    this.reviews, this.bio,
+    this.reviews,
+    this.bio,
     this.followers,
     this.following,
+    this.averageRating,
     this.city,
     this.fullName,
     this.birthday,

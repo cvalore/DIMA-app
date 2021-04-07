@@ -53,6 +53,7 @@ class _RegisterState extends State<Register> {
                     children: <Widget>[
                       TextFormField(
                         cursorColor: Colors.black,
+                        initialValue: _email == '' ? null : _email,
                         //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                         decoration: InputDecoration(
                           hintText: 'Email',
@@ -85,6 +86,7 @@ class _RegisterState extends State<Register> {
                       Container(height: _isTablet ? 20.0 : 10.0,),
                       TextFormField(
                         cursorColor: Colors.black,
+                        initialValue: _password == '' ? null : _password,
                         //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                         decoration: InputDecoration(
                           hintText: 'Password',
@@ -140,7 +142,9 @@ class _RegisterState extends State<Register> {
                     },
                   ),
                 ),
-                Text(_error, style: TextStyle(color: Colors.red[400], fontSize: 14),),
+                Text(_error,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red[400], fontSize: 14),),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -194,6 +198,9 @@ class _RegisterState extends State<Register> {
 
 
   _registerWithEmailAndPassword(BuildContext context) async {
+    String email = _email;
+    String password = _password;
+
     if(_formKey.currentState.validate()) {
       setState(() {
         _loading = true;
@@ -217,6 +224,15 @@ class _RegisterState extends State<Register> {
             'Not a valid email or already registered';
             _loading = false;
           });
+        } else if (authResult == 'Username already used'){
+          setState(() {
+            print(
+                "Username already used");
+            _error = 'Username already used\nPlease, choose a different username';
+            _loading = false;
+          });
+          print(_email);
+          print(_password);
         }
       }
     }

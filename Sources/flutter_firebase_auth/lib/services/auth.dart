@@ -116,6 +116,13 @@ class AuthService {
 
   //register with email&password
   Future signUpEmailPassword(String email, String password, String username) async {
+
+    // check if username is already used
+    dynamic usernameAlreadyExists = await DatabaseService().checkUsernameAlreadyUsed(username);
+    if (usernameAlreadyExists) {
+      return 'Username already used';
+    }
+
     try {
       UserCredential authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User user = authResult.user;

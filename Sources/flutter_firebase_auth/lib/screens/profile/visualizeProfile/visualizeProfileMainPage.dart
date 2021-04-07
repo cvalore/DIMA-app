@@ -38,18 +38,27 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
         }
         else {
           return DefaultTabController(
-            length: 3,
+            length: widget.self ? 2 : 3,
             child: Scaffold(
               appBar: AppBar(
                 title: Text(user.username),
                 actions: widget.self ? [
                   myPopUpMenu(context, user)
                 ] : [],
-                bottom: TabBar(
+                bottom: widget.self ?
+                TabBar(
                   tabs: [
                     Tab(text: 'Information',
                         icon: Icon(Icons.info_outline)),
-                    Tab(text: 'My library',
+                    Tab(text: 'Reviews',
+                        icon: Icon(Icons.rate_review_outlined)
+                    ),
+                  ],
+                ) : TabBar(
+                  tabs: [
+                    Tab(text: 'Information',
+                        icon: Icon(Icons.info_outline)),
+                    Tab(text: 'Library',
                         icon: Icon(Icons.menu_book)),
                     Tab(text: 'Reviews',
                         icon: Icon(Icons.rate_review_outlined)
@@ -57,7 +66,13 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                   ],
                 ),
               ),
-              body: TabBarView(
+              body: widget.self ?
+              TabBarView(
+                children: [
+                  UserInfo(user: user, self: widget.self),
+                  Reviews(reviews: user.reviews, self: widget.self),
+                ],
+              ) : TabBarView(
                 children: [
                   UserInfo(user: user, self: widget.self),
                   Text('Here we are'),

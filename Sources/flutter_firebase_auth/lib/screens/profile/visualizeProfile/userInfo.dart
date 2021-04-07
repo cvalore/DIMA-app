@@ -77,6 +77,32 @@ class _UserInfoState extends State<UserInfo> {
                       textScaleFactor: 3,
                     ),
                   ),
+                  widget.user.reviews != null && widget.user.reviews.length != 0 ?
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        for(int i = 0; i < 5; i++)
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            width: 30.0,
+                            child: widget.user.averageRating > i && widget.user.averageRating < i + 1 ?
+                                Icon(Icons.star_half_outlined, color: Colors.yellow,) :
+                              widget.user.averageRating > i ?
+                                Icon(Icons.star, color: Colors.yellow,) :
+                                Icon(Icons.star_border, color: Colors.yellow,),
+                            ),
+                        SizedBox(width: 20.0),
+                        Text(
+                          widget.user.reviews.length != 1 ?
+                            widget.user.reviews.length.toString() + ' reviews' :
+                              '1 review',
+                          textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      ],
+                    ),
+                  ) : Container(),
                   widget.user.bio != null && widget.user.bio != '' ?
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),

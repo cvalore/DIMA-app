@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
@@ -93,5 +94,24 @@ class Utils {
     return date[0];
   }
    */
+
+  static double computeAverageRatingFromReviews(List<Review> reviews){
+    double averageRating;
+    double decimalValue;
+    averageRating = reviews.length != 0 ?
+    reviews.map((review) => review.stars).reduce((value, element) => value + element) / reviews.length
+        : 0.0;
+
+    if (averageRating == 0.0)
+      return averageRating;
+
+    decimalValue = averageRating.ceilToDouble() - averageRating;
+    if (decimalValue < 0.25)
+      return averageRating.floorToDouble();
+    else if (decimalValue < 0.75)
+      return averageRating.floorToDouble() + 0.5;
+    else
+      return averageRating.ceilToDouble();
+  }
 
 }

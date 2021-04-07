@@ -39,6 +39,16 @@ class DatabaseService {
     });
   }
 
+  Future checkUsernameAlreadyUsed(String username) async {
+    bool exists = false;
+    await usersCollection.where('username', isEqualTo: username).get().
+        then((QuerySnapshot querySnapshot) {
+          if (querySnapshot.size > 0)
+            exists = true;
+    });
+    return exists;
+  }
+
   Future<bool> updateUserInfo(String imageProfilePath, String fullName,
       String birthday, String bio, String city) async {
     Map<String, dynamic> updates = Map<String, dynamic>();
@@ -373,6 +383,7 @@ class DatabaseService {
     List<String> followedByMe = List<String>();
     List<String> followingMe = List<String>();
     List<Review> reviews = List<Review>();
+    double averageRating;
 
 
     if (documentSnapshot.exists) {
@@ -391,6 +402,8 @@ class DatabaseService {
         ));
       }
 
+      averageRating = Utils.computeAverageRatingFromReviews(reviews);
+
       user = CustomUser(
         userMap['uid'],
         userMap['email'],
@@ -403,6 +416,7 @@ class DatabaseService {
         usersFollowedByMe: followedByMe,
         usersFollowingMe: followingMe,
         reviews: reviews,
+        averageRating: averageRating,
         followers: userMap['followers'],
         following: userMap['following'],
         userProfileImageURL: userMap['userProfileImageURL'],
