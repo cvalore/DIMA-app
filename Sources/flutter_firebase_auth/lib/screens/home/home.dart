@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.dart';
 import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -42,8 +43,7 @@ class _HomeState extends State<Home> {
 
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),
-      Center(child: Text('TODO:// Search books',
-        style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
+      Container(),//SearchBookPage(),
       /*BookInsert(
         param: AddBookParameters(false,
           bookIndex: -1,
