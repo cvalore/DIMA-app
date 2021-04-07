@@ -60,7 +60,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
         child: Column(
           mainAxisAlignment: _isTablet ? MainAxisAlignment.start : MainAxisAlignment.end,
           children: <Widget>[
-            Flexible(
+            widget.showGeneralInfo ? Container() : Flexible(
               flex:10,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +111,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 ],
               )
             ),
-            Flexible(
+            widget.showGeneralInfo ? Container() : Flexible(
               flex: 2,
               child: SizedBox(height: 20.0,),
             ),

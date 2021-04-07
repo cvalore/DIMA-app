@@ -17,14 +17,14 @@ class BookGeneralInfoListView extends StatelessWidget {
 
     return ListView(
       children: <Widget>[
-        Text(selectedBook.title, textAlign: TextAlign.center,style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-        Text('by ' + selectedBook.author, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontSize: _isTablet ? 17.0 : 13.0), textAlign: TextAlign.center,),
+        Text(selectedBook.title, textAlign: TextAlign.center,style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+        Text('by ' + selectedBook.author, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0), textAlign: TextAlign.center,),
         Text(''),
         ((selectedBook.publisher != null) & (selectedBook.publishedDate != null)) ?
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(selectedBook.publisher + ' ' + selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontSize: _isTablet ? 17.0 : 13.0),),
+            Text(selectedBook.publisher + ' ' + selectedBook.publishedDate, textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
             Text(''),
           ],
         ) : Container(),
@@ -37,10 +37,10 @@ class BookGeneralInfoListView extends StatelessWidget {
         ) :
         Container(),
         Text(''),
-        Text('Description', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
+        Text('Description', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
         selectedBook.description != null ?
-        Text(selectedBook.description, textAlign: TextAlign.justify, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),) :
-        Text('No description provided', style: TextStyle(fontStyle: FontStyle.italic,color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0), textAlign: TextAlign.center,),
+        Text(selectedBook.description, textAlign: TextAlign.justify, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),) :
+        Text('No description provided', style: TextStyle(fontStyle: FontStyle.italic,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0), textAlign: TextAlign.center,),
         Text(''),
         /*
                       Text('ISBN 10', style: TextStyle(fontWeight: FontWeight.bold),),
@@ -48,41 +48,45 @@ class BookGeneralInfoListView extends StatelessWidget {
                       Text(''),
                        */
         selectedBook.isbn13 != null ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('ISBN 13', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text(selectedBook.isbn13, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text('')
+            Text('ISBN 13', textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+            Text(selectedBook.isbn13, textAlign: TextAlign.left, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
           ],
         ) : Container(),
+        Text(''),
         selectedBook.pageCount != null ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Page count', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text(selectedBook.pageCount.toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text(''),
+            Text('Page count', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+            Text(selectedBook.pageCount.toString(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
           ],
         ) : Container(),
+        Text(''),
         selectedBook.categories != null ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Categories', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text(selectedBook.categories.toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0)),
-            Text(''),
+            Text('Categories', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+            Text(selectedBook.categories.toString(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0)),
           ],
         ) : Container(),
+        Text(''),
         selectedBook.averageRating != null ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Average rating', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
+            Text('Average rating', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(selectedBook.averageRating.floor().toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
+                Text(selectedBook.averageRating.floor().toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
                 Text('  '),
                 for(var i = 0; i < 5 && selectedBook.averageRating != null; i++)
                   Icon(i > selectedBook.averageRating - 1 ?
@@ -91,26 +95,29 @@ class BookGeneralInfoListView extends StatelessWidget {
                       color: Colors.yellow[700]),
               ],
             ),
-            Text(''),
           ],
         ) : Container(),
+        Text(''),
         selectedBook.ratingsCount != null ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Ratings count', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text(selectedBook.ratingsCount.toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0)),
-            Text(''),
+            Text('Ratings count', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+            Text(selectedBook.ratingsCount.toString(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0)),
           ],
         ) : Container(),
+        Text(''),
         selectedBook.language != null ?
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Language', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
-            Text(selectedBook.language.toString().toUpperCase(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
+            Text('Language', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+            Text(selectedBook.language.toString().toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
           ],
         ) : Container(),
+        Text(''),
       ],
     );
   }
