@@ -39,36 +39,36 @@ class _SearchBookPageState extends State<SearchBookPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Flexible(
-            flex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
-                  child: SearchBookForm(
-                    setTitle: setTitle,
-                    setAuthor: setAuthor,
-                    getKey: getFormKey,
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
+                    child: SearchBookForm(
+                      setTitle: setTitle,
+                      setAuthor: setAuthor,
+                      getKey: getFormKey,
+                    ),
                   ),
-                ),
-                Flexible(
-                  flex: 4,
-                  child: FloatingActionButton(
-                    heroTag: "searchBookBtn",
-                    elevation: 0.0,
-                    focusElevation: 0.0,
-                    hoverElevation: 0.0,
-                    highlightElevation: 0.0,
-                    backgroundColor: Colors.transparent,
-                    child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                    onPressed: () {
-                      print("TODO: search for: " + _title + " by " + _author);
-                    }
+                  Flexible(
+                    flex: 4,
+                    child: FloatingActionButton(
+                        heroTag: "searchBookBtn",
+                        elevation: 0.0,
+                        focusElevation: 0.0,
+                        hoverElevation: 0.0,
+                        highlightElevation: 0.0,
+                        backgroundColor: Colors.transparent,
+                        child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                        onPressed: () {
+                          print("TODO: search for: " + _title + " by " + _author);
+                        }
+                    ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
           ),
           Flexible(
             flex: 2,
@@ -104,8 +104,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
             ),
           ),*/
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,))
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,))
         ],
       ),
     );

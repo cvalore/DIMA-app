@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
 
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),
-      SearchBookPage(),
+      Container(),//SearchBookPage(),
       /*BookInsert(
         param: AddBookParameters(false,
           bookIndex: -1,
