@@ -8,7 +8,6 @@ class HomeBookInfoBody extends StatelessWidget {
 
   final PerGenreBook book;
   final DatabaseService db;
-  final bool fromSearch;
 
   final sectionTitles = [
     Text('Book general info'),
@@ -18,68 +17,60 @@ class HomeBookInfoBody extends StatelessWidget {
 
   final sectionContents = [];
 
-  HomeBookInfoBody({Key key, this.book, this.db, this.fromSearch}) : super(key: key);
+  HomeBookInfoBody({Key key, this.book, this.db}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      shrinkWrap: fromSearch,
-      physics: fromSearch ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
       itemCount: 3,
       itemBuilder: (BuildContext context, int index) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-              dividerColor: fromSearch && index == 2 ?
-               Colors.transparent : Theme.of(context).dividerColor
-          ),
-          child: ExpansionTile(
-              initiallyExpanded: fromSearch ? false : (index == 1 ? true : false),
-              title: sectionTitles[index],
-              children: <Widget>[
-                index == 0 ?
-                FutureBuilder(
-                  future: db.getGeneralBookInfo(book.id),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting: return Text('Loading....');
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else
-                          return HomeBookGeneralInfoView(selectedBook: snapshot.data,);
-                    }
-                  },
-                ) :
-                (index == 1 ?
-                FutureBuilder(
-                  future: db.getBookSoldBy(book.id),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting: return Text('Loading....');
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else
-                          return SoldByView(books: snapshot.data, showOnlyExchangeable: false,);
-                    }
-                  },
-                ) :
-                FutureBuilder(
-                  future: db.getBookSoldBy(book.id),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting: return Text('Loading....');
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else
-                          return SoldByView(books: snapshot.data, showOnlyExchangeable: true,);
-                    }
-                  },
-                )
-                )
-              ]
-          ),
+        return ExpansionTile(
+          initiallyExpanded: index == 1 ? true : false,
+          title: sectionTitles[index],
+          children: <Widget>[
+            index == 0 ?
+            FutureBuilder(
+              future: db.getGeneralBookInfo(book.id),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting: return Text('Loading....');
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    else
+                      return HomeBookGeneralInfoView(selectedBook: snapshot.data,);
+                }
+              },
+            ) :
+            (index == 1 ?
+            FutureBuilder(
+              future: db.getBookSoldBy(book.id),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting: return Text('Loading....');
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    else
+                      return SoldByView(books: snapshot.data, showOnlyExchangeable: false,);
+                }
+              },
+            ) :
+            FutureBuilder(
+              future: db.getBookSoldBy(book.id),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting: return Text('Loading....');
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    else
+                      return SoldByView(books: snapshot.data, showOnlyExchangeable: true,);
+                }
+              },
+            )
+            )
+          ]
         );
       },
     );

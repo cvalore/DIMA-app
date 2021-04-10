@@ -47,7 +47,6 @@ class _HomeBookInfoState extends State<HomeBookInfo> {
       body: HomeBookInfoBody(
         db: _db,
         book: widget.book,
-        fromSearch: false,
       ),
     );
   }

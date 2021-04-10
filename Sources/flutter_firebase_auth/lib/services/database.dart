@@ -626,11 +626,11 @@ class DatabaseService {
 
   Future<dynamic> getBookSoldBy(String bookId) async {
     var usersData = [];
-    await bookCollection.doc(bookId).get().then((value) async {
-      for (int i = 0; i < value.data()['owners'].length; i++) {
-        String own = value.data()['owners'][i];
-        await usersCollection.doc(own).get().then((value) {
-          dynamic userData = value.data();
+    await bookCollection.doc(bookId).get().then((valueBook) async {
+      for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+        String own = valueBook.data()['owners'][i];
+        await usersCollection.doc(own).get().then((valueUser) {
+          dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
@@ -646,6 +646,38 @@ class DatabaseService {
                 "username": userData["username"],
                 "email": userData["email"],
                 "book": userBook,
+              }
+          );
+        });
+      }
+    });
+
+    return usersData;
+  }
+
+  Future<dynamic> getBookForSearch(String bookId) async {
+    var usersData = [];
+    await bookCollection.doc(bookId).get().then((valueBook) async {
+      for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+        String own = valueBook.data()['owners'][i];
+        await usersCollection.doc(own).get().then((valueUser) {
+          dynamic userData = valueUser.data();
+          dynamic userBook = userData['books'];
+          for (int j = 0; j < userBook.length; j++) {
+            if (userBook[j]['id'] == bookId) {
+              userBook = userBook[j];
+              break;
+            }
+          }
+          userBook = userBook.length >= 1 ? userBook : null;
+
+          usersData.add(
+              {
+                "uid": userData["uid"],
+                "username": userData["username"],
+                "email": userData["email"],
+                "book": userBook,
+                "info": valueBook.data(),
               }
           );
         });

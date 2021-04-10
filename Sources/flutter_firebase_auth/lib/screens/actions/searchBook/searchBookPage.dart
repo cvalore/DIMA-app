@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookInfoBody.dart';
 import 'package:flutter_firebase_auth/screens/home/homeBookInfoBody.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +31,12 @@ class _SearchBookPageState extends State<SearchBookPage> {
   bool searchButtonPressed = false;   //check needed to display 'No results found'
 
   String _selectedOrder = orderByNoOrderLabel;
+  int _selectedOrderValue = 0;
   String _selectedOrderWay = orderByAscendingWay;
   int _dropdownValue = orderByAscendingWayValue;
 
-  List<PerGenreBook> searchedBooks = List<PerGenreBook>();
+  List<dynamic> booksAllInfo = List<dynamic>();
+  bool _searchLoading = false;
 
   void setTitle(String title) {
     _title = title;
@@ -44,6 +48,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
   GlobalKey getFormKey() {
     return _formKey;
+  }
+
+  void addBook(List<dynamic> list, dynamic book) {
+    list.add(book);
   }
 
   @override
@@ -101,7 +109,11 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         highlightElevation: 0.0,
                         backgroundColor: Colors.transparent,
                         child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                        onPressed: () {
+                        onPressed: () async {
+                          setState(() {
+                            _searchLoading = true;
+                          });
+
                           List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
                           realSearchedBooks.addAll(
                             perGenreBooks.where((b) =>
@@ -110,9 +122,16 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             )
                           );
 
+                          List<dynamic> realBooksAllInfo = List<dynamic>();
+                          for(int i = 0; i < realSearchedBooks.length; i++) {
+                            dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
+                            realBooksAllInfo.add(result);
+                          }
+
                           setState(() {
-                            searchedBooks.clear();
-                            searchedBooks.addAll(realSearchedBooks);
+                            _searchLoading = false;
+                            booksAllInfo.clear();
+                            booksAllInfo.addAll(realBooksAllInfo);
                           });
                         }
                     ),
@@ -147,12 +166,14 @@ class _SearchBookPageState extends State<SearchBookPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   width: MediaQuery.of(context).size.width,
                   child: CustomRadioButton(
+                    initialSelection: _selectedOrderValue,
                     buttonLables: orderByLabels,
                     buttonValues: orderByLabels,
                     radioButtonValue: (value, index) {
                       setState(() {
                         bool toReorder = _selectedOrder != value;
                         _selectedOrder = value;
+                        _selectedOrderValue = index;
                         if(toReorder) {
                           reorder();
                         }
@@ -172,6 +193,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                   ),
                 ),
                 DropdownButton(
+                  elevation: 0,
                   value: _dropdownValue,
                   items: [
                     DropdownMenuItem(
@@ -214,65 +236,74 @@ class _SearchBookPageState extends State<SearchBookPage> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
           ),
-          searchedBooks == null || searchedBooks.length == 0 ?
-            Expanded(
-              flex: 26,
-              child: Container(
-                /*decoration: BoxDecoration(
-                  border: Border.all(color: Colors.red, width: 2.0),
-                ),*/
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('No results',
-                        style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
-                      Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
-                    ],
+          _searchLoading ? Expanded(flex: 26, child: Loading()) :
+          (
+            booksAllInfo == null || booksAllInfo.length == 0 ?
+              Expanded(
+                flex: 26,
+                child: Container(
+                  /*decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red, width: 2.0),
+                  ),*/
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('No results',
+                          style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
+                        Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ):
-            Expanded(
-              flex: 26,
-              child: Container(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for(int i = 0; i < searchedBooks.length; i++)
-                        Column(
-                          children: <Widget>[
-                            i == 0 ? Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            ) : Container(),
-                            Text(searchedBooks[i].title,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            ),
-                            HomeBookInfoBody(
-                              book: searchedBooks[i],
-                              db: _db,
-                              fromSearch: true,
-                            ),
-                            Padding(
+              ):
+              Expanded(
+                flex: 26,
+                child: Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        for(int i = 0; i < booksAllInfo.length; i++)
+                          Column(
+                            children: <Widget>[
+                              i == 0 ? Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15.0),
-                            ),
-                          ],
-                        )
-                    ],
-                  ),
-                )
-              ),
-            )
+                              ) : Container(),
+                              Text(booksAllInfo[i][0]['book']['title'],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17
+                                ),
+                              ),
+                              Text(booksAllInfo[i][0]['book']['author'],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 14
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              ),
+                              SearchBookInfoBody(
+                                book: booksAllInfo[i],
+                                bookInfo: booksAllInfo[i][0]['info'],
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                  child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                              ),
+                            ],
+                          )
+                      ],
+                    ),
+                  )
+                ),
+              )
+          )
         ],
       ),
     );
@@ -281,20 +312,79 @@ class _SearchBookPageState extends State<SearchBookPage> {
   void reorder() {
     switch(_selectedOrder) {
       case orderByTitleLabel:
-        {
-          reorderByTitle();
-        }
+        reorderByFieldInUserCollection("title");
         break;
+
+      case orderByAuthorLabel:
+        reorderByFieldInUserCollection("author");
+        break;
+
+      case orderByISBNLabel:
+        reorderByFieldInUserCollection("isbn");
+        break;
+
+      case orderByPriceLabel:
+        reorderByFieldInUserCollection("price");
+        break;
+
+      case orderByPageCountLabel:
+        reorderByFieldInBookCollection("pageCount");
+        break;
+
+      case orderByAvgRatingLabel:
+        reorderByFieldInBookCollection("ratingsCount");
+        break;
+
+      case orderByImagesLabel:
+        reorderByNumberOfImages();
+        break;
+
+      case orderByStatusLabel:
+        reorderByFieldInUserCollection("status");
+        break;
+
       default:
         break;
     }
+
+    for(int i = 0; i < booksAllInfo.length; i++) {
+      print(booksAllInfo[i][0]['book']['title'].toString() + " -> " + booksAllInfo[i][0]['book']['imagesUrl'].length.toString());
+    }
   }
 
-  void reorderByTitle() {
-    searchedBooks.sort(
+  void reorderByFieldInUserCollection(String field) {
+    booksAllInfo.sort(
             (a, b) => _selectedOrderWay == orderByAscendingWay ?
-        a.title.compareTo(b.title) :
-        b.title.compareTo(a.title)
+              (a == null ? 1 : b == null ? -1 :
+                a[0]['book'][field].toString().compareTo(
+                b[0]['book'][field].toString())) :
+              (b == null ? 1 : a == null ? -1 :
+              b[0]['book'][field].toString().compareTo(
+                  a[0]['book'][field].toString()))
+    );
+  }
+
+  void reorderByNumberOfImages() {
+    booksAllInfo.sort(
+            (a, b) => _selectedOrderWay == orderByAscendingWay ?
+        (a == null ? 1 : b == null ? -1 :
+        a[0]['book']['imagesUrl'].length.toString().compareTo(
+            b[0]['book']['imagesUrl'].length.toString())) :
+        (b == null ? 1 : a == null ? -1 :
+        b[0]['book']['imagesUrl'].length.toString().compareTo(
+            a[0]['book']['imagesUrl'].length.toString()))
+    );
+  }
+
+  void reorderByFieldInBookCollection(String field) {
+    booksAllInfo.sort(
+            (a, b) => _selectedOrderWay == orderByAscendingWay ?
+        (a == null ? 1 : b == null ? -1 :
+        a[0]['info'][field].toString().compareTo(
+            b[0]['info'][field].toString())) :
+        (b == null ? 1 : a == null ? -1 :
+        b[0]['info'][field].toString().compareTo(
+            a[0]['info'][field].toString()))
     );
   }
 }

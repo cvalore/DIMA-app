@@ -10,19 +10,28 @@ const mobileMaxWidth = 540;
 const tabletMaxWidth = 1280;
 
 const orderByNoOrderLabel = "No Order";
+//const orderByNoOrderLabelValue = 0;
 const orderByTitleLabel = "Title";
+//const orderByTitleValue = 1;
 const orderByAuthorLabel = "Author";
-const orderByPublishedDateLabel = "Published Date";
+//const orderByAuthorValue  = 2;
+const orderByISBNLabel = "ISBN";
+//const orderByISBNValue  = 3;
 const orderByPriceLabel = "Price";
+//const orderByPriceValue  = 4;
 const orderByPageCountLabel = "Page Count";
-const orderByRatingsCountLabel = "Ratings Count";
+//const orderByPageCountValue  = 5;
+const orderByAvgRatingLabel = "Average Rating";
+//const orderByAvgRatingValue  = 6;
 const orderByImagesLabel = "Images";
+//const orderByImagesValue  = 7;
 const orderByStatusLabel = "Status";
+//const orderByStatusValue  = 8;
 
 const orderByLabels = [
   orderByNoOrderLabel, orderByTitleLabel, orderByAuthorLabel,
-  orderByPublishedDateLabel, orderByPriceLabel, orderByPageCountLabel,
-  orderByRatingsCountLabel, orderByImagesLabel, orderByStatusLabel
+  orderByISBNLabel, orderByPriceLabel, orderByPageCountLabel,
+  orderByAvgRatingLabel, orderByImagesLabel, orderByStatusLabel
 ];
 
 const orderByAscendingWay = "Ascending";
