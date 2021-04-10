@@ -8,6 +8,7 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:provider/provider.dart';
+import 'package:radio_grouped_buttons/custom_buttons/custom_radio_buttons_group.dart';
 
 class SearchBookPage extends StatefulWidget {
 
@@ -26,6 +27,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
   String _title = 'narnia';
   String _author = 'lewis';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
+
+  String _selectedOrder = orderByNoOrderLabel;
+  String _selectedOrderWay = orderByAscendingWay;
+  int _dropdownValue = orderByAscendingWayValue;
 
   List<PerGenreBook> searchedBooks = List<PerGenreBook>();
 
@@ -115,23 +120,80 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 ],
               )
           ),
-          Flexible(
-            flex: 4,
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               title: Text("Filter result"),
               children: <Widget>[
-                Text("TODO"),
-                Text("TODO"),
+                Container(
+                  //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
+                  height: 100,
+                  child: ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Center(child: Text("TODO"));
+                    },
+                  ),
+                )
               ],
             ),
           ),
-          Flexible(
-            flex: 4,
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               title: Text("Order by"),
               children: <Widget>[
-                Text("TODO"),
-                Text("TODO"),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  width: MediaQuery.of(context).size.width,
+                  child: CustomRadioButton(
+                    buttonLables: orderByLabels,
+                    buttonValues: orderByLabels,
+                    radioButtonValue: (value, index) {
+                      setState(() {
+                        bool toReorder = _selectedOrder != value;
+                        _selectedOrder = value;
+                        if(toReorder) {
+                          reorder();
+                        }
+                      });
+                    },
+                    buttonHeight: 30,
+                    lineSpace: 0,
+                    fontSize: 14,
+                    elevation: 0.0,
+                    horizontal: true,
+                    enableShape: true,
+                    buttonSpace: 5.0,
+                    textColor: Colors.white,
+                    selectedTextColor: Colors.black,
+                    buttonColor: Colors.white12,
+                    selectedColor: Colors.white,
+                  ),
+                ),
+                DropdownButton(
+                  value: _dropdownValue,
+                  items: [
+                    DropdownMenuItem(
+                      value: orderByAscendingWayValue,
+                      child: Text(orderByAscendingWay),
+                    ),
+                    DropdownMenuItem(
+                      value: orderByDescendingWayValue,
+                      child: Text(orderByDescendingWay),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      bool toReorder = _dropdownValue != value;
+                      _dropdownValue = value;
+                      _selectedOrderWay = orderByWays[value];
+                      if(toReorder) {
+                        reorder();
+                      }
+                    });
+                  },
+                ),
               ],
             ),
           ),
@@ -187,7 +249,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16),
+                                  fontSize: 17),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -213,6 +275,26 @@ class _SearchBookPageState extends State<SearchBookPage> {
             )
         ],
       ),
+    );
+  }
+
+  void reorder() {
+    switch(_selectedOrder) {
+      case orderByTitleLabel:
+        {
+          reorderByTitle();
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  void reorderByTitle() {
+    searchedBooks.sort(
+            (a, b) => _selectedOrderWay == orderByAscendingWay ?
+        a.title.compareTo(b.title) :
+        b.title.compareTo(a.title)
     );
   }
 }

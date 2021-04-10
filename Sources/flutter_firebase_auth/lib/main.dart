@@ -99,7 +99,7 @@ class _AppState extends State<App> {
            ),
            snackBarTheme: SnackBarThemeData(
              actionTextColor: Colors.white,
-           )
+           ),
            //buttonColor: Colors.white12,
            //buttonTheme: const ButtonThemeData()
          ),

@@ -38,6 +38,7 @@ dependencies:
   path_provider: ^1.6.27
   device_preview: ^0.5.5
   intl: any
+  radio_grouped_buttons: 1.0.0+2
 
 dev_dependencies:
   flutter_test:

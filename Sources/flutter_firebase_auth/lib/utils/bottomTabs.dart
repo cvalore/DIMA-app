@@ -36,7 +36,7 @@ class BottomTabs extends StatelessWidget {
     }
     //books passed to search book page
     List<dynamic> books = List<dynamic>();
-    for(int i = 0; i < booksMap.length; i++) {
+    for(int i = 0; booksMap != null && i < booksMap.length; i++) {
       books.addAll(booksMap[booksMap.keys.elementAt(i).toString()]['books']);
     }
 
