@@ -6,6 +6,8 @@ import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
 
+import 'bookPerGenreMap.dart';
+
 
 class BottomTabs extends StatelessWidget {
 
@@ -21,6 +23,22 @@ class BottomTabs extends StatelessWidget {
     AuthCustomUser user = Provider.of<AuthCustomUser>(context);
 
     _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
+    Map<String,dynamic> booksMap = Provider.of<BookPerGenreMap>(context) != null ?
+    Provider.of<BookPerGenreMap>(context).result : null;
+
+    if(booksMap != null && booksMap.length != 0) {
+      booksMap.removeWhere((key, value) {
+        bool empty = booksMap[key]['books'] == null ||
+            booksMap[key]['books'].length == 0;
+        return key == null || value == null || empty;
+      });
+    }
+    //books passed to search book page
+    List<dynamic> books = List<dynamic>();
+    for(int i = 0; i < booksMap.length; i++) {
+      books.addAll(booksMap[booksMap.keys.elementAt(i).toString()]['books']);
+    }
 
     return BottomNavigationBar(
       backgroundColor: Colors.black54,
@@ -97,7 +115,9 @@ class BottomTabs extends StatelessWidget {
                       elevation: 0.0,
                       title: Text("Search books"),
                     ),
-                    body: SearchBookPage(),
+                    body: SearchBookPage(
+                      books: books,
+                    ),
                   );
                 })
             );

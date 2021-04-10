@@ -1,8 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/perGenreBook.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/home/homeBookInfoBody.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
+import 'package:provider/provider.dart';
 
 class SearchBookPage extends StatefulWidget {
+
+  final List<dynamic> books;
+
+  const SearchBookPage({Key key, this.books}) : super(key: key);
+
   @override
   _SearchBookPageState createState() => _SearchBookPageState();
 }
@@ -14,6 +26,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
   String _title = 'narnia';
   String _author = 'lewis';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
+
+  List<PerGenreBook> searchedBooks = List<PerGenreBook>();
 
   void setTitle(String title) {
     _title = title;
@@ -29,17 +43,37 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<PerGenreBook> perGenreBooks = List<PerGenreBook>();
+    for(dynamic b in widget.books) {
+      if(b != null) {
+        perGenreBooks.add(
+            PerGenreBook(
+              id: b.keys.elementAt(0).toString(),
+              title: b[b.keys.elementAt(0).toString()]["title"],
+              author: b[b.keys.elementAt(0).toString()]["author"],
+              thumbnail: b[b.keys.elementAt(0).toString()]["thumbnail"],
+            )
+        );
+      }
+    }
+
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    DatabaseService _db = DatabaseService(user: user);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Container(
+      /*decoration: BoxDecoration(
+        border: Border.all(color: Colors.red, width: 2.0),
+      ),*/
       height: MediaQuery.of(context).size.height,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Flexible(
-              flex: 1,
+              flex: 8,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,7 +97,18 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         backgroundColor: Colors.transparent,
                         child: Icon(Icons.search, color: Colors.white,size: 35.0),
                         onPressed: () {
-                          print("TODO: search for: " + _title + " by " + _author);
+                          List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
+                          realSearchedBooks.addAll(
+                            perGenreBooks.where((b) =>
+                                b.title.toLowerCase().contains(_title.toLowerCase()) ||
+                                b.author.toLowerCase().contains(_author.toLowerCase())
+                            )
+                          );
+
+                          setState(() {
+                            searchedBooks.clear();
+                            searchedBooks.addAll(realSearchedBooks);
+                          });
                         }
                     ),
                   ),
@@ -71,7 +116,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
               )
           ),
           Flexible(
-            flex: 2,
+            flex: 4,
             child: ExpansionTile(
               title: Text("Filter result"),
               children: <Widget>[
@@ -81,7 +126,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
             ),
           ),
           Flexible(
-            flex: 2,
+            flex: 4,
             child: ExpansionTile(
               title: Text("Order by"),
               children: <Widget>[
@@ -105,7 +150,67 @@ class _SearchBookPageState extends State<SearchBookPage> {
           ),*/
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,))
+              child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+          ),
+          searchedBooks == null || searchedBooks.length == 0 ?
+            Expanded(
+              flex: 26,
+              child: Container(
+                /*decoration: BoxDecoration(
+                  border: Border.all(color: Colors.red, width: 2.0),
+                ),*/
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('No results',
+                        style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
+                      Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
+                    ],
+                  ),
+                ),
+              ),
+            ):
+            Expanded(
+              flex: 26,
+              child: Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for(int i = 0; i < searchedBooks.length; i++)
+                        Column(
+                          children: <Widget>[
+                            i == 0 ? Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            ) : Container(),
+                            Text(searchedBooks[i].title,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            ),
+                            HomeBookInfoBody(
+                              book: searchedBooks[i],
+                              db: _db,
+                              fromSearch: true,
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15.0),
+                            ),
+                          ],
+                        )
+                    ],
+                  ),
+                )
+              ),
+            )
         ],
       ),
     );

@@ -40,8 +40,14 @@ class SoldByView extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(books[i]['username'].toString(),
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                          Row(
+                            children: <Widget>[
+                              Text(books[i]['username'].toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                              Text(" - €" + books[i]['book']['price'].toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),)
+                            ],
+                          ),
                           Text(books[i]['email'].toString(),
                             style: TextStyle(fontSize: 14.0),),
                           Text(books[i]['book']['exchangeable'] == true ? "Exchange available" : "",

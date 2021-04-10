@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/home/homeBookInfoBody.dart';
 import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -17,14 +18,6 @@ class HomeBookInfo extends StatefulWidget {
 }
 
 class _HomeBookInfoState extends State<HomeBookInfo> {
-
-  final sectionTitles = [
-    Text('Book general info'),
-    Text('Sold by'),
-    Text('Exchanged by'),
-  ];
-
-  final sectionContents = [];
 
   DatabaseService _db;
   CustomUser user;
@@ -51,58 +44,10 @@ class _HomeBookInfoState extends State<HomeBookInfo> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: 3,
-        itemBuilder: (BuildContext context, int index) {
-          return ExpansionTile(
-            initiallyExpanded: index == 1 ? true : false,
-            title: sectionTitles[index],
-            children: <Widget>[
-              index == 0 ?
-              FutureBuilder(
-                future: _db.getGeneralBookInfo(widget.book.id),
-                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting: return Text('Loading....');
-                    default:
-                      if (snapshot.hasError)
-                        return Text('Error: ${snapshot.error}');
-                      else
-                        return HomeBookGeneralInfoView(selectedBook: snapshot.data,);
-                  }
-                },
-              ) :
-              (index == 1 ?
-                FutureBuilder(
-                  future: _db.getBookSoldBy(widget.book.id),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting: return Text('Loading....');
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else
-                          return SoldByView(books: snapshot.data, showOnlyExchangeable: false,);
-                    }
-                  },
-                ) :
-                FutureBuilder(
-                  future: _db.getBookSoldBy(widget.book.id),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting: return Text('Loading....');
-                    default:
-                      if (snapshot.hasError)
-                        return Text('Error: ${snapshot.error}');
-                      else
-                        return SoldByView(books: snapshot.data, showOnlyExchangeable: true,);
-                    }
-                  },
-                )
-              )
-            ]
-          );
-        },
+      body: HomeBookInfoBody(
+        db: _db,
+        book: widget.book,
+        fromSearch: false,
       ),
     );
   }
