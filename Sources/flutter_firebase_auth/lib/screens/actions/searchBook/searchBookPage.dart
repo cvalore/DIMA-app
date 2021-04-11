@@ -7,6 +7,7 @@ import 'package:flutter_firebase_auth/screens/home/homeBookInfoBody.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,9 @@ class SearchBookPage extends StatefulWidget {
 class _SearchBookPageState extends State<SearchBookPage> {
 
   final _formKey = GlobalKey<FormState>();
-  final _lessThanPriceKey = GlobalKey<FormState>();
+  final _priceFormKey = GlobalKey<FormState>();
+  final _lessThanFormFieldController = TextEditingController();
+  final _greaterThanFormFieldController = TextEditingController();
 
   String _title = 'narnia';
   String _author = 'lewis';
@@ -37,11 +40,17 @@ class _SearchBookPageState extends State<SearchBookPage> {
   int _dropdownValue = orderByAscendingWayValue;
 
   List<dynamic> booksAllInfo = List<dynamic>();
+  List<dynamic> booksAllInfoCopy = List<dynamic>();
   bool _searchLoading = false;
 
   bool _isRemoveFilterEnabled = false;
   String _lessThanPrice = "";
   String _greaterThanPrice = "";
+  bool _photosCheckBox = false;
+  bool _exchangeableCheckBox = false;
+
+  int _dropdownGenreValue = 0;
+  String _dropdownGenreLabel = "";
 
   void setTitle(String title) {
     _title = title;
@@ -90,131 +99,237 @@ class _SearchBookPageState extends State<SearchBookPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Flexible(
-              flex: 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
-                    child: SearchBookForm(
-                      setTitle: setTitle,
-                      setAuthor: setAuthor,
-                      getKey: getFormKey,
-                    ),
-                  ),
-                  Flexible(
-                    flex: 4,
-                    child: FloatingActionButton(
-                        heroTag: "searchBookBtn",
-                        elevation: 0.0,
-                        focusElevation: 0.0,
-                        hoverElevation: 0.0,
-                        highlightElevation: 0.0,
-                        backgroundColor: Colors.transparent,
-                        child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                        onPressed: () async {
-                          setState(() {
-                            _searchLoading = true;
-                          });
+          Padding(padding: const EdgeInsets.symmetric(vertical: 10.0)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: 100,
+                width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
+                child: SearchBookForm(
+                  setTitle: setTitle,
+                  setAuthor: setAuthor,
+                  getKey: getFormKey,
+                ),
+              ),
+              Flexible(
+                flex: 4,
+                child: FloatingActionButton(
+                    heroTag: "searchBookBtn",
+                    elevation: 0.0,
+                    focusElevation: 0.0,
+                    hoverElevation: 0.0,
+                    highlightElevation: 0.0,
+                    backgroundColor: Colors.transparent,
+                    child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                    onPressed: () async {
+                      setState(() {
+                        _searchLoading = true;
+                      });
 
-                          List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
-                          realSearchedBooks.addAll(
-                            perGenreBooks.where((b) =>
-                                b.title.toLowerCase().contains(_title.toLowerCase()) ||
-                                b.author.toLowerCase().contains(_author.toLowerCase())
-                            )
-                          );
+                      List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
+                      realSearchedBooks.addAll(
+                          perGenreBooks.where((b) =>
+                          b.title.toLowerCase().contains(_title.toLowerCase()) ||
+                              b.author.toLowerCase().contains(_author.toLowerCase())
+                          )
+                      );
 
-                          List<dynamic> realBooksAllInfo = List<dynamic>();
-                          for(int i = 0; i < realSearchedBooks.length; i++) {
-                            dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
-                            realBooksAllInfo.add(result);
-                          }
+                      List<dynamic> realBooksAllInfo = List<dynamic>();
+                      for(int i = 0; i < realSearchedBooks.length; i++) {
+                        dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
+                        realBooksAllInfo.add(result);
+                      }
 
-                          setState(() {
-                            _searchLoading = false;
-                            booksAllInfo.clear();
-                            booksAllInfo.addAll(realBooksAllInfo);
-                          });
-                        }
-                    ),
-                  ),
-                ],
-              )
+                      setState(() {
+                        _searchLoading = false;
+                        booksAllInfo.clear();
+                        booksAllInfo.addAll(realBooksAllInfo);
+                      });
+                    }
+                ),
+              ),
+            ],
           ),
           ListTileTheme(
             dense: true,
             child: ExpansionTile(
               title: Text("Filter result", style: TextStyle(fontSize: 15),),
               children: <Widget>[
-                Container(
-                  //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-                  height: 150,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Price", style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),),
-                          Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
-                          Text("Less then €"),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                            width: 60,
-                            height: 50,
-                            child: TextFormField(
-                              keyboardType: TextInputType.numberWithOptions(decimal: true),
-                              decoration: InputDecoration(
-                                labelStyle: TextStyle(fontSize: 14, color: Colors.white12, ),
-                                labelText: "Price",
+                Form(
+                  key: _priceFormKey,
+                  child: Container(
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
+                    height: 265,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Price", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            Text("Min €"),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              width: 60,
+                              height: 50,
+                              child: TextFormField(
+                                controller: _greaterThanFormFieldController,
+                                //initialValue: _greaterThanPrice,
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                  hintText: "Price",
+                                  focusedErrorBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.all(0.0),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _greaterThanPrice = value;
+                                  });
+                                },
                               ),
                             ),
-                          ),
-                          Text("Greater then €"),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                            width: 60,
-                            height: 50,
-                            child: TextFormField(
-                              keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            Text("Max €"),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              width: 60,
+                              height: 50,
+                              child: TextFormField(
+                                controller: _lessThanFormFieldController,
+                                //initialValue: _lessThanPrice,
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                  hintText: "Price",
+                                  focusedErrorBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  contentPadding: const EdgeInsets.all(0.0),
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _lessThanPrice = value;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              print("TODO: apply filter");
-                              if(!_isRemoveFilterEnabled) {
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Photos", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            Checkbox(
+                              onChanged: (bool value) {
                                 setState(() {
-                                  _isRemoveFilterEnabled = true;
+                                  _photosCheckBox = !_photosCheckBox;
                                 });
-                              }
-                            },
-                            child: Text("Apply",),
-                          ),
-                          _isRemoveFilterEnabled ? TextButton(
-                            onPressed: () {
-                              print("TODO: remove filter");
-                              setState(() {
-                                _isRemoveFilterEnabled = false;
-                              });
-                            },
-                            child: Text("Remove",)
-                          ) : TextButton(child: Text("Remove",)
-                          )
-                        ],
-                      )
-                    ],
+                              },
+                              value: _photosCheckBox,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Exchangeable", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _exchangeableCheckBox = !_exchangeableCheckBox;
+                                });
+                              },
+                              value: _exchangeableCheckBox,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Genre", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            DropdownButton(
+                              key: UniqueKey(),
+                              dropdownColor: Colors.grey[700],
+                              elevation: 0,
+                              value: _dropdownGenreValue,
+                              items: [
+                                for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
+                                  i == 0 ?
+                                    DropdownMenuItem(
+                                      value: i,
+                                      child: Text("-all-", textAlign: TextAlign.center,),
+                                    ) :
+                                    DropdownMenuItem(
+                                      value: i,
+                                      child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,),
+                                    ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _dropdownGenreValue = value;
+                                  _dropdownGenreLabel =
+                                      value == 0 ? "" : BookGenres().allBookGenres[value - 1];
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        Padding(padding: const EdgeInsets.symmetric(vertical: 6.0)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  filter();
+                                  if(!_isRemoveFilterEnabled) {
+                                    _isRemoveFilterEnabled = true;
+                                  }
+                                });
+                              },
+                              child: Text("Apply",),
+                            ),
+                            _isRemoveFilterEnabled ? TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _lessThanFormFieldController.clear();
+                                  _greaterThanFormFieldController.clear();
+                                  _greaterThanPrice = "";
+                                  _lessThanPrice = "";
+                                  clearFilter();
+                                  _isRemoveFilterEnabled = false;
+                                  _photosCheckBox = false;
+                                  _exchangeableCheckBox = false;
+                                });
+                              },
+                              child: Text("Remove",)
+                            ) : TextButton(child: Text("Remove",)
+                            )
+                          ],
+                        ),
+                        Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -262,6 +377,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     ),
                   ),
                   DropdownButton(
+                    key: UniqueKey(),
                     dropdownColor: Colors.grey[700],
                     elevation: 0,
                     value: _dropdownValue,
@@ -420,6 +536,96 @@ class _SearchBookPageState extends State<SearchBookPage> {
         ],
       ),
     );
+  }
+
+  void filter() {
+    clearFilter();
+    booksAllInfoCopy.addAll(booksAllInfo);
+
+    if(_greaterThanPrice.isEmpty ||
+        _greaterThanPrice.startsWith('0') ||
+        _greaterThanPrice.contains(',') ||
+        (_greaterThanPrice.contains('.') && (_greaterThanPrice.substring(_greaterThanPrice.indexOf('.')).length > 3))) {
+      _greaterThanPrice = "";
+      _greaterThanFormFieldController.clear();
+    }
+
+    if(_lessThanPrice.isEmpty ||
+        _lessThanPrice.startsWith('0') ||
+        _lessThanPrice.contains(',') ||
+        (_lessThanPrice.contains('.') && (_lessThanPrice.substring(_lessThanPrice.indexOf('.')).length > 3))) {
+      _lessThanPrice = "";
+      _lessThanFormFieldController.clear();
+    }
+
+    booksAllInfo.removeWhere((element) {
+      bool toRemove = false;
+      if(_greaterThanPrice.isNotEmpty) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['price'] >= double.parse(_greaterThanPrice)) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+      if(!toRemove && _lessThanPrice.isNotEmpty) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['price'] <= double.parse(_lessThanPrice)) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      if(_photosCheckBox) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['imagesUrl'].length > 0) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      if(_exchangeableCheckBox) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['exchangeable']) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      if(_dropdownGenreLabel.isNotEmpty) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['category'].toString().compareTo(
+            _dropdownGenreLabel) == 0) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      return toRemove;
+    });
+  }
+
+  void clearFilter() {
+    if(booksAllInfoCopy.isEmpty) {
+      return;
+    }
+    booksAllInfo.clear();
+    booksAllInfo.addAll(booksAllInfoCopy);
+    booksAllInfoCopy.clear();
   }
 
   void reorder() {
