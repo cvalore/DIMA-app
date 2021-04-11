@@ -632,6 +632,13 @@
             </list>
           </value>
         </entry>
+        <entry key="radio_grouped_buttons">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/radio_grouped_buttons-1.0.0+2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="rxdart">
           <value>
             <list>
@@ -992,6 +999,7 @@
       <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/provider-4.3.3/lib" />
       <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/pub_semver-1.4.4/lib" />
       <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-2.1.5/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/radio_grouped_buttons-1.0.0+2/lib" />
       <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.25.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.12+4/lib" />
       <root url="file://$PROJECT_DIR$/../../../../flutter_windows_1.20.4-stable/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-0.0.2+4/lib" />

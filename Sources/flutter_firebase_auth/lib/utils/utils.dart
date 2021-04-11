@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -95,7 +96,7 @@ class Utils {
   }
    */
 
-  static double computeAverageRatingFromReviews(List<Review> reviews){
+  static double computeAverageRatingFromReviews(List<ReceivedReview> reviews){
     double averageRating;
     double decimalValue;
     averageRating = reviews.length != 0 ?
@@ -113,5 +114,25 @@ class Utils {
     else
       return averageRating.ceilToDouble();
   }
+
+  static String computeHowLongAgo(DateTime time) {
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(time);
+    if (difference.inDays >= 1)
+      return (difference.inDays).toString() + ' days ago';
+    else if (difference.inHours >= 1)
+      return (difference.inHours).toString() + ' hours ago';
+    else if(difference.inMinutes >= 1)
+      return (difference.inMinutes).toString() + ' minutes ago';
+    else
+      return 'Few seconds ago';
+  }
+
+  static String encodeBase64(String toEncode){
+    String encoded = base64.encode(utf8.encode(toEncode));
+    print(encoded);
+    return encoded;
+  }
+
 
 }

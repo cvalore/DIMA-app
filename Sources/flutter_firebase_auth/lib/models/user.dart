@@ -16,7 +16,8 @@ class CustomUser {
   List<String> usersFollowingMe;
   final bool isAnonymous;
   final List<InsertedBook> books;
-  final List<Review> reviews;
+  final List<ReceivedReview> receivedReviews;
+  final List<ReviewWrittenByMe> reviewsWrittenByMe;
   double averageRating;
   String userProfileImagePath;
   String userProfileImageURL;
@@ -28,7 +29,8 @@ class CustomUser {
     this.numberOfInsertedItems,
     this.userProfileImagePath,
     this.userProfileImageURL,
-    this.reviews,
+    this.receivedReviews,
+    this.reviewsWrittenByMe,
     this.bio,
     this.followers,
     this.following,
@@ -70,7 +72,8 @@ class CustomUser {
     user['city'] = city != null ? city : '';
     user['usersFollowedByMe'] = usersFollowedByMe != null ? usersFollowedByMe : [];
     user['usersFollowingMe'] = usersFollowingMe != null ? usersFollowingMe : [];
-    user['reviews'] = reviews != null ? reviews : [];
+    user['receivedReviews'] = receivedReviews != null ? receivedReviews : [];
+    user['reviewsWrittenByMe'] = reviewsWrittenByMe != null ? reviewsWrittenByMe : [];
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;
     user['userProfileImageURL'] = userProfileImageURL != null ? userProfileImageURL : '';

@@ -382,7 +382,8 @@ class DatabaseService {
     List<InsertedBook> books = [];
     List<String> followedByMe = List<String>();
     List<String> followingMe = List<String>();
-    List<Review> reviews = List<Review>();
+    List<ReceivedReview> receivedReviews = List<ReceivedReview>();
+    List<ReviewWrittenByMe> reviewsWrittenByMe = List<ReviewWrittenByMe>();
     double averageRating;
 
 
@@ -394,15 +395,26 @@ class DatabaseService {
       for (int i = 0; i < userMap['usersFollowingMe'].length; i++) {
         followingMe.add(userMap['usersFollowingMe'][i] as String);
       }
-      for (int i = 0; i < userMap['reviews'].length; i++) {
-        reviews.add(Review(stars: userMap['reviews'][i]['stars'],
-            review: userMap['reviews'][i]['review'],
-            reviewerUid: userMap['reviews'][i]['reviewer'],
-            time: DateTime.parse(userMap['reviews'][i]['time'])
+      for (int i = 0; i < userMap['receivedReviews'].length; i++) {
+        receivedReviews.add(ReceivedReview(
+            key: userMap['receivedReviews'][i]['key'],
+            stars: userMap['receivedReviews'][i]['stars'],
+            review: userMap['receivedReviews'][i]['review'],
+            reviewerUid: userMap['receivedReviews'][i]['reviewer'],
+            time: DateTime.parse(userMap['receivedReviews'][i]['time'])
+        ));
+      }
+      for (int i = 0; i < userMap['reviewsWrittenByMe'].length; i++) {
+        reviewsWrittenByMe.add(ReviewWrittenByMe(
+            key: userMap['reviewsWrittenByMe'][i]['key'],
+            stars: userMap['reviewsWrittenByMe'][i]['stars'],
+            review: userMap['reviewsWrittenByMe'][i]['review'],
+            reviewedUid: userMap['reviewsWrittenByMe'][i]['reviewed'],
+            time: DateTime.parse(userMap['reviewsWrittenByMe'][i]['time'])
         ));
       }
 
-      averageRating = Utils.computeAverageRatingFromReviews(reviews);
+      averageRating = Utils.computeAverageRatingFromReviews(receivedReviews);
 
       user = CustomUser(
         userMap['uid'],
@@ -415,7 +427,8 @@ class DatabaseService {
         city: userMap['city'],
         usersFollowedByMe: followedByMe,
         usersFollowingMe: followingMe,
-        reviews: reviews,
+        receivedReviews: receivedReviews,
+        reviewsWrittenByMe: reviewsWrittenByMe,
         averageRating: averageRating,
         followers: userMap['followers'],
         following: userMap['following'],
@@ -715,14 +728,25 @@ class DatabaseService {
     });
   }
 
-  Future<void> addReview(Review review) async {
+
+  Future<void> addReview(ReceivedReview review) async {
+    review.setKey();
+    String reviewerUid = review.reviewerUid;
+    ReviewWrittenByMe reviewWrittenByMe = review.toReviewWrittenByMe(user.uid);
+
     await usersCollection.doc(user.uid)
         .update({
-      'reviews': FieldValue.arrayUnion([review.toMap()]),
+      'receivedReviews': FieldValue.arrayUnion([review.toMap()]),
+    });
+
+    await usersCollection.doc(reviewerUid)
+        .update({
+      'reviewsWrittenByMe': FieldValue.arrayUnion([reviewWrittenByMe.toMap()]),
     });
   }
 
-  Future<Map<String, Map<String, dynamic>>> getReviewersInfoByUid(List<String> usersUid) async {
+
+  Future<Map<String, Map<String, dynamic>>> getReviewsInfoByUid(List<String> usersUid) async {
     Map<String, Map<String, dynamic>> result =  Map<String, Map<String, dynamic>>();
     await usersCollection.where(
         'uid', whereIn: usersUid
@@ -736,6 +760,59 @@ class DatabaseService {
       }
     );
     return result;
+  }
+
+  removeReviews(List<ReviewWrittenByMe> reviewsToDelete) async {
+    //List<Map<String, dynamic>> userReviews = List<Map<String, dynamic>>();
+    List<dynamic> userReviews = List<dynamic>();
+    List<int> reviewsToDeleteIndices = List<int>();
+    // first remove reviews from the reviewer
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        userReviews = doc.data()['reviewsWrittenByMe'];
+
+        for (int i = 0; i < userReviews.length; i++){
+          for (int j = 0; j < reviewsToDelete.length; j++){
+            if (userReviews[i]['key'] == reviewsToDelete[j].key){
+              reviewsToDeleteIndices.insert(0, i);
+            }
+          }
+        }
+
+        for(int i = 0; i < reviewsToDeleteIndices.length; i++)
+          userReviews.removeAt(reviewsToDeleteIndices[i]);
+        print(userReviews);
+        usersCollection.doc(user.uid).update({
+          'reviewsWrittenByMe': userReviews
+        });
+      }
+    });
+
+    List<String> reviewedUsersUids = reviewsToDelete.map((e) => e.reviewedUid).toList();
+
+    //then remove from the collection of reviewed users
+    await usersCollection.where('uid', whereIn: reviewedUsersUids).get().then(
+        (QuerySnapshot querySnapshot) {
+          querySnapshot.docs.forEach((element) {
+            List<dynamic> receivedReviews = List<dynamic>();
+            reviewsToDeleteIndices = List<int>();
+            receivedReviews = element.data()['receivedReviews'];
+
+            for (int i = 0; i < receivedReviews.length; i++){
+              for (int j = 0; j < reviewsToDelete.length; j++){
+                if (receivedReviews[i]['key'] == reviewsToDelete[j].key){
+                  reviewsToDeleteIndices.insert(0, i);
+                }
+              }
+            }
+            for(int i = 0; i < reviewsToDeleteIndices.length; i++)
+              receivedReviews.removeAt(reviewsToDeleteIndices[i]);
+            usersCollection.doc(element['uid']).update({
+              'receivedReviews': receivedReviews
+            });
+          });
+        }
+    );
   }
 
 }

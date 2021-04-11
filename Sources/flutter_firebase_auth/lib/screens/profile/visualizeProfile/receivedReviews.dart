@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
-
-import 'dart:math';
-import 'dart:convert';
-
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
-class Reviews extends StatefulWidget {
+class ReceivedReviews extends StatefulWidget {
 
-  List<Review> reviews;
-  bool self;
+  List<ReceivedReview> reviews;
 
-  Reviews({Key key, @required this.reviews, @required this.self}) : super(key: key);
+  ReceivedReviews({Key key, @required this.reviews});
 
   @override
-  _ReviewsState createState() => _ReviewsState();
+  _ReceivedReviewsState createState() => _ReceivedReviewsState();
 }
 
-class _ReviewsState extends State<Reviews> {
-
+class _ReceivedReviewsState extends State<ReceivedReviews> {
   @override
   Widget build(BuildContext context) {
     return (widget.reviews == null || widget.reviews.length == 0) ?
@@ -40,23 +35,29 @@ class _ReviewsState extends State<Reviews> {
                 return Card(
                   //height: MediaQuery.of(context).size.height / 5,
                   child: LimitedBox(
-                    maxHeight: 200, //setMaxHeight(widget.reviews[index].review),
+                    maxHeight: 200,
+                    //setMaxHeight(widget.reviews[index].review),
                     child: Row(
                       children: [
                         Expanded(
                           flex: 5,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0),
                             child: CircleAvatar(
                               backgroundColor: Colors.brown.shade800,
                               radius: 60.0,
-                              child: widget.reviews[index].reviewerImageProfileURL != '' ?
+                              child: widget.reviews[index]
+                                  .reviewerImageProfileURL != '' ?
                               CircleAvatar(
                                 radius: 60.0,
-                                backgroundImage: NetworkImage(widget.reviews[index].reviewerImageProfileURL),
+                                backgroundImage: NetworkImage(
+                                    widget.reviews[index]
+                                        .reviewerImageProfileURL),
                                 //FileImage(File(user.userProfileImagePath))
                               ) : Text(
-                                widget.reviews[index].reviewerUsername[0].toUpperCase(),
+                                widget.reviews[index].reviewerUsername[0]
+                                    .toUpperCase(),
                                 //textScaleFactor: 3,
                               ),
                             ),
@@ -75,8 +76,13 @@ class _ReviewsState extends State<Reviews> {
                                     Expanded(
                                       flex: 7,
                                       child: Text(
-                                          widget.reviews[index].reviewerUsername,
-                                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                                          widget.reviews[index]
+                                              .reviewerUsername,
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .subtitle1
+                                              .copyWith(
                                               fontWeight: FontWeight.bold)
                                         /*
                                             TextStyle(
@@ -90,7 +96,8 @@ class _ReviewsState extends State<Reviews> {
                                     Expanded(
                                       flex: 3,
                                       child: Text(
-                                        computeHowLongAgo(widget.reviews[index].time),
+                                        Utils.computeHowLongAgo(
+                                            widget.reviews[index].time),
                                         style: TextStyle(
                                             fontSize: 9,
                                             //color: Colors.grey[600],
@@ -107,7 +114,11 @@ class _ReviewsState extends State<Reviews> {
                                 child: Row(
                                   children: [
                                     for(int i = 0; i < 5; i++)
-                                      widget.reviews[index].stars > i ? Icon(Icons.star, color: Colors.yellow,) : Icon(Icons.star_border, color: Colors.yellow,),
+                                      widget.reviews[index].stars > i
+                                          ? Icon(
+                                        Icons.star, color: Colors.yellow,)
+                                          : Icon(Icons.star_border,
+                                        color: Colors.yellow,),
                                   ],
                                 ),
                               ),
@@ -133,49 +144,14 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  String computeHowLongAgo(DateTime time) {
-    DateTime now = DateTime.now();
-    Duration difference = now.difference(time);
-    if (difference.inDays >= 1)
-      return (difference.inDays).toString() + ' days ago';
-    else if (difference.inHours >= 1)
-      return (difference.inHours).toString() + ' hours ago';
-    else if(difference.inMinutes >= 1)
-      return (difference.inMinutes).toString() + ' minutes ago';
-    else
-      return 'Few seconds ago';
+
+  Future<List<ReceivedReview>> getReviewersInfo(List<ReceivedReview> reviews) async {
+    List<String> reviewersUid = reviews.map((e) => e.reviewerUid).toList();
+    var result = await DatabaseService().getReviewsInfoByUid(reviewersUid);
+    for (int i = 0; i < reviews.length; i++) {
+      Map<String, dynamic> reviewerInfo = result[reviews[i].reviewerUid];
+      reviews[i].reviewerImageProfileURL = reviewerInfo['userProfileImageURL'];
+      reviews[i].reviewerUsername = reviewerInfo['username'];
+    }
   }
-}
-
-
-
-Future<List<Review>> getReviewersInfo(List<Review> reviews) async {
-  print(reviews);
-  if (reviews != null) print(reviews.length);
-
-  List<String> reviewersUid = reviews.map((e) => e.reviewerUid).toList();
-
-  var result = await DatabaseService().getReviewersInfoByUid(reviewersUid);
-
-  for (int i = 0; i < reviews.length; i++){
-    Map<String, dynamic> reviewerInfo = result[reviews[i].reviewerUid];
-    reviews[i].reviewerImageProfileURL = reviewerInfo['userProfileImageURL'];
-    reviews[i].reviewerUsername = reviewerInfo['username'];
-  }
-  /*
-    Review review = Review(
-        review: getRandString(30),
-        stars: random.nextInt(5),
-        reviewerUsername: getRandString(10),
-        time: DateTime.now()
-    );
-    reviews.add(review);
-
-     */
-}
-
-
-double setMaxHeight(String review){
-  var lines = review.length / 20;
-  return lines * 40 + 15;
 }

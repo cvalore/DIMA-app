@@ -231,8 +231,6 @@ class _RegisterState extends State<Register> {
             _error = 'Username already used\nPlease, choose a different username';
             _loading = false;
           });
-          print(_email);
-          print(_password);
         }
       }
     }

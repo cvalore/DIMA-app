@@ -108,6 +108,7 @@ class PriceBoxState extends State<PriceBox> {
             if(!price.contains('.'))
               price = price + '.0';
             var priceAsDouble = double.parse(price);
+
             //print(priceAsDouble);
             Navigator.pop(context, double.parse(price));
           }

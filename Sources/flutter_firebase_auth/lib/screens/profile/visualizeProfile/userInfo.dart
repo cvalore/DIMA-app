@@ -77,7 +77,7 @@ class _UserInfoState extends State<UserInfo> {
                       textScaleFactor: 3,
                     ),
                   ),
-                  widget.user.reviews != null && widget.user.reviews.length != 0 ?
+                  widget.user.receivedReviews != null && widget.user.receivedReviews.length != 0 ?
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
@@ -94,8 +94,8 @@ class _UserInfoState extends State<UserInfo> {
                             ),
                         SizedBox(width: 20.0),
                         Text(
-                          widget.user.reviews.length != 1 ?
-                            widget.user.reviews.length.toString() + ' reviews' :
+                          widget.user.receivedReviews.length != 1 ?
+                            widget.user.receivedReviews.length.toString() + ' reviews' :
                               '1 review',
                           textAlign: TextAlign.left,
                           style: Theme.of(context).textTheme.bodyText2,

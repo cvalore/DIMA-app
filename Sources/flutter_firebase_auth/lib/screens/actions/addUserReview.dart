@@ -33,7 +33,7 @@ class _AddUserReviewState extends State<AddUserReview> {
         icon: Icon(Icons.check_outlined),
         label: Text('Done'),
         onPressed: () async {
-          Review review = Review(stars: stars, review: reviewString, reviewerUid: Utils.mySelf.uid, time: DateTime.now());
+          ReceivedReview review = ReceivedReview(stars: stars, review: reviewString, reviewerUid: Utils.mySelf.uid, time: DateTime.now());
           await DatabaseService(user: user).addReview(review);
           print('review added');
           Navigator.pop(context);

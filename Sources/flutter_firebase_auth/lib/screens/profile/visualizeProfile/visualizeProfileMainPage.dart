@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/modifyProfile/modifyProfileMainPage.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviews.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/receivedReviews.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsMainPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
@@ -70,13 +71,13 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
               TabBarView(
                 children: [
                   UserInfo(user: user, self: widget.self),
-                  Reviews(reviews: user.reviews, self: widget.self),
+                  ReviewsMainPage(receivedReviews: user.receivedReviews, reviewsWrittenByMe: user.reviewsWrittenByMe, self: widget.self),
                 ],
               ) : TabBarView(
                 children: [
                   UserInfo(user: user, self: widget.self),
                   Text('Here we are'),
-                  Reviews(reviews: user.reviews, self: widget.self),
+                  ReceivedReviews(reviews: user.receivedReviews),
                 ],
               ),
             ),
