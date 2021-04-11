@@ -139,10 +139,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 ],
               )
           ),
-          Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          ListTileTheme(
+            dense: true,
             child: ExpansionTile(
-              title: Text("Filter result"),
+              title: Text("Filter result", style: TextStyle(fontSize: 15),),
               children: <Widget>[
                 Container(
                   //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
@@ -157,66 +157,74 @@ class _SearchBookPageState extends State<SearchBookPage> {
               ],
             ),
           ),
-          Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-            child: ExpansionTile(
-              title: Text("Order by"),
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  width: MediaQuery.of(context).size.width,
-                  child: CustomRadioButton(
-                    initialSelection: _selectedOrderValue,
-                    buttonLables: orderByLabels,
-                    buttonValues: orderByLabels,
-                    radioButtonValue: (value, index) {
+          ListTileTheme(
+            dense: true,
+            child: Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                title: Text("Order by", style: TextStyle(fontSize: 15),),
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    width: MediaQuery.of(context).size.width,
+                    child: CustomRadioButton(
+                      initialSelection: _selectedOrderValue,
+                      buttonLables: orderByLabels,
+                      buttonValues: orderByLabels,
+                      radioButtonValue: (value, index) {
+                        setState(() {
+                          _searchLoading = true;
+                          bool toReorder = _selectedOrder != value;
+                          _selectedOrder = value;
+                          _selectedOrderValue = index;
+                          if(toReorder) {
+                            reorder();
+                          }
+                        });
+                        setState(() {
+                          _searchLoading = false;
+                        });
+                      },
+                      buttonHeight: 30,
+                      lineSpace: 0,
+                      fontSize: 14,
+                      elevation: 0.0,
+                      horizontal: true,
+                      enableShape: true,
+                      buttonSpace: 5.0,
+                      textColor: Colors.white,
+                      selectedTextColor: Colors.black,
+                      buttonColor: Colors.white12,
+                      selectedColor: Colors.white,
+                    ),
+                  ),
+                  DropdownButton(
+                    dropdownColor: Colors.grey[700],
+                    elevation: 0,
+                    value: _dropdownValue,
+                    items: [
+                      DropdownMenuItem(
+                        value: orderByAscendingWayValue,
+                        child: Text(orderByAscendingWay),
+                      ),
+                      DropdownMenuItem(
+                        value: orderByDescendingWayValue,
+                        child: Text(orderByDescendingWay),
+                      ),
+                    ],
+                    onChanged: (value) {
                       setState(() {
-                        bool toReorder = _selectedOrder != value;
-                        _selectedOrder = value;
-                        _selectedOrderValue = index;
+                        bool toReorder = _dropdownValue != value;
+                        _dropdownValue = value;
+                        _selectedOrderWay = orderByWays[value];
                         if(toReorder) {
                           reorder();
                         }
                       });
                     },
-                    buttonHeight: 30,
-                    lineSpace: 0,
-                    fontSize: 14,
-                    elevation: 0.0,
-                    horizontal: true,
-                    enableShape: true,
-                    buttonSpace: 5.0,
-                    textColor: Colors.white,
-                    selectedTextColor: Colors.black,
-                    buttonColor: Colors.white12,
-                    selectedColor: Colors.white,
                   ),
-                ),
-                DropdownButton(
-                  elevation: 0,
-                  value: _dropdownValue,
-                  items: [
-                    DropdownMenuItem(
-                      value: orderByAscendingWayValue,
-                      child: Text(orderByAscendingWay),
-                    ),
-                    DropdownMenuItem(
-                      value: orderByDescendingWayValue,
-                      child: Text(orderByDescendingWay),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      bool toReorder = _dropdownValue != value;
-                      _dropdownValue = value;
-                      _selectedOrderWay = orderByWays[value];
-                      if(toReorder) {
-                        reorder();
-                      }
-                    });
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           /*Flexible(
@@ -240,7 +248,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
           (
             booksAllInfo == null || booksAllInfo.length == 0 ?
               Expanded(
-                flex: 26,
+                flex: 30,
                 child: Container(
                   /*decoration: BoxDecoration(
                     border: Border.all(color: Colors.red, width: 2.0),
@@ -258,7 +266,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 ),
               ):
               Expanded(
-                flex: 26,
+                flex: 30,
                 child: Container(
                   child: SingleChildScrollView(
                     child: Column(
@@ -312,27 +320,27 @@ class _SearchBookPageState extends State<SearchBookPage> {
   void reorder() {
     switch(_selectedOrder) {
       case orderByTitleLabel:
-        reorderByFieldInUserCollection("title");
+        reorderByStringFieldInUserCollection("title");
         break;
 
       case orderByAuthorLabel:
-        reorderByFieldInUserCollection("author");
+        reorderByStringFieldInUserCollection("author");
         break;
 
       case orderByISBNLabel:
-        reorderByFieldInUserCollection("isbn");
+        reorderByStringFieldInUserCollection("isbn");
         break;
 
       case orderByPriceLabel:
-        reorderByFieldInUserCollection("price");
+        reorderByNumberFieldInUserCollection("price");
         break;
 
       case orderByPageCountLabel:
-        reorderByFieldInBookCollection("pageCount");
+        reorderByNumberFieldInBookCollection("pageCount");
         break;
 
       case orderByAvgRatingLabel:
-        reorderByFieldInBookCollection("ratingsCount");
+        reorderByNumberFieldInBookCollection("ratingsCount");
         break;
 
       case orderByImagesLabel:
@@ -340,51 +348,170 @@ class _SearchBookPageState extends State<SearchBookPage> {
         break;
 
       case orderByStatusLabel:
-        reorderByFieldInUserCollection("status");
+        reorderByNumberFieldInUserCollection("status");
         break;
 
       default:
         break;
     }
-
-    for(int i = 0; i < booksAllInfo.length; i++) {
-      print(booksAllInfo[i][0]['book']['title'].toString() + " -> " + booksAllInfo[i][0]['book']['imagesUrl'].length.toString());
-    }
   }
 
-  void reorderByFieldInUserCollection(String field) {
+  void reorderByStringFieldInUserCollection(String field) {
+    reorderByStringField("book", field);
+  }
+
+  void reorderByStringFieldInBookCollection(String field) {
+    reorderByStringField("info", field);
+  }
+
+  void reorderByNumberFieldInUserCollection(String field) {
+    reorderByNumberField('book', field);
+  }
+
+  void reorderByNumberFieldInBookCollection(String field) {
+    reorderByNumberField('info', field);
+  }
+
+
+  void reorderByStringField(String collection, String field) {
     booksAllInfo.sort(
-            (a, b) => _selectedOrderWay == orderByAscendingWay ?
-              (a == null ? 1 : b == null ? -1 :
-                a[0]['book'][field].toString().compareTo(
-                b[0]['book'][field].toString())) :
-              (b == null ? 1 : a == null ? -1 :
-              b[0]['book'][field].toString().compareTo(
-                  a[0]['book'][field].toString()))
+      (a, b) {
+        //sort first the list of the same book from different authors
+        a.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field] == null) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field].toString().compareTo(b1['book'][field].toString())
+              )
+          ) :
+          (
+              (b1 == null || b1[collection][field] == null) ? 1 :
+              (a1 == null || a1[collection][field] == null) ? -1 :
+              (
+                  b1[collection][field].toString().compareTo(a1[collection][field].toString())
+              )
+          );
+        });
+        //sort first the list of the same book from different authors
+        b.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field]) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field].toString().compareTo(b1[collection][field].toString())
+              )
+          ) :
+          (
+              (b1 == null || b1['book'][field] == null) ? 1 :
+              (a1 == null || a1['book'][field] == null) ? -1 :
+              (
+                  b1[collection][field].toString().compareTo(a1[collection][field].toString())
+              )
+          );
+        });
+
+
+        //sort globally the two elements
+        return _selectedOrderWay == orderByAscendingWay ?
+        (
+            (a == null || a[0][collection][field] == null) ? 1 :
+            (b == null || b[0][collection][field] == null) ? -1 : (
+                a[0][collection][field].toString().compareTo(b[0][collection][field].toString())
+            )
+        ) :
+        (
+            (b == null || b[0][collection][field] == null) ? 1 :
+            (a == null || a[0][collection][field] == null) ? -1 :
+            (
+                b[0][collection][field].toString().compareTo(a[0][collection][field].toString())
+            )
+        );
+      }
     );
   }
+
+  void reorderByNumberField(String collection, String field) {
+    booksAllInfo.sort(
+      (a, b) {
+        //sort first the list of the same book from different authors
+        a.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field] == null) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field] > b1[collection][field] ? 1 : -1
+              )
+          ) :
+          (
+              (b1 == null || b1[collection][field] == null) ? 1 :
+              (a1 == null || a1[collection][field] == null) ? -1 :
+              (
+                  b1[collection][field] > a1[collection][field] ? 1 : -1
+              )
+          );
+        });
+        //sort first the list of the same book from different authors
+        b.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field]) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field] > b1[collection][field] ? 1 : -1
+              )
+          ) :
+          (
+              (b1 == null || b1[collection][field] == null) ? 1 :
+              (a1 == null || a1[collection][field] == null) ? -1 :
+              (
+                  b1[collection][field] > a1[collection][field] ? 1 : -1
+              )
+          );
+        });
+
+
+        //sort globally the two elements
+        return _selectedOrderWay == orderByAscendingWay ?
+        (
+            (a == null || a[0][collection][field] == null) ? 1 :
+            (b == null || b[0][collection][field] == null) ? -1 : (
+                a[0][collection][field] > b[0][collection][field] ? 1 : -1
+            )
+        ) :
+        (
+            (b == null || b[0][collection][field] == null) ? 1 :
+            (a == null || a[0][collection][field] == null) ? -1 :
+            (
+                b[0][collection][field] > a[0][collection][field] ? 1 : -1
+            )
+        );
+
+      }
+    );
+  }
+
 
   void reorderByNumberOfImages() {
     booksAllInfo.sort(
-            (a, b) => _selectedOrderWay == orderByAscendingWay ?
-        (a == null ? 1 : b == null ? -1 :
-        a[0]['book']['imagesUrl'].length.toString().compareTo(
-            b[0]['book']['imagesUrl'].length.toString())) :
-        (b == null ? 1 : a == null ? -1 :
-        b[0]['book']['imagesUrl'].length.toString().compareTo(
-            a[0]['book']['imagesUrl'].length.toString()))
-    );
+      (a, b) {
+        return _selectedOrderWay == orderByAscendingWay ?
+        (
+            a == null ? 1 : b == null ? -1 : (
+                a[0]['book']['imagesUrl'].length >
+                    b[0]['book']['imagesUrl'].length  ? 1 : -1
+            )
+        ) :
+        (
+            b == null ? 1 : a == null ? -1 : (
+                b[0]['book']['imagesUrl'].length >
+                    a[0]['book']['imagesUrl'].length  ? 1 : -1
+            )
+        );
+    });
   }
 
-  void reorderByFieldInBookCollection(String field) {
-    booksAllInfo.sort(
-            (a, b) => _selectedOrderWay == orderByAscendingWay ?
-        (a == null ? 1 : b == null ? -1 :
-        a[0]['info'][field].toString().compareTo(
-            b[0]['info'][field].toString())) :
-        (b == null ? 1 : a == null ? -1 :
-        b[0]['info'][field].toString().compareTo(
-            a[0]['info'][field].toString()))
-    );
-  }
 }
