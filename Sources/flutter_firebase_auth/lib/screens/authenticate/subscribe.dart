@@ -17,6 +17,32 @@ class SubscribeState extends State<Subscribe> {
   String username = '';
   String _error = '';
 
+  TextButtonThemeData _textButtonTheme = TextButtonThemeData(
+    style: ButtonStyle(
+      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed)) {
+              return Colors.white10;
+            }
+            else {
+              return Colors.white24;
+            }
+          }),
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+              (Set<MaterialState> states) {
+            return TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            );
+          }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            return Colors.white;
+          }),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
 
@@ -75,27 +101,21 @@ class SubscribeState extends State<Subscribe> {
                     padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 0.0),
                     child: Container(
                       width: width * 0.5,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.pressed)) {
-                                  return Colors.white10;
-                                }
-                                else {
-                                  return Colors.white24;
-                                }
-                              }),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          textButtonTheme: _textButtonTheme,
                         ),
-                        child: Text('Sign Up', style: TextStyle(color: Colors.white),),
-                        onPressed: () async {
-                          if(_formKey.currentState.validate()) {
-                            setState(() {
-                              _loading = true;
-                            });
-                            Navigator.pop(context, username);
-                          }
-                        },
+                        child: TextButton(
+                          child: Text('Sign Up',),
+                          onPressed: () async {
+                            if(_formKey.currentState.validate()) {
+                              setState(() {
+                                _loading = true;
+                              });
+                              Navigator.pop(context, username);
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),

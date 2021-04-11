@@ -36,6 +36,15 @@ class _HomeState extends State<Home> {
     return this._selectedBottomTab;
   }
 
+  TextButtonThemeData _textButtonThemeData = TextButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            return Colors.transparent;
+          }),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
 
@@ -89,12 +98,17 @@ class _HomeState extends State<Home> {
                 letterSpacing: 1.0,
               ),),
               actions: <Widget>[
-                TextButton.icon(
-                  icon: Icon(Icons.logout, color: Colors.white,),
-                  label: Text(''),
-                  onPressed: () async {
-                    await _auth.signOut();
-                  },
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    textButtonTheme: _textButtonThemeData,
+                  ),
+                  child: TextButton.icon(
+                    icon: Icon(Icons.logout, color: Colors.white,),
+                    label: Text(''),
+                    onPressed: () async {
+                      await _auth.signOut();
+                    },
+                  ),
                 ),
               ],
               bottom: _selectedBottomTab == 0 ?

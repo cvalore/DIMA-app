@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,7 @@ class _AppState extends State<App> {
              bodyText1: TextStyle(fontSize: 22.0),
              bodyText2: TextStyle(fontSize: 14.0,),
            ),
-           buttonColor: Colors.blueAccent,
+           //buttonColor: Colors.blueAccent,
            floatingActionButtonTheme: FloatingActionButtonThemeData(
              backgroundColor: Colors.blueAccent
            ),
@@ -102,6 +103,49 @@ class _AppState extends State<App> {
            ),
            //buttonColor: Colors.white12,
            //buttonTheme: const ButtonThemeData()
+           textButtonTheme: TextButtonThemeData(
+             style: ButtonStyle(
+               shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
+                   (Set<MaterialState> states) {
+                     return RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                     );
+                   }
+               ),
+               textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+                   (Set<MaterialState> states) {
+                      return TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      );
+               }),
+               backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                       (Set<MaterialState> states) {
+                     if (states.contains(MaterialState.pressed)) {
+                       return Colors.white70;
+                     }
+                     else if(states.contains(MaterialState.disabled)) {
+                       return Colors.white12;
+                     }
+                     else {
+                       return Colors.white;
+                     }
+                   }),
+               foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                       (Set<MaterialState> states) {
+                     if (states.contains(MaterialState.pressed)) {
+                       return Colors.black;
+                     }
+                     else if(states.contains(MaterialState.disabled)) {
+                       return Colors.white12;
+                     }
+                     else {
+                       return Colors.black;
+                     }
+                   }),
+             ),
+           )
          ),
          home: Wrapper(),
          routes: {

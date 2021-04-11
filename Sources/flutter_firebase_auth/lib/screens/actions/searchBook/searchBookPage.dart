@@ -25,6 +25,7 @@ class SearchBookPage extends StatefulWidget {
 class _SearchBookPageState extends State<SearchBookPage> {
 
   final _formKey = GlobalKey<FormState>();
+  final _lessThanPriceKey = GlobalKey<FormState>();
 
   String _title = 'narnia';
   String _author = 'lewis';
@@ -37,6 +38,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
   List<dynamic> booksAllInfo = List<dynamic>();
   bool _searchLoading = false;
+
+  bool _isRemoveFilterEnabled = false;
+  String _lessThanPrice = "";
+  String _greaterThanPrice = "";
 
   void setTitle(String title) {
     _title = title;
@@ -86,7 +91,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Flexible(
-              flex: 8,
+              flex: 10,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -146,12 +151,70 @@ class _SearchBookPageState extends State<SearchBookPage> {
               children: <Widget>[
                 Container(
                   //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-                  height: 100,
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Center(child: Text("TODO"));
-                    },
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Price", style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),),
+                          Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                          Text("Less then €"),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                            width: 60,
+                            height: 50,
+                            child: TextFormField(
+                              keyboardType: TextInputType.numberWithOptions(decimal: true),
+                              decoration: InputDecoration(
+                                labelStyle: TextStyle(fontSize: 14, color: Colors.white12, ),
+                                labelText: "Price",
+                              ),
+                            ),
+                          ),
+                          Text("Greater then €"),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                            width: 60,
+                            height: 50,
+                            child: TextFormField(
+                              keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(padding: const EdgeInsets.symmetric(vertical: 8.0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              print("TODO: apply filter");
+                              if(!_isRemoveFilterEnabled) {
+                                setState(() {
+                                  _isRemoveFilterEnabled = true;
+                                });
+                              }
+                            },
+                            child: Text("Apply",),
+                          ),
+                          _isRemoveFilterEnabled ? TextButton(
+                            onPressed: () {
+                              print("TODO: remove filter");
+                              setState(() {
+                                _isRemoveFilterEnabled = false;
+                              });
+                            },
+                            child: Text("Remove",)
+                          ) : TextButton(child: Text("Remove",)
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 )
               ],
