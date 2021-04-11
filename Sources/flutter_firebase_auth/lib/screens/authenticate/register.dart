@@ -24,6 +24,52 @@ class _RegisterState extends State<Register> {
   String _password = '';
   String _error = '';
 
+  TextButtonThemeData _textButtonTheme = TextButtonThemeData(
+    style: ButtonStyle(
+      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed)) {
+              return Colors.white10;
+            }
+            else {
+              return Colors.white24;
+            }
+          }),
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+              (Set<MaterialState> states) {
+            return TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            );
+          }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            return Colors.white;
+          }),
+    ),
+  );
+
+  TextButtonThemeData _textButtonThemeRed = TextButtonThemeData(
+    style: ButtonStyle(
+      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            return Colors.transparent;
+          }),
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+              (Set<MaterialState> states) {
+            return TextStyle(
+              fontSize: 14,
+            );
+          }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            return Colors.red[600];
+          }),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
 
@@ -121,25 +167,16 @@ class _RegisterState extends State<Register> {
                 ),
                 Container(
                   width: _isTablet ? MediaQuery.of(context).size.width/2.5 : MediaQuery.of(context).size.width/2,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      //backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey[700]),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.white10;
-                            }
-                            else {
-                              return Colors.white24;
-                            }
-                          }),
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      textButtonTheme: _textButtonTheme,
                     ),
-                    child: Text('Sign Up',
-                      style: TextStyle(color: Colors.white),
+                    child: TextButton(
+                      child: Text('Sign Up',),
+                      onPressed: () {
+                        _registerWithEmailAndPassword(context);
+                      },
                     ),
-                    onPressed: () {
-                      _registerWithEmailAndPassword(context);
-                    },
                   ),
                 ),
                 Text(_error,
@@ -149,15 +186,16 @@ class _RegisterState extends State<Register> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('Already have an account?', style: TextStyle(color: Colors.white),),
-                    TextButton(
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        textButtonTheme: _textButtonThemeRed,
                       ),
-                      child: Text('Sign in',
-                          style: TextStyle(color: Colors.red[600])),
-                      onPressed: () {
-                        widget.toggleView();
-                      },
+                      child: TextButton(
+                        child: Text('Sign in',),
+                        onPressed: () {
+                          widget.toggleView();
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -166,25 +204,26 @@ class _RegisterState extends State<Register> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('', style: TextStyle(color: Colors.white),),
-                    TextButton(
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        textButtonTheme: _textButtonThemeRed,
                       ),
-                      child: Text('Continue anonymously',
-                          style: TextStyle(color: Colors.red[600])),
-                      onPressed: () async {
-                        setState(() {
-                          _loading = true;
-                        });
+                      child: TextButton(
+                        child: Text('Continue anonymously',),
+                        onPressed: () async {
+                          setState(() {
+                            _loading = true;
+                          });
 
-                        await _auth.signInAnonymously().then((result) {
-                          if(result == null) {
-                            setState(() {
-                              _loading = false;
-                            });
-                          }
-                        });
-                      },
+                          await _auth.signInAnonymously().then((result) {
+                            if(result == null) {
+                              setState(() {
+                                _loading = false;
+                              });
+                            }
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),

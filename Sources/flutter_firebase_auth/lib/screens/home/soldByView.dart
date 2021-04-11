@@ -44,7 +44,7 @@ class SoldByView extends StatelessWidget {
                             children: <Widget>[
                               Text(books[i]['username'].toString(),
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
-                              Text(" - €" + books[i]['book']['price'].toString(),
+                              Text(" - €" + books[i]['book']['price'].toStringAsFixed(2),
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),)
                             ],
                           ),

@@ -7,6 +7,7 @@ import 'package:flutter_firebase_auth/screens/home/homeBookInfoBody.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,9 @@ class SearchBookPage extends StatefulWidget {
 class _SearchBookPageState extends State<SearchBookPage> {
 
   final _formKey = GlobalKey<FormState>();
+  final _priceFormKey = GlobalKey<FormState>();
+  final _lessThanFormFieldController = TextEditingController();
+  final _greaterThanFormFieldController = TextEditingController();
 
   String _title = 'narnia';
   String _author = 'lewis';
@@ -36,7 +40,17 @@ class _SearchBookPageState extends State<SearchBookPage> {
   int _dropdownValue = orderByAscendingWayValue;
 
   List<dynamic> booksAllInfo = List<dynamic>();
+  List<dynamic> booksAllInfoCopy = List<dynamic>();
   bool _searchLoading = false;
+
+  bool _isRemoveFilterEnabled = false;
+  String _lessThanPrice = "";
+  String _greaterThanPrice = "";
+  bool _photosCheckBox = false;
+  bool _exchangeableCheckBox = false;
+
+  int _dropdownGenreValue = 0;
+  String _dropdownGenreLabel = "";
 
   void setTitle(String title) {
     _title = title;
@@ -85,138 +99,311 @@ class _SearchBookPageState extends State<SearchBookPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Flexible(
-              flex: 8,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
-                    child: SearchBookForm(
-                      setTitle: setTitle,
-                      setAuthor: setAuthor,
-                      getKey: getFormKey,
-                    ),
-                  ),
-                  Flexible(
-                    flex: 4,
-                    child: FloatingActionButton(
-                        heroTag: "searchBookBtn",
-                        elevation: 0.0,
-                        focusElevation: 0.0,
-                        hoverElevation: 0.0,
-                        highlightElevation: 0.0,
-                        backgroundColor: Colors.transparent,
-                        child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                        onPressed: () async {
-                          setState(() {
-                            _searchLoading = true;
-                          });
+          Padding(padding: const EdgeInsets.symmetric(vertical: 10.0)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: 100,
+                width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
+                child: SearchBookForm(
+                  setTitle: setTitle,
+                  setAuthor: setAuthor,
+                  getKey: getFormKey,
+                ),
+              ),
+              Flexible(
+                flex: 4,
+                child: FloatingActionButton(
+                    heroTag: "searchBookBtn",
+                    elevation: 0.0,
+                    focusElevation: 0.0,
+                    hoverElevation: 0.0,
+                    highlightElevation: 0.0,
+                    backgroundColor: Colors.transparent,
+                    child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                    onPressed: () async {
+                      setState(() {
+                        _searchLoading = true;
+                      });
 
-                          List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
-                          realSearchedBooks.addAll(
-                            perGenreBooks.where((b) =>
-                                b.title.toLowerCase().contains(_title.toLowerCase()) ||
-                                b.author.toLowerCase().contains(_author.toLowerCase())
-                            )
-                          );
+                      List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
+                      realSearchedBooks.addAll(
+                          perGenreBooks.where((b) =>
+                          b.title.toLowerCase().contains(_title.toLowerCase()) ||
+                              b.author.toLowerCase().contains(_author.toLowerCase())
+                          )
+                      );
 
-                          List<dynamic> realBooksAllInfo = List<dynamic>();
-                          for(int i = 0; i < realSearchedBooks.length; i++) {
-                            dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
-                            realBooksAllInfo.add(result);
-                          }
+                      List<dynamic> realBooksAllInfo = List<dynamic>();
+                      for(int i = 0; i < realSearchedBooks.length; i++) {
+                        dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
+                        realBooksAllInfo.add(result);
+                      }
 
-                          setState(() {
-                            _searchLoading = false;
-                            booksAllInfo.clear();
-                            booksAllInfo.addAll(realBooksAllInfo);
-                          });
-                        }
-                    ),
-                  ),
-                ],
-              )
+                      setState(() {
+                        _searchLoading = false;
+                        booksAllInfo.clear();
+                        booksAllInfo.addAll(realBooksAllInfo);
+                      });
+                    }
+                ),
+              ),
+            ],
           ),
-          Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          ListTileTheme(
+            dense: true,
             child: ExpansionTile(
-              title: Text("Filter result"),
+              title: Text("Filter result", style: TextStyle(fontSize: 15),),
               children: <Widget>[
-                Container(
-                  //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-                  height: 100,
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Center(child: Text("TODO"));
-                    },
+                Form(
+                  key: _priceFormKey,
+                  child: Container(
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
+                    height: 265,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Price", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            Text("Min €"),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              width: 60,
+                              height: 50,
+                              child: TextFormField(
+                                controller: _greaterThanFormFieldController,
+                                //initialValue: _greaterThanPrice,
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                  hintText: "Price",
+                                  focusedErrorBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.all(0.0),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _greaterThanPrice = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            Text("Max €"),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                              width: 60,
+                              height: 50,
+                              child: TextFormField(
+                                controller: _lessThanFormFieldController,
+                                //initialValue: _lessThanPrice,
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                  hintText: "Price",
+                                  focusedErrorBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  contentPadding: const EdgeInsets.all(0.0),
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _lessThanPrice = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Photos", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _photosCheckBox = !_photosCheckBox;
+                                });
+                              },
+                              value: _photosCheckBox,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Exchangeable", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _exchangeableCheckBox = !_exchangeableCheckBox;
+                                });
+                              },
+                              value: _exchangeableCheckBox,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Genre", style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),),
+                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                            DropdownButton(
+                              key: UniqueKey(),
+                              dropdownColor: Colors.grey[700],
+                              elevation: 0,
+                              value: _dropdownGenreValue,
+                              items: [
+                                for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
+                                  i == 0 ?
+                                    DropdownMenuItem(
+                                      value: i,
+                                      child: Text("-all-", textAlign: TextAlign.center,),
+                                    ) :
+                                    DropdownMenuItem(
+                                      value: i,
+                                      child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,),
+                                    ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _dropdownGenreValue = value;
+                                  _dropdownGenreLabel =
+                                      value == 0 ? "" : BookGenres().allBookGenres[value - 1];
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        Padding(padding: const EdgeInsets.symmetric(vertical: 6.0)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  filter();
+                                  if(!_isRemoveFilterEnabled) {
+                                    _isRemoveFilterEnabled = true;
+                                  }
+                                });
+                              },
+                              child: Text("Apply",),
+                            ),
+                            _isRemoveFilterEnabled ? TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _lessThanFormFieldController.clear();
+                                  _greaterThanFormFieldController.clear();
+                                  _greaterThanPrice = "";
+                                  _lessThanPrice = "";
+                                  clearFilter();
+                                  _isRemoveFilterEnabled = false;
+                                  _photosCheckBox = false;
+                                  _exchangeableCheckBox = false;
+                                });
+                              },
+                              child: Text("Remove",)
+                            ) : TextButton(child: Text("Remove",)
+                            )
+                          ],
+                        ),
+                        Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)),
+                      ],
+                    ),
                   ),
                 )
               ],
             ),
           ),
-          Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-            child: ExpansionTile(
-              title: Text("Order by"),
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  width: MediaQuery.of(context).size.width,
-                  child: CustomRadioButton(
-                    initialSelection: _selectedOrderValue,
-                    buttonLables: orderByLabels,
-                    buttonValues: orderByLabels,
-                    radioButtonValue: (value, index) {
+          ListTileTheme(
+            dense: true,
+            child: Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                title: Text("Order by", style: TextStyle(fontSize: 15),),
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    width: MediaQuery.of(context).size.width,
+                    child: CustomRadioButton(
+                      initialSelection: _selectedOrderValue,
+                      buttonLables: orderByLabels,
+                      buttonValues: orderByLabels,
+                      radioButtonValue: (value, index) {
+                        setState(() {
+                          _searchLoading = true;
+                          bool toReorder = _selectedOrder != value;
+                          _selectedOrder = value;
+                          _selectedOrderValue = index;
+                          if(toReorder) {
+                            reorder();
+                          }
+                        });
+                        setState(() {
+                          _searchLoading = false;
+                        });
+                      },
+                      buttonHeight: 30,
+                      lineSpace: 0,
+                      fontSize: 14,
+                      elevation: 0.0,
+                      horizontal: true,
+                      enableShape: true,
+                      buttonSpace: 5.0,
+                      textColor: Colors.white,
+                      selectedTextColor: Colors.black,
+                      buttonColor: Colors.white12,
+                      selectedColor: Colors.white,
+                    ),
+                  ),
+                  DropdownButton(
+                    key: UniqueKey(),
+                    dropdownColor: Colors.grey[700],
+                    elevation: 0,
+                    value: _dropdownValue,
+                    items: [
+                      DropdownMenuItem(
+                        value: orderByAscendingWayValue,
+                        child: Text(orderByAscendingWay),
+                      ),
+                      DropdownMenuItem(
+                        value: orderByDescendingWayValue,
+                        child: Text(orderByDescendingWay),
+                      ),
+                    ],
+                    onChanged: (value) {
                       setState(() {
-                        bool toReorder = _selectedOrder != value;
-                        _selectedOrder = value;
-                        _selectedOrderValue = index;
+                        bool toReorder = _dropdownValue != value;
+                        _dropdownValue = value;
+                        _selectedOrderWay = orderByWays[value];
                         if(toReorder) {
                           reorder();
                         }
                       });
                     },
-                    buttonHeight: 30,
-                    lineSpace: 0,
-                    fontSize: 14,
-                    elevation: 0.0,
-                    horizontal: true,
-                    enableShape: true,
-                    buttonSpace: 5.0,
-                    textColor: Colors.white,
-                    selectedTextColor: Colors.black,
-                    buttonColor: Colors.white12,
-                    selectedColor: Colors.white,
                   ),
-                ),
-                DropdownButton(
-                  elevation: 0,
-                  value: _dropdownValue,
-                  items: [
-                    DropdownMenuItem(
-                      value: orderByAscendingWayValue,
-                      child: Text(orderByAscendingWay),
-                    ),
-                    DropdownMenuItem(
-                      value: orderByDescendingWayValue,
-                      child: Text(orderByDescendingWay),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      bool toReorder = _dropdownValue != value;
-                      _dropdownValue = value;
-                      _selectedOrderWay = orderByWays[value];
-                      if(toReorder) {
-                        reorder();
-                      }
-                    });
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           /*Flexible(
@@ -240,7 +427,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
           (
             booksAllInfo == null || booksAllInfo.length == 0 ?
               Expanded(
-                flex: 26,
+                flex: 30,
                 child: Container(
                   /*decoration: BoxDecoration(
                     border: Border.all(color: Colors.red, width: 2.0),
@@ -258,7 +445,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 ),
               ):
               Expanded(
-                flex: 26,
+                flex: 30,
                 child: Container(
                   child: SingleChildScrollView(
                     child: Column(
@@ -266,35 +453,77 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         for(int i = 0; i < booksAllInfo.length; i++)
                           Column(
                             children: <Widget>[
-                              i == 0 ? Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                              ) : Container(),
-                              Text(booksAllInfo[i][0]['book']['title'],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17
-                                ),
-                              ),
-                              Text(booksAllInfo[i][0]['book']['author'],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 14
-                                ),
-                              ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(),
                               ),
-                              SearchBookInfoBody(
-                                book: booksAllInfo[i],
-                                bookInfo: booksAllInfo[i][0]['info'],
+                              Theme(
+                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  tilePadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                                  title: Column(
+                                    children: <Widget>[
+                                      Text(booksAllInfo[i][0]['book']['title'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17
+                                        ),
+                                      ),
+                                      Text(booksAllInfo[i][0]['book']['author'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      ),
+                                      booksAllInfo[i].length == 1 ?
+                                        Text("€"+booksAllInfo[i][0]['book']['price'].toStringAsFixed(2),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ) :
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text("€"+booksAllInfo[i][0]['book']['price'].toStringAsFixed(2),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(" and others..",
+                                              style: TextStyle(
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 14.0,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                  children: <Widget>[
+                                    Column(
+                                      children: <Widget>[
+                                        SearchBookInfoBody(
+                                          book: booksAllInfo[i],
+                                          bookInfo: booksAllInfo[i][0]['info'],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ]
+                                ),
                               ),
                               Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 15.0),
                               ),
                             ],
                           )
@@ -309,30 +538,120 @@ class _SearchBookPageState extends State<SearchBookPage> {
     );
   }
 
+  void filter() {
+    clearFilter();
+    booksAllInfoCopy.addAll(booksAllInfo);
+
+    if(_greaterThanPrice.isEmpty ||
+        _greaterThanPrice.startsWith('0') ||
+        _greaterThanPrice.contains(',') ||
+        (_greaterThanPrice.contains('.') && (_greaterThanPrice.substring(_greaterThanPrice.indexOf('.')).length > 3))) {
+      _greaterThanPrice = "";
+      _greaterThanFormFieldController.clear();
+    }
+
+    if(_lessThanPrice.isEmpty ||
+        _lessThanPrice.startsWith('0') ||
+        _lessThanPrice.contains(',') ||
+        (_lessThanPrice.contains('.') && (_lessThanPrice.substring(_lessThanPrice.indexOf('.')).length > 3))) {
+      _lessThanPrice = "";
+      _lessThanFormFieldController.clear();
+    }
+
+    booksAllInfo.removeWhere((element) {
+      bool toRemove = false;
+      if(_greaterThanPrice.isNotEmpty) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['price'] >= double.parse(_greaterThanPrice)) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+      if(!toRemove && _lessThanPrice.isNotEmpty) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['price'] <= double.parse(_lessThanPrice)) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      if(_photosCheckBox) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['imagesUrl'].length > 0) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      if(_exchangeableCheckBox) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['exchangeable']) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      if(_dropdownGenreLabel.isNotEmpty) {
+        bool toRemovePartial = true;
+        for(int i = 0; i < element.length; i++) {
+          if(element[i]['book']['category'].toString().compareTo(
+            _dropdownGenreLabel) == 0) {
+            toRemovePartial = false;
+            break;
+          }
+        }
+        toRemove = toRemovePartial ? true : false;
+      }
+
+      return toRemove;
+    });
+  }
+
+  void clearFilter() {
+    if(booksAllInfoCopy.isEmpty) {
+      return;
+    }
+    booksAllInfo.clear();
+    booksAllInfo.addAll(booksAllInfoCopy);
+    booksAllInfoCopy.clear();
+  }
+
   void reorder() {
     switch(_selectedOrder) {
       case orderByTitleLabel:
-        reorderByFieldInUserCollection("title");
+        reorderByStringFieldInUserCollection("title");
         break;
 
       case orderByAuthorLabel:
-        reorderByFieldInUserCollection("author");
+        reorderByStringFieldInUserCollection("author");
         break;
 
       case orderByISBNLabel:
-        reorderByFieldInUserCollection("isbn");
+        reorderByStringFieldInUserCollection("isbn");
         break;
 
       case orderByPriceLabel:
-        reorderByFieldInUserCollection("price");
+        reorderByNumberFieldInUserCollection("price");
         break;
 
       case orderByPageCountLabel:
-        reorderByFieldInBookCollection("pageCount");
+        reorderByNumberFieldInBookCollection("pageCount");
         break;
 
       case orderByAvgRatingLabel:
-        reorderByFieldInBookCollection("ratingsCount");
+        reorderByNumberFieldInBookCollection("ratingsCount");
         break;
 
       case orderByImagesLabel:
@@ -340,51 +659,170 @@ class _SearchBookPageState extends State<SearchBookPage> {
         break;
 
       case orderByStatusLabel:
-        reorderByFieldInUserCollection("status");
+        reorderByNumberFieldInUserCollection("status");
         break;
 
       default:
         break;
     }
-
-    for(int i = 0; i < booksAllInfo.length; i++) {
-      print(booksAllInfo[i][0]['book']['title'].toString() + " -> " + booksAllInfo[i][0]['book']['imagesUrl'].length.toString());
-    }
   }
 
-  void reorderByFieldInUserCollection(String field) {
+  void reorderByStringFieldInUserCollection(String field) {
+    reorderByStringField("book", field);
+  }
+
+  void reorderByStringFieldInBookCollection(String field) {
+    reorderByStringField("info", field);
+  }
+
+  void reorderByNumberFieldInUserCollection(String field) {
+    reorderByNumberField('book', field);
+  }
+
+  void reorderByNumberFieldInBookCollection(String field) {
+    reorderByNumberField('info', field);
+  }
+
+
+  void reorderByStringField(String collection, String field) {
     booksAllInfo.sort(
-            (a, b) => _selectedOrderWay == orderByAscendingWay ?
-              (a == null ? 1 : b == null ? -1 :
-                a[0]['book'][field].toString().compareTo(
-                b[0]['book'][field].toString())) :
-              (b == null ? 1 : a == null ? -1 :
-              b[0]['book'][field].toString().compareTo(
-                  a[0]['book'][field].toString()))
+      (a, b) {
+        //sort first the list of the same book from different authors
+        a.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field] == null) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field].toString().compareTo(b1['book'][field].toString())
+              )
+          ) :
+          (
+              (b1 == null || b1[collection][field] == null) ? 1 :
+              (a1 == null || a1[collection][field] == null) ? -1 :
+              (
+                  b1[collection][field].toString().compareTo(a1[collection][field].toString())
+              )
+          );
+        });
+        //sort first the list of the same book from different authors
+        b.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field]) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field].toString().compareTo(b1[collection][field].toString())
+              )
+          ) :
+          (
+              (b1 == null || b1['book'][field] == null) ? 1 :
+              (a1 == null || a1['book'][field] == null) ? -1 :
+              (
+                  b1[collection][field].toString().compareTo(a1[collection][field].toString())
+              )
+          );
+        });
+
+
+        //sort globally the two elements
+        return _selectedOrderWay == orderByAscendingWay ?
+        (
+            (a == null || a[0][collection][field] == null) ? 1 :
+            (b == null || b[0][collection][field] == null) ? -1 : (
+                a[0][collection][field].toString().compareTo(b[0][collection][field].toString())
+            )
+        ) :
+        (
+            (b == null || b[0][collection][field] == null) ? 1 :
+            (a == null || a[0][collection][field] == null) ? -1 :
+            (
+                b[0][collection][field].toString().compareTo(a[0][collection][field].toString())
+            )
+        );
+      }
     );
   }
+
+  void reorderByNumberField(String collection, String field) {
+    booksAllInfo.sort(
+      (a, b) {
+        //sort first the list of the same book from different authors
+        a.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field] == null) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field] > b1[collection][field] ? 1 : -1
+              )
+          ) :
+          (
+              (b1 == null || b1[collection][field] == null) ? 1 :
+              (a1 == null || a1[collection][field] == null) ? -1 :
+              (
+                  b1[collection][field] > a1[collection][field] ? 1 : -1
+              )
+          );
+        });
+        //sort first the list of the same book from different authors
+        b.sort((a1, b1) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (
+              (a1 == null || a1[collection][field]) ? 1 :
+              (b1 == null || b1[collection][field] == null) ? -1 :
+              (
+                  a1[collection][field] > b1[collection][field] ? 1 : -1
+              )
+          ) :
+          (
+              (b1 == null || b1[collection][field] == null) ? 1 :
+              (a1 == null || a1[collection][field] == null) ? -1 :
+              (
+                  b1[collection][field] > a1[collection][field] ? 1 : -1
+              )
+          );
+        });
+
+
+        //sort globally the two elements
+        return _selectedOrderWay == orderByAscendingWay ?
+        (
+            (a == null || a[0][collection][field] == null) ? 1 :
+            (b == null || b[0][collection][field] == null) ? -1 : (
+                a[0][collection][field] > b[0][collection][field] ? 1 : -1
+            )
+        ) :
+        (
+            (b == null || b[0][collection][field] == null) ? 1 :
+            (a == null || a[0][collection][field] == null) ? -1 :
+            (
+                b[0][collection][field] > a[0][collection][field] ? 1 : -1
+            )
+        );
+
+      }
+    );
+  }
+
 
   void reorderByNumberOfImages() {
     booksAllInfo.sort(
-            (a, b) => _selectedOrderWay == orderByAscendingWay ?
-        (a == null ? 1 : b == null ? -1 :
-        a[0]['book']['imagesUrl'].length.toString().compareTo(
-            b[0]['book']['imagesUrl'].length.toString())) :
-        (b == null ? 1 : a == null ? -1 :
-        b[0]['book']['imagesUrl'].length.toString().compareTo(
-            a[0]['book']['imagesUrl'].length.toString()))
-    );
+      (a, b) {
+        return _selectedOrderWay == orderByAscendingWay ?
+        (
+            a == null ? 1 : b == null ? -1 : (
+                a[0]['book']['imagesUrl'].length >
+                    b[0]['book']['imagesUrl'].length  ? 1 : -1
+            )
+        ) :
+        (
+            b == null ? 1 : a == null ? -1 : (
+                b[0]['book']['imagesUrl'].length >
+                    a[0]['book']['imagesUrl'].length  ? 1 : -1
+            )
+        );
+    });
   }
 
-  void reorderByFieldInBookCollection(String field) {
-    booksAllInfo.sort(
-            (a, b) => _selectedOrderWay == orderByAscendingWay ?
-        (a == null ? 1 : b == null ? -1 :
-        a[0]['info'][field].toString().compareTo(
-            b[0]['info'][field].toString())) :
-        (b == null ? 1 : a == null ? -1 :
-        b[0]['info'][field].toString().compareTo(
-            a[0]['info'][field].toString()))
-    );
-  }
 }
