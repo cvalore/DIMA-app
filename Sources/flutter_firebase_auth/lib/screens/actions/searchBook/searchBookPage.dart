@@ -274,35 +274,77 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         for(int i = 0; i < booksAllInfo.length; i++)
                           Column(
                             children: <Widget>[
-                              i == 0 ? Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                              ) : Container(),
-                              Text(booksAllInfo[i][0]['book']['title'],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17
-                                ),
-                              ),
-                              Text(booksAllInfo[i][0]['book']['author'],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 14
-                                ),
-                              ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(),
                               ),
-                              SearchBookInfoBody(
-                                book: booksAllInfo[i],
-                                bookInfo: booksAllInfo[i][0]['info'],
+                              Theme(
+                                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  tilePadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                                  title: Column(
+                                    children: <Widget>[
+                                      Text(booksAllInfo[i][0]['book']['title'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17
+                                        ),
+                                      ),
+                                      Text(booksAllInfo[i][0]['book']['author'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      ),
+                                      booksAllInfo[i].length == 1 ?
+                                        Text("€"+booksAllInfo[i][0]['book']['price'].toStringAsFixed(2),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ) :
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text("€"+booksAllInfo[i][0]['book']['price'].toStringAsFixed(2),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(" and others..",
+                                              style: TextStyle(
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 14.0,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                  children: <Widget>[
+                                    Column(
+                                      children: <Widget>[
+                                        SearchBookInfoBody(
+                                          book: booksAllInfo[i],
+                                          bookInfo: booksAllInfo[i][0]['info'],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ]
+                                ),
                               ),
                               Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 15.0),
                               ),
                             ],
                           )
