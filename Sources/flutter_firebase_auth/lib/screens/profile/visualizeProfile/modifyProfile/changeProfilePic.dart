@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/utils/boolWrapper.dart';
 import 'package:flutter_firebase_auth/utils/stringWrapper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -11,8 +12,9 @@ class ChangeProfilePic extends StatefulWidget {
   String username;
   StringWrapper newImagePath;
   String oldImagePath;
+  BoolWrapper oldImageRemoved;
 
-  ChangeProfilePic({Key key, @required this.height, @required this.username, @required this.newImagePath, @required this.oldImagePath});
+  ChangeProfilePic({Key key, @required this.height, @required this.username, @required this.newImagePath, @required this.oldImagePath, @required this.oldImageRemoved});
 
   @override
   _ChangeProfilePicState createState() => _ChangeProfilePicState();
@@ -85,64 +87,75 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
   @override
   Widget build(BuildContext context) {
 
-    widget.oldImagePath = widget.oldImagePath == null ? "" : widget.oldImagePath;
+    widget.oldImagePath = widget.oldImagePath == null ? '' : widget.oldImagePath;
 
     return Container(
         height: widget.height,
-        child: GestureDetector(
-          onTap: () async {
-            _showPicker(context);
-          },
-          child: Row(
-            children: [
-              Expanded(
-                  flex: 10,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: widget.newImagePath.value != '' ?
-                        CircleAvatar(
-                          radius: 50,
-                          child: CircleAvatar(
-                              radius: 50,
-                            backgroundImage: FileImage(File(widget.newImagePath.value))
-                          ),
-                        ) : widget.oldImagePath != '' ?  CircleAvatar(
-                          radius: 50,
-                          child: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: FileImage(File(widget.oldImagePath))
-                          ),
-                        ) : CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.brown.shade800,
-                          child: Text(
-                            widget.username[0].toUpperCase(),
-                            textScaleFactor: 3,
-                          ),
+        child: Row(
+          children: [
+            Expanded(
+                flex: 10,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: widget.newImagePath.value != '' ?
+                      CircleAvatar(
+                        radius: 50,
+                        child: CircleAvatar(
+                            radius: 50,
+                          backgroundImage: FileImage(File(widget.newImagePath.value))
+                        ),
+                      ) : widget.oldImagePath != '' ?  CircleAvatar(
+                        radius: 50,
+                        child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: FileImage(File(widget.oldImagePath))
+                        ),
+                      ) : CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.brown.shade800,
+                        child: Text(
+                          widget.username[0].toUpperCase(),
+                          textScaleFactor: 3,
                         ),
                       ),
-                      Expanded(
-                          flex: 3,
-                          child: Text('Change profile picture',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                    ),
+                    Expanded(
+                        flex: 4,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                _showPicker(context);
+                              },
+                              child: Text('Change profile picture',
+                                textAlign: TextAlign.start,
+                                //style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold)
+                              ),
                             ),
-                          )
-                      ),
-                    ],
-                  )
-              ),
-              Expanded(
-                flex: 1,
-                child: Icon(Icons.arrow_forward_ios,
-                    //color: Colors.white
-                ),
-              )
-            ],
-          ),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.newImagePath.value = '';
+                                  widget.oldImagePath = '';
+                                  widget.oldImageRemoved.value = true;
+                                });
+                              },
+                              child: Text('Remove current image',
+                                textAlign: TextAlign.start,
+                                //style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold)
+                              ),
+                            )
+                          ],
+                        )
+                    ),
+                  ],
+                )
+            ),
+          ],
         )
     );
   }

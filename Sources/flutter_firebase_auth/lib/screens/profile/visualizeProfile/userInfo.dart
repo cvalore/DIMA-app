@@ -41,29 +41,36 @@ class _UserInfoState extends State<UserInfo> {
               radius: 120.0,
               child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return LargerImage(imageUrl: widget.user.userProfileImageURL, username: widget.user.username);
-                }));
+                if (widget.user.userProfileImageURL != '') {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return LargerImage(
+                        imageUrl: widget.user.userProfileImageURL,
+                        username: widget.user.username);
+                  }));
+                }
               },
               child: Hero(
                 tag: 'userProfileHero',
-                child: widget.user.userProfileImageURL != '' ?
-                CircleAvatar(
+                child: CircleAvatar(
+                  backgroundColor: Colors.brown.shade800,
                   radius: 120.0,
-                  backgroundImage: NetworkImage(widget.user.userProfileImageURL),
-                ) : Text(
-                  widget.user.username[0].toUpperCase(),
-                  textScaleFactor: 5,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 50
+                  child: widget.user.userProfileImageURL != '' ?
+                    CircleAvatar(
+                      radius: 120.0,
+                      backgroundImage: NetworkImage(widget.user.userProfileImageURL),
+                    ) : Text(
+                      widget.user.username[0].toUpperCase(),
+                      textScaleFactor: 4,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 50
+                      ),
+                    ),
                   ),
-                ),
-              ),
+              )
               )
             ),
-            Divider(height: 10),
             Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

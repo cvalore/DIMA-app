@@ -92,7 +92,7 @@ class _AppState extends State<App> {
              headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
              headline2: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
              bodyText1: TextStyle(fontSize: 22.0),
-             bodyText2: TextStyle(fontSize: 14.0,),
+             bodyText2: TextStyle(fontSize: 16.0,),
            ),
            //buttonColor: Colors.blueAccent,
            floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -103,6 +103,25 @@ class _AppState extends State<App> {
            ),
            //buttonColor: Colors.white12,
            //buttonTheme: const ButtonThemeData()
+           elevatedButtonTheme: ElevatedButtonThemeData(
+             style: ButtonStyle(
+               backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                       (Set<MaterialState> states) {
+                     if (states.contains(MaterialState.disabled))
+                       return Colors.red;
+                     return Colors.blueGrey; // Defer to the widget's default.
+                   }),
+               foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                       (Set<MaterialState> states) {
+                     if (states.contains(MaterialState.disabled))
+                       return Colors.grey;
+                     return null; // Defer to the widget's default.
+                   }),
+
+             ),
+
+           ),
+
            textButtonTheme: TextButtonThemeData(
              style: ButtonStyle(
                shape: MaterialStateProperty.resolveWith<OutlinedBorder>(

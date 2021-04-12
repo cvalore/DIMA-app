@@ -266,7 +266,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
                   children: <Widget>[
                     widget.book.price != null && widget.book.price != '' ?
                     Text(
-                      widget.book.price.toString() + ' €',
+                      widget.book.price.toStringAsFixed(2) + ' €',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ) :

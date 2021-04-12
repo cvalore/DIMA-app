@@ -106,98 +106,81 @@ class _ImageServiceState extends State<ImageService> {
          */
         : null;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.all(10),
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            height: MediaQuery
-                .of(context)
-                .size
-                .height * 0.4,
-            child: Column(
-                children: [
-                  //Text(widget.justView ? "":"Insert here the images of your book", style: TextStyle(color: Colors.white, fontSize: _isTablet ? 16.0 : 12.0),),
-                  /*Flexible(
-                    flex: 1,
-                    child: SizedBox(height: 20.0,),
-                  ),*/
-                  !widget.justView && (listItem == null || listItem.length == 0 )? FloatingActionButton.extended(
-                    heroTag: "addImageBtn",
-                    //backgroundColor: Colors.white24,
-                    //foregroundColor: Colors.black,
-                    onPressed: () {
-                      _showPicker(context);
-                    },
-                    icon: Icon(Icons.add, color: Colors.white),
-                    label: Text("Add images", style: TextStyle(color: Colors.white),),
-                  ) : Row(
-                    children: [
-                      Expanded(
-                        flex: 9,
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 1.0,
-                            maxHeight: MediaQuery.of(context).size.height * 0.39,
-                          ),
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: listItem.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle
-                                ),
-                                padding: EdgeInsets.all(5.0),
-
-                                child: Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Stack(
-                                    children: [
-                                      Image.file(
-                                          File(listItem[index])
-                                      ),
-                                      widget.justView ? Container() : Positioned(
-                                        top: 1,
-                                        right: 1,
-                                        child: IconButton(
-                                          icon: Icon(Icons.cancel, color: Colors.white70,),
-                                          onPressed: () {
-                                            setState(() {
-                                              widget.insertedBook.removeImage(index);
-                                            });
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );;
-                            }),
-                        ),
-                      ),
-                      widget.justView ? Container() : Expanded(
-                          flex: 2,
-                          child:  FloatingActionButton(
-                            heroTag: "addPhotoBtn",
-                            backgroundColor: Colors.white24,
-                            child: Icon(Icons.add_a_photo),
-                            onPressed: () {
-                              //TODO aggiungere un set state con loading?
-                              _showPicker(context);
-                            }
-                          )
-                      ),
-                    ],
-                  ),
-                ],
-            ),
+    return Container(
+      //margin: EdgeInsets.all(10),
+      //width: MediaQuery.of(context).size.width,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height * 0.4,
+      child: !widget.justView && (listItem == null || listItem.length == 0 )?
+      Container(
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height / 10,
+        width: MediaQuery.of(context).size.width / 10 * 4,
+        child: FloatingActionButton.extended(
+          heroTag: "addImageBtn",
+          //backgroundColor: Colors.white24,
+          //foregroundColor: Colors.black,
+          onPressed: () {
+            _showPicker(context);
+          },
+          icon: Icon(Icons.add, color: Colors.white),
+          label: Text("Add images", style: TextStyle(color: Colors.white),),
+        ),
+      ) : Stack(
+          children: [
+           ListView.builder(
+             scrollDirection: Axis.horizontal,
+             itemCount: listItem.length,
+             itemBuilder: (context, index) {
+               return Container(
+                 decoration: BoxDecoration(
+                     shape: BoxShape.rectangle
+                 ),
+                 //padding: EdgeInsets.all(5.0),
+                 child: Padding(
+                   padding: EdgeInsets.all(5.0),
+                   child: Stack(
+                     children: [
+                       ClipRRect(
+                         borderRadius : BorderRadius.circular(8.0),
+                         child: Image.file(
+                             File(listItem[index])
+                         ),
+                       ),
+                       widget.justView ? Container() : Positioned(
+                         top: 1,
+                         right: 1,
+                         child: IconButton(
+                           icon: Icon(Icons.cancel, color: Colors.white70,),
+                           onPressed: () {
+                             setState(() {
+                               widget.insertedBook.removeImage(index);
+                             });
+                           },
+                         ),
+                       )
+                     ],
+                   ),
+                 ),
+               );
+             }),
+          widget.justView ? Container() :
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: FloatingActionButton(
+                  heroTag: "addPhotoBtn",
+                  backgroundColor: Theme.of(context).floatingActionButtonTheme.
+                                    copyWith(backgroundColor: Colors.white24).backgroundColor.withOpacity(0.4),
+                  child: Icon(Icons.add_a_photo, color: Colors.white),
+                  onPressed: () {
+                    //TODO aggiungere un set state con loading?
+                    _showPicker(context);
+                  }
           ),
+            ),
         ],
       ),
     );

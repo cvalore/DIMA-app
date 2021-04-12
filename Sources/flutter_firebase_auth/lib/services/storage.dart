@@ -28,6 +28,17 @@ class StorageService {
   }
 
 
+  Future removeUserProfilePic(String useruid) async {
+    String basePath = useruid + "/";
+    String fileName = 'userProfilePic';
+    Reference reference = storage.ref().child("$basePath/$fileName");
+    try {
+      await reference.delete();
+    } on FirebaseException catch (e) {
+      e.toString();
+    }
+  }
+
   Future addBookPicture(String useruid, String bookTitle,
       int numberOfInsertedItems, String imagePath, int index) async {
 

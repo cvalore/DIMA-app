@@ -49,7 +49,7 @@ class DatabaseService {
     return exists;
   }
 
-  Future<bool> updateUserInfo(String imageProfilePath, String fullName,
+  Future<bool> updateUserInfo(String imageProfilePath, bool oldImageRemoved, String fullName,
       String birthday, String bio, String city) async {
     Map<String, dynamic> updates = Map<String, dynamic>();
     updates['fullName'] = fullName;
@@ -61,6 +61,9 @@ class DatabaseService {
           user.uid, imageProfilePath);
       String imgUrl = await storageService.getUrlPicture(reference);
       updates['userProfileImageURL'] = imgUrl;
+    } else if (oldImageRemoved) {
+      await storageService.removeUserProfilePic(user.uid);
+      updates['userProfileImageURL'] = '';
     }
 
     usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {

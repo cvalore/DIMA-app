@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/modifyProfile/changeProfilePic.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/boolWrapper.dart';
 import 'package:flutter_firebase_auth/utils/stringWrapper.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class ModifyProfileMainPage extends StatefulWidget {
   String birthdayString = '';
   String bio = '';
   String city = '';
+  BoolWrapper isOldImageRemoved = BoolWrapper(value: false);
 
   ModifyProfileMainPage({Key key, @required this.user});
 
@@ -48,13 +50,13 @@ class _ModifyProfileMainPageState extends State<ModifyProfileMainPage> {
         actions: [
           IconButton(
               icon: Icon(Icons.check_outlined),
-              //TODO save user changes on the db
               onPressed: () async {
                 if (widget.birthdayString != '')
                   widget.birthdayString = Utils.isDateValid(widget.birthdayString) ? widget.birthdayString : '';
                 if (widget.newImagePath.value != '')
                   await Utils.saveNewImageProfile(widget.newImagePath.value);
                 await _db.updateUserInfo(widget.newImagePath.value,
+                    widget.isOldImageRemoved.value,
                     widget.fullName,
                     widget.birthdayString,
                     widget.bio,
@@ -70,7 +72,9 @@ class _ModifyProfileMainPageState extends State<ModifyProfileMainPage> {
             ChangeProfilePic(height: 120.0,
               username: widget.user.username,
               newImagePath: widget.newImagePath,
-              oldImagePath: widget.user.userProfileImagePath),
+              oldImagePath: widget.user.userProfileImagePath,
+              oldImageRemoved: widget.isOldImageRemoved,
+            ),
             Divider(height: 20, thickness: 2,),
             Padding(
               padding: const EdgeInsets.all(0.0),

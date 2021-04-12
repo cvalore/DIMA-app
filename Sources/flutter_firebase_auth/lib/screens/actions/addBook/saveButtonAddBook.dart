@@ -59,7 +59,7 @@ class SaveButtonAddBook extends StatelessWidget {
               duration: Duration(seconds: 1),
               content: Text(
                 'You need to insert book category',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 16.0),
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             );
             // Find the Scaffold in the widget tree and use
@@ -71,7 +71,7 @@ class SaveButtonAddBook extends StatelessWidget {
               duration: Duration(seconds: 1),
               content: Text(
                 'You need to insert a price for the book',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 16.0),
+                  style: Theme.of(context).textTheme.bodyText2,
               ),
             );
             // Find the Scaffold in the widget tree and use
@@ -91,7 +91,7 @@ class SaveButtonAddBook extends StatelessWidget {
               duration: Duration(seconds: 1),
               content: Text(
                 'Book added successfully',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 16.0),
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             );
             // Find the Scaffold in the widget tree and use

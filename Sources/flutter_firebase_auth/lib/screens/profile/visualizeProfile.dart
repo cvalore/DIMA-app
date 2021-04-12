@@ -65,7 +65,7 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                                     //FileImage(File(user.userProfileImagePath))
                                 ) : Text(
                                   user.username[0].toUpperCase(),
-                                  //textScaleFactor: 3,
+                                  textScaleFactor: 3,
                                 ),
                               ),
                             ),
