@@ -21,7 +21,7 @@ class SoldByView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
     return Padding(
@@ -69,8 +69,7 @@ class SoldByView extends StatelessWidget {
                                         builder: (newContext) => StreamProvider<CustomUser>.value(
                                             value: DatabaseService(user: CustomUser(
                                               books[i]['uid'].toString(),
-                                              books[i]['email'].toString(), //non dovrebbe importare
-                                              false, //non dovrebbe importare
+                                              email: books[i]['email'].toString(), //non dovrebbe importare
                                             )).userInfo,
                                             child: VisualizeProfileMainPage(self: false)
                                         )

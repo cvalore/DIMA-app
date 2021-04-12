@@ -16,7 +16,7 @@ class Utils {
 
 
   static initDatabaseService(AuthCustomUser authCustomUser){
-    CustomUser customUser = CustomUser(authCustomUser.uid, authCustomUser.email, authCustomUser.isAnonymous);
+    CustomUser customUser = CustomUser(authCustomUser.uid, email: authCustomUser.email, isAnonymous: authCustomUser.isAnonymous);
     mySelf = customUser;
     databaseService = DatabaseService(user: customUser);
   }

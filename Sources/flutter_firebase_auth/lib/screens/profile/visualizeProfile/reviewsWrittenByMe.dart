@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class ReviewsWrittenByMe extends StatefulWidget {
 
@@ -217,24 +222,44 @@ class _ReviewItemState extends State<ReviewItem> {
             children: [
               Expanded(
                 flex: 5,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.brown.shade800,
-                    radius: 60.0,
-                    child: widget.reviewWrittenByMe
-                        .reviewedImageProfileURL != '' ?
-                    CircleAvatar(
+                child: GestureDetector(
+                  onTap: () async {
+                    if (widget.isSelectionModeOn == null || !widget.isSelectionModeOn()){
+                        CustomUser user = CustomUser(widget.reviewWrittenByMe.reviewedUid);
+                        DatabaseService _db = DatabaseService(user: user);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                MultiProvider(
+                                  providers: [
+                                    StreamProvider<CustomUser>.value(value: _db.userInfo),
+                                    StreamProvider<BookPerGenreMap>.value(value: _db.perGenreBooks),
+                                    StreamProvider<BookPerGenreUserMap>.value(value: _db.userBooksPerGenre)
+                                  ],
+                                  child: VisualizeProfileMainPage(self: false)),
+                                )
+                          );
+                      }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.brown.shade800,
                       radius: 60.0,
-                      backgroundImage: NetworkImage(
-                          widget.reviewWrittenByMe
-                              .reviewedImageProfileURL),
-                      //FileImage(File(user.userProfileImagePath))
-                    ) : Text(
-                      widget.reviewWrittenByMe.reviewedUsername[0]
-                          .toUpperCase(),
-                      //textScaleFactor: 3,
+                      child: widget.reviewWrittenByMe
+                          .reviewedImageProfileURL != '' ?
+                      CircleAvatar(
+                        radius: 60.0,
+                        backgroundImage: NetworkImage(
+                            widget.reviewWrittenByMe
+                                .reviewedImageProfileURL),
+                        //FileImage(File(user.userProfileImagePath))
+                      ) : Text(
+                        widget.reviewWrittenByMe.reviewedUsername[0]
+                            .toUpperCase(),
+                        //textScaleFactor: 3,
+                      ),
                     ),
                   ),
                 ),

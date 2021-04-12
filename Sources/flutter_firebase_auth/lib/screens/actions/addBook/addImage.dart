@@ -91,7 +91,7 @@ class _ImageServiceState extends State<ImageService> {
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
     var storage = StorageService();

@@ -23,7 +23,9 @@ class CustomUser {
   String userProfileImageURL;
   int numberOfInsertedItems;
 
-  CustomUser(this.uid, this.email, this.isAnonymous, {
+  CustomUser(this.uid, {
+    this.email,
+    this.isAnonymous,
     this.username,
     this.books,
     this.numberOfInsertedItems,

@@ -64,7 +64,7 @@ class _BookInsertState extends State<BookInsert> {
   Widget build(BuildContext context) {
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
     _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 

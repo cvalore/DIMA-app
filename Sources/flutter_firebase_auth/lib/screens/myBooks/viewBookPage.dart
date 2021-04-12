@@ -22,8 +22,9 @@ class ViewBookPage extends StatefulWidget {
   bool wasExchangeable;
   bool isSell;
   BuildContext fatherContext;
+  bool self;
 
-  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.isSell, this.wasExchangeable, this.fatherContext}) : super(key: key);
+  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.isSell, this.wasExchangeable, this.fatherContext, this.self}) : super(key: key);
 
   @override
   _ViewBookPageState createState() => _ViewBookPageState();
@@ -44,7 +45,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
   @override
   Widget build(BuildContext context) {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
@@ -61,7 +62,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             letterSpacing: 0.5,
           ),
         ),
-        actions: widget.isSell ? [] : <Widget>[
+        actions: widget.isSell || !widget.self ? [] : <Widget>[
           PopupMenuButton(
             onSelected: (value) async {
               if(value == editBookPopupIndex) {

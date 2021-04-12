@@ -128,7 +128,7 @@ class AuthService {
       User user = authResult.user;
 
       //add empty document for the new registered user
-      CustomUser customUser = CustomUser(user.uid, user.email, user.isAnonymous, username: username);
+      CustomUser customUser = CustomUser(user.uid, email: user.email, isAnonymous: user.isAnonymous, username: username);
       await DatabaseService(user: customUser).initializeUser();
 
       return customUser;
@@ -155,7 +155,7 @@ class AuthService {
         _signedInGoogle = true;
 
         //add empty document for the new registered user
-        CustomUser customUser = CustomUser(user.uid, user.email, user.isAnonymous, username: username);
+        CustomUser customUser = CustomUser(user.uid, email: user.email, isAnonymous: user.isAnonymous, username: username);
         await DatabaseService(user: customUser).initializeUser();
         return customUser;
       }

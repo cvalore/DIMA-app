@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class ReceivedReviews extends StatefulWidget {
 
@@ -41,24 +44,36 @@ class _ReceivedReviewsState extends State<ReceivedReviews> {
                       children: [
                         Expanded(
                           flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.brown.shade800,
-                              radius: 60.0,
-                              child: widget.reviews[index]
-                                  .reviewerImageProfileURL != '' ?
-                              CircleAvatar(
+                          child: GestureDetector(
+                            onTap: () async {
+                              CustomUser user = CustomUser(widget.reviews[index].reviewerUid);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => StreamProvider<CustomUser>.value(
+                                      value: DatabaseService(user: user).userInfo,
+                                      child: VisualizeProfileMainPage(self: false))
+                                  )
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.brown.shade800,
                                 radius: 60.0,
-                                backgroundImage: NetworkImage(
-                                    widget.reviews[index]
-                                        .reviewerImageProfileURL),
-                                //FileImage(File(user.userProfileImagePath))
-                              ) : Text(
-                                widget.reviews[index].reviewerUsername[0]
-                                    .toUpperCase(),
-                                //textScaleFactor: 3,
+                                child: widget.reviews[index]
+                                    .reviewerImageProfileURL != '' ?
+                                CircleAvatar(
+                                  radius: 60.0,
+                                  backgroundImage: NetworkImage(
+                                      widget.reviews[index]
+                                          .reviewerImageProfileURL),
+                                  //FileImage(File(user.userProfileImagePath))
+                                ) : Text(
+                                  widget.reviews[index].reviewerUsername[0]
+                                      .toUpperCase(),
+                                  //textScaleFactor: 3,
+                                ),
                               ),
                             ),
                           ),

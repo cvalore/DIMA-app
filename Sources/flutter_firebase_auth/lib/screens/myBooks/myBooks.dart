@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooksBookList.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -9,7 +8,10 @@ import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:provider/provider.dart';
 
 class MyBooks extends StatefulWidget {
-  static const routeName = '/profile';
+
+  bool self;
+
+  MyBooks({Key key, @required this.self});
 
   @override
   _MyBooksState createState() => _MyBooksState();
@@ -40,8 +42,14 @@ class _MyBooksState extends State<MyBooks> {
   @override
   Widget build(BuildContext context) {
 
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user;
+
+    if (widget.self) {
+      AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+      user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    } else
+      user = Provider.of<CustomUser>(context);
+
     _db = DatabaseService(user: user);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
@@ -66,6 +74,7 @@ class _MyBooksState extends State<MyBooks> {
       ),
     ) :
     MyBooksBookList(
+      self: widget.self,
       books: books,
     );
   }

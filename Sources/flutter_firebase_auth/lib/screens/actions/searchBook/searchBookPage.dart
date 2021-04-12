@@ -85,7 +85,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
     }
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;

@@ -21,8 +21,9 @@ class MyBooksBookList extends StatelessWidget {
   final AuthService _auth = AuthService();
   final Map<int, dynamic> books;
   bool _isTablet;
+  bool self;
 
-  MyBooksBookList({Key key, @required this.books}) : super(key: key);
+  MyBooksBookList({Key key, @required this.self, @required this.books}) : super(key: key);
 
   DatabaseService _db;
   CustomUser user;
@@ -63,6 +64,7 @@ class MyBooksBookList extends StatelessWidget {
               wasExchangeable: wasExchangeable,
               fatherContext: context,
               isSell: false,
+              self: self
             )
         )
     );
@@ -74,7 +76,7 @@ class MyBooksBookList extends StatelessWidget {
     //print("IsLargeScreen? " + (_isTablet ? "True" : "False"));
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
 
     return GridView.count(
@@ -88,81 +90,92 @@ class MyBooksBookList extends StatelessWidget {
         return GestureDetector(
           onTapDown: _storePosition,
           onLongPress: () {
-            final RenderBox overlay = Overlay.of(context).context.findRenderObject();
-            showMenu(
-              context: context,
-              color: Colors.white24,
-              items: [
-                PopupMenuItem(
-                  value: editBookPopupIndex,
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                        child: Icon(Icons.edit, color: Colors.white,),
-                      ),
-                      Text('Edit', style: TextStyle(color: Colors.white),),
-                    ],
+            if (self) {
+              final RenderBox overlay = Overlay
+                  .of(context)
+                  .context
+                  .findRenderObject();
+              showMenu(
+                context: context,
+                color: Colors.white24,
+                items: [
+                  PopupMenuItem(
+                    value: editBookPopupIndex,
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                          child: Icon(Icons.edit, color: Colors.white,),
+                        ),
+                        Text('Edit', style: TextStyle(color: Colors.white),),
+                      ],
+                    ),
                   ),
-                ),
-                PopupMenuItem(
-                  value: deleteBookPopupIndex,
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
-                        child: Icon(Icons.remove_circle, color: Colors.white,),
-                      ),
-                      Text('Delete', style: TextStyle(color: Colors.white),),
-                    ],
+                  PopupMenuItem(
+                    value: deleteBookPopupIndex,
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                          child: Icon(
+                            Icons.remove_circle, color: Colors.white,),
+                        ),
+                        Text('Delete', style: TextStyle(color: Colors.white),),
+                      ],
+                    ),
                   ),
+                ],
+                position: RelativeRect.fromRect(
+                    _tapPosition & const Size(40, 40),
+                    Offset.zero & overlay.size
                 ),
-              ],
-              position: RelativeRect.fromRect(
-                  _tapPosition & const Size(40, 40),
-                  Offset.zero & overlay.size
-              ),
-            ).then((value) async {
-              if(value == editBookPopupIndex) {
-                InsertedBook book = await _db.getBook(index);
-                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
-                List<String> bookPickedFilePaths = List<String>();
-                ListResult lr = await bookRef.listAll();
-                int count = 0;
-                for(Reference r in lr.items) {
-                  try {
-                    String filePath = await _db.storageService.toDownloadFile(r, count);
-                    if(filePath != null) {
-                      bookPickedFilePaths.add(filePath);
+              ).then((value) async {
+                if (value == editBookPopupIndex) {
+                  InsertedBook book = await _db.getBook(index);
+                  Reference bookRef = _db.storageService
+                      .getBookDirectoryReference(user.uid, book);
+                  List<String> bookPickedFilePaths = List<String>();
+                  ListResult lr = await bookRef.listAll();
+                  int count = 0;
+                  for (Reference r in lr.items) {
+                    try {
+                      String filePath = await _db.storageService.toDownloadFile(
+                          r, count);
+                      if (filePath != null) {
+                        bookPickedFilePaths.add(filePath);
+                      }
+                    } on FirebaseException catch (e) {
+                      e.toString();
                     }
-                  } on FirebaseException catch (e) {
-                    e.toString();
+                    count = count + 1;
                   }
-                  count = count + 1;
+                  book.imagesPath = bookPickedFilePaths;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (newContext) =>
+                              BookInsert(
+                                insertedBook: book,
+                                edit: true,
+                                editIndex: index,
+                                updateBook: null,
+                              )
+                      )
+                  );
                 }
-                book.imagesPath = bookPickedFilePaths;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (newContext) => BookInsert(
-                          insertedBook: book,
-                          edit: true,
-                          editIndex: index,
-                          updateBook: null,
-                        )
-                    )
-                );
-              }
-              else if(value == deleteBookPopupIndex) {
-                print("Delete book");
-                InsertedBook book = await _db.getBook(index);
-                dynamic result = await _db.removeBook(index, book);
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(duration: Duration(seconds: 1), content: Text(
-                    'Book removed: ' + '${book.title}',), backgroundColor: Colors.white24,),
-                );
-              }
-            });
+                else if (value == deleteBookPopupIndex) {
+                  print("Delete book");
+                  InsertedBook book = await _db.getBook(index);
+                  dynamic result = await _db.removeBook(index, book);
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(duration: Duration(seconds: 1),
+                      content: Text(
+                        'Book removed: ' + '${book.title}',),
+                      backgroundColor: Colors.white24,),
+                  );
+                }
+              });
+            }
           },
           onTap: () {
             _pushBookPage(index, context);

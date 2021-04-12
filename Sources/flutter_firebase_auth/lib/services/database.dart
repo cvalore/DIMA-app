@@ -418,8 +418,8 @@ class DatabaseService {
 
       user = CustomUser(
         userMap['uid'],
-        userMap['email'],
-        userMap['isAnonymous'],
+        email: userMap['email'],
+        isAnonymous: userMap['isAnonymous'],
         username: userMap['username'],
         fullName: userMap['fullName'],
         birthday: userMap['birthday'],

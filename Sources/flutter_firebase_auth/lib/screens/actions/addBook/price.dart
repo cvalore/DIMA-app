@@ -54,7 +54,7 @@ class _PriceState extends State<Price> {
                     widget.insertedBook.price != null ?
                     Expanded(
                         flex: 3,
-                        child: Text(widget.insertedBook.price.toString() + ' €',
+                        child: Text(widget.insertedBook.price.toStringAsFixed(2) + ' €',
                             textAlign: TextAlign.right,
                         style: TextStyle(color: Colors.white),)) :
                     Container(),
@@ -144,14 +144,12 @@ class PriceBoxState extends State<PriceBox> {
                     fillColor: Colors.white24,
                   ),
                   style: TextStyle(color: Colors.white),
-                  validator: (value) =>
-                    (value.isEmpty ||
-                     value.startsWith('0') ||
-                     //!value.contains('/\d/') ||
-                        //value.contains('/\d+\.\d{1,2}/')  ||  '/[0-9]\.[^0]{1,2}/'
-                     value.contains(',') ||
-                     (value.contains('.') && (value.substring(value.indexOf('.')).length > 3))) ?
-                      'Enter a valid price' : null,
+                  validator: (value) {
+                    RegExp regExp1 = RegExp(r'([\d]+\.[\d]{1,2}$|^[\d]+$)');       //well defined price format
+                    RegExp regExp2 = RegExp(r'(^[0]+$|[0]+\.[0]{1,2}$)');       //price with all digits equal to zero should not be matched
+                    return !regExp1.hasMatch(value) || regExp2.hasMatch(value) ?
+                              'Enter a valid price' : null;
+                    },
                   onChanged: (value) {
                     if(value != '') {
                       setState(() {

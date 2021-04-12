@@ -149,7 +149,6 @@ class _AppState extends State<App> {
          ),
          home: Wrapper(),
          routes: {
-           MyBooks.routeName: (context) => MyBooks(),
            Subscribe.routeName: (context) => Subscribe(),
            CommentBox.routeName: (context) => CommentBox(),
            CategoryBox.routeName: (context) => CategoryBox(),

@@ -26,7 +26,7 @@ class _HomeBookInfoState extends State<HomeBookInfo> {
   Widget build(BuildContext context) {
 
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    user = CustomUser(userFromAuth.uid, userFromAuth.email, userFromAuth.isAnonymous);
+    user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
 
     //dynamic result = _db.getGeneralBookInfo(widget.book);
