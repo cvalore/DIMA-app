@@ -64,7 +64,7 @@ class _CategoryState extends State<Category> {
                     ],
                   )
               ),
-              Expanded(
+              widget.justView ? Container() : Expanded(
                 flex: 1,
                 child: Icon(Icons.arrow_forward_ios, color: Colors.white),
               )

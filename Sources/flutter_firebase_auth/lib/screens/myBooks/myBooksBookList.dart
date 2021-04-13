@@ -87,7 +87,7 @@ class MyBooksBookList extends StatelessWidget {
       scrollDirection: Axis.vertical,
       childAspectRatio: imageWidth / (imageHeight*1.1),
       children: List.generate(books.keys.length, (index) {
-        return GestureDetector(
+        return InkWell(
           onTapDown: _storePosition,
           onLongPress: () {
             if (self) {
@@ -97,7 +97,7 @@ class MyBooksBookList extends StatelessWidget {
                   .findRenderObject();
               showMenu(
                 context: context,
-                color: Colors.white24,
+                color: Colors.grey[800],
                 items: [
                   PopupMenuItem(
                     value: editBookPopupIndex,
@@ -180,7 +180,15 @@ class MyBooksBookList extends StatelessWidget {
           onTap: () {
             _pushBookPage(index, context);
           },
-          child: BookHomePageView(books: books, index: index, isTablet: _isTablet,),
+          child: Card(
+            elevation: 0.0,
+            color: Colors.transparent,
+            child: BookHomePageView(
+              books: books,
+              index: index,
+              isTablet: _isTablet,
+            ),
+          ),
         );
       })
     );

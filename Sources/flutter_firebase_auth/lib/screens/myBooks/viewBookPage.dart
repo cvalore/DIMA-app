@@ -161,43 +161,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
               Divider(height: 5, thickness: 2,),
               Status(insertedBook: widget.book, height: 50, offset: 50.0, justView: true),
               Divider(height: 5, thickness: 2,),
-              Theme(
-                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  initiallyExpanded: true,
-                  tilePadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  trailing: trailingIconCategory,
-                  onExpansionChanged: (bool open) {
-                    if(open) {
-                      setState(() {
-                        trailingIconCategory = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
-                      });
-                    }
-                    else {
-                      setState(() {
-                        trailingIconCategory = Icon(Icons.arrow_forward_ios, color: Colors.white);
-                      });
-                    }
-                  },
-                  title: Text("Category",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                    ),
-                  ),
-                  children: <Widget>[
-                    widget.book.category != null && widget.book.category != '' ?
-                    Text(
-                      widget.book.category,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ) :
-                    Text('No category available', style: TextStyle(fontStyle: FontStyle.italic),),
-                  ],
-                ),
-              ),
+              Category(insertedBook: widget.book, height: 50, justView: true),
               Divider(height: 5, thickness: 2,),
               Theme(
                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -237,43 +201,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
                 ),
               ),
               Divider(height: 5, thickness: 2,),
-              Theme(
-                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  initiallyExpanded: true,
-                  tilePadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  trailing: trailingIconPrice,
-                  onExpansionChanged: (bool open) {
-                    if(open) {
-                      setState(() {
-                        trailingIconPrice = Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 36.0,);
-                      });
-                    }
-                    else {
-                      setState(() {
-                        trailingIconPrice = Icon(Icons.arrow_forward_ios, color: Colors.white);
-                      });
-                    }
-                  },
-                  title: Text("Price",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                    ),
-                  ),
-                  children: <Widget>[
-                    widget.book.price != null && widget.book.price != '' ?
-                    Text(
-                      widget.book.price.toStringAsFixed(2) + ' €',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ) :
-                    Text('No price available', style: TextStyle(fontStyle: FontStyle.italic),),
-                  ],
-                ),
-              ),
+              Price(insertedBook: widget.book, height: 50, justView: true,),
               Divider(height: 5, thickness: 2,),
               Exchange(insertedBook: widget.book, height: 50, justView: true),
               Divider(height: 5, thickness: 2,),
