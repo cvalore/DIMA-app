@@ -458,9 +458,23 @@ class DatabaseService {
     return result;
   }
 
+  Future<BookPerGenreUserMap> getUserBooksPerGenreSnapshot() async {
+    BookPerGenreUserMap result = await usersCollection.doc(user.uid)
+        .snapshots()
+        .map(_bookPerGenreUserListFromSnapshot)
+        .elementAt(0);
+    return result;
+  }
+
   Stream<CustomUser> get userInfo {
     Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
         .map(_userInfoFromSnapshot);
+    return result;
+  }
+
+  Future<CustomUser> getUserSnapshot() async {
+    CustomUser result = await usersCollection.doc(user.uid).snapshots()
+        .map(_userInfoFromSnapshot).elementAt(0);
     return result;
   }
 

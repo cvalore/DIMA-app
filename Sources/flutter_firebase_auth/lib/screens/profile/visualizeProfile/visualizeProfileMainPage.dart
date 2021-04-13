@@ -16,8 +16,10 @@ class VisualizeProfileMainPage extends StatefulWidget {
   static const routeName = '/visualizeProfileMainPage';
 
   bool self;
+  CustomUser user;
+  Map<int, dynamic> books;
 
-  VisualizeProfileMainPage({Key key, @required this.self}) : super(key: key);
+  VisualizeProfileMainPage({Key key, this.user, this.books, @required this.self}) : super(key: key);
 
   @override
   _VisualizeProfileMainPageState createState() => _VisualizeProfileMainPageState();
@@ -28,64 +30,56 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user = Provider.of<CustomUser>(context);
-    DatabaseService _db = DatabaseService(user: user);
+    CustomUser user;
+    user = widget.user != null ? widget.user : Provider.of<CustomUser>(context);
+
+    //DatabaseService _db = DatabaseService(user: user);
 
     return user != null ?
-    FutureBuilder(
-      future: Utils.setUserProfileImagePath(user),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
-        }
-        else {
-          return DefaultTabController(
-            length: widget.self ? 2 : 3,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(user.username),
-                actions: widget.self ? [
-                  myPopUpMenu(context, user)
-                ] : [],
-                bottom: widget.self ?
-                TabBar(
-                  tabs: [
-                    Tab(text: 'Information',
-                        icon: Icon(Icons.info_outline)),
-                    Tab(text: 'Reviews',
-                        icon: Icon(Icons.rate_review_outlined)
-                    ),
-                  ],
-                ) : TabBar(
-                  tabs: [
-                    Tab(text: 'Information',
-                        icon: Icon(Icons.info_outline)),
-                    Tab(text: 'Library',
-                        icon: Icon(Icons.menu_book)),
-                    Tab(text: 'Reviews',
-                        icon: Icon(Icons.rate_review_outlined)
-                    ),
-                  ],
+      DefaultTabController(
+        length: widget.self ? 2 : 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(user.username),
+            actions: widget.self ? [
+              myPopUpMenu(context, user)
+            ] : [],
+            bottom: widget.self ?
+            TabBar(
+              tabs: [
+                Tab(text: 'Information',
+                    icon: Icon(Icons.info_outline)),
+                Tab(text: 'Reviews',
+                    icon: Icon(Icons.rate_review_outlined)
                 ),
-              ),
-              body: widget.self ?
-              TabBarView(
-                children: [
-                  UserInfo(user: user, self: widget.self),
-                  ReviewsMainPage(receivedReviews: user.receivedReviews, reviewsWrittenByMe: user.reviewsWrittenByMe, self: widget.self),
-                ],
-              ) : TabBarView(
-                children: [
-                  UserInfo(user: user, self: widget.self),
-                  MyBooks(self: false),
-                  ReceivedReviews(reviews: user.receivedReviews),
-                ],
-              ),
+              ],
+            ) : TabBar(
+              tabs: [
+                Tab(text: 'Information',
+                    icon: Icon(Icons.info_outline)),
+                Tab(text: 'Library',
+                    icon: Icon(Icons.menu_book)),
+                Tab(text: 'Reviews',
+                    icon: Icon(Icons.rate_review_outlined)
+                ),
+              ],
             ),
-          );
-        }
-      }
-    ) : Container();
+          ),
+          body: widget.self ?
+          TabBarView(
+            children: [
+              UserInfo(user: user, self: widget.self),
+              ReviewsMainPage(receivedReviews: user.receivedReviews, reviewsWrittenByMe: user.reviewsWrittenByMe, self: widget.self),
+            ],
+          ) : TabBarView(
+            children: [
+              UserInfo(user: user, self: widget.self),
+              widget.books != null ? MyBooks(books: widget.books, self: false) : MyBooks(self: false),   //TODO questo controllo potrebbe essere inutile
+              ReceivedReviews(reviews: user.receivedReviews),
+            ],
+          ),
+        ),
+      ) : Container();
   }
 }
 

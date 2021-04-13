@@ -10,8 +10,9 @@ import 'package:provider/provider.dart';
 class MyBooks extends StatefulWidget {
 
   bool self;
+  Map<int, dynamic> books;
 
-  MyBooks({Key key, @required this.self});
+  MyBooks({Key key, this.books, @required this.self});
 
   @override
   _MyBooksState createState() => _MyBooksState();
@@ -21,7 +22,7 @@ class _MyBooksState extends State<MyBooks> {
   ScrollController _scrollController;
   double _scrollOffset = 0.0;
 
-  DatabaseService _db;
+  //DatabaseService _db;
 
   @override
   void initState() {
@@ -42,25 +43,27 @@ class _MyBooksState extends State<MyBooks> {
   @override
   Widget build(BuildContext context) {
 
-    CustomUser user;
+    Map<int,dynamic> books;
 
+    if (widget.books != null)
+      books = widget.books;
+    else{
+      books = Provider.of<BookPerGenreUserMap>(context) != null ?
+      Provider.of<BookPerGenreUserMap>(context).result : null;
+    }
+
+    /*
+    CustomUser user;
     if (widget.self) {
       AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
       user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     } else
       user = Provider.of<CustomUser>(context);
+     */
 
-    _db = DatabaseService(user: user);
+    //_db = DatabaseService(user: user);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
-
-    Map<int,dynamic> books = Provider.of<BookPerGenreUserMap>(context) != null ?
-      Provider.of<BookPerGenreUserMap>(context).result : null;
-
-    /*Map<String,dynamic> booksPerGenre = books.entries.fold(
-        <String, dynamic>{},
-        (result, entry) => result..putIfAbsent(entry.key, () => <dynamic>{})
-            .add(entry.value));*/
 
     return (books == null || books.length == 0) ?
     Center(

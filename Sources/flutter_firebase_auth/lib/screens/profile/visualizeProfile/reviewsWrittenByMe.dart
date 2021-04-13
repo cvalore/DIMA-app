@@ -21,7 +21,6 @@ class ReviewsWrittenByMe extends StatefulWidget {
 
 class _ReceivedReviewsState extends State<ReviewsWrittenByMe> {
 
-  bool reviewsDataCollected = false;
   bool selectionModeOn = false;
   int firstItemSelectedIndex;
   List<ReviewWrittenByMe> selectedReviews = List<ReviewWrittenByMe>();
@@ -37,7 +36,7 @@ class _ReceivedReviewsState extends State<ReviewsWrittenByMe> {
       alignment: Alignment.center,
       child: Text('Still no reviews'),
       //TODO add animation?
-    ) : reviewsDataCollected ?
+    ) : widget.reviews[0].reviewedUsername != null ?
         selectionModeOn  && selectedReviews.length > 0 ?
             Scaffold(
               floatingActionButton: FloatingActionButton.extended(
@@ -136,7 +135,6 @@ class _ReceivedReviewsState extends State<ReviewsWrittenByMe> {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Loading();
         else {
-          reviewsDataCollected = true;
           return ListView.builder(
               itemCount: widget.reviews.length,
               itemBuilder: (context, index) {
@@ -224,22 +222,24 @@ class _ReviewItemState extends State<ReviewItem> {
                 flex: 5,
                 child: GestureDetector(
                   onTap: () async {
-                    if (widget.isSelectionModeOn == null || !widget.isSelectionModeOn()){
-                        CustomUser user = CustomUser(widget.reviewWrittenByMe.reviewedUid);
-                        DatabaseService _db = DatabaseService(user: user);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>
-                                MultiProvider(
-                                  providers: [
-                                    StreamProvider<CustomUser>.value(value: _db.userInfo),
-                                    StreamProvider<BookPerGenreMap>.value(value: _db.perGenreBooks),
-                                    StreamProvider<BookPerGenreUserMap>.value(value: _db.userBooksPerGenre)
-                                  ],
-                                  child: VisualizeProfileMainPage(self: false)),
-                                )
-                          );
-                      }
+                    if (widget.isSelectionModeOn == null ||
+                        !widget.isSelectionModeOn()) {
+                      DatabaseService databaseService = DatabaseService(
+                          user: CustomUser(widget.reviewWrittenByMe
+                              .reviewedUid));
+                      CustomUser user = await databaseService.getUserSnapshot();
+                      BookPerGenreUserMap userBooks = await databaseService
+                          .getUserBooksPerGenreSnapshot();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              VisualizeProfileMainPage(
+                                  user: user,
+                                  books: userBooks.result,
+                                  self: false)
+                          )
+                      );
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

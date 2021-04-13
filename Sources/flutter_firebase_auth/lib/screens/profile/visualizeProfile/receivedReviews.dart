@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -46,14 +47,32 @@ class _ReceivedReviewsState extends State<ReceivedReviews> {
                           flex: 5,
                           child: GestureDetector(
                             onTap: () async {
-                              CustomUser user = CustomUser(widget.reviews[index].reviewerUid);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => StreamProvider<CustomUser>.value(
-                                      value: DatabaseService(user: user).userInfo,
-                                      child: VisualizeProfileMainPage(self: false))
-                                  )
-                              );
+                              if (widget.reviews[index].reviewerUid != Utils.mySelf.uid) {
+                                DatabaseService databaseService = DatabaseService(
+                                    user: CustomUser(
+                                        widget.reviews[index].reviewerUid));
+                                CustomUser user = await databaseService
+                                    .getUserSnapshot();
+                                BookPerGenreUserMap userBooks = await databaseService
+                                    .getUserBooksPerGenreSnapshot();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        VisualizeProfileMainPage(
+                                            user: user,
+                                            books: userBooks.result,
+                                            self: false)
+                                    )
+                                );
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => StreamProvider<CustomUser>.value(
+                                        value: Utils.databaseService.userInfo,
+                                        child: VisualizeProfileMainPage(self: true))
+                                    )
+                                );
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

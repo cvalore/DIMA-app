@@ -8,6 +8,9 @@ import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualize
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SoldByView extends StatelessWidget {
@@ -42,19 +45,32 @@ class SoldByView extends StatelessWidget {
                     child: Column(
                       children: [
                         InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (newContext) => StreamProvider<CustomUser>.value(
-                                        value: DatabaseService(user: CustomUser(
-                                          books[i]['uid'].toString(),
-                                          email: books[i]['email'].toString(), //non dovrebbe importare
-                                        )).userInfo,
-                                        child: VisualizeProfileMainPage(self: false)
-                                    )
-                                )
-                            );
+                          onTap: () async {
+                            if (books[i]['uid'] != Utils.mySelf.uid) {
+                              DatabaseService databaseService = DatabaseService(
+                                  user: CustomUser(books[i]['uid']));
+                              CustomUser user = await databaseService
+                                  .getUserSnapshot();
+                              BookPerGenreUserMap userBooks = await databaseService
+                                  .getUserBooksPerGenreSnapshot();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      VisualizeProfileMainPage(
+                                          user: user,
+                                          books: userBooks.result,
+                                          self: false)
+                                  )
+                              );
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => StreamProvider<CustomUser>.value(
+                                      value: Utils.databaseService.userInfo,
+                                      child: VisualizeProfileMainPage(self: true))
+                                  )
+                              );
+                            }
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,

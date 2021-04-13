@@ -125,10 +125,20 @@ class _UserInfoState extends State<UserInfo> {
                       children: [
                         ElevatedButton(
                             //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
-                            onPressed: () {
-                              widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
-                                Utils.databaseService.unFollowUser(widget.user) :
-                                Utils.databaseService.followUser(widget.user);
+                            onPressed: () async {
+                              if (widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid)) {
+                                await Utils.databaseService.unFollowUser(widget.user);
+                                widget.user.usersFollowingMe.remove(Utils.mySelf.uid);
+                                setState(() {
+                                  widget.user.followers -= 1;
+                                });
+                              } else {
+                                await Utils.databaseService.followUser(widget.user);
+                                widget.user.usersFollowingMe.add(Utils.mySelf.uid);
+                                setState(() {
+                                  widget.user.followers += 1;
+                                });
+                              }
                             },
                             child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
                               Text('UNFOLLOW') : Text('FOLLOW')),
