@@ -660,6 +660,7 @@ class DatabaseService {
               {
                 "uid": userData["uid"],
                 "username": userData["username"],
+                "userProfileImageURL": userData["userProfileImageURL"],
                 "email": userData["email"],
                 "book": userBook,
               }

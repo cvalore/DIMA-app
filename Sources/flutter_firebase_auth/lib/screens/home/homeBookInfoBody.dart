@@ -3,6 +3,7 @@ import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:provider/provider.dart';
 
 class HomeBookInfoBody extends StatelessWidget {
 
@@ -52,7 +53,7 @@ class HomeBookInfoBody extends StatelessWidget {
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     else
-                      return SoldByView(books: snapshot.data, showOnlyExchangeable: false,);
+                      return SoldByView(books: snapshot.data, showOnlyExchangeable: false);
                 }
               },
             ) :

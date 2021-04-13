@@ -30,151 +30,185 @@ class SoldByView extends StatelessWidget {
         children: [
           for(int i = 0; i < books.length; i++)
             if(!showOnlyExchangeable || books[i]['book']['exchangeable'] == true)
-            Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 0.0, 5.0, 0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
+            InkWell(
+              onTap: () async {
+                _pushBookPage(context, books[i]['book'], books[i]['uid']);
+              },
+              child: Column(
+                children: <Widget>[
+                  i == 0 ? Container() : SizedBox(height: 25.0,),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 0.0, 5.0, 0.0),
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (newContext) => StreamProvider<CustomUser>.value(
+                                        value: DatabaseService(user: CustomUser(
+                                          books[i]['uid'].toString(),
+                                          email: books[i]['email'].toString(), //non dovrebbe importare
+                                        )).userInfo,
+                                        child: VisualizeProfileMainPage(self: false)
+                                    )
+                                )
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Text(books[i]['username'].toString(),
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
-                              Text(" - €" + books[i]['book']['price'].toStringAsFixed(2),
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),)
+                              CircleAvatar(
+                                backgroundColor: Colors.brown.shade800,
+                                radius: 25.0,
+                                child: books[i]['userProfileImageURL'] != '' ?
+                                CircleAvatar(
+                                  radius: 25.0,
+                                  backgroundImage: NetworkImage(books[i]['userProfileImageURL']),
+                                  //FileImage(File(user.userProfileImagePath))
+                                ) : Text(
+                                  books[i]['username'][0].toUpperCase(),
+                                  textScaleFactor: 1,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(books[i]['username'].toString(),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                                    /*
+                                    Text(" - €" + books[i]['book']['price'].toStringAsFixed(2),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
+                                     */
+                                    Text(books[i]['email'].toString(),
+                                      style: TextStyle(fontSize: 14.0),),
+                                    /*
+                                    Text(books[i]['book']['exchangeable'] == true ? "Exchange available" : "",
+                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13.0),),
+                                     */
+                                  ],
+                                ),
+                              ),
+
                             ],
                           ),
-                          Text(books[i]['email'].toString(),
-                            style: TextStyle(fontSize: 14.0),),
-                          Text(books[i]['book']['exchangeable'] == true ? "Exchange available" : "",
-                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13.0),),
-                        ],
-                      ),
+                        ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            IconButton(
-                              splashRadius: 18.0,
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (newContext) => StreamProvider<CustomUser>.value(
-                                            value: DatabaseService(user: CustomUser(
-                                              books[i]['uid'].toString(),
-                                              email: books[i]['email'].toString(), //non dovrebbe importare
-                                            )).userInfo,
-                                            child: VisualizeProfileMainPage(self: false)
-                                        )
-                                    )
-                                );
-                              },
-                              icon: Icon(Icons.person),
-                            ),
-                            IconButton(
-                              splashRadius: 18.0,
-                              onPressed: () async {
-                                InsertedBook book = InsertedBook(
-                                  id: books[i]['book']['id'],
-                                  title: books[i]['book']['title'],
-                                  author: books[i]['book']['author'],
-                                  isbn13: books[i]['book']['isbn'],
-                                  status: books[i]['book']['status'],
-                                  category: books[i]['book']['category'],
-                                  imagesUrl: List.from(books[i]['book']['imagesUrl']),
-                                  comment: books[i]['book']['comment'],
-                                  insertionNumber: books[i]['book']['insertionNumber'],
-                                  price: books[i]['book']['price'],
-                                  exchangeable: books[i]['book']['exchangeable'],
-                                );
-                                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
-                                List<String> bookPickedFilePaths = List<String>();
-                                ListResult lr = await bookRef.listAll();
-                                int count = 0;
-                                for(Reference r in lr.items) {
-                                  try {
-                                    String filePath = await _db.storageService.toDownloadFile(r, count);
-                                    if(filePath != null) {
-                                      bookPickedFilePaths.add(filePath);
-                                    }
-                                  } on FirebaseException catch (e) {
-                                    e.toString();
-                                  }
-                                  count = count + 1;
-                                }
-                                book.imagesPath = bookPickedFilePaths;
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (newContext) => ViewBookPage(
-                                          book: book,
-                                          isSell: true,
-                                        )
-                                    )
-                                );
-                              },
-                              icon: Icon(Icons.subdirectory_arrow_right_rounded)
-                            ),
+                        padding: EdgeInsets.symmetric(vertical: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text('€ ' + books[i]['book']['price'].toStringAsFixed(2)),
+                            SizedBox(width: 30.0),
+                            Text('Exchange available'),
+                            books[i]['book']['exchangeable'] == true ? Icon(Icons.check_outlined, color: Colors.green) :
+                            Icon(Icons.clear_outlined, color: Colors.red),
                           ],
                         ),
                       ),
-                    ],
+                        /*
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 15.0),
+                          child: ,
+                        )
+
+                         */
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 25.0,),
-                Container(
-                  /*decoration: BoxDecoration(
-                    border: Border.all(color: Colors.red, width: 2.0),
-                  ),*/
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 1.0,
-                    maxHeight: MediaQuery.of(context).size.height * 0.5,
-                  ),
-                  child: books[i]['book']['imagesUrl'].length > 0 ? ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: books[i]['book']['imagesUrl'].length,
-                      itemBuilder: (context, imageIndex) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Container(
-                            //decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 0.5)),
-                            width: MediaQuery.of(context).size.height * 0.5 * imageWidth/imageHeight,
-                            child: CachedNetworkImage(
-                              imageUrl: books[i]['book']['imagesUrl'][imageIndex],
-                              placeholder: (context, url) => Loading(),
-                              imageBuilder: (context, imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      )
-                                  ),
-                                );
-                              },
-                              errorWidget: (context, url, error) => Icon(Icons.error),
+                  //SizedBox(height: 15.0,),
+                  Container(
+                    /*decoration: BoxDecoration(
+                      border: Border.all(color: Colors.red, width: 2.0),
+                    ),*/
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 1.0,
+                      maxHeight: MediaQuery.of(context).size.height * 0.3,
+                    ),
+                    child: books[i]['book']['imagesUrl'].length > 0 ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: books[i]['book']['imagesUrl'].length,
+                        itemBuilder: (context, imageIndex) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Container(
+                              //decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 0.5)),
+                              width: MediaQuery.of(context).size.height * 0.3 * imageWidth/imageHeight,
+                              child: CachedNetworkImage(
+                                imageUrl: books[i]['book']['imagesUrl'][imageIndex],
+                                placeholder: (context, url) => Loading(),
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        )
+                                    ),
+                                  );
+                                },
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                  ) : Text("NO IMAGES", style: TextStyle(fontStyle: FontStyle.italic),),
-                ),
-                SizedBox(height: 25.0,),
-                Divider(height: 1.0, thickness: 1.0, indent: 5, endIndent: 5, color: Colors.white,),
-                SizedBox(height: 25.0,),
-              ]
+                          );
+                        }
+                    ) : Text("NO IMAGES", style: TextStyle(fontStyle: FontStyle.italic),),
+                  ),
+                  SizedBox(height: 25.0,),
+                  Divider(height: 1.0, thickness: 1.0, indent: 5, endIndent: 5, color: Colors.white,),
+                ]
+              ),
             )
         ]
       ),
     );
+  }
+
+
+  Future<void> _pushBookPage(BuildContext context, book, String userUid) async {
+    InsertedBook bookToPush = InsertedBook(
+      id: book['id'],
+      title: book['title'],
+      author: book['author'],
+      isbn13: book['isbn'],
+      status: book['status'],
+      category: book['category'],
+      imagesUrl: List.from(book['imagesUrl']),
+      comment: book['comment'],
+      insertionNumber: book['insertionNumber'],
+      price: book['price'],
+      exchangeable: book['exchangeable'],
+    );
+    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(userUid, bookToPush);
+    List<String> bookPickedFilePaths = List<String>();
+    ListResult lr = await bookRef.listAll();
+    int count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    bookToPush.imagesPath = bookPickedFilePaths;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (newContext) => ViewBookPage(
+              book: bookToPush,
+              isSell: true,
+            )
+        )
+    );
+
   }
 }
