@@ -15,7 +15,7 @@ const orderByTitleLabel = "Title";
 //const orderByTitleValue = 1;
 const orderByAuthorLabel = "Author";
 //const orderByAuthorValue  = 2;
-const orderByISBNLabel = "ISBN";
+const orderByLanguageLabel = "Language";
 //const orderByISBNValue  = 3;
 const orderByPriceLabel = "Price";
 //const orderByPriceValue  = 4;
@@ -28,10 +28,17 @@ const orderByImagesLabel = "Images";
 const orderByStatusLabel = "Status";
 //const orderByStatusValue  = 8;
 
-const orderByLabels = [
+const orderByStars = "Stars";
+const orderByNumberReview = "# Reviews";
+
+const orderByBookLabels = [
   orderByNoOrderLabel, orderByTitleLabel, orderByAuthorLabel,
-  orderByISBNLabel, orderByPriceLabel, orderByPageCountLabel,
+  orderByLanguageLabel, orderByPriceLabel, orderByPageCountLabel,
   orderByAvgRatingLabel, orderByImagesLabel, orderByStatusLabel
+];
+
+const orderByUsersLabels = [
+  orderByNoOrderLabel, orderByStars, orderByNumberReview
 ];
 
 const orderByAscendingWay = "Ascending";
