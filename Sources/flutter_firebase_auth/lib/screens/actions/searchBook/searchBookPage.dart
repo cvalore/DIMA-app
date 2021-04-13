@@ -36,6 +36,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
   String _author = 'lewis';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
 
+  bool _openModifiersSection = false;
+
   String _selectedOrder = orderByNoOrderLabel;
   int _selectedOrderValue = 0;
   String _selectedOrderWay = orderByAscendingWay;
@@ -120,50 +122,72 @@ class _SearchBookPageState extends State<SearchBookPage> {
                   getKey: getFormKey,
                 ),
               ),
-              Flexible(
-                flex: 4,
-                child: FloatingActionButton(
-                    heroTag: "searchBookBtn",
-                    elevation: 0.0,
-                    focusElevation: 0.0,
-                    hoverElevation: 0.0,
-                    highlightElevation: 0.0,
-                    backgroundColor: Colors.transparent,
-                    child: Icon(Icons.search, color: Colors.white,size: 35.0),
-                    onPressed: () async {
-                      setState(() {
-                        _searchLoading = true;
-                      });
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  FloatingActionButton(
+                      heroTag: "searchBookBtn",
+                      elevation: 0.0,
+                      focusElevation: 0.0,
+                      hoverElevation: 0.0,
+                      highlightElevation: 0.0,
+                      backgroundColor: Colors.transparent,
+                      child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                      onPressed: () async {
+                        setState(() {
+                          if(_filterExpansionTileKey != null && _filterExpansionTileKey.currentState != null) {
+                            _filterExpansionTileKey.currentState.collapse();
+                          }
+                          if(_orderbyExpansionTileKey != null && _orderbyExpansionTileKey.currentState != null) {
+                            _orderbyExpansionTileKey.currentState.collapse();
+                          }
+                          _searchLoading = true;
+                          //_openModifiersSection = false;
+                        });
 
-                      List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
-                      realSearchedBooks.addAll(
-                          perGenreBooks.where((b) =>
-                          b.title.toLowerCase().contains(_title.toLowerCase()) ||
-                              b.author.toLowerCase().contains(_author.toLowerCase())
-                          )
-                      );
+                        List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
+                        realSearchedBooks.addAll(
+                            perGenreBooks.where((b) =>
+                            b.title.toLowerCase().contains(_title.toLowerCase()) ||
+                                b.author.toLowerCase().contains(_author.toLowerCase())
+                            )
+                        );
 
-                      List<dynamic> realBooksAllInfo = List<dynamic>();
-                      for(int i = 0; i < realSearchedBooks.length; i++) {
-                        dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
-                        realBooksAllInfo.add(result);
+                        List<dynamic> realBooksAllInfo = List<dynamic>();
+                        for(int i = 0; i < realSearchedBooks.length; i++) {
+                          dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
+                          realBooksAllInfo.add(result);
+                        }
+
+                        setState(() {
+                          _searchLoading = false;
+                          booksAllInfo.clear();
+                          booksAllInfo.addAll(realBooksAllInfo);
+                        });
                       }
-
+                  ),
+                  IconButton(
+                    splashRadius: 24.0,
+                    iconSize: 28.0,
+                    onPressed: () {
                       setState(() {
-                        _searchLoading = false;
-                        booksAllInfo.clear();
-                        booksAllInfo.addAll(realBooksAllInfo);
-                        _filterExpansionTileKey.currentState.collapse();
-                        _orderbyExpansionTileKey.currentState.collapse();
+                        _openModifiersSection = !_openModifiersSection;
                       });
-                    }
-                ),
+                    },
+                    icon: Icon(Icons.keyboard_arrow_down)),
+                ],
               ),
             ],
           ),
-          ListTileTheme(
+          _openModifiersSection ? ListTileTheme(
             dense: true,
             child: ManuallyCloseableExpansionTile(
+              onExpansionChanged: (val) {
+                if(val) {
+                  _orderbyExpansionTileKey.currentState.collapse();
+                }
+              },
               key: _filterExpansionTileKey,
               initiallyExpanded: false,
               title: Text("Filter result", style: TextStyle(fontSize: 15),),
@@ -395,12 +419,17 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 )
               ],
             ),
-          ),
-          ListTileTheme(
+          ) : Container(),
+          _openModifiersSection ? ListTileTheme(
             dense: true,
             child: Theme(
               data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: ManuallyCloseableExpansionTile(
+                onExpansionChanged: (val) {
+                  if(val) {
+                    _filterExpansionTileKey.currentState.collapse();
+                  }
+                },
                 key: _orderbyExpansionTileKey,
                 initiallyExpanded: false,
                 title: Text("Order by", style: TextStyle(fontSize: 15),),
@@ -410,8 +439,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     width: MediaQuery.of(context).size.width,
                     child: CustomRadioButton(
                       initialSelection: _selectedOrderValue,
-                      buttonLables: orderByLabels,
-                      buttonValues: orderByLabels,
+                      buttonLables: orderByBookLabels,
+                      buttonValues: orderByBookLabels,
                       radioButtonValue: (value, index) {
                         setState(() {
                           _searchLoading = true;
@@ -470,7 +499,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 ],
               ),
             ),
-          ),
+          ) : Container(),
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 0.0),
               child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)

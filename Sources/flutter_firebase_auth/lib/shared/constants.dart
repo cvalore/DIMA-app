@@ -28,10 +28,17 @@ const orderByImagesLabel = "Images";
 const orderByStatusLabel = "Status";
 //const orderByStatusValue  = 8;
 
-const orderByLabels = [
+const orderByStars = "Stars";
+const orderByNumberReview = "# Reviews";
+
+const orderByBookLabels = [
   orderByNoOrderLabel, orderByTitleLabel, orderByAuthorLabel,
   orderByLanguageLabel, orderByPriceLabel, orderByPageCountLabel,
   orderByAvgRatingLabel, orderByImagesLabel, orderByStatusLabel
+];
+
+const orderByUsersLabels = [
+  orderByNoOrderLabel, orderByStars, orderByNumberReview
 ];
 
 const orderByAscendingWay = "Ascending";

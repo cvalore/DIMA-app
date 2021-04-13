@@ -731,7 +731,6 @@ class DatabaseService {
     });
   }
 
-
   Future<void> addReview(ReceivedReview review) async {
     review.setKey();
     String reviewerUid = review.reviewerUid;
@@ -747,7 +746,6 @@ class DatabaseService {
       'reviewsWrittenByMe': FieldValue.arrayUnion([reviewWrittenByMe.toMap()]),
     });
   }
-
 
   Future<Map<String, Map<String, dynamic>>> getReviewsInfoByUid(List<String> usersUid) async {
     Map<String, Map<String, dynamic>> result =  Map<String, Map<String, dynamic>>();
@@ -818,4 +816,12 @@ class DatabaseService {
     );
   }
 
+  Future<dynamic> getAllUsers() async {
+    QuerySnapshot snapshot = await usersCollection.get();
+    dynamic allUsers = [];
+    for(QueryDocumentSnapshot doc in snapshot.docs) {
+      allUsers.add(doc.data());
+    }
+    return allUsers;
+  }
 }

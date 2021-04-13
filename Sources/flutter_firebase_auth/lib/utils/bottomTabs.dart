@@ -3,6 +3,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.dart';
+import 'package:flutter_firebase_auth/screens/actions/searchBook/searchPage.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -107,18 +108,7 @@ class BottomTabs extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(builder: (BuildContext context) {
-                  return Scaffold(
-                    resizeToAvoidBottomInset: false,
-                    //backgroundColor: Colors.black,
-                    appBar: AppBar(
-                      //backgroundColor: Colors.black,
-                      elevation: 0.0,
-                      title: Text("Search books"),
-                    ),
-                    body: SearchBookPage(
-                      books: books,
-                    ),
-                  );
+                  return SearchPage(books: books,);
                 })
             );
             //setIndex(0);
