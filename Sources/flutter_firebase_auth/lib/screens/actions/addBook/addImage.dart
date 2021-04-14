@@ -106,14 +106,22 @@ class _ImageServiceState extends State<ImageService> {
          */
         : null;
 
-    return Container(
+    return widget.justView && (listItem == null || listItem.length == 0 ) ?
+    Container(
+      padding: EdgeInsets.symmetric(vertical: 20.0),
+      height: MediaQuery.of(context).size.height / 8,
+      child: Text(
+        'NO IMAGE AVAILABLE',
+        style: Theme.of(context).textTheme.headline6.copyWith(fontStyle: FontStyle.italic),
+      ),
+    ) : Container(
       //margin: EdgeInsets.all(10),
       //width: MediaQuery.of(context).size.width,
       height: MediaQuery
           .of(context)
           .size
           .height * 0.4,
-      child: !widget.justView && (listItem == null || listItem.length == 0 )?
+      child: !widget.justView && (listItem == null || listItem.length == 0 ) ?
       Container(
         alignment: Alignment.center,
         height: MediaQuery.of(context).size.height / 10,

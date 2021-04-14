@@ -635,6 +635,7 @@ class DatabaseService {
       status: book["status"],
       comment: book["comment"],
       imagesUrl: List.from(book['imagesUrl']),
+      likedBy: List.from(book['likedBy']),
       insertionNumber: book["insertionNumber"],
       category: book["category"],
       price: book["price"] * 1.0,
@@ -694,6 +695,7 @@ class DatabaseService {
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
+          if (userBook['likedBy'] == null) userBook['likedBy'] = List<String>();
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
               userBook = userBook[j];
@@ -745,6 +747,71 @@ class DatabaseService {
       'followers': FieldValue.increment(-1),
     });
   }
+
+
+  Future<void> addLike(int bookInsertionNumber, String userWhoLikes) async {
+    List<dynamic> books;
+    List<dynamic> booksILike;
+    Map<String, dynamic> bookLiked = Map<String, dynamic>();
+    int bookToModifyIndex;
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) {
+          books = userDoc.data()['books'];
+        });
+
+    for (int i = 0; i < books.length && bookToModifyIndex == null; i++) {
+      if (books[i]['insertionNumber'] == bookInsertionNumber)
+        bookToModifyIndex = i;
+      print(bookToModifyIndex);
+    }
+
+    books[bookToModifyIndex]['likedBy'].add(userWhoLikes);
+    await usersCollection.doc(user.uid).update({
+      'books': books
+    });
+
+    //add book liked to my favorites
+    bookLiked['userUid'] = user.uid;
+    bookLiked['insertionNumber'] = bookInsertionNumber;
+
+    await usersCollection.doc(Utils.mySelf.uid).update({
+      'booksILike': FieldValue.arrayUnion([bookLiked]),
+    });
+
+  }
+
+
+  Future<void> removeLike(int bookInsertionNumber, String userWhoDoesNotLike) async {
+    List<dynamic> books;
+    int bookToModifyIndex;
+    Map<String, dynamic> bookNotLiked = Map<String, dynamic>();
+    await usersCollection.doc(user.uid).get().then(
+            (userDoc) {
+          books = userDoc.data()['books'];
+        });
+
+    for (int i = 0; i < books.length && bookToModifyIndex == null; i++) {
+      if (books[i]['insertionNumber'] == bookInsertionNumber)
+        bookToModifyIndex = i;
+    }
+
+    books[bookToModifyIndex]['likedBy'].remove(userWhoDoesNotLike);
+    await usersCollection.doc(user.uid).update({
+      'books': books
+    });
+
+
+    //remove book from my favorites
+    bookNotLiked['userUid'] = user.uid;
+    bookNotLiked['insertionNumber'] = bookInsertionNumber;
+
+    await usersCollection.doc(Utils.mySelf.uid).update({
+      'booksILike': FieldValue.arrayRemove([bookNotLiked]),
+    });
+
+  }
+
+
 
   Future<void> addReview(ReceivedReview review) async {
     review.setKey();

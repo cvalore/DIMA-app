@@ -8,6 +8,7 @@ class InsertedBook {
   String isbn13;      //redundant but useful for search
   List<String> imagesPath;
   List<String> imagesUrl;
+  List<String> likedBy;
   BookGeneralInfo bookGeneralInfo;
   String category;
   int insertionNumber;
@@ -17,7 +18,22 @@ class InsertedBook {
   bool exchangeable;
 
 
-  InsertedBook({this.id, this.title, this.author, this.isbn13, this.status = 3, this.category, this.imagesPath, this.imagesUrl, this.comment = '', this.insertionNumber, this.price, this.exchangeable = false, this.bookGeneralInfo});
+
+  InsertedBook({
+    this.id,
+    this.title,
+    this.author,
+    this.isbn13,
+    this.status = 3,
+    this.category,
+    this.imagesPath,
+    this.imagesUrl,
+    this.likedBy,
+    this.comment = '',
+    this.insertionNumber,
+    this.price,
+    this.exchangeable = false,
+    this.bookGeneralInfo});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
     this.bookGeneralInfo = bookGeneralInfo;
@@ -87,6 +103,7 @@ class InsertedBook {
     //if (images != null) insertedBook['images'] = images;
     insertedBook['comment'] = comment ?? "";
     insertedBook['imagesUrl'] = imagesUrl ?? "";
+    insertedBook['likedBy'] = likedBy ?? [];
     insertedBook['insertionNumber'] = insertionNumber;
     insertedBook['exchangeable'] = exchangeable ?? false;
     insertedBook['price'] = price ?? 0.0;
@@ -112,3 +129,4 @@ class InsertedBook {
    */
 
 }
+
