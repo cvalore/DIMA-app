@@ -61,6 +61,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
   String _isbnFilter = "";
 
+  String _resultMessage = "No results";
+
   void setTitle(String title) {
     _title = title;
   }
@@ -135,6 +137,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                       backgroundColor: Colors.transparent,
                       child: Icon(Icons.search, color: Colors.white,size: 35.0),
                       onPressed: () async {
+                        bool valid = true;
                         setState(() {
                           if(_filterExpansionTileKey != null && _filterExpansionTileKey.currentState != null) {
                             _filterExpansionTileKey.currentState.collapse();
@@ -142,16 +145,41 @@ class _SearchBookPageState extends State<SearchBookPage> {
                           if(_orderbyExpansionTileKey != null && _orderbyExpansionTileKey.currentState != null) {
                             _orderbyExpansionTileKey.currentState.collapse();
                           }
-                          _searchLoading = true;
                           //_openModifiersSection = false;
+
+                          if(_title.isEmpty && _author.isEmpty) {
+                            valid = false;
+                            _resultMessage = "Insert at least either a Title or an Author";
+                            return;
+                          }
+
+                          _searchLoading = true;
+                          _resultMessage = "No results";
                         });
+
+                        if(!valid) {
+                          booksAllInfo.clear();
+                          return;
+                        }
 
                         List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
                         realSearchedBooks.addAll(
-                            perGenreBooks.where((b) =>
-                            b.title.toLowerCase().contains(_title.toLowerCase()) ||
-                                b.author.toLowerCase().contains(_author.toLowerCase())
-                            )
+                            perGenreBooks.where((b) {
+                              if(_title.isNotEmpty && _author.isNotEmpty) {
+                                return b.title.toLowerCase().contains(
+                                    _title.toLowerCase()) ||
+                                    b.author.toLowerCase().contains(
+                                        _author.toLowerCase());
+                              }
+                              else if(_title.isNotEmpty) {
+                                return b.title.toLowerCase().contains(
+                                    _title.toLowerCase());
+                              }
+                              else {
+                                return b.author.toLowerCase().contains(
+                                        _author.toLowerCase());
+                              }
+                            })
                         );
 
                         List<dynamic> realBooksAllInfo = List<dynamic>();
@@ -194,226 +222,228 @@ class _SearchBookPageState extends State<SearchBookPage> {
               children: <Widget>[
                 Form(
                   key: _priceFormKey,
-                  child: Container(
-                    //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-                    height: 265,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text("Price", style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),),
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
-                            Text("Min €"),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                              width: 60,
-                              height: 50,
-                              child: TextFormField(
-                                controller: _greaterThanFormFieldController,
-                                //initialValue: _greaterThanPrice,
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                decoration: InputDecoration(
-                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
-                                  hintText: "Price",
-                                  focusedErrorBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.all(0.0),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
+                      height: 265,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Price", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),),
+                              Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                              Text("Min €"),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                width: 60,
+                                height: 50,
+                                child: TextFormField(
+                                  controller: _greaterThanFormFieldController,
+                                  //initialValue: _greaterThanPrice,
+                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  decoration: InputDecoration(
+                                    hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                    hintText: "Price",
+                                    focusedErrorBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.all(0.0),
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _greaterThanPrice = value;
+                                    });
+                                  },
                                 ),
-                                onChanged: (value) {
+                              ),
+                              Text("Max €"),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                width: 60,
+                                height: 50,
+                                child: TextFormField(
+                                  controller: _lessThanFormFieldController,
+                                  //initialValue: _lessThanPrice,
+                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  decoration: InputDecoration(
+                                    hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                    hintText: "Price",
+                                    focusedErrorBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    contentPadding: const EdgeInsets.all(0.0),
+                                    border: InputBorder.none,
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _lessThanPrice = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Photos", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),),
+                              Padding(padding: const EdgeInsets.symmetric(horizontal: 0.0),),
+                              Checkbox(
+                                onChanged: (bool value) {
                                   setState(() {
-                                    _greaterThanPrice = value;
+                                    _photosCheckBox = !_photosCheckBox;
                                   });
                                 },
+                                value: _photosCheckBox,
                               ),
-                            ),
-                            Text("Max €"),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                              width: 60,
-                              height: 50,
-                              child: TextFormField(
-                                controller: _lessThanFormFieldController,
-                                //initialValue: _lessThanPrice,
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                decoration: InputDecoration(
-                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
-                                  hintText: "Price",
-                                  focusedErrorBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  contentPadding: const EdgeInsets.all(0.0),
-                                  border: InputBorder.none,
-                                ),
-                                onChanged: (value) {
+                              Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0),),
+                              Text("Exchangeable", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),),
+                              Padding(padding: const EdgeInsets.symmetric(horizontal: 0.0),),
+                              Checkbox(
+                                onChanged: (bool value) {
                                   setState(() {
-                                    _lessThanPrice = value;
+                                    _exchangeableCheckBox = !_exchangeableCheckBox;
                                   });
                                 },
+                                value: _exchangeableCheckBox,
                               ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text("Photos", style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),),
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 0.0),),
-                            Checkbox(
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _photosCheckBox = !_photosCheckBox;
-                                });
-                              },
-                              value: _photosCheckBox,
-                            ),
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0),),
-                            Text("Exchangeable", style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),),
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 0.0),),
-                            Checkbox(
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _exchangeableCheckBox = !_exchangeableCheckBox;
-                                });
-                              },
-                              value: _exchangeableCheckBox,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text("Genre", style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),),
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
-                            DropdownButton(
-                              key: UniqueKey(),
-                              dropdownColor: Colors.grey[700],
-                              elevation: 0,
-                              value: _dropdownGenreValue,
-                              selectedItemBuilder: (BuildContext context) {
-                                List<Widget> items = [];
-                                for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
-                                  i == 0 ?
-                                  items.add(
-                                    Center(
-                                      child: Container(
-                                      width: 200,
-                                      alignment: AlignmentDirectional.center,
-                                      child: Text("All genres", textAlign: TextAlign.center,)
-                                      )
-                                    ),
-                                  ) :
-                                  items.add(
-                                    Center(
-                                      child: Container(
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Genre", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),),
+                              Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                              DropdownButton(
+                                key: UniqueKey(),
+                                dropdownColor: Colors.grey[700],
+                                elevation: 0,
+                                value: _dropdownGenreValue,
+                                selectedItemBuilder: (BuildContext context) {
+                                  List<Widget> items = [];
+                                  for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
+                                    i == 0 ?
+                                    items.add(
+                                      Center(
+                                        child: Container(
                                         width: 200,
                                         alignment: AlignmentDirectional.center,
-                                        child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,)
-                                      )
-                                    ),
-                                  );
-                                return items;
-                              },
-                              items: [
-                                for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
-                                  i == 0 ?
-                                    DropdownMenuItem(
-                                      value: i,
-                                      child: Text("All genres", textAlign: TextAlign.center,),
+                                        child: Text("All genres", textAlign: TextAlign.center,)
+                                        )
+                                      ),
                                     ) :
-                                    DropdownMenuItem(
-                                      value: i,
-                                      child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,),
-                                    ),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _dropdownGenreValue = value;
-                                  _dropdownGenreLabel =
-                                      value == 0 ? "" : BookGenres().allBookGenres[value - 1];
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text("ISBN", style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),),
-                            Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
-                            Container(
-                              width: 220,
-                              child: TextFormField(
-                                controller: _isbnFormFieldController,
-                                decoration: InputDecoration(
-                                  hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
-                                  hintText: "Insert ISBN (also partial)",
-                                ),
+                                    items.add(
+                                      Center(
+                                        child: Container(
+                                          width: 200,
+                                          alignment: AlignmentDirectional.center,
+                                          child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,)
+                                        )
+                                      ),
+                                    );
+                                  return items;
+                                },
+                                items: [
+                                  for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
+                                    i == 0 ?
+                                      DropdownMenuItem(
+                                        value: i,
+                                        child: Text("All genres", textAlign: TextAlign.center,),
+                                      ) :
+                                      DropdownMenuItem(
+                                        value: i,
+                                        child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,),
+                                      ),
+                                ],
                                 onChanged: (value) {
                                   setState(() {
-                                    _isbnFilter = value;
+                                    _dropdownGenreValue = value;
+                                    _dropdownGenreLabel =
+                                        value == 0 ? "" : BookGenres().allBookGenres[value - 1];
                                   });
                                 },
                               ),
-                            )
-                          ],
-                        ),
-                        Padding(padding: const EdgeInsets.symmetric(vertical: 6.0)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  filter();
-                                  if(!_isRemoveFilterEnabled) {
-                                    _isRemoveFilterEnabled = true;
-                                  }
-                                  _filterExpansionTileKey.currentState.collapse();
-                                });
-                              },
-                              child: Text("Apply",),
-                            ),
-                            _isRemoveFilterEnabled ? TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _lessThanFormFieldController.clear();
-                                  _greaterThanFormFieldController.clear();
-                                  _isbnFormFieldController.clear();
-                                  _greaterThanPrice = "";
-                                  _lessThanPrice = "";
-                                  _isbnFilter = "";
-                                  clearFilter();
-                                  _isRemoveFilterEnabled = false;
-                                  _photosCheckBox = false;
-                                  _exchangeableCheckBox = false;
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("ISBN", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),),
+                              Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
+                              Container(
+                                width: 220,
+                                child: TextFormField(
+                                  controller: _isbnFormFieldController,
+                                  decoration: InputDecoration(
+                                    hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                    hintText: "Insert ISBN (also partial)",
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _isbnFilter = value;
+                                    });
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                          Padding(padding: const EdgeInsets.symmetric(vertical: 6.0)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    filter();
+                                    if(!_isRemoveFilterEnabled) {
+                                      _isRemoveFilterEnabled = true;
+                                    }
+                                    _filterExpansionTileKey.currentState.collapse();
+                                  });
+                                },
+                                child: Text("Apply",),
+                              ),
+                              _isRemoveFilterEnabled ? TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _lessThanFormFieldController.clear();
+                                    _greaterThanFormFieldController.clear();
+                                    _isbnFormFieldController.clear();
+                                    _greaterThanPrice = "";
+                                    _lessThanPrice = "";
+                                    _isbnFilter = "";
+                                    clearFilter();
+                                    _isRemoveFilterEnabled = false;
+                                    _photosCheckBox = false;
+                                    _exchangeableCheckBox = false;
 
-                                  _filterExpansionTileKey.currentState.collapse();
-                                });
-                              },
-                              child: Text("Remove",)
-                            ) : TextButton(child: Text("Remove",)
-                            )
-                          ],
-                        ),
-                        Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)),
-                      ],
+                                    _filterExpansionTileKey.currentState.collapse();
+                                  });
+                                },
+                                child: Text("Remove",)
+                              ) : TextButton(child: Text("Remove",)
+                              )
+                            ],
+                          ),
+                          Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)),
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -518,7 +548,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('No results',
+                          Text(_resultMessage,
                             style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
                           Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
                         ],

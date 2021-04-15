@@ -83,7 +83,8 @@ class _SoldByViewState extends State<SoldByView> {
                                     CircleAvatar(
                                       backgroundColor: Colors.brown.shade800,
                                       radius: 25.0,
-                                      child: widget.books[i]['userProfileImageURL'] != '' ?
+                                      child: widget.books[i]['userProfileImageURL'] != null &&
+                                          widget.books[i]['userProfileImageURL'].toString().isNotEmpty ?
                                       CircleAvatar(
                                         radius: 25.0,
                                         backgroundImage: NetworkImage(widget.books[i]['userProfileImageURL']),

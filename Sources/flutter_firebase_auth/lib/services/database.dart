@@ -695,9 +695,10 @@ class DatabaseService {
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
-          if (userBook['likedBy'] == null) userBook['likedBy'] = List<String>();
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
+              if (userBook[j]['likedBy'] == null)
+                userBook[j]['likedBy'] = List<String>();
               userBook = userBook[j];
               break;
             }
@@ -708,6 +709,7 @@ class DatabaseService {
               {
                 "uid": userData["uid"],
                 "username": userData["username"],
+                "userProfileImageURL" : userData["userProfileImageURL"],
                 "email": userData["email"],
                 "book": userBook,
                 "info": valueBook.data(),

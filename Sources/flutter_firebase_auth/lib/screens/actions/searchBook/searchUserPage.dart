@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_grouped_buttons/custom_buttons/custom_radio_buttons_group.dart';
 
@@ -28,6 +31,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
   int _selectedOrderValue = 0;
   String _selectedOrderWay = orderByAscendingWay;
   int _dropdownValue = orderByAscendingWayValue;
+
+  String _resultMessage = "No results";
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +84,6 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       textAlignVertical: TextAlignVertical.center,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 17.0,),
-                      validator: (value) =>
-                      value.isEmpty ? 'Enter username to search for' : null,
                       onChanged: (value) {
                         setState(() {
                           _searchUsername = value;
@@ -103,17 +106,27 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       backgroundColor: Colors.transparent,
                       child: Icon(Icons.search, color: Colors.white,size: 35.0),
                       onPressed: () async {
-                        if(!_searchUserFormKey.currentState.validate()) {
-                          return;
-                        }
+                        bool valid = true;
 
                         setState(() {
                           if(_orderbyExpansionTileKey != null && _orderbyExpansionTileKey.currentState != null) {
                             _orderbyExpansionTileKey.currentState.collapse();
                           }
+
+                          if(_searchUsername.isEmpty) {
+                            _resultMessage = "Insert a username";
+                            valid = false;
+                            return;
+                          }
+
                           _searchLoading = true;
                           //_openModifiersSection = false;
                         });
+
+                        if(!valid) {
+                          allUsersFound.clear();
+                          return;
+                        }
 
                         dynamic allUsers = await _db.getAllUsers();
 
@@ -127,6 +140,15 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                 )
                             )
                           );
+                          allUsersFound.forEach((element) {
+                            element['averageRating'] =
+                                element['receivedReviews'] == null || element['receivedReviews'].length == 0 ?
+                                    0.0 :
+                            (1.0*((element['receivedReviews']
+                                .map((e) => e['stars'] != null ? e['stars'] : 0))
+                                .fold(0, (p,c) => p+c))
+                                /element['receivedReviews'].length);
+                          });
                         });
                       }
                   ),
@@ -235,9 +257,9 @@ class _SearchUserPageState extends State<SearchUserPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('No results',
+                        Text(_resultMessage,
                           style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
-                        Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
+                        Icon(Icons.person, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
                       ],
                     ),
 
@@ -247,17 +269,116 @@ class _SearchUserPageState extends State<SearchUserPage> {
               Expanded(
                 flex: 30,
                 child: Container(
-                  alignment: AlignmentDirectional.center,
                   /*decoration: BoxDecoration(
                     border: Border.all(color: Colors.red, width: 2.0),
                   ),*/
                   child: SingleChildScrollView(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text('TODO SEARCH',
-                          style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 50.0,),),
-                        Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 50.0,),
+                        for(int i = 0; i < allUsersFound.length; i++)
+                          Column(
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: Container(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                                child: InkWell(
+                                  onTap: () async {
+                                    if (allUsersFound[i]['uid'] != Utils.mySelf.uid) {
+                                      DatabaseService databaseService = DatabaseService(
+                                          user: CustomUser(allUsersFound[i]['uid']));
+                                      CustomUser user = await databaseService
+                                          .getUserSnapshot();
+                                      BookPerGenreUserMap userBooks = await databaseService
+                                          .getUserBooksPerGenreSnapshot();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              VisualizeProfileMainPage(
+                                                  user: user,
+                                                  books: userBooks.result,
+                                                  self: false)
+                                          )
+                                      );
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 32.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              backgroundColor: Colors.brown.shade800,
+                                              radius: 25.0,
+                                              child: allUsersFound[i]['userProfileImageURL'] != null &&
+                                                  allUsersFound[i]['userProfileImageURL'].toString().isNotEmpty ?
+                                              CircleAvatar(
+                                                radius: 25.0,
+                                                backgroundImage: NetworkImage(allUsersFound[i]['userProfileImageURL']),
+                                                //FileImage(File(user.userProfileImagePath))
+                                              ) : Text(
+                                                allUsersFound[i]['username'][0].toUpperCase(),
+                                                textScaleFactor: 1,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(allUsersFound[i]['username'].toString(),
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                                                  Text(allUsersFound[i]['email'].toString(),
+                                                    style: TextStyle(fontSize: 14.0),),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 12.5),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              for(int j = 0; j < 5; j++)
+                                                Container(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  width: 30.0,
+                                                  child: allUsersFound[i]['averageRating'] > i && allUsersFound[i]['averageRating'] < i + 1 ?
+                                                  Icon(Icons.star_half_outlined, color: Colors.yellow,) :
+                                                  allUsersFound[i]['averageRating'] > i ?
+                                                  Icon(Icons.star, color: Colors.yellow,) :
+                                                  Icon(Icons.star_border, color: Colors.yellow,),
+                                                ),
+                                                SizedBox(width: 20.0),
+                                                Text(
+                                                allUsersFound[i]['receivedReviews'].length != 1 ?
+                                                allUsersFound[i]['receivedReviews'].length.toString() + ' reviews' :
+                                                '1 review',
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16.0),
+                                child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+                              ),
+                            ]
+                          )
                       ],
                     ),
 
@@ -271,6 +392,52 @@ class _SearchUserPageState extends State<SearchUserPage> {
   }
 
   void reorder() {
-    print("TODO REORDER");
+    switch(_selectedOrder) {
+      case orderByStarsLabel:
+        reorderByStars();
+        break;
+
+      case orderByNumberReviewLabel:
+        reorderByNumberOfReviews();
+        break;
+
+      default:
+        break;
+    }
   }
+
+  void reorderByStars() {
+    allUsersFound.sort(
+      (a, b) {
+        return _selectedOrderWay == orderByAscendingWay ?
+            (a == null || a['averageRating'] == null) ? 1 :
+            (b == null || b['averageRating'] == null) ? -1 : (
+                a['averageRating'] > b['averageRating'] ? 1 : -1
+            )
+            :
+            (b == null || b['averageRating'] == null) ? 1 :
+            (a == null || a['averageRating'] == null) ? -1 : (
+                b['averageRating'] > a['averageRating'] ? 1 : -1
+            );
+      }
+    );
+  }
+
+  void reorderByNumberOfReviews() {
+    allUsersFound.sort(
+            (a, b) {
+          return _selectedOrderWay == orderByAscendingWay ?
+          (a == null || a['receivedReviews'] == null) ? 1 :
+          (b == null || b['receivedReviews'] == null) ? -1 : (
+              a['receivedReviews'].length > b['receivedReviews'].length ? 1 : -1
+          )
+              :
+          (b == null || b['receivedReviews'] == null) ? 1 :
+          (a == null || a['receivedReviews'] == null) ? -1 : (
+              b['receivedReviews'].length > a['receivedReviews'].length ? 1 : -1
+          );
+        }
+    );
+  }
+
 }
