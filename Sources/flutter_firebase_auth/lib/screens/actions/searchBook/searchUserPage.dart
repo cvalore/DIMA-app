@@ -307,7 +307,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                     }
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 32.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 0.0),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[

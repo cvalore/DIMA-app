@@ -222,10 +222,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
               children: <Widget>[
                 Form(
                   key: _priceFormKey,
-                  child: SingleChildScrollView(
-                    child: Container(
-                      //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-                      height: 265,
+                  child: Container(
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
+                    height: 254,
+                    child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -403,7 +403,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               )
                             ],
                           ),
-                          Padding(padding: const EdgeInsets.symmetric(vertical: 6.0)),
+                          Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
@@ -441,12 +441,12 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               )
                             ],
                           ),
-                          Padding(padding: const EdgeInsets.symmetric(vertical: 4.0)),
+                          Padding(padding: const EdgeInsets.symmetric(vertical: 2.0)),
                         ],
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ) : Container(),
