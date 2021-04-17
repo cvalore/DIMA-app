@@ -663,23 +663,27 @@ class DatabaseService {
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
+          dynamic bookResults = [];
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
-              userBook = userBook[j];
-              break;
+              if (userBook[j]['likedBy'] == null) {
+                userBook[j]['likedBy'] = List<String>();
+              }
+              bookResults.add(userBook[j]);
             }
           }
-          userBook = userBook.length >= 1 ? userBook : null;
 
-          usersData.add(
-              {
-                "uid": userData["uid"],
-                "username": userData["username"],
-                "userProfileImageURL": userData["userProfileImageURL"],
-                "email": userData["email"],
-                "book": userBook,
-              }
-          );
+          for(int k = 0; k < bookResults.length; k++) {
+            usersData.add(
+                {
+                  "uid": userData["uid"],
+                  "username": userData["username"],
+                  "userProfileImageURL": userData["userProfileImageURL"],
+                  "email": userData["email"],
+                  "book": bookResults[k],
+                }
+            );
+          }
         });
       }
     });
@@ -691,30 +695,34 @@ class DatabaseService {
     var usersData = [];
     await bookCollection.doc(bookId).get().then((valueBook) async {
       for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+
         String own = valueBook.data()['owners'][i];
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
+          dynamic bookResults = [];
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
-              if (userBook[j]['likedBy'] == null)
+              if (userBook[j]['likedBy'] == null) {
                 userBook[j]['likedBy'] = List<String>();
-              userBook = userBook[j];
-              break;
+              }
+              bookResults.add(userBook[j]);
             }
           }
-          userBook = userBook.length >= 1 ? userBook : null;
 
-          usersData.add(
-              {
-                "uid": userData["uid"],
-                "username": userData["username"],
-                "userProfileImageURL" : userData["userProfileImageURL"],
-                "email": userData["email"],
-                "book": userBook,
-                "info": valueBook.data(),
-              }
-          );
+          for(int k = 0; k < bookResults.length; k++) {
+            usersData.add(
+                {
+                  "uid": userData["uid"],
+                  "username": userData["username"],
+                  "userProfileImageURL": userData["userProfileImageURL"],
+                  "email": userData["email"],
+                  "book": bookResults[k],
+                  "info": valueBook.data(),
+                }
+            );
+          }
+
         });
       }
     });

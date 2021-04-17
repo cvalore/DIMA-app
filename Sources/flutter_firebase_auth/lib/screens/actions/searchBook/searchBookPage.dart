@@ -165,6 +165,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
                         realSearchedBooks.addAll(
                             perGenreBooks.where((b) {
+                              if(realSearchedBooks.contains(b)) {
+                                return false;
+                              }
+
                               if(_title.isNotEmpty && _author.isNotEmpty) {
                                 return b.title.toLowerCase().contains(
                                     _title.toLowerCase()) ||
