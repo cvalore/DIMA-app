@@ -9,6 +9,7 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bookGeneralInfoListView.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class AddBookSelection extends StatefulWidget {
 
@@ -208,7 +209,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
     //print(categories);
 
     var averageRating = selectedBook['volumeInfo']['averageRating'] != null ?
-    selectedBook['volumeInfo']['averageRating'].toDouble() :
+    Utils.computeAverageRatingFromAPI(selectedBook['volumeInfo']['averageRating'].toDouble()) :
         null;
 
     BookGeneralInfo book = BookGeneralInfo(

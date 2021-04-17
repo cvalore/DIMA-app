@@ -96,6 +96,20 @@ class Utils {
   }
    */
 
+  static double computeAverageRatingFromAPI(double avgAPI) {
+    if(avgAPI == 0.0) {
+      return avgAPI;
+    }
+
+    double decimalValue = avgAPI.ceilToDouble() - avgAPI;
+    if (decimalValue < 0.25)
+      return avgAPI.floorToDouble();
+    else if (decimalValue < 0.75)
+      return avgAPI.floorToDouble() + 0.5;
+    else
+      return avgAPI.ceilToDouble();
+  }
+
   static double computeAverageRatingFromReviews(List<ReceivedReview> reviews){
     double averageRating;
     double decimalValue;
