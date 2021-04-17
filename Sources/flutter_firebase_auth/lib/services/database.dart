@@ -14,9 +14,10 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 class DatabaseService {
 
   final CustomUser user;
-
   //int idGeneralInfoToSearch;
   DatabaseService({ this.user });
+
+  //region Init
 
   StorageService storageService = StorageService();
 
@@ -27,6 +28,14 @@ class DatabaseService {
       .collection('users');
   final CollectionReference booksPerGenreCollection = FirebaseFirestore.instance
       .collection('booksPerGenre');
+  final CollectionReference forumDiscussionCollection = FirebaseFirestore.instance
+      .collection('forumDiscussion');
+  final CollectionReference forumPromotionCollection = FirebaseFirestore.instance
+      .collection('forumPromotion');
+
+  //endregion
+
+  //region Authentication
 
   Future<void> initializeUser() {
     var userMap = user.toMap();
@@ -79,6 +88,33 @@ class DatabaseService {
     );
     return true;
   }
+
+  //endregion
+
+  //region Streams
+
+  Stream<BookPerGenreMap> get perGenreBooks {
+    Stream<BookPerGenreMap> result = booksPerGenreCollection.snapshots()
+        .map(_bookPerGenreListFromSnapshot);
+    return result;
+  }
+
+  Stream<BookPerGenreUserMap> get userBooksPerGenre {
+    Stream<BookPerGenreUserMap> result = usersCollection.doc(user.uid)
+        .snapshots()
+        .map(_bookPerGenreUserListFromSnapshot);
+    return result;
+  }
+
+  Stream<CustomUser> get userInfo {
+    Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
+        .map(_userInfoFromSnapshot);
+    return result;
+  }
+
+  //endregion
+
+  //region Books
 
   Future addUserBook(InsertedBook book) async {
     int numberOfInsertedItems;
@@ -445,30 +481,11 @@ class DatabaseService {
     return user;
   }
 
-  Stream<BookPerGenreMap> get perGenreBooks {
-    Stream<BookPerGenreMap> result = booksPerGenreCollection.snapshots()
-        .map(_bookPerGenreListFromSnapshot);
-    return result;
-  }
-
-  Stream<BookPerGenreUserMap> get userBooksPerGenre {
-    Stream<BookPerGenreUserMap> result = usersCollection.doc(user.uid)
-        .snapshots()
-        .map(_bookPerGenreUserListFromSnapshot);
-    return result;
-  }
-
   Future<BookPerGenreUserMap> getUserBooksPerGenreSnapshot() async {
     BookPerGenreUserMap result = await usersCollection.doc(user.uid)
         .snapshots()
         .map(_bookPerGenreUserListFromSnapshot)
         .elementAt(0);
-    return result;
-  }
-
-  Stream<CustomUser> get userInfo {
-    Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
-        .map(_userInfoFromSnapshot);
     return result;
   }
 
@@ -730,6 +747,10 @@ class DatabaseService {
     return usersData;
   }
 
+  //endregion
+
+  //region Profile/User
+
   Future<void> followUser(CustomUser followed) async {
     await usersCollection.doc(user.uid)
         .update({
@@ -757,7 +778,6 @@ class DatabaseService {
       'followers': FieldValue.increment(-1),
     });
   }
-
 
   Future<void> addLike(int bookInsertionNumber, String userWhoLikes) async {
     List<dynamic> books;
@@ -790,7 +810,6 @@ class DatabaseService {
 
   }
 
-
   Future<void> removeLike(int bookInsertionNumber, String userWhoDoesNotLike) async {
     List<dynamic> books;
     int bookToModifyIndex;
@@ -820,8 +839,6 @@ class DatabaseService {
     });
 
   }
-
-
 
   Future<void> addReview(ReceivedReview review) async {
     review.setKey();
@@ -916,4 +933,19 @@ class DatabaseService {
     }
     return allUsers;
   }
+
+  //endregion
+
+  //region forum
+
+  Future<dynamic> getForumDiscussions() async {
+    QuerySnapshot snapshot = await forumDiscussionCollection.get();
+    dynamic allDiscussions = [];
+    for(QueryDocumentSnapshot doc in snapshot.docs) {
+      allDiscussions.add(doc.data());
+    }
+    return allDiscussions;
+  }
+
+  //endregion
 }

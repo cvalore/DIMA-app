@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.dart';
+import 'package:flutter_firebase_auth/screens/forum/forumMainPage.dart';
 import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -63,8 +64,7 @@ class _HomeState extends State<Home> {
         setIndex: setIndex,
       ),*/
       Container(),
-      Center(child: Text('TODO:// Forum',
-        style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),)),
+      ForumMainPage(),
       ProfileMainPage(),
     ];
 
