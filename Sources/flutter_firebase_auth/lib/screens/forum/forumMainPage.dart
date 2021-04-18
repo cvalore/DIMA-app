@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionTab.dart';
 import 'package:flutter_firebase_auth/screens/forum/newDiscussionPage.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:provider/provider.dart';
 
 class ForumMainPage extends StatefulWidget {
 
@@ -12,6 +15,14 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+
+    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    CustomUser user = CustomUser(
+        userFromAuth != null ? userFromAuth.uid : "",
+        email: userFromAuth != null ? userFromAuth.email : "",
+        isAnonymous: userFromAuth != null ? userFromAuth.isAnonymous : false);
+    DatabaseService _db = DatabaseService(user: user);
+
      return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
           heroTag: "newForumThread",
@@ -20,11 +31,11 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
           onPressed: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NewDiscussionPage())
+                  MaterialPageRoute(builder: (context) => NewDiscussionPage(db: _db,))
               );
           },
         ),
-        body: Center(child: DiscussionTab()),
+        body: DiscussionTab(db: _db),
     );
   }
 }

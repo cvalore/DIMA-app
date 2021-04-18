@@ -47,3 +47,7 @@ const orderByDescendingWay = "Descending";
 const orderByDescendingWayValue = 1;
 
 const orderByWays = [orderByAscendingWay, orderByDescendingWay];
+
+const forumDiscussionCategories = [
+  "Book", "Promotion", "Shipping", "Other"
+];

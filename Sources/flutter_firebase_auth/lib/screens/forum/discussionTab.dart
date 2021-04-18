@@ -7,6 +7,11 @@ import 'package:provider/provider.dart';
 import 'discussionTabBody.dart';
 
 class DiscussionTab extends StatefulWidget {
+
+  final DatabaseService db;
+
+  const DiscussionTab({Key key, this.db}) : super(key: key);
+
   @override
   _DiscussionTabState createState() => _DiscussionTabState();
 }
@@ -15,16 +20,8 @@ class _DiscussionTabState extends State<DiscussionTab> {
 
   @override
   Widget build(BuildContext context) {
-
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(
-        userFromAuth != null ? userFromAuth.uid : "",
-        email: userFromAuth != null ? userFromAuth.email : "",
-        isAnonymous: userFromAuth != null ? userFromAuth.isAnonymous : false);
-    DatabaseService _db = DatabaseService(user: user);
-
     return FutureBuilder(
-      future: _db.getForumDiscussions(),
+      future: widget.db.getForumDiscussions(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting: return Center(child: Loading());
@@ -32,9 +29,30 @@ class _DiscussionTabState extends State<DiscussionTab> {
             if (snapshot.hasError)
               return Text('Error: ${snapshot.error}');
             else
-              return DiscussionTabBody(discussions: snapshot.data);
+              return FutureBuilder(
+                future: getStartedByUserInfo(snapshot.data),
+                builder: (BuildContext context, AsyncSnapshot<dynamic> newSnapshot) {
+                  switch (newSnapshot.connectionState) {
+                    case ConnectionState.waiting: return Center(child: Loading());
+                    default:
+                      if (newSnapshot.hasError)
+                        return Text('Error: ${newSnapshot.error}');
+                      else
+                        return DiscussionTabBody(discussions: snapshot.data);
+                  }
+                },
+              );
         }
       },
     );
   }
+
+  Future<dynamic> getStartedByUserInfo(dynamic discussions) async {
+    for(int i = 0; i < discussions.length; i++) {
+      CustomUser user = await widget.db.getUserById(discussions[i]['startedBy']);
+      discussions[i]['startedByUsername'] = user.username;
+      discussions[i]['startedByProfilePicture'] = user.userProfileImageURL;
+    }
+  }
+
 }

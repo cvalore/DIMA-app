@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
+import 'package:flutter_firebase_auth/models/forumMessage.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
@@ -30,8 +32,6 @@ class DatabaseService {
       .collection('booksPerGenre');
   final CollectionReference forumDiscussionCollection = FirebaseFirestore.instance
       .collection('forumDiscussion');
-  final CollectionReference forumPromotionCollection = FirebaseFirestore.instance
-      .collection('forumPromotion');
 
   //endregion
 
@@ -495,6 +495,12 @@ class DatabaseService {
     return result;
   }
 
+  Future<CustomUser> getUserById(String uid) async {
+    CustomUser result = await usersCollection.doc(uid).snapshots()
+        .map(_userInfoFromSnapshot).elementAt(0);
+    return result;
+  }
+
   Future removeBook(int index, InsertedBook book) async {
     String id = "";
     String thumbnail = "";
@@ -936,7 +942,7 @@ class DatabaseService {
 
   //endregion
 
-  //region forum
+  //region Forum
 
   Future<dynamic> getForumDiscussions() async {
     QuerySnapshot snapshot = await forumDiscussionCollection.get();
@@ -945,6 +951,26 @@ class DatabaseService {
       allDiscussions.add(doc.data());
     }
     return allDiscussions;
+  }
+
+  Future<int> createNewDiscussion(String category, String title) async {
+    int success = 1;
+    await forumDiscussionCollection.doc(title).get().then((DocumentSnapshot doc) async {
+      if (!doc.exists) {
+        ForumDiscussion newDiscussion = ForumDiscussion(
+          title, category, List<ForumMessage>(), DateTime.now(), user.uid
+        );
+        newDiscussion.setKey();
+        await forumDiscussionCollection.doc(title).set(newDiscussion.toMap())
+            .then((value) => print("Discussion Added"))
+            .catchError((error) {success = -1; print("Failed to add discussion: $error");});
+      }
+      else {
+        success = 0;
+      }
+    });
+
+    return success;
   }
 
   //endregion
