@@ -6,13 +6,28 @@ class ForumDiscussion {
   final String startedBy;
   final String title;
   final String category;
-  final List<ForumMessage> messages;
+  List<ForumMessage> messages;
   final DateTime time;
+
+  String startedByProfilePicture;
+  String startedByUsername;
 
   ForumDiscussion(this.title, this.category, this.messages, this.time, this.startedBy);
 
   setKey() {
     this.discussionKey = Utils.encodeBase64(title + "_" + category + "_" + time.toString());
+  }
+  
+  setKnownKey(String key) {
+    this.discussionKey = key;
+  }
+
+  setStartedByProfilePicture(String value) {
+    this.startedByProfilePicture = value;
+  }
+
+  setStartedByUsername(String value) {
+    this.startedByUsername = value;
   }
 
   Map<String, dynamic> toMap() {
@@ -25,5 +40,17 @@ class ForumDiscussion {
     List<dynamic> messagesMap = messages.map((e) => e.toMap()).toList();
     discussionForumMap['messages'] = messagesMap;
     return discussionForumMap;
+  }
+
+  static ForumDiscussion FromDynamicToForumDiscussion(dynamic discussion, List<ForumMessage> messages) {
+    ForumDiscussion disc = ForumDiscussion(
+        discussion['title'],
+        discussion['category'],
+        messages,
+        DateTime.fromMillisecondsSinceEpoch(discussion['time'].seconds * 1000),
+        discussion['startedBy']
+    );
+    disc.setKnownKey(discussion['discussionKey']);
+    return disc;
   }
 }

@@ -14,13 +14,31 @@ class ForumMessage {
   setKey() {
     this.messageKey = Utils.encodeBase64(uidSender + time.toString());
   }
+  
+  setKnownKey(String key) {
+    this.messageKey = key;
+  }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> forumMessageMap = Map<String, dynamic>();
     forumMessageMap['messageKey'] = messageKey;
     forumMessageMap['uidSender'] = uidSender;
-    forumMessageMap['time'] = time.toString();
+    forumMessageMap['nameSender'] = nameSender;
+    forumMessageMap['imageProfileSender'] = imageProfileSender;
+    forumMessageMap['time'] = time;
     forumMessageMap['messageBody'] = messageBody;
     return forumMessageMap;
+  }
+
+  static ForumMessage fromDynamicToForumMessage(dynamic element) {
+    ForumMessage message = ForumMessage(
+        element['uidSender'],
+        element['nameSender'],
+        element['imageProfileSender'],
+        DateTime.fromMillisecondsSinceEpoch(element['time'].seconds * 1000),
+        element['messageBody']
+    );
+    message.setKnownKey(element['messageKey']);
+    return message;
   }
 }

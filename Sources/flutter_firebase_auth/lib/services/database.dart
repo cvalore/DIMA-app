@@ -973,5 +973,30 @@ class DatabaseService {
     return success;
   }
 
+  Future<List<ForumMessage>> addMessage(String message, ForumDiscussion discussion) async {
+    dynamic currentMessages;
+    await forumDiscussionCollection.doc(discussion.title).get().then((DocumentSnapshot doc) async {
+      if (doc.exists) {
+        currentMessages = doc.get("messages");
+      }
+    });
+
+    //username and userProfileImageURL are NULL!!
+    ForumMessage newMessage = ForumMessage(
+      user.uid, user.username ?? "", user.userProfileImageURL ?? "", DateTime.now(), message
+    );
+    newMessage.setKey();
+    currentMessages.add(newMessage.toMap());
+    await forumDiscussionCollection.doc(discussion.title).update(
+      {"messages" : currentMessages}
+    );
+
+    List<ForumMessage> messages = List<ForumMessage>();
+    currentMessages.forEach((element) => messages.add(
+      ForumMessage.fromDynamicToForumMessage(element)
+    ));
+    return messages;
+  }
+
   //endregion
 }
