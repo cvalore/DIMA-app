@@ -77,11 +77,12 @@ class HomeBookGeneralInfoView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(selectedBook["ratingsCount"].floor().toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
+                  Text(selectedBook["ratingsCount"].toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),
                   Text('  '),
                   for(var i = 0; i < 5 && selectedBook["ratingsCount"] != null; i++)
-                    Icon(i > selectedBook["ratingsCount"] - 1 ?
-                    Icons.star_border : Icons.star,
+                    Icon(selectedBook["ratingsCount"] > i && selectedBook["ratingsCount"] < i + 1 ?
+                      Icons.star_half_outlined : selectedBook["ratingsCount"] > i ?
+                        Icons.star : Icons.star_border,
                         size: 15.0,
                         color: Colors.yellow[700]),
                 ],

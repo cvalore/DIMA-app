@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
+import 'package:flutter_firebase_auth/models/forumMessage.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
@@ -14,9 +16,10 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 class DatabaseService {
 
   final CustomUser user;
-
   //int idGeneralInfoToSearch;
   DatabaseService({ this.user });
+
+  //region Init
 
   StorageService storageService = StorageService();
 
@@ -27,6 +30,12 @@ class DatabaseService {
       .collection('users');
   final CollectionReference booksPerGenreCollection = FirebaseFirestore.instance
       .collection('booksPerGenre');
+  final CollectionReference forumDiscussionCollection = FirebaseFirestore.instance
+      .collection('forumDiscussion');
+
+  //endregion
+
+  //region Authentication
 
   Future<void> initializeUser() {
     var userMap = user.toMap();
@@ -79,6 +88,33 @@ class DatabaseService {
     );
     return true;
   }
+
+  //endregion
+
+  //region Streams
+
+  Stream<BookPerGenreMap> get perGenreBooks {
+    Stream<BookPerGenreMap> result = booksPerGenreCollection.snapshots()
+        .map(_bookPerGenreListFromSnapshot);
+    return result;
+  }
+
+  Stream<BookPerGenreUserMap> get userBooksPerGenre {
+    Stream<BookPerGenreUserMap> result = usersCollection.doc(user.uid)
+        .snapshots()
+        .map(_bookPerGenreUserListFromSnapshot);
+    return result;
+  }
+
+  Stream<CustomUser> get userInfo {
+    Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
+        .map(_userInfoFromSnapshot);
+    return result;
+  }
+
+  //endregion
+
+  //region Books
 
   Future addUserBook(InsertedBook book) async {
     int numberOfInsertedItems;
@@ -445,19 +481,6 @@ class DatabaseService {
     return user;
   }
 
-  Stream<BookPerGenreMap> get perGenreBooks {
-    Stream<BookPerGenreMap> result = booksPerGenreCollection.snapshots()
-        .map(_bookPerGenreListFromSnapshot);
-    return result;
-  }
-
-  Stream<BookPerGenreUserMap> get userBooksPerGenre {
-    Stream<BookPerGenreUserMap> result = usersCollection.doc(user.uid)
-        .snapshots()
-        .map(_bookPerGenreUserListFromSnapshot);
-    return result;
-  }
-
   Future<BookPerGenreUserMap> getUserBooksPerGenreSnapshot() async {
     BookPerGenreUserMap result = await usersCollection.doc(user.uid)
         .snapshots()
@@ -466,14 +489,14 @@ class DatabaseService {
     return result;
   }
 
-  Stream<CustomUser> get userInfo {
-    Stream<CustomUser> result = usersCollection.doc(user.uid).snapshots()
-        .map(_userInfoFromSnapshot);
+  Future<CustomUser> getUserSnapshot() async {
+    CustomUser result = await usersCollection.doc(user.uid).snapshots()
+        .map(_userInfoFromSnapshot).elementAt(0);
     return result;
   }
 
-  Future<CustomUser> getUserSnapshot() async {
-    CustomUser result = await usersCollection.doc(user.uid).snapshots()
+  Future<CustomUser> getUserById(String uid) async {
+    CustomUser result = await usersCollection.doc(uid).snapshots()
         .map(_userInfoFromSnapshot).elementAt(0);
     return result;
   }
@@ -663,23 +686,27 @@ class DatabaseService {
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
+          dynamic bookResults = [];
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
-              userBook = userBook[j];
-              break;
+              if (userBook[j]['likedBy'] == null) {
+                userBook[j]['likedBy'] = List<String>();
+              }
+              bookResults.add(userBook[j]);
             }
           }
-          userBook = userBook.length >= 1 ? userBook : null;
 
-          usersData.add(
-              {
-                "uid": userData["uid"],
-                "username": userData["username"],
-                "userProfileImageURL": userData["userProfileImageURL"],
-                "email": userData["email"],
-                "book": userBook,
-              }
-          );
+          for(int k = 0; k < bookResults.length; k++) {
+            usersData.add(
+                {
+                  "uid": userData["uid"],
+                  "username": userData["username"],
+                  "userProfileImageURL": userData["userProfileImageURL"],
+                  "email": userData["email"],
+                  "book": bookResults[k],
+                }
+            );
+          }
         });
       }
     });
@@ -720,36 +747,44 @@ class DatabaseService {
     var usersData = [];
     await bookCollection.doc(bookId).get().then((valueBook) async {
       for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+
         String own = valueBook.data()['owners'][i];
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
           dynamic userBook = userData['books'];
+          dynamic bookResults = [];
           for (int j = 0; j < userBook.length; j++) {
             if (userBook[j]['id'] == bookId) {
-              if (userBook[j]['likedBy'] == null)
+              if (userBook[j]['likedBy'] == null) {
                 userBook[j]['likedBy'] = List<String>();
-              userBook = userBook[j];
-              break;
+              }
+              bookResults.add(userBook[j]);
             }
           }
-          userBook = userBook.length >= 1 ? userBook : null;
 
-          usersData.add(
-              {
-                "uid": userData["uid"],
-                "username": userData["username"],
-                "userProfileImageURL" : userData["userProfileImageURL"],
-                "email": userData["email"],
-                "book": userBook,
-                "info": valueBook.data(),
-              }
-          );
+          for(int k = 0; k < bookResults.length; k++) {
+            usersData.add(
+                {
+                  "uid": userData["uid"],
+                  "username": userData["username"],
+                  "userProfileImageURL": userData["userProfileImageURL"],
+                  "email": userData["email"],
+                  "book": bookResults[k],
+                  "info": valueBook.data(),
+                }
+            );
+          }
+
         });
       }
     });
 
     return usersData;
   }
+
+  //endregion
+
+  //region Profile/User
 
   Future<void> followUser(CustomUser followed) async {
     await usersCollection.doc(user.uid)
@@ -778,7 +813,6 @@ class DatabaseService {
       'followers': FieldValue.increment(-1),
     });
   }
-
 
   Future<void> addLike(int bookInsertionNumber, String userWhoLikes) async {
     List<dynamic> books;
@@ -811,7 +845,6 @@ class DatabaseService {
 
   }
 
-
   Future<void> removeLike(int bookInsertionNumber, String userWhoDoesNotLike) async {
     List<dynamic> books;
     int bookToModifyIndex;
@@ -841,8 +874,6 @@ class DatabaseService {
     });
 
   }
-
-
 
   Future<void> addReview(ReceivedReview review) async {
     review.setKey();
@@ -937,4 +968,62 @@ class DatabaseService {
     }
     return allUsers;
   }
+
+  //endregion
+
+  //region Forum
+
+  Future<dynamic> getForumDiscussions() async {
+    QuerySnapshot snapshot = await forumDiscussionCollection.get();
+    dynamic allDiscussions = [];
+    for(QueryDocumentSnapshot doc in snapshot.docs) {
+      allDiscussions.add(doc.data());
+    }
+    return allDiscussions;
+  }
+
+  Future<dynamic> createNewDiscussion(String category, String title) async {
+    dynamic result = null;
+
+    await forumDiscussionCollection.doc(title).get().then((DocumentSnapshot doc) async {
+      if (!doc.exists) {
+        ForumDiscussion newDiscussion = ForumDiscussion(
+          title, category, List<ForumMessage>(), DateTime.now(), user.uid
+        );
+        newDiscussion.setKey();
+        await forumDiscussionCollection.doc(title).set(newDiscussion.toMap())
+            .then((value) {result = newDiscussion.toMap(); print("Discussion Added");})
+            .catchError((error) {print("Failed to add discussion: $error");});
+      }
+    });
+
+    return result;
+  }
+
+  Future<List<ForumMessage>> addMessage(String message, ForumDiscussion discussion, CustomUser userFromDb) async {
+    dynamic currentMessages;
+    await forumDiscussionCollection.doc(discussion.title).get().then((DocumentSnapshot doc) async {
+      if (doc.exists) {
+        currentMessages = doc.get("messages");
+      }
+    });
+
+    //username and userProfileImageURL are NULL!!
+    ForumMessage newMessage = ForumMessage  (
+        userFromDb.uid, userFromDb.username ?? "", userFromDb.userProfileImageURL ?? "", DateTime.now(), message
+    );
+    newMessage.setKey();
+    currentMessages.add(newMessage.toMap());
+    await forumDiscussionCollection.doc(discussion.title).update(
+      {"messages" : currentMessages}
+    );
+
+    List<ForumMessage> messages = List<ForumMessage>();
+    currentMessages.forEach((element) => messages.add(
+      ForumMessage.fromDynamicToForumMessage(element)
+    ));
+    return messages;
+  }
+
+  //endregion
 }

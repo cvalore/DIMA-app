@@ -86,11 +86,13 @@ class BookGeneralInfoListView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(selectedBook.averageRating.floor().toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+                Text(selectedBook.averageRating.toString(), style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
                 Text('  '),
                 for(var i = 0; i < 5 && selectedBook.averageRating != null; i++)
-                  Icon(i > selectedBook.averageRating - 1 ?
-                  Icons.star_border : Icons.star,
+                  Icon(
+                      selectedBook.averageRating > i && selectedBook.averageRating < i + 1 ?
+                        Icons.star_half_outlined : selectedBook.averageRating > i ?
+                          Icons.star : Icons.star_border,
                       size: 15.0,
                       color: Colors.yellow[700]),
               ],

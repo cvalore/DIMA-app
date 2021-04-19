@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
+import 'package:flutter_firebase_auth/models/forumMessage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
@@ -100,6 +102,20 @@ class Utils {
   }
    */
 
+  static double computeAverageRatingFromAPI(double avgAPI) {
+    if(avgAPI == 0.0) {
+      return avgAPI;
+    }
+
+    double decimalValue = avgAPI.ceilToDouble() - avgAPI;
+    if (decimalValue < 0.25)
+      return avgAPI.floorToDouble();
+    else if (decimalValue < 0.75)
+      return avgAPI.floorToDouble() + 0.5;
+    else
+      return avgAPI.ceilToDouble();
+  }
+
   static double computeAverageRatingFromReviews(List<ReceivedReview> reviews){
     double averageRating;
     double decimalValue;
@@ -138,6 +154,20 @@ class Utils {
     return encoded;
   }
 
+  static ForumDiscussion toForumDiscussion(dynamic discussion) {
+
+    List<ForumMessage> messages = List<ForumMessage>();
+    discussion['messages'].forEach(
+            (element) {
+          messages.add(ForumMessage.fromDynamicToForumMessage(element));
+        }
+    );
+
+    ForumDiscussion forumDiscussion = ForumDiscussion.FromDynamicToForumDiscussion(discussion, messages);
+    forumDiscussion.setStartedByProfilePicture(discussion['startedByProfilePicture']);
+    forumDiscussion.setStartedByUsername(discussion['startedByUsername']);
+    return forumDiscussion;
+  }
 
 
   static Future<void> pushBookPage(BuildContext context, book, String userUid) async {
