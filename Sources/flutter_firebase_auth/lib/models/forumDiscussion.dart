@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/forumMessage.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
@@ -43,11 +44,15 @@ class ForumDiscussion {
   }
 
   static ForumDiscussion FromDynamicToForumDiscussion(dynamic discussion, List<ForumMessage> messages) {
+    bool timestamp = discussion['time'].runtimeType == Timestamp;
+
     ForumDiscussion disc = ForumDiscussion(
         discussion['title'],
         discussion['category'],
         messages,
-        DateTime.fromMillisecondsSinceEpoch(discussion['time'].seconds * 1000),
+        timestamp ?
+          DateTime.fromMillisecondsSinceEpoch(discussion['time'].seconds * 1000) :
+          discussion['time'],
         discussion['startedBy']
     );
     disc.setKnownKey(discussion['discussionKey']);

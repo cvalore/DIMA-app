@@ -953,8 +953,9 @@ class DatabaseService {
     return allDiscussions;
   }
 
-  Future<int> createNewDiscussion(String category, String title) async {
-    int success = 1;
+  Future<dynamic> createNewDiscussion(String category, String title) async {
+    dynamic result = null;
+
     await forumDiscussionCollection.doc(title).get().then((DocumentSnapshot doc) async {
       if (!doc.exists) {
         ForumDiscussion newDiscussion = ForumDiscussion(
@@ -962,18 +963,15 @@ class DatabaseService {
         );
         newDiscussion.setKey();
         await forumDiscussionCollection.doc(title).set(newDiscussion.toMap())
-            .then((value) => print("Discussion Added"))
-            .catchError((error) {success = -1; print("Failed to add discussion: $error");});
-      }
-      else {
-        success = 0;
+            .then((value) {result = newDiscussion.toMap(); print("Discussion Added");})
+            .catchError((error) {print("Failed to add discussion: $error");});
       }
     });
 
-    return success;
+    return result;
   }
 
-  Future<List<ForumMessage>> addMessage(String message, ForumDiscussion discussion) async {
+  Future<List<ForumMessage>> addMessage(String message, ForumDiscussion discussion, CustomUser userFromDb) async {
     dynamic currentMessages;
     await forumDiscussionCollection.doc(discussion.title).get().then((DocumentSnapshot doc) async {
       if (doc.exists) {
@@ -982,8 +980,8 @@ class DatabaseService {
     });
 
     //username and userProfileImageURL are NULL!!
-    ForumMessage newMessage = ForumMessage(
-      user.uid, user.username ?? "", user.userProfileImageURL ?? "", DateTime.now(), message
+    ForumMessage newMessage = ForumMessage  (
+        userFromDb.uid, userFromDb.username ?? "", userFromDb.userProfileImageURL ?? "", DateTime.now(), message
     );
     newMessage.setKey();
     currentMessages.add(newMessage.toMap());

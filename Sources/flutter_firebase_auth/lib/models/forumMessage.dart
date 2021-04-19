@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class ForumMessage {
@@ -31,11 +32,16 @@ class ForumMessage {
   }
 
   static ForumMessage fromDynamicToForumMessage(dynamic element) {
+
+    bool timestamp = element['time'].runtimeType == Timestamp;
+
     ForumMessage message = ForumMessage(
         element['uidSender'],
         element['nameSender'],
         element['imageProfileSender'],
-        DateTime.fromMillisecondsSinceEpoch(element['time'].seconds * 1000),
+        timestamp ?
+          DateTime.fromMillisecondsSinceEpoch(element['time'].seconds * 1000) :
+          element['time'],
         element['messageBody']
     );
     message.setKnownKey(element['messageKey']);

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/forumMessage.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class DiscussionPage extends StatefulWidget {
@@ -54,8 +58,104 @@ class _DiscussionPageState extends State<DiscussionPage> {
           ) :
           Expanded(
             child: ListView.builder(
+              itemCount: widget.discussion.messages.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text("TODO: messages");
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 18.0, 32.0, 18.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(
+                            flex: 1,
+                            child: InkWell(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              onTap: () async {
+                                if (widget.discussion.messages[index].uidSender != Utils.mySelf.uid) {
+                                  DatabaseService databaseService = DatabaseService(
+                                      user: CustomUser(
+                                          widget.discussion.messages[index].uidSender));
+                                  CustomUser user = await databaseService
+                                      .getUserSnapshot();
+                                  BookPerGenreUserMap userBooks = await databaseService
+                                      .getUserBooksPerGenreSnapshot();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (
+                                              context) =>
+                                              VisualizeProfileMainPage(
+                                                  user: user,
+                                                  books: userBooks
+                                                      .result,
+                                                  self: false)
+                                      )
+                                  );
+                                }
+                              },
+                              child: Column(
+                                children: <Widget>[
+                                  Text('Sent by', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 8.0),
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.brown.shade800,
+                                      radius: 35.0,
+                                      child: widget.discussion.messages[index].imageProfileSender != null &&
+                                          widget.discussion.messages[index].imageProfileSender != '' ?
+                                      CircleAvatar(
+                                        radius: 35.0,
+                                        backgroundImage: NetworkImage(
+                                            widget.discussion.messages[index].imageProfileSender),
+                                        //FileImage(File(user.userProfileImagePath))
+                                      ) : Text(
+                                        widget.discussion.messages[index].nameSender.toUpperCase(),
+                                        //textScaleFactor: 3,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(widget.discussion.messages[index].nameSender,
+                                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                      widget.discussion.messages[index].time.toString().split(' ')[0],
+                                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                      widget.discussion.messages[index].time.toString().split(' ')[1].split('.')[0],
+                                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(widget.discussion.messages[index].messageBody,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.visible
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
           ),
@@ -78,7 +178,9 @@ class _DiscussionPageState extends State<DiscussionPage> {
                             //width: MediaQuery.of(context).size.width / 1.5,
                             child: TextFormField(
                               controller: _messageFormFieldController,
+                              maxLength: maxForumMessageLength,
                               maxLines: null,
+                              //expands: true,
                               keyboardType: TextInputType.multiline,
                               decoration: InputDecoration(
                                 labelStyle: TextStyle(fontSize: 16,
@@ -116,16 +218,18 @@ class _DiscussionPageState extends State<DiscussionPage> {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () async {
-                          List<ForumMessage> messages = await _db.addMessage(_message, widget.discussion);
+                          CustomUser userFromDb = await _db.getUserById(user.uid);
+                          List<ForumMessage> messages = await _db.addMessage(_message, widget.discussion, userFromDb);
                           setState(() {
                             _messageFormFieldController.clear();
+                            _message = "";
                             widget.discussion.messages = messages;
                           });
                         },
                         shape: CircleBorder(side: BorderSide(width: 2, color: Colors.white, style: BorderStyle.solid)),
                         child: Icon(Icons.send),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

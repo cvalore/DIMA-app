@@ -2,10 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/forumMessage.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DiscussionTabBody extends StatelessWidget {
 
@@ -15,7 +21,6 @@ class DiscussionTabBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final Map<String, dynamic> perCategoryDiscussion = {};
 
     forumDiscussionCategories.forEach((e) {
@@ -27,7 +32,7 @@ class DiscussionTabBody extends StatelessWidget {
       newValue.addAll([e]);
       perCategoryDiscussion.update(e['category'], (value) => newValue, ifAbsent: () => [e]);
     });
-    
+
     return discussions.length == 0 ?
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,8 +55,7 @@ class DiscussionTabBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text("Active threads:", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),),
-              Container(
-                height: MediaQuery.of(context).size.height - 200,
+              Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
@@ -82,7 +86,7 @@ class DiscussionTabBody extends StatelessWidget {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => DiscussionPage(
-                                              discussion: toForumDiscussion(perCategoryDiscussion[forumDiscussionCategories[i]][j]),
+                                              discussion: Utils.toForumDiscussion(perCategoryDiscussion[forumDiscussionCategories[i]][j]),
                                             ))
                                         );
                                       },
@@ -94,48 +98,81 @@ class DiscussionTabBody extends StatelessWidget {
                                             children: <Widget>[
                                               Flexible(
                                                 flex: 1,
-                                                child: Column(
-                                                  children: <Widget>[
-                                                    Text('Started by', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),),
-                                                    Padding(
-                                                      padding: const EdgeInsets.symmetric(
-                                                          horizontal: 10.0, vertical: 8.0),
-                                                      child: CircleAvatar(
-                                                        backgroundColor: Colors.brown.shade800,
-                                                        radius: 40.0,
-                                                        child: perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture'] != null &&
-                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture'] != '' ?
-                                                        CircleAvatar(
-                                                          radius: 40.0,
-                                                          backgroundImage: NetworkImage(
-                                                              perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture']),
-                                                          //FileImage(File(user.userProfileImagePath))
-                                                        ) : Text(
-                                                          perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase(),
-                                                          //textScaleFactor: 3,
+                                                child: InkWell(
+                                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                                  onTap: () async {
+                                                    if (perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedBy'] != Utils.mySelf.uid) {
+                                                      DatabaseService databaseService = DatabaseService(
+                                                          user: CustomUser(
+                                                              perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedBy']));
+                                                      CustomUser user = await databaseService
+                                                          .getUserSnapshot();
+                                                      BookPerGenreUserMap userBooks = await databaseService
+                                                          .getUserBooksPerGenreSnapshot();
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (
+                                                                  context) =>
+                                                                  VisualizeProfileMainPage(
+                                                                      user: user,
+                                                                      books: userBooks
+                                                                          .result,
+                                                                      self: false)
+                                                          )
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Text('Started by', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),),
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(
+                                                            horizontal: 10.0, vertical: 8.0),
+                                                        child: CircleAvatar(
+                                                          backgroundColor: Colors.brown.shade800,
+                                                          radius: 35.0,
+                                                          child: perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture'] != null &&
+                                                              perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture'] != '' ?
+                                                          CircleAvatar(
+                                                            radius: 35.0,
+                                                            backgroundImage: NetworkImage(
+                                                                perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture']),
+                                                            //FileImage(File(user.userProfileImagePath))
+                                                          ) : Text(
+                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase(),
+                                                            //textScaleFactor: 3,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    Text(perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'],
-                                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
-                                                      softWrap: true,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                    Text(DateFormat('dd-MM-yyyy').format(
-                                                      DateTime.fromMillisecondsSinceEpoch(
-                                                        perCategoryDiscussion[forumDiscussionCategories[i]][j]['time'].seconds * 1000
+                                                      Text(perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'],
+                                                        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      Text(DateTime.parse(
+                                                          perCategoryDiscussion[forumDiscussionCategories[i]][j]['time'].toDate().toString()
+                                                        ).toString().split(' ')[0],
+                                                        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      Text(DateTime.parse(
+                                                          perCategoryDiscussion[forumDiscussionCategories[i]][j]['time'].toDate().toString()
+                                                      ).toString().split(' ')[1].split('.')[0],
+                                                        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
                                                       )
-                                                    ),
-                                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
-                                                      softWrap: true,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    )
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                              Flexible(
+                                              Expanded(
                                                 flex: 2,
                                                 child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: <Widget>[
                                                     Text(perCategoryDiscussion[forumDiscussionCategories[i]][j]['title'],
                                                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -162,24 +199,9 @@ class DiscussionTabBody extends StatelessWidget {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         );
-  }
-
-  ForumDiscussion toForumDiscussion(dynamic discussion) {
-
-    List<ForumMessage> messages = List<ForumMessage>();
-    discussion['messages'].forEach(
-        (element) {
-          messages.add(ForumMessage.fromDynamicToForumMessage(element));
-        }
-    );
-
-    ForumDiscussion forumDiscussion = ForumDiscussion.FromDynamicToForumDiscussion(discussion, messages);
-    forumDiscussion.setStartedByProfilePicture(discussion['startedByProfilePicture']);
-    forumDiscussion.setStartedByUsername(discussion['startedByUsername']);
-    return forumDiscussion;
   }
 }

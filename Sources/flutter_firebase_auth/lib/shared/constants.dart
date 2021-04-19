@@ -51,3 +51,5 @@ const orderByWays = [orderByAscendingWay, orderByDescendingWay];
 const forumDiscussionCategories = [
   "Book", "Promotion", "Shipping", "Other"
 ];
+
+const maxForumMessageLength = 400;

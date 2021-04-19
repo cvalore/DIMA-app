@@ -24,17 +24,17 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
     DatabaseService _db = DatabaseService(user: user);
 
      return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          heroTag: "newForumThread",
-          icon: Icon(Icons.add_circle_outline_outlined),
-          label: Text("New discussion"),
-          onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewDiscussionPage(db: _db,))
-              );
-          },
-        ),
+       floatingActionButton: FloatingActionButton.extended(
+         heroTag: "newForumThread",
+         icon: Icon(Icons.add_circle_outline_outlined),
+         label: Text("New discussion"),
+         onPressed: () {
+           Navigator.push(
+               context,
+               MaterialPageRoute(builder: (context) => NewDiscussionPage(db: _db,))
+           );
+         },
+       ),
         body: DiscussionTab(db: _db),
     );
   }

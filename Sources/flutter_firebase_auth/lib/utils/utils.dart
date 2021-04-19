@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
+import 'package:flutter_firebase_auth/models/forumMessage.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -148,5 +150,19 @@ class Utils {
     return encoded;
   }
 
+  static ForumDiscussion toForumDiscussion(dynamic discussion) {
+
+    List<ForumMessage> messages = List<ForumMessage>();
+    discussion['messages'].forEach(
+            (element) {
+          messages.add(ForumMessage.fromDynamicToForumMessage(element));
+        }
+    );
+
+    ForumDiscussion forumDiscussion = ForumDiscussion.FromDynamicToForumDiscussion(discussion, messages);
+    forumDiscussion.setStartedByProfilePicture(discussion['startedByProfilePicture']);
+    forumDiscussion.setStartedByUsername(discussion['startedByUsername']);
+    return forumDiscussion;
+  }
 
 }

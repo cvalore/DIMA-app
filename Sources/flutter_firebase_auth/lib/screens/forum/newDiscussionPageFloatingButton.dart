@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
+import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class NewDiscussionPageFloatingButton extends StatelessWidget {
 
@@ -18,16 +21,13 @@ class NewDiscussionPageFloatingButton extends StatelessWidget {
           return;
         }
         else {
-          int success = await getDb().createNewDiscussion(
+          dynamic discussion = await getDb().createNewDiscussion(
               getDropdownLabel(), getTitle()
           );
           String snackBarMessage =
-            (success == 1 ?
-              "Discussion successfully inserted" :
-              success == 0 ?
-                "Discussion already exists" :
-                "Error while inserting the discussion"
-            );
+          (discussion != null ?
+          "Discussion successfully inserted" :
+          "Error creating discussion OR Discussion already exists");
           final snackBar = SnackBar(
             backgroundColor: Colors.white24,
             duration: Duration(seconds: 1),
@@ -37,6 +37,15 @@ class NewDiscussionPageFloatingButton extends StatelessWidget {
             ),
           );
           Navigator.pop(context);
+          if(discussion != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>
+                    DiscussionPage(
+                      discussion: Utils.toForumDiscussion(discussion),
+                    ))
+            );
+          }
           Scaffold.of(context).showSnackBar(snackBar);
         }
       },
