@@ -185,8 +185,6 @@ class Utils {
       price: book['price'],
       exchangeable: book['exchangeable'],
     );
-    print(userUid);
-    print(bookToPush);
     Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(userUid, bookToPush);
     List<String> bookPickedFilePaths = List<String>();
     ListResult lr = await bookRef.listAll();

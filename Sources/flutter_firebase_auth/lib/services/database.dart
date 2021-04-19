@@ -742,6 +742,20 @@ class DatabaseService {
     return books;
   }
 
+  Future<List<dynamic>> getMyExchangeableBooks() async {
+    List<dynamic> myBooks = List<dynamic>();
+    List<dynamic> myExchangeableBooks = List<dynamic>();
+
+    await usersCollection.doc(user.uid).get().then(
+        (doc) {
+          myBooks = doc.data()['books'];
+          myExchangeableBooks = myBooks.where((element) => element['exchangeable'] == true).toList();
+        }
+    );
+
+    return myExchangeableBooks;
+  }
+
 
   Future<dynamic> getBookForSearch(String bookId) async {
     var usersData = [];

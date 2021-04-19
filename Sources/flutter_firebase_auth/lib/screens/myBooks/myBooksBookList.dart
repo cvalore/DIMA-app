@@ -11,6 +11,7 @@ import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 
@@ -22,8 +23,9 @@ class MyBooksBookList extends StatelessWidget {
   final Map<int, dynamic> books;
   bool _isTablet;
   bool self;
+  String userUid;
 
-  MyBooksBookList({Key key, @required this.self, @required this.books}) : super(key: key);
+  MyBooksBookList({Key key, @required this.self, @required this.books, this.userUid}) : super(key: key);
 
   DatabaseService _db;
   CustomUser user;
@@ -70,14 +72,19 @@ class MyBooksBookList extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
     //print("IsLargeScreen? " + (_isTablet ? "True" : "False"));
 
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
-    _db = DatabaseService(user: user);
+    if (self) {
+      user = CustomUser(Utils.mySelf.uid);
+      _db = DatabaseService(user: user);
+    } else {
+      user = CustomUser(userUid);
+      _db = DatabaseService(user: CustomUser(userUid));
+    }
 
     return GridView.count(
       crossAxisCount: 2,

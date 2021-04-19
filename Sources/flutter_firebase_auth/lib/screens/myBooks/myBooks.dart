@@ -10,9 +10,10 @@ import 'package:provider/provider.dart';
 class MyBooks extends StatefulWidget {
 
   bool self;
+  String userUid;
   Map<int, dynamic> books;
 
-  MyBooks({Key key, this.books, @required this.self});
+  MyBooks({Key key, this.books, @required this.self, this.userUid});
 
   @override
   _MyBooksState createState() => _MyBooksState();
@@ -52,6 +53,7 @@ class _MyBooksState extends State<MyBooks> {
       Provider.of<BookPerGenreUserMap>(context).result : null;
     }
 
+
     /*
     CustomUser user;
     if (widget.self) {
@@ -78,6 +80,7 @@ class _MyBooksState extends State<MyBooks> {
     ) :
     MyBooksBookList(
       self: widget.self,
+      userUid: widget.userUid,
       books: books,
     );
   }
