@@ -687,6 +687,35 @@ class DatabaseService {
     return usersData;
   }
 
+
+  Future<dynamic> getMyFavoriteBooks() async {
+    List<dynamic> likedBooks;
+    List<dynamic> books = List<dynamic>();
+    Map<String, dynamic> currentBook;
+    await usersCollection.doc(user.uid).get().then((userDoc) async {
+      likedBooks = userDoc.data()['booksILike'];
+      for (int i = 0; i < likedBooks.length; i++) {
+        await usersCollection.doc(likedBooks[i]['userUid']).get().then((userDoc) {
+          List<dynamic> userBooks = userDoc.get('books');
+          bool found = false;
+          int bookIndex;
+          for (int j = 0; j < userBooks.length && !found; j++){
+            if (userBooks[j]['insertionNumber'] == likedBooks[i]['insertionNumber']){
+              bookIndex = j;
+              found = true;
+            }
+          }
+          currentBook = userBooks[bookIndex];
+          currentBook['uid'] = likedBooks[i]['userUid'];
+          books.add(currentBook);
+        });
+      }
+    });
+
+    return books;
+  }
+
+
   Future<dynamic> getBookForSearch(String bookId) async {
     var usersData = [];
     await bookCollection.doc(bookId).get().then((valueBook) async {

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/favorites/favoritesMainPage.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class Favorites extends StatefulWidget {
 
@@ -13,17 +19,22 @@ class Favorites extends StatefulWidget {
 class _FavoritesState extends State<Favorites> {
   @override
   Widget build(BuildContext context) {
+
     return Container(
         height: widget.height,
         child: GestureDetector(
           onTap: () async {
-              dynamic result = await Navigator.pushNamed(
-                  context, FavoritesPage.routeName);
-              setState(() {
-                if (result != null)
-                  //TODO
-                  print('//TODO');
-              });
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return FutureBuilder(
+                  future: Utils.databaseService.getMyFavoriteBooks(),
+                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting)
+                      return Loading();
+                    else
+                      return FavoritesMainPage(likedBooks: snapshot.data);
+                  }
+              );
+            }));
           },
           child: Row(
             children: [
@@ -63,19 +74,6 @@ class _FavoritesState extends State<Favorites> {
           ),
         )
     );
-  }
-}
-
-class FavoritesPage extends StatefulWidget {
-  static const routeName = '/favourites';
-  @override
-  _FavoritesPageState createState() => _FavoritesPageState();
-}
-
-class _FavoritesPageState extends State<FavoritesPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: Text('//TODO'));
   }
 }
 

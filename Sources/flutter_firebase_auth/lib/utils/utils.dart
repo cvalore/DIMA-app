@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
@@ -132,6 +136,53 @@ class Utils {
     String encoded = base64.encode(utf8.encode(toEncode));
     print(encoded);
     return encoded;
+  }
+
+
+
+  static Future<void> pushBookPage(BuildContext context, book, String userUid) async {
+    InsertedBook bookToPush = InsertedBook(
+      id: book['id'],
+      title: book['title'],
+      author: book['author'],
+      isbn13: book['isbn'],
+      status: book['status'],
+      category: book['category'],
+      imagesUrl: List.from(book['imagesUrl']),
+      likedBy: List.from(book['likedBy']),
+      comment: book['comment'],
+      insertionNumber: book['insertionNumber'],
+      price: book['price'],
+      exchangeable: book['exchangeable'],
+    );
+    print(userUid);
+    print(bookToPush);
+    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(userUid, bookToPush);
+    List<String> bookPickedFilePaths = List<String>();
+    ListResult lr = await bookRef.listAll();
+    int count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    bookToPush.imagesPath = bookPickedFilePaths;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (newContext) => ViewBookPage(
+              book: bookToPush,
+              isSell: true,
+            )
+        )
+    );
+
   }
 
 

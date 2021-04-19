@@ -9,7 +9,8 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
-import 'package:flutter_firebase_auth/screens/profile/favorites.dart';
+import 'package:flutter_firebase_auth/screens/profile/favorites/favorites.dart';
+import 'package:flutter_firebase_auth/screens/profile/favorites/favoritesMainPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
@@ -173,7 +174,6 @@ class _AppState extends State<App> {
            CategoryBox.routeName: (context) => CategoryBox(),
            PriceBox.routeName: (context) => PriceBox(),
            //ProfileHomePage.routeName: (context) => ProfileHomePage(),
-           FavoritesPage.routeName: (context) => FavoritesPage(),
            OrdersPage.routeName: (context) => OrdersPage(),
            AddUserReview.routeName: (context) => AddUserReview(),
          }

@@ -10,6 +10,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/exchange.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
+import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +68,6 @@ class _ViewBookPageState extends State<ViewBookPage> {
             onSelected: (value) async {
               if(value == editBookPopupIndex) {
                 print("Edit book");
-                //Navigator.pop(context);
                 InsertedBook book = await _db.getBook(widget.index);
                 Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
                 List<String> bookPickedFilePaths = List<String>();
@@ -141,12 +141,20 @@ class _ViewBookPageState extends State<ViewBookPage> {
       floatingActionButton: widget.isSell ?
           FloatingActionButton.extended(
             backgroundColor: Colors.white24,
-            heroTag: "addToCartBtn",
+            heroTag: "purchaseBtn",
             onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (newContext) => BuyBooks(
+                        booksToBuy: [widget.book],
+                      )
+                  )
+              );
               print("TODO: --- Add to Cart");
             },
             icon: Icon(Icons.add_shopping_cart),
-            label: Text("Add to Cart"),
+            label: Text("Buy"),
           ) :
           null,
       //backgroundColor: Colors.black,
