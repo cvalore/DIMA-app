@@ -8,14 +8,14 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class DiscussionPageBody extends StatefulWidget {
 
   final DatabaseService db;
   final CustomUser user;
-  final ForumDiscussion discussion;
 
-  const DiscussionPageBody({Key key, this.db, this.user, this.discussion}) : super(key: key);
+  const DiscussionPageBody({Key key, this.db, this.user}) : super(key: key);
 
   @override
   _DiscussionPageBodyState createState() => _DiscussionPageBodyState();
@@ -30,10 +30,13 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
 
   @override
   Widget build(BuildContext context) {
+    
+    ForumDiscussion discussion = Provider.of<ForumDiscussion>(context);
+    
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        widget.discussion.messages.length == 0 ?
+        discussion == null || discussion.messages == null || discussion.messages.length == 0 ?
         Expanded(
           child: Center(
             child: Column(
@@ -47,7 +50,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
         ) :
         Expanded(
           child: ListView.builder(
-            itemCount: widget.discussion.messages.length,
+            itemCount: discussion.messages.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -62,10 +65,10 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                           child: InkWell(
                             borderRadius: BorderRadius.all(Radius.circular(10.0)),
                             onTap: () async {
-                              if (widget.discussion.messages[index].uidSender != Utils.mySelf.uid) {
+                              if (discussion.messages[index].uidSender != Utils.mySelf.uid) {
                                 DatabaseService databaseService = DatabaseService(
                                     user: CustomUser(
-                                        widget.discussion.messages[index].uidSender));
+                                        discussion.messages[index].uidSender));
                                 CustomUser user = await databaseService
                                     .getUserSnapshot();
                                 BookPerGenreUserMap userBooks = await databaseService
@@ -93,32 +96,25 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                                   child: CircleAvatar(
                                     backgroundColor: Colors.brown.shade800,
                                     radius: 35.0,
-                                    child: widget.discussion.messages[index].imageProfileSender != null &&
-                                        widget.discussion.messages[index].imageProfileSender != '' ?
-                                    CircleAvatar(
-                                      radius: 35.0,
-                                      backgroundImage: NetworkImage(
-                                          widget.discussion.messages[index].imageProfileSender),
-                                      //FileImage(File(user.userProfileImagePath))
-                                    ) : Text(
-                                      widget.discussion.messages[index].nameSender.toUpperCase(),
+                                    child: Text(
+                                      discussion.messages[index].nameSender[0].toUpperCase(),
                                       //textScaleFactor: 3,
                                     ),
                                   ),
                                 ),
-                                Text(widget.discussion.messages[index].nameSender,
+                                Text(discussion.messages[index].nameSender,
                                   style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
                                   softWrap: true,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  widget.discussion.messages[index].time.toString().split(' ')[0],
+                                  discussion.messages[index].time.toString().split(' ')[0],
                                   style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
                                   softWrap: true,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  widget.discussion.messages[index].time.toString().split(' ')[1].split('.')[0],
+                                  discussion.messages[index].time.toString().split(' ')[1].split('.')[0],
                                   style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
                                   softWrap: true,
                                   overflow: TextOverflow.ellipsis,
@@ -133,7 +129,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Text(widget.discussion.messages[index].messageBody,
+                              Text(discussion.messages[index].messageBody,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                   overflow: TextOverflow.visible
                               ),
@@ -208,11 +204,11 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                     child: MaterialButton(
                       onPressed: () async {
                         CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
-                        List<ForumMessage> messages = await widget.db.addMessage(_message, widget.discussion, userFromDb);
+                        List<ForumMessage> messages = await widget.db.addMessage(_message, discussion, userFromDb);
                         setState(() {
                           _messageFormFieldController.clear();
                           _message = "";
-                          widget.discussion.messages = messages;
+                          //discussion.messages = messages;
                         });
                       },
                       shape: CircleBorder(side: BorderSide(width: 2, color: Colors.white, style: BorderStyle.solid)),

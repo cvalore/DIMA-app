@@ -33,39 +33,19 @@ class _DiscussionPageState extends State<DiscussionPage> {
         email: userFromAuth != null ? userFromAuth.email : "",
         isAnonymous: userFromAuth != null ? userFromAuth.isAnonymous : false);
     widget.db = DatabaseService(user: user);
+    widget.db.setForumDiscussion(widget.discussion);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.discussion.title),
       ),
-      body: FutureBuilder(
-        future: getMessagesStartedByUserInfo(widget.discussion.messages),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting: return Loading();
-            default:
-              if (snapshot.hasError)
-                return Text('Error: ${snapshot.error}');
-              else
-                return DiscussionPageBody(
-                  db: widget.db,
-                  user: user,
-                  discussion: widget.discussion,
-                );
-          }
-        },
-      )
+      body: StreamProvider<ForumDiscussion>.value(
+        value: widget.db.discussionInfo,
+        child: DiscussionPageBody(
+          db: widget.db,
+          user: user,
+        ),
+      ),
     );
-  }
-
-  Future<dynamic> getMessagesStartedByUserInfo(List<ForumMessage> messages) async {
-    if(widget.db == null) {
-      return;
-    }
-    for(int i = 0; i < messages.length; i++) {
-      CustomUser user = await widget.db.getUserById(messages[i].uidSender);
-      messages[i].nameSender = user.username;
-      messages[i].imageProfileSender = user.userProfileImageURL;
-    }
   }
 }
