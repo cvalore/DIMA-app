@@ -4,8 +4,8 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 class ForumMessage {
   String messageKey;
   final String uidSender;
-  final String nameSender;
-  final String imageProfileSender;
+  String nameSender;
+  String imageProfileSender;
   final DateTime time;
 
   final String messageBody;

@@ -74,7 +74,7 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
           },
           ) : null,
        */
-      body: widget.likedBooks.length != 0 ?
+      body: widget.likedBooks != null && widget.likedBooks.length != 0 ?
         GridView.count(
         crossAxisCount: 2,
         padding: EdgeInsets.symmetric(vertical: 36.0 * (_isTablet ? 3 : 1),
