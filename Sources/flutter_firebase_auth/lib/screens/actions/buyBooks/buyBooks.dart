@@ -45,7 +45,6 @@ class _BuyBooksState extends State<BuyBooks> {
       booksDefiningTotalPrice.add(widget.booksToBuy[i]);
       if (widget.booksToBuy[i].exchangeable) {
         booksForExchange.add(widget.booksToBuy[i]);
-        sellerMatchingBooksForExchange[widget.booksToBuy[i]] = null;
       }
     }
     super.initState();
@@ -68,7 +67,7 @@ class _BuyBooksState extends State<BuyBooks> {
           elevation: 10.0,
           child: Container(
             //margin: EdgeInsets.symmetric(vertical: 10.0),
-            constraints: BoxConstraints(maxHeight: 80),
+            constraints: BoxConstraints(maxHeight: 60),
             child: Container(
                 child: Center(
                   child: ElevatedButton(
@@ -126,8 +125,8 @@ class _BuyBooksState extends State<BuyBooks> {
                     ],
                   ),
                 ),
-              //booksDefiningTotalPrice.length > 1 ? Divider(height: 2, thickness: 1) : Container(),
-              Padding(
+              //booksDefiningTotalPrice.length > 0 ? Divider(height: 2, thickness: 1) : Container(),
+              booksDefiningTotalPrice.length > 0 ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,7 +149,7 @@ class _BuyBooksState extends State<BuyBooks> {
                     ),
                   ],
                 ),
-              ),
+              ) : Container(),
               Divider(height: 10, thickness: 2,),
               booksForExchange.length > 0 ?
               Theme(
@@ -177,19 +176,32 @@ class _BuyBooksState extends State<BuyBooks> {
                   children: <Widget>[
                     //only if exchangeable still available
                     for (int i = 0; i < booksForExchange.length; i++)
-                      sellerMatchingBooksForExchange[booksForExchange[i]] == null ?
+                      !sellerMatchingBooksForExchange.containsKey(booksForExchange[i]) ?
                       ListTileTheme(
                         tileColor: Colors.white24,
                         child: ListTile(
-                          title: Row(
-                            children: [
-                              Text('match '),
-                              Text('"${booksForExchange[i].title}"', overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
-                            ],
+                          title: Container(
+                              child: Text(
+                                'match "${booksForExchange[i].title}"',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontWeight: FontWeight.bold)
+                              )
                           ),
                           leading: Icon(Icons.add_circle_outlined),
                           onTap: () async {
                             List<dynamic> myExchangeableBooksFromDb = await Utils.databaseService.getMyExchangeableBooks();
+                            List<dynamic> myBookIndexesAlreadyUsed = sellerMatchingBooksForExchange.length > 0 ?
+                            sellerMatchingBooksForExchange.values.map((e) => e['insertionNumber']).toList() : List<int>();
+                            List<int> bookIndexesToRemove = List<int>();
+                            for (int j = 0; j < myBookIndexesAlreadyUsed.length; j++){
+                              for (int k = 0; k < myExchangeableBooksFromDb.length; k++){
+                                if(myBookIndexesAlreadyUsed[j] == myExchangeableBooksFromDb[k]['insertionNumber'])
+                                  bookIndexesToRemove.add(k);
+                              }
+                            }
+                            for (int j = bookIndexesToRemove.length - 1; j > -1; j--)
+                              myExchangeableBooksFromDb.removeAt(bookIndexesToRemove[j]);
+
                             if (myExchangeableBooksFromDb.length == 0){
                               showDialog(
                                   context: context,
@@ -206,7 +218,7 @@ class _BuyBooksState extends State<BuyBooks> {
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text('Ok')),
+                                          child: Text('OK')),
                                     ],
                                   )
                               );
@@ -226,10 +238,7 @@ class _BuyBooksState extends State<BuyBooks> {
                                     if (booksDefiningTotalPrice[j].insertionNumber == booksForExchange[i].insertionNumber)
                                       booksDefiningTotalPrice.removeAt(j);
                                   }
-                                  print(booksDefiningTotalPrice.length);
-                                  sellerMatchingBooksForExchange[booksForExchange[i]] =
-                                      result;
-                                  print(sellerMatchingBooksForExchange.length);
+                                  sellerMatchingBooksForExchange[booksForExchange[i]] = result;
                                 }//continue here
                               });
                             }
@@ -287,7 +296,7 @@ class _BuyBooksState extends State<BuyBooks> {
                                   if(widget.booksToBuy[j].insertionNumber == removedBookInsertionNumber)
                                     booksDefiningTotalPrice.add(widget.booksToBuy[j]);
                                 }
-                                sellerMatchingBooksForExchange[booksForExchange[i]] = null;
+                                sellerMatchingBooksForExchange.remove(booksForExchange[i]);
                               });
                             },
                           ),
@@ -316,7 +325,7 @@ class _BuyBooksState extends State<BuyBooks> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: Text('Ok')),
+                                        child: Text('OK')),
                                   ],
                                 )
                             );
@@ -472,7 +481,7 @@ class _BuyBooksState extends State<BuyBooks> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Ok')),
+                  child: Text('OK')),
             ],
           )
       );

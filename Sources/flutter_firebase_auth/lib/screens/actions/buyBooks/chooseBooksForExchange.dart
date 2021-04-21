@@ -20,8 +20,6 @@ class _ChooseBooksForExchangeState extends State<ChooseBooksForExchange> {
   Widget build(BuildContext context) {
 
 
-    print(widget.myExchangeableBooks);
-
     bool _isTablet = MediaQuery
         .of(context)
         .size

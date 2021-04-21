@@ -49,6 +49,7 @@ class ItemToPurchase extends StatelessWidget {
                         child: Text(
                           book.title,
                           style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Center(
@@ -64,6 +65,7 @@ class ItemToPurchase extends StatelessWidget {
                         child: Text(
                           book.author.substring(1, book.author.length-1),
                           style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

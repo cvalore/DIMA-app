@@ -112,7 +112,7 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
                             image: (book['imagesUrl'] != null && book['imagesUrl'].length > 0) ?
                                     NetworkImage(book['imagesUrl'][0]) :
                                     book['thumbnail'] != null && book['thumbnail'].toString() != "" ?
-                                    NetworkImage(book['imagesUrl'][0]) :
+                                    NetworkImage(book['thumbnail']) :
                                     AssetImage("assets/images/no_image_available.png"),
                             fit: BoxFit.cover,
                           )
