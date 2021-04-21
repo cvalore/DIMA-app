@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -127,28 +126,32 @@ class _BuyBooksState extends State<BuyBooks> {
                     ],
                   ),
                 ),
-              booksDefiningTotalPrice.length > 1 ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 7,
-                    child: Text(
-                      'Total',
-                      style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
+              //booksDefiningTotalPrice.length > 1 ? Divider(height: 2, thickness: 1) : Container(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 7,
+                      child: Text(
+                        'Total',
+                        style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      booksDefiningTotalPrice.map((e) => e.price).reduce((value, element) => value + element).toStringAsFixed(2) + ' €',
-                      style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.end,
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        booksDefiningTotalPrice.map((e) => e.price).reduce((value, element) => value + element).toStringAsFixed(2) + ' €',
+                        style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.end,
+                      ),
                     ),
-                  ),
-                ],
-              ) : Container(),
-              Divider(height: 5, thickness: 2,),
+                  ],
+                ),
+              ),
+              Divider(height: 10, thickness: 2,),
               booksForExchange.length > 0 ?
               Theme(
                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -220,11 +223,13 @@ class _BuyBooksState extends State<BuyBooks> {
                               setState(() {
                                 if (result != null) {
                                   for (int j = 0; j < booksDefiningTotalPrice.length; j++) {
-                                    if (booksDefiningTotalPrice[i].insertionNumber == booksForExchange[i].insertionNumber)
+                                    if (booksDefiningTotalPrice[j].insertionNumber == booksForExchange[i].insertionNumber)
                                       booksDefiningTotalPrice.removeAt(j);
                                   }
+                                  print(booksDefiningTotalPrice.length);
                                   sellerMatchingBooksForExchange[booksForExchange[i]] =
                                       result;
+                                  print(sellerMatchingBooksForExchange.length);
                                 }//continue here
                               });
                             }

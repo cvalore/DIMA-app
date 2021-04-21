@@ -21,7 +21,7 @@ class ItemToPurchase extends StatelessWidget {
             children: [
               Container(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.3,
+                  maxHeight: MediaQuery.of(context).size.height * 0.2,
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(5.0),
@@ -37,7 +37,7 @@ class ItemToPurchase extends StatelessWidget {
               Expanded(
                 child: Container(
                   constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.3,
+                    maxHeight: MediaQuery.of(context).size.height * 0.2,
                   ),
                   padding: const EdgeInsets.all(8.0),
                   //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),

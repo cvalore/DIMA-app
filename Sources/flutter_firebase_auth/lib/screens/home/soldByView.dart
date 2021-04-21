@@ -168,7 +168,6 @@ class _SoldByViewState extends State<SoldByView> {
                             ],
                           ),
                         ),
-                        //SizedBox(height: 15.0,),
                         Container(
                           /*decoration: BoxDecoration(
                       border: Border.all(color: Colors.red, width: 2.0),
