@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/screens/actions/buyBooks/addPaymentMethod.dart';
+import 'package:flutter_firebase_auth/screens/actions/buyBooks/addShippingInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/itemToPurchase.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
@@ -27,6 +29,9 @@ class _BuyBooksState extends State<BuyBooks> {
   final GlobalKey<ManuallyCloseableExpansionTileState> _shippingModeKey = GlobalKey();
   List<String> shippingModes = ['express courier', 'live dispatch'];
   String chosenShippingMode;
+  bool payCash = false;
+  Map<String, dynamic> shippingAddress = Map<String, dynamic>();
+  Map<String, dynamic> paymentInfo = Map<String, dynamic>();
 
   Widget bookExchangeTrailingIcon = Icon(Icons.keyboard_arrow_right, color: Colors.white);
   Widget shippingModeTrailingIcon = Icon(Icons.keyboard_arrow_right, color: Colors.white);
@@ -47,14 +52,40 @@ class _BuyBooksState extends State<BuyBooks> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Purchase'),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: 10.0,
+          child: Container(
+            //margin: EdgeInsets.symmetric(vertical: 10.0),
+            constraints: BoxConstraints(maxHeight: 80),
+            child: Container(
+                child: Center(
+                  child: ElevatedButton(
+                    child: booksDefiningTotalPrice.length == 0 ?
+                      Text('Propose exchange') :
+                        sellerMatchingBooksForExchange.length == 0 ?
+                            Text('Pay') :
+                            Text('Pay and propose exchange'),
+                    onPressed: () {
+                      _handleButtonClick(context);
+                    },
+                  ),
+                )
+            ),
+          ),
+        ),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,// - appBarHeight,
@@ -65,7 +96,7 @@ class _BuyBooksState extends State<BuyBooks> {
             children: [
               for (int i = 0; i < widget.booksToBuy.length; i++)
                 ItemToPurchase(book: widget.booksToBuy[i], isLast: i == widget.booksToBuy.length - 1),
-              Divider(height: 5, thickness: 2,),
+              booksDefiningTotalPrice.length > 0 ? Divider(height: 5, thickness: 2,) : Container(),
               for (int i = 0; i < booksDefiningTotalPrice.length; i++)
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -96,6 +127,27 @@ class _BuyBooksState extends State<BuyBooks> {
                     ],
                   ),
                 ),
+              booksDefiningTotalPrice.length > 1 ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 7,
+                    child: Text(
+                      'Total',
+                      style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      booksDefiningTotalPrice.map((e) => e.price).reduce((value, element) => value + element).toStringAsFixed(2) + ' €',
+                      style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ) : Container(),
               Divider(height: 5, thickness: 2,),
               booksForExchange.length > 0 ?
               Theme(
@@ -104,7 +156,6 @@ class _BuyBooksState extends State<BuyBooks> {
                   initiallyExpanded: false,
                   tilePadding: const EdgeInsets.symmetric(horizontal: 0),
                   trailing: bookExchangeTrailingIcon,
-                  //maintainState: true,
                   onExpansionChanged: (bool open) {
                     if(open) {
                       setState(() {
@@ -118,71 +169,68 @@ class _BuyBooksState extends State<BuyBooks> {
                     }
                   },
                   title: Text('Books for exchange',
-                    style: Theme.of(context).textTheme.headline6
+                      style: Theme.of(context).textTheme.headline6
                   ),
                   children: <Widget>[
                     //only if exchangeable still available
                     for (int i = 0; i < booksForExchange.length; i++)
                       sellerMatchingBooksForExchange[booksForExchange[i]] == null ?
-                    ListTileTheme(
-                      tileColor: Colors.white24,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Text('match '),
-                            Text('"${booksForExchange[i].title}"', overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        leading: Icon(Icons.add_circle_outlined),
-                        onTap: () async {
-                          List<dynamic> myExchangeableBooksFromDb = await Utils.databaseService.getMyExchangeableBooks();
-                          if (myExchangeableBooksFromDb.length == 0){
-                            showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (_) => AlertDialog(
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text('You have no available books for exchange'),
+                      ListTileTheme(
+                        tileColor: Colors.white24,
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              Text('match '),
+                              Text('"${booksForExchange[i].title}"', overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          leading: Icon(Icons.add_circle_outlined),
+                          onTap: () async {
+                            List<dynamic> myExchangeableBooksFromDb = await Utils.databaseService.getMyExchangeableBooks();
+                            if (myExchangeableBooksFromDb.length == 0){
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (_) => AlertDialog(
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('You have no available books for exchange'),
+                                      ],
+                                    ),
+                                    actions: [
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('Ok')),
                                     ],
-                                  ),
-                                  actions: [
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('Ok')),
-                                  ],
-                                )
-                            );
-                          } else {
-                            List<dynamic> myExchangeableBooks = List<dynamic>();
-                            for (int j = 0; j < myExchangeableBooksFromDb.length; j++) {
-                              var book = await insertedBookFromMap(myExchangeableBooksFromDb[j]);
-                              myExchangeableBooks.add(book);
-                            }
-                            var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                ChooseBooksForExchange(myExchangeableBooks: myExchangeableBooks)
-                            ));
+                                  )
+                              );
+                            } else {
+                              List<dynamic> myExchangeableBooks = List<dynamic>();
+                              for (int j = 0; j < myExchangeableBooksFromDb.length; j++) {
+                                var book = await insertedBookFromMap(myExchangeableBooksFromDb[j]);
+                                myExchangeableBooks.add(book);
+                              }
+                              var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                  ChooseBooksForExchange(myExchangeableBooks: myExchangeableBooks)
+                              ));
 
-                            setState(() {
-                              if (result != null) {
-                                for (int j = 0; j <
-                                    booksDefiningTotalPrice.length; j++) {
-                                  if (booksDefiningTotalPrice[i]
-                                      .insertionNumber ==
-                                      result['insertionNumber'])
-                                    booksDefiningTotalPrice.removeAt(j);
-                                }
-                                sellerMatchingBooksForExchange[booksForExchange[i]] =
-                                    result;
-                              }//continue here
-                            });
-                          }
-                        },
-                      ),
-                    ) : ListTileTheme(
+                              setState(() {
+                                if (result != null) {
+                                  for (int j = 0; j < booksDefiningTotalPrice.length; j++) {
+                                    if (booksDefiningTotalPrice[i].insertionNumber == booksForExchange[i].insertionNumber)
+                                      booksDefiningTotalPrice.removeAt(j);
+                                  }
+                                  sellerMatchingBooksForExchange[booksForExchange[i]] =
+                                      result;
+                                }//continue here
+                              });
+                            }
+                          },
+                        ),
+                      ) : ListTileTheme(
                         tileColor: Colors.white38,
                         child: ListTile(
                           contentPadding: EdgeInsets.symmetric(horizontal: 2.0),
@@ -199,8 +247,8 @@ class _BuyBooksState extends State<BuyBooks> {
                                         style: Theme.of(context).textTheme.bodyText2.copyWith(fontStyle: FontStyle.italic)
                                     ),
                                     Text(
-                                      'You give: ',
-                                       style: Theme.of(context).textTheme.bodyText2.copyWith(fontStyle: FontStyle.italic)
+                                        'You give: ',
+                                        style: Theme.of(context).textTheme.bodyText2.copyWith(fontStyle: FontStyle.italic)
                                     )
                                   ],
                                 ),
@@ -229,7 +277,7 @@ class _BuyBooksState extends State<BuyBooks> {
                             icon: Icon(Icons.remove_circle_outline),
                             onPressed: () {
                               setState(() {
-                                int removedBookInsertionNumber = sellerMatchingBooksForExchange[booksForExchange[i]]['insertionNumber'];
+                                int removedBookInsertionNumber = booksForExchange[i].insertionNumber;
                                 for(int j = 0; j < widget.booksToBuy.length; j++){
                                   if(widget.booksToBuy[j].insertionNumber == removedBookInsertionNumber)
                                     booksDefiningTotalPrice.add(widget.booksToBuy[j]);
@@ -260,98 +308,125 @@ class _BuyBooksState extends State<BuyBooks> {
                                   ),
                                   actions: [
                                     FlatButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Ok')),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Ok')),
                                   ],
                                 )
                             );
                           },
                         ),
-                    ),
-                    ],
-                  ),
-                ) : Container(),
+                      ),
+                  ],
+                ),
+              ) : Container(),
               booksForExchange.length > 0 ? Divider(height: 5, thickness: 2,) : Container(),
               Theme(
                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                 child: ListTileTheme(
                   contentPadding: EdgeInsets.all(0.0),
                   child: ManuallyCloseableExpansionTile(
-                    key: _shippingModeKey,
-                    initiallyExpanded: false,
-
-                    //tilePadding: const EdgeInsets.symmetric(horizontal: 0),
-                    trailing: shippingModeTrailingIcon,
-                    //maintainState: true,
-                    onExpansionChanged: (bool open) {
-                      if(open) {
-                        setState(() {
-                          shippingModeTrailingIcon = Icon(Icons.keyboard_arrow_down, color: Colors.white);
-                        });
-                      }
-                      else {
-                        setState(() {
-                          shippingModeTrailingIcon = Icon(Icons.keyboard_arrow_right, color: Colors.white);
-                        });
-                      }
-                    },
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Shipping mode',
-                            style: Theme.of(context).textTheme.headline6
-                        ),
-                        chosenShippingMode != null ? Text(chosenShippingMode,
-                            style: Theme.of(context).textTheme.bodyText2
-                        ) : Container()
-                      ],
-                    ),
-                    children: <Widget>[
-                      for(int i = 0; i < shippingModes.length; i++)
-                        RadioListTile(
-                          activeColor: Colors.white,
-                          title: Text(shippingModes[i], style: TextStyle(color: Colors.white),),
-                          value: shippingModes[i],
-                          controlAffinity: ListTileControlAffinity.trailing,
-                          groupValue: chosenShippingMode,
-                          onChanged: (value) {
-                            setState(() {
-                              chosenShippingMode = value;
-                              _shippingModeKey.currentState.collapse();
-                            });
-                          },
-                        ),
-                     ]
+                      key: _shippingModeKey,
+                      initiallyExpanded: false,
+                      //tilePadding: const EdgeInsets.symmetric(horizontal: 0),
+                      trailing: shippingModeTrailingIcon,
+                      //maintainState: true,
+                      onExpansionChanged: (bool open) {
+                        if(open) {
+                          setState(() {
+                            shippingModeTrailingIcon = Icon(Icons.keyboard_arrow_down, color: Colors.white);
+                          });
+                        }
+                        else {
+                          setState(() {
+                            shippingModeTrailingIcon = Icon(Icons.keyboard_arrow_right, color: Colors.white);
+                          });
+                        }
+                      },
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Shipping mode',
+                              style: Theme.of(context).textTheme.headline6
+                          ),
+                          chosenShippingMode != null ? Text(chosenShippingMode,
+                              style: Theme.of(context).textTheme.bodyText2
+                          ) : Container()
+                        ],
+                      ),
+                      children: <Widget>[
+                        for(int i = 0; i < shippingModes.length; i++)
+                          RadioListTile(
+                            activeColor: Colors.white,
+                            title: Text(shippingModes[i], style: TextStyle(color: Colors.white),),
+                            value: shippingModes[i],
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            groupValue: chosenShippingMode,
+                            onChanged: (value) {
+                              setState(() {
+                                chosenShippingMode = value;
+                                if (chosenShippingMode == 'express courier') payCash = false;
+                                _shippingModeKey.currentState.collapse();
+                              });
+                            },
+                          ),
+                      ]
                   ),
                 ),
               ),
-              Divider(height: 5, thickness: 2),
-              chosenShippingMode == 'express courier' ?
-                  ListTileTheme(
-                    contentPadding: EdgeInsets.all(0.0),
-                    child: ListTile(
-                      title: Text(
-                        'Add shipping address',
-                        style: Theme.of(context).textTheme.headline6
-                      ),
-                      trailing: Icon(Icons.keyboard_arrow_right),
-                    ),
-                  ) : Container(),
-              chosenShippingMode == 'express courier' ? Divider(height: 5, thickness: 2,) : Container(),
               ListTileTheme(
                 contentPadding: EdgeInsets.all(0.0),
                 child: ListTile(
+                  enabled: chosenShippingMode != null && chosenShippingMode == 'express courier',
+                  title: Text(
+                      'Add shipping address',
+                      style: Theme.of(context).textTheme.headline6
+                  ),
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                  onTap: () async {
+                    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                        AddShippingInfo(info: shippingAddress)));
+                    if (result != null)
+                      shippingAddress = result;
+                  },
+                ),
+              ),
+              Divider(height: 5, thickness: 2),
+              ListTileTheme(
+                contentPadding: EdgeInsets.all(0.0),
+                child: ListTile(
+                  enabled: booksDefiningTotalPrice.length > 0 && chosenShippingMode != null && chosenShippingMode != 'express courier',
+                  title: Text(
+                      'Pay cash',
+                      style: Theme.of(context).textTheme.headline6
+                  ),
+                  trailing: booksDefiningTotalPrice.length > 0 && payCash ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank_outlined),
+                  onTap: () async {
+                    setState(() {
+                      payCash = !payCash;
+                    });
+                  },
+                ),
+              ),
+              ListTileTheme(
+                contentPadding: EdgeInsets.all(0.0),
+                child: ListTile(
+                  enabled: booksDefiningTotalPrice.length > 0 && (chosenShippingMode == 'express courier' || payCash == false),
                   title: Text(
                       'Add payment method',
                       style: Theme.of(context).textTheme.headline6
                   ),
                   trailing: Icon(Icons.keyboard_arrow_right),
+                  onTap: () async {
+                    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                        AddPaymentMethod(info: paymentInfo)));
+                    if (result != null)
+                      paymentInfo = result;
+                  },
                 ),
               ),
-              Divider(height: 5, thickness: 2),
-              SizedBox(height: 50,),
+              Divider(height: 5, thickness: 2)
             ],
           ),
         ),
@@ -378,5 +453,24 @@ class _BuyBooksState extends State<BuyBooks> {
       break;
     }
     return book;
+  }
+
+  void _handleButtonClick(BuildContext context) {
+    if (chosenShippingMode == null){
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AlertDialog(
+            content: Text('You need to specify a valid shipping mode'),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Ok')),
+            ],
+          )
+      );
+    }
   }
 }

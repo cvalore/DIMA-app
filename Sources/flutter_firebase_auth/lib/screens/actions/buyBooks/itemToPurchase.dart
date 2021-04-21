@@ -45,20 +45,26 @@ class ItemToPurchase extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        book.title,
-                        style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'by',
-                        style: TextStyle(
-                            fontSize: 14.0,
-                            fontStyle: FontStyle.italic
+                      Center(
+                        child: Text(
+                          book.title,
+                          style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Text(
-                        book.author.substring(1, book.author.length-1),
-                        style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold),
+                      Center(
+                        child: Text(
+                          'by',
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              fontStyle: FontStyle.italic
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          book.author.substring(1, book.author.length-1),
+                          style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

@@ -61,7 +61,7 @@ class _ChooseBooksForExchangeState extends State<ChooseBooksForExchange> {
                                 Radius.circular(4.0)),
                             image: DecorationImage(
                               image: book['imagePath'] != null ?
-                              Image.file(File(book['imagePath'])) :
+                                  FileImage(File(book['imagePath'])) :
                               AssetImage(
                                   "assets/images/no_image_available.png"),
                               fit: BoxFit.cover,
@@ -69,35 +69,31 @@ class _ChooseBooksForExchangeState extends State<ChooseBooksForExchange> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                book["title"],
-                                style: TextStyle(color: Colors.white,
-                                    fontSize: _isTablet ? 24 : 17,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                    Container(
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              book["title"],
+                              style: TextStyle(color: Colors.white,
+                                  fontSize: _isTablet ? 24 : 17,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Container(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                book["author"],
-                                style: TextStyle(color: Colors.white,
-                                    fontSize: _isTablet ? 20 : 15,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
+                          ),
+                          Center(
+                            child: Text(
+                              book["author"],
+                              style: TextStyle(color: Colors.white,
+                                  fontSize: _isTablet ? 20 : 15,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 )
