@@ -112,6 +112,29 @@ class DatabaseService {
     return result;
   }
 
+  ForumDiscussion _discussion;
+
+  void setForumDiscussion(ForumDiscussion discussion) {
+    this._discussion = discussion;
+  }
+
+  Stream<ForumDiscussion> get discussionInfo {
+    Stream<ForumDiscussion> result = forumDiscussionCollection
+        .doc(_discussion.title)
+        .snapshots()
+        .map(_forumDiscussionFromSnapshot);
+    return result;
+  }
+
+  ForumDiscussion _forumDiscussionFromSnapshot(DocumentSnapshot documentSnapshot) {
+    dynamic result = documentSnapshot.data();
+    List<ForumMessage> messages = List<ForumMessage>();
+    for(int i = 0; i < result['messages'].length; i++) {
+      messages.add(ForumMessage.fromDynamicToForumMessage(result['messages'][i]));
+    };
+    return ForumDiscussion.FromDynamicToForumDiscussion(result, messages);
+  }
+
   //endregion
 
   //region Books
@@ -1022,9 +1045,8 @@ class DatabaseService {
       }
     });
 
-    //username and userProfileImageURL are NULL!!
     ForumMessage newMessage = ForumMessage  (
-        userFromDb.uid, userFromDb.username ?? "", userFromDb.userProfileImageURL ?? "", DateTime.now(), message
+        userFromDb.uid, userFromDb.username ?? "", DateTime.now(), message
     );
     newMessage.setKey();
     currentMessages.add(newMessage.toMap());

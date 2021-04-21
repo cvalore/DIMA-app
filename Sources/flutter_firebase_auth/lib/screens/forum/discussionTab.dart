@@ -30,7 +30,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
               return Text('Error: ${snapshot.error}');
             else
               return FutureBuilder(
-                future: getStartedByUserInfo(snapshot.data),
+                future: getDiscussionStartedByUserInfo(snapshot.data),
                 builder: (BuildContext context, AsyncSnapshot<dynamic> newSnapshot) {
                   switch (newSnapshot.connectionState) {
                     case ConnectionState.waiting: return Center(child: Loading());
@@ -47,7 +47,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
     );
   }
 
-  Future<dynamic> getStartedByUserInfo(dynamic discussions) async {
+  Future<dynamic> getDiscussionStartedByUserInfo(dynamic discussions) async {
     for(int i = 0; i < discussions.length; i++) {
       CustomUser user = await widget.db.getUserById(discussions[i]['startedBy']);
       discussions[i]['startedByUsername'] = user.username;

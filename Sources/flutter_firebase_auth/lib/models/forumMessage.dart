@@ -4,13 +4,12 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 class ForumMessage {
   String messageKey;
   final String uidSender;
-  final String nameSender;
-  final String imageProfileSender;
+  String nameSender;
   final DateTime time;
 
   final String messageBody;
 
-  ForumMessage(this.uidSender, this.nameSender, this.imageProfileSender, this.time, this.messageBody);
+  ForumMessage(this.uidSender, this.nameSender, this.time, this.messageBody);
 
   setKey() {
     this.messageKey = Utils.encodeBase64(uidSender + time.toString());
@@ -25,7 +24,6 @@ class ForumMessage {
     forumMessageMap['messageKey'] = messageKey;
     forumMessageMap['uidSender'] = uidSender;
     forumMessageMap['nameSender'] = nameSender;
-    forumMessageMap['imageProfileSender'] = imageProfileSender;
     forumMessageMap['time'] = time;
     forumMessageMap['messageBody'] = messageBody;
     return forumMessageMap;
@@ -38,7 +36,6 @@ class ForumMessage {
     ForumMessage message = ForumMessage(
         element['uidSender'],
         element['nameSender'],
-        element['imageProfileSender'],
         timestamp ?
           DateTime.fromMillisecondsSinceEpoch(element['time'].seconds * 1000) :
           element['time'],
