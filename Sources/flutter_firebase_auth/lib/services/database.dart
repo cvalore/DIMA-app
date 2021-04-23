@@ -1131,6 +1131,7 @@ class DatabaseService {
         throw Exception("A problem occurred with books you want to buy. They might have been already sold or the user might have deleted it");
 
       // check on the buyer's books exchanged
+      // still to check this if
       if (booksToExchange != null && booksToExchange.length > 0) {
         DocumentSnapshot buyerSnapshot = await transactionOnDb.get(
             buyerUserReference);
@@ -1159,7 +1160,7 @@ class DatabaseService {
         var removedBook = sellerBooks.removeAt(booksToRemove[i]);
         booksToRemoveId.add(removedBook['id']);
       }
-      for (int i = buyerExchangingBooks.length - 1; i > -1; i++)
+      for (int i = buyerExchangingBooks.length - 1; i > -1; i--)
         buyerBooks[i]['exchangeStatus'] = 'pending';
 
       //check if selling user had duplicates of the sold books
@@ -1170,7 +1171,6 @@ class DatabaseService {
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++)
         booksCountById[booksToRemoveIdNoDuplicates[i]] = 0;
       booksToRemoveIdSet.forEach((element) {booksCountById[element]++;});
-      print(booksCountById);
 
       sellerHasDuplicate = List.filled(booksToRemoveIdNoDuplicates.length, false);
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
@@ -1181,7 +1181,7 @@ class DatabaseService {
         }
       }
 
-      List<dynamic> booksFromBooksCollection = List<dynamic>();
+      Map<String, dynamic> booksFromBooksCollection = Map<String, dynamic>();
       Map<String, List<String>> booksToRemoveFromBooksPerGenres = Map<String, List<String>>();
 
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
@@ -1212,7 +1212,8 @@ class DatabaseService {
             booksToRemoveFromBooksPerGenres[category] = books;
           }
         }
-        booksFromBooksCollection.add(bookSnap);
+
+        booksFromBooksCollection[booksToRemoveIdNoDuplicates[i]] = bookData;
       }
 
       Map<String, dynamic> booksFromBooksPerGenresCollection = Map<String, dynamic>();
@@ -1234,24 +1235,26 @@ class DatabaseService {
         booksFromBooksPerGenresCollection[genres[i]] = booksPerGenre;
       }
 
+      //TODO the following still to be tested
       /*
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      for (int i = 0; i < )
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
+        DocumentReference documentReference = bookCollection.doc(booksToRemoveIdNoDuplicates[i]);
+        batch.update(documentReference, booksFromBooksCollection[booksToRemoveIdNoDuplicates[i]]);
+      }
 
+      if (booksToRemoveFromBooksPerGenres.length > 0) {
+        for (int i = 0; i < genres.length; i++){
+          DocumentReference documentReference = booksPerGenreCollection.doc(genres[i]);
+          batch.update(documentReference, booksFromBooksPerGenresCollection[genres[i]]);
+        }
+      }
+      batch.update(buyerUserReference, {'books': buyerBooks});
+      batch.update(sellerUserReference, {'books': sellerBooks});
+      batch.commit();
 
-
-
-
-      transactionOnDb.update(buyerUserReference, {'books': buyerBooks});
-      transactionOnDb.update(sellerUserReference, {'books': sellerBooks});
-
-
-
-
-
-      */
-
+       */
 
     }).then((value) => print("transaction ended successfully"))
       .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
