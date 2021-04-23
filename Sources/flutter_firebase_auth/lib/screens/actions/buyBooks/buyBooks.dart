@@ -16,8 +16,9 @@ import 'chooseBooksForExchange.dart';
 class BuyBooks extends StatefulWidget {
 
   List<InsertedBook> booksToBuy;
+  String sellingUserUid;
 
-  BuyBooks({Key key, @required this.booksToBuy});
+  BuyBooks({Key key, @required this.booksToBuy, @required this.sellingUserUid});
 
   @override
   _BuyBooksState createState() => _BuyBooksState();
@@ -482,6 +483,57 @@ class _BuyBooksState extends State<BuyBooks> {
                     Navigator.pop(context);
                   },
                   child: Text('OK')),
+            ],
+          )
+      );
+    } else if (chosenShippingMode == 'express courier' && shippingAddress.length == 0){
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AlertDialog(
+            content: Text('You need to specify a shipping address associated with this purchase'),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK')),
+            ],
+          )
+      );
+    } else if (payCash == false) {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AlertDialog(
+            content: Text('You need to specify a valid payment method'),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK')),
+            ],
+          )
+      );
+    } else {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AlertDialog(
+            content: Text('Do you confirm your choice?'),
+            actions: [
+              FlatButton(
+                  onPressed: () async {
+                    await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, shippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
+                    Navigator.pop(context);
+                  },
+                  child: Text('YES')),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('NO')),
             ],
           )
       );

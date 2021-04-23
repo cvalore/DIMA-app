@@ -20,6 +20,8 @@ class CustomUser {
   final List<InsertedBook> books;
   final List<ReceivedReview> receivedReviews;
   final List<ReviewWrittenByMe> reviewsWrittenByMe;
+  List<String> transactionsAsSeller;
+  List<String> transactionsAsBuyer;
   List<BookILike> booksILike;
   double averageRating;
   String userProfileImagePath;
@@ -36,6 +38,8 @@ class CustomUser {
     this.userProfileImageURL,
     this.receivedReviews,
     this.reviewsWrittenByMe,
+    this.transactionsAsSeller,
+    this.transactionsAsBuyer,
     this.booksILike,
     this.bio,
     this.followers,
@@ -80,6 +84,8 @@ class CustomUser {
     user['usersFollowingMe'] = usersFollowingMe != null ? usersFollowingMe : [];
     user['receivedReviews'] = receivedReviews != null ? receivedReviews : [];
     user['reviewsWrittenByMe'] = reviewsWrittenByMe != null ? reviewsWrittenByMe : [];
+    user['transactionsAsSeller'] = transactionsAsSeller != null ? transactionsAsSeller : [];
+    user['transactionsAsBuyer'] = transactionsAsBuyer != null ? transactionsAsBuyer : [];
     user['booksILike'] = booksILike != null ? booksILike : [];
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;

@@ -40,6 +40,7 @@ class _SoldByViewState extends State<SoldByView> {
               if(!widget.showOnlyExchangeable || widget.books[i]['book']['exchangeable'] == true)
                 InkWell(
                   onTap: () async {
+                    print(widget.books[i]);
                     Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid']);
                   },
                   child: Column(

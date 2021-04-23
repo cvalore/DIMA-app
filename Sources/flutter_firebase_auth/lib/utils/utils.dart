@@ -150,7 +150,6 @@ class Utils {
 
   static String encodeBase64(String toEncode){
     String encoded = base64.encode(utf8.encode(toEncode));
-    print(encoded);
     return encoded;
   }
 
@@ -207,10 +206,59 @@ class Utils {
             builder: (newContext) => ViewBookPage(
               book: bookToPush,
               isSell: true,
+              userUid: userUid,
             )
         )
     );
 
+  }
+
+  static Map<String,dynamic> boughtBookFromInsertedBook(InsertedBook book){
+    Map<String, dynamic> bookMap = Map<String, dynamic>();
+    bookMap['id'] = book.id;
+    bookMap['title'] = book.title;
+    bookMap['author'] = book.author;
+    bookMap['imagesUrl'] = book.imagesUrl;
+    bookMap['status'] = book.status;
+    bookMap['price'] = book.price;
+    return bookMap;
+  }
+
+  static List<Map<String, dynamic>> exchangedBookFromMap(Map<InsertedBook,Map<String,dynamic>> exchangedBooks){
+    List<Map<String, dynamic>> result = List<Map<String, dynamic>>();
+    Map<String, dynamic> currentExchange;
+    Map<String, dynamic> receivedBook;
+    Map<String, dynamic> offeredBook;
+    List<InsertedBook> keys = exchangedBooks.keys.toList();
+    for (int i = 0; i < keys.length; i++){
+      currentExchange = Map<String, dynamic>();
+      receivedBook = Map<String, dynamic>();
+      offeredBook = Map<String, dynamic>();
+
+      // init receivedBook
+      receivedBook['id'] = keys[i].id;
+      receivedBook['title'] = keys[i].title;
+      receivedBook['author'] = keys[i].author;
+      receivedBook['imagesUrl'] = keys[i].imagesUrl;
+      receivedBook['status'] = keys[i].status;
+
+      var value = exchangedBooks[keys[i]];
+
+      // init offeredBook
+      offeredBook['id'] = value['id'];
+      offeredBook['title'] = value['title'];
+      offeredBook['author'] = value['author'];
+      offeredBook['imagesUrl'] = value['imageUrl'];
+      offeredBook['status'] = value['status'];
+
+      // init currentExchange
+      currentExchange['receivedBook'] = receivedBook;
+      currentExchange['offeredBook'] = offeredBook;
+      currentExchange['exchangeStatus'] = 'pending';
+
+      result.add(currentExchange);
+    }
+    return result;
   }
 
 

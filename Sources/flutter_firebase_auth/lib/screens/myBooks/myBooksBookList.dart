@@ -19,11 +19,8 @@ import 'package:flutter_firebase_auth/services/database.dart';
 import 'bookHomePageView.dart';
 
 
-
-
 class MyBooksBookList extends StatefulWidget {
 
-  final AuthService _auth = AuthService();
   final Map<int, dynamic> books;
   bool _isTablet;
   bool self;
@@ -275,7 +272,8 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 wasExchangeable: wasExchangeable,
                 fatherContext: context,
                 isSell: false,
-                self: widget.self
+                self: widget.self,
+                userUid: widget.self ? null : widget.userUid
             )
         )
     );
@@ -318,6 +316,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
             builder: (newContext) =>
                 BuyBooks(
                   booksToBuy: booksToBuy,
+                  sellingUserUid: widget.userUid,
                 )
         )
     );
