@@ -80,6 +80,7 @@ class _AppState extends State<App> {
      if (!_initialized) {
        return Loading();
      }
+
      return StreamProvider<AuthCustomUser>.value(
        value: AuthService().userStream,
        child: MaterialApp(

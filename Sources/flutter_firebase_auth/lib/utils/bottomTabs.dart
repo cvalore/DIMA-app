@@ -46,32 +46,32 @@ class BottomTabs extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: false,
       showSelectedLabels: true,
-      selectedLabelStyle: TextStyle(fontSize: _isTablet ? 18.0 : 11.0),
-      unselectedLabelStyle: TextStyle(fontSize: _isTablet ? 18.0 : 11.0),
+      selectedLabelStyle: TextStyle(fontSize: _isTablet ? 17.0 : 11.0),
+      unselectedLabelStyle: TextStyle(fontSize: _isTablet ? 17.0 : 11.0),
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined,
-            size: _isTablet ? 32.0 : 21.0,),
+            size: _isTablet ? 28.0 : 21.0,),
           label: 'Home',
         ),
         BottomNavigationBarItem(
             icon: Icon(getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined,
-              size: _isTablet ? 32.0 : 21.0,),
+              size: _isTablet ? 28.0 : 21.0,),
             label: 'Search'
         ),
         BottomNavigationBarItem(
             icon: Icon(getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined,
-              size: _isTablet ? 46.0 : 32.0,),
+              size: _isTablet ? 45.0 : 32.0,),
             label: 'Insert Book'
         ),
         BottomNavigationBarItem(
             icon: Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined,
-              size: _isTablet ? 32.0 : 21.0,),
+              size: _isTablet ? 28.0 : 21.0,),
             label: 'Forum'
         ),
         BottomNavigationBarItem(
             icon: Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined,
-              size: _isTablet ? 32.0 : 21.0,),
+              size: _isTablet ? 28.0 : 21.0,),
             label: 'Profile'
         ),
       ],

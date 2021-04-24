@@ -37,11 +37,13 @@ class BookGeneralInfoListView extends StatelessWidget {
         ) :
         Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
         Text('Description', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
         selectedBook.description != null ?
         Text(selectedBook.description, textAlign: TextAlign.justify, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),) :
         Text('No description provided', style: TextStyle(fontStyle: FontStyle.italic,color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0), textAlign: TextAlign.center,),
         Text(''),
+        _isTablet ? Text('') : Container(),
         /*
                       Text('ISBN 10', style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(booksAPI.getISBN10(selectedBook['volumeInfo']) ?? ''),
@@ -57,6 +59,7 @@ class BookGeneralInfoListView extends StatelessWidget {
           ],
         ) : Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
         selectedBook.pageCount != null ?
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,6 +70,7 @@ class BookGeneralInfoListView extends StatelessWidget {
           ],
         ) : Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
         selectedBook.categories != null ?
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,6 +81,7 @@ class BookGeneralInfoListView extends StatelessWidget {
           ],
         ) : Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
         selectedBook.averageRating != null ?
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,6 +105,7 @@ class BookGeneralInfoListView extends StatelessWidget {
           ],
         ) : Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
         selectedBook.ratingsCount != null ?
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,6 +116,7 @@ class BookGeneralInfoListView extends StatelessWidget {
           ],
         ) : Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
         selectedBook.language != null ?
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,6 +127,7 @@ class BookGeneralInfoListView extends StatelessWidget {
           ],
         ) : Container(),
         Text(''),
+        _isTablet ? Text('') : Container(),
       ],
     );
   }

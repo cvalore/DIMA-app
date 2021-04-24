@@ -32,15 +32,17 @@ class _SoldByViewState extends State<SoldByView> {
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: _isTablet ? 45.0 : 20.0, vertical: 10.0),
       child: Column(
           children: [
             for(int i = 0; i < widget.books.length; i++)
               if(!widget.showOnlyExchangeable || widget.books[i]['book']['exchangeable'] == true)
                 InkWell(
                   onTap: () async {
-                    print(widget.books[i]);
+                    //print(widget.books[i]);
                     Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid']);
                   },
                   child: Column(
@@ -83,11 +85,11 @@ class _SoldByViewState extends State<SoldByView> {
                                   children: <Widget>[
                                     CircleAvatar(
                                       backgroundColor: Colors.brown.shade800,
-                                      radius: 25.0,
+                                      radius: _isTablet ? 40.0 : 25.0,
                                       child: widget.books[i]['userProfileImageURL'] != null &&
                                           widget.books[i]['userProfileImageURL'].toString().isNotEmpty ?
                                       CircleAvatar(
-                                        radius: 25.0,
+                                        radius: _isTablet ? 40.0 : 25.0,
                                         backgroundImage: NetworkImage(widget.books[i]['userProfileImageURL']),
                                         //FileImage(File(user.userProfileImagePath))
                                       ) : Text(
@@ -96,14 +98,14 @@ class _SoldByViewState extends State<SoldByView> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                      padding: EdgeInsets.symmetric(horizontal: _isTablet ? 30.0 : 20.0),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Text(widget.books[i]['username'].toString(),
-                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: _isTablet ? 20.0 : 16.0),),
                                           Text(widget.books[i]['email'].toString(),
-                                            style: TextStyle(fontSize: 14.0),),
+                                            style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0),),
                                         ],
                                       ),
                                     ),
@@ -118,13 +120,14 @@ class _SoldByViewState extends State<SoldByView> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('€ ' + widget.books[i]['book']['price'].toStringAsFixed(2)),
+                                        Text('€ ' + widget.books[i]['book']['price'].toStringAsFixed(2),
+                                          style: TextStyle(fontSize: _isTablet ? 19.0 : 16.0),),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            Text('Exchange available'),
-                                            widget.books[i]['book']['exchangeable'] == true ? Icon(Icons.check_outlined, color: Colors.green) :
-                                            Icon(Icons.clear_outlined, color: Colors.red),
+                                            Text('Exchange available', style: TextStyle(fontSize: _isTablet ? 19.0 : 16.0),),
+                                            widget.books[i]['book']['exchangeable'] == true ? Icon(Icons.check_outlined, color: Colors.green,  size: _isTablet ? 25.0 : 22.0,) :
+                                            Icon(Icons.clear_outlined, color: Colors.red, size: _isTablet ? 25.0 : 22.0,),
                                           ],
                                         ),
                                       ],
@@ -160,9 +163,10 @@ class _SoldByViewState extends State<SoldByView> {
                                       },
                                       splashRadius: 10.0,
                                       icon: widget.books[i]['book']['likedBy'].contains(Utils.mySelf.uid) ?
-                                      Icon(Icons.favorite_outlined, color: Colors.red,) : Icon(Icons.favorite_border_outlined, color: Colors.red,),
+                                      Icon(Icons.favorite_outlined, color: Colors.red, size: _isTablet ? 25.0 : 22.0,) : Icon(Icons.favorite_border_outlined, color: Colors.red, size: _isTablet ? 25.0 : 22.0,),
                                     ),
-                                    Text(widget.books[i]['book']['likedBy'].length.toString())
+                                    Text(widget.books[i]['book']['likedBy'].length.toString(),
+                                      style: TextStyle(fontSize: _isTablet ? 19.0 : 16.0),)
                                   ],
                                 ),
                               ),

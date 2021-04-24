@@ -3,17 +3,12 @@ import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class SearchBookInfoBody extends StatelessWidget {
 
   final dynamic book;
   final dynamic bookInfo;
-
-  final sectionTitles = [
-    Text('Book general info'),
-    Text('Sold by'),
-    Text('Exchanged by'),
-  ];
 
   final sectionContents = [];
 
@@ -21,6 +16,9 @@ class SearchBookInfoBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -33,7 +31,12 @@ class SearchBookInfoBody extends StatelessWidget {
           ),
           child: ExpansionTile(
               initiallyExpanded: false,
-              title: sectionTitles[index],
+              title:
+              index == 0 ?
+                Text('Book general info', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),) :
+              index == 1 ?
+                Text('Sold by', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),):
+                Text('Exchanged by', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),),
               children: <Widget>[
                 index == 0 ?
                 HomeBookGeneralInfoView(selectedBook: bookInfo,) :

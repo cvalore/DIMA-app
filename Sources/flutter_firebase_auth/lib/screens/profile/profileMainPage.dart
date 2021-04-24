@@ -5,6 +5,7 @@ import 'package:flutter_firebase_auth/screens/profile/orders.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 
 class ProfileMainPage extends StatefulWidget {
@@ -20,10 +21,12 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return StreamProvider<CustomUser>.value(
       value: _db.userInfo,
       child: Container(
-        padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 20.0),
+        padding: EdgeInsets.fromLTRB(_isTablet ? 150.0 : 25.0, _isTablet ? 10.0 : 0.0, _isTablet ? 150.0 : 25.0, 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -33,11 +36,11 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
                     child: Column(
                       children: [
                         //do a sliver appbar with visualize profile??
-                        VisualizeProfile(height: 120.0),
+                        VisualizeProfile(height: _isTablet ? 200.0 : 120.0),
                         Divider(height: 15, thickness: 2,),
-                        Favorites(height: 60.0),
+                        Favorites(height: _isTablet ? 100.0 : 60.0),
                         Divider(height: 15, thickness: 2,),
-                        Orders(height: 60.0),
+                        Orders(height: _isTablet ? 100.0 : 60.0),
                         Divider(height: 15, thickness: 2,),
                         // dettagli pagamento
                       ],

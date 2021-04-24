@@ -162,17 +162,17 @@ class _ViewBookPageState extends State<ViewBookPage> {
       //backgroundColor: Colors.black,
       body: Container(
         height: MediaQuery.of(context).size.height,// - appBarHeight,
-        padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 20.0, 0.0, _isTablet ? 100.0 : 20.0, 0.0),
+        padding: EdgeInsets.fromLTRB(_isTablet ? 150.0 : 20.0, _isTablet ? 40.0 : 0.0, _isTablet ? 150.0 : 20.0, _isTablet ? 40.0 : 0.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
             children: [
               ImageService(insertedBook: widget.book, justView: true),
-              Divider(height: 5, thickness: 2,),
+              Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
               Status(insertedBook: widget.book, height: 50, offset: 50.0, justView: true),
-              Divider(height: 5, thickness: 2,),
+              Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
               Category(insertedBook: widget.book, height: 50, justView: true),
-              Divider(height: 5, thickness: 2,),
+              Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
               Theme(
                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                 child: ExpansionTile(
@@ -210,11 +210,11 @@ class _ViewBookPageState extends State<ViewBookPage> {
                   ],
                 ),
               ),
-              Divider(height: 5, thickness: 2,),
+              Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
               Price(insertedBook: widget.book, height: 50, justView: true,),
-              Divider(height: 5, thickness: 2,),
+              Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
               Exchange(insertedBook: widget.book, height: 50, justView: true),
-              Divider(height: 5, thickness: 2,),
+              Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
               SizedBox(height: 50,),
             ],
           ),

@@ -3,18 +3,12 @@ import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class HomeBookInfoBody extends StatelessWidget {
 
   final PerGenreBook book;
   final DatabaseService db;
-
-  final sectionTitles = [
-    Text('Book general info'),
-    Text('Sold by'),
-    Text('Exchanged by'),
-  ];
 
   final sectionContents = [];
 
@@ -22,12 +16,21 @@ class HomeBookInfoBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return ListView.builder(
       itemCount: 3,
       itemBuilder: (BuildContext context, int index) {
         return ExpansionTile(
           initiallyExpanded: index == 1 ? true : false,
-          title: sectionTitles[index],
+          tilePadding: EdgeInsets.symmetric(horizontal: _isTablet ? 32.0 : 0.0, vertical: _isTablet ? 12.0 : 0.0),
+          title:
+          index == 0 ?
+            Text('Book general info', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),) :
+          index == 1 ?
+            Text('Sold by', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),):
+            Text('Exchanged by', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),),
           children: <Widget>[
             index == 0 ?
             FutureBuilder(

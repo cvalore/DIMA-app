@@ -22,7 +22,7 @@ class SearchPage extends StatelessWidget {
         appBar: AppBar(
           //backgroundColor: Colors.black,
           elevation: 0.0,
-          title: Text("Search"),
+          title: Text("Search", style: TextStyle(fontSize: _isTablet ? 24.0 : 20.0),),
           bottom: TabBar(
             indicatorColor: Colors.white,
             tabs: <Widget>[

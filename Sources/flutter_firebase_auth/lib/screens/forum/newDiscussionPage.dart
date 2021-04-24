@@ -40,6 +40,9 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Forum discussion'),
@@ -59,13 +62,13 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 28.0, 0.0, 16.0),
-                  child: Text("Start a new discussion!"),
+                  child: Text("Start a new discussion!", style: TextStyle(fontSize: _isTablet ? 19.0 : 16.0),),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32.0),
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: _isTablet ? 180.0 : 32.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelStyle: TextStyle(fontSize: 16,
+                      labelStyle: TextStyle(fontSize: _isTablet ? 18.0 : 16.0,
                         //color: Colors.white
                       ),
                       labelText: "Title",
@@ -82,7 +85,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                       filled: true,
                       //fillColor: Colors.white24,
                     ),
-                    //style: TextStyle(color: Colors.white),
+                    style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),
                     validator: (value) =>
                     value.isEmpty
                         ?
@@ -101,7 +104,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("On forum's thread"),
+                        Text("On forum's thread",style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         ),
@@ -118,7 +121,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                                     child: Container(
                                         width: 150,
                                         alignment: AlignmentDirectional.center,
-                                        child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,)
+                                        child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),)
                                     )
                                 ),
                               );
@@ -128,7 +131,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                             for(int i = 0; i < forumDiscussionCategories.length; i++)
                               DropdownMenuItem(
                                 value: i,
-                                child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,),
+                                child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),),
                               ),
                           ],
                           onChanged: (value) {

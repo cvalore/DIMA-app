@@ -8,6 +8,8 @@ import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
+
 
 class ReviewsWrittenByMe extends StatefulWidget {
 
@@ -199,6 +201,9 @@ class _ReviewItemState extends State<ReviewItem> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return InkWell(
       onLongPress: () {
         widget.setSelectionModeOn();
@@ -211,142 +216,145 @@ class _ReviewItemState extends State<ReviewItem> {
           });
         }
       },
-      child: Card(
-        //height: MediaQuery.of(context).size.height / 5,
-        child: LimitedBox(
-          maxHeight: 200,
-          //setMaxHeight(widget.reviews[index].review),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 5,
-                child: GestureDetector(
-                  onTap: () async {
-                    if (widget.isSelectionModeOn == null ||
-                        !widget.isSelectionModeOn()) {
-                      DatabaseService databaseService = DatabaseService(
-                          user: CustomUser(widget.reviewWrittenByMe
-                              .reviewedUid));
-                      CustomUser user = await databaseService.getUserSnapshot();
-                      BookPerGenreUserMap userBooks = await databaseService
-                          .getUserBooksPerGenreSnapshot();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>
-                              VisualizeProfileMainPage(
-                                  user: user,
-                                  books: userBooks.result,
-                                  self: false)
-                          )
-                      );
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.brown.shade800,
-                      radius: 60.0,
-                      child: widget.reviewWrittenByMe
-                          .reviewedImageProfileURL != '' ?
-                      CircleAvatar(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: _isTablet ? 16.0 : 8.0, vertical: _isTablet ? 8.0 : 4.0),
+        child: Card(
+          //height: MediaQuery.of(context).size.height / 5,
+          child: LimitedBox(
+            maxHeight: 200,
+            //setMaxHeight(widget.reviews[index].review),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (widget.isSelectionModeOn == null ||
+                          !widget.isSelectionModeOn()) {
+                        DatabaseService databaseService = DatabaseService(
+                            user: CustomUser(widget.reviewWrittenByMe
+                                .reviewedUid));
+                        CustomUser user = await databaseService.getUserSnapshot();
+                        BookPerGenreUserMap userBooks = await databaseService
+                            .getUserBooksPerGenreSnapshot();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                VisualizeProfileMainPage(
+                                    user: user,
+                                    books: userBooks.result,
+                                    self: false)
+                            )
+                        );
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.brown.shade800,
                         radius: 60.0,
-                        backgroundImage: NetworkImage(
-                            widget.reviewWrittenByMe
-                                .reviewedImageProfileURL),
-                        //FileImage(File(user.userProfileImagePath))
-                      ) : Text(
-                        widget.reviewWrittenByMe.reviewedUsername[0]
-                            .toUpperCase(),
-                        //textScaleFactor: 3,
+                        child: widget.reviewWrittenByMe
+                            .reviewedImageProfileURL != '' ?
+                        CircleAvatar(
+                          radius: 60.0,
+                          backgroundImage: NetworkImage(
+                              widget.reviewWrittenByMe
+                                  .reviewedImageProfileURL),
+                          //FileImage(File(user.userProfileImagePath))
+                        ) : Text(
+                          widget.reviewWrittenByMe.reviewedUsername[0]
+                              .toUpperCase(),
+                          //textScaleFactor: 3,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 7,
-                                child: Text(
-                                    widget.reviewWrittenByMe
-                                        .reviewedUsername,
-                                    style: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(
-                                        fontWeight: FontWeight.bold)
-                                  /*
-                                                TextStyle(
-                                                //color: Colors.black38,
-                                                  fontWeight: FontWeight.bold
-                                              ),
+                Expanded(
+                  flex: 8,
+                  child: Stack(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 7,
+                                  child: Text(
+                                      widget.reviewWrittenByMe
+                                          .reviewedUsername,
+                                      style: Theme
+                                          .of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          .copyWith(
+                                          fontWeight: FontWeight.bold)
+                                    /*
+                                                  TextStyle(
+                                                  //color: Colors.black38,
+                                                    fontWeight: FontWeight.bold
+                                                ),
 
-                                               */
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  Utils.computeHowLongAgo(
-                                      widget.reviewWrittenByMe.time),
-                                  style: TextStyle(
-                                      fontSize: 9,
-                                      //color: Colors.grey[600],
-                                      fontWeight: FontWeight.normal
+                                                 */
                                   ),
                                 ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    Utils.computeHowLongAgo(
+                                        widget.reviewWrittenByMe.time),
+                                    style: TextStyle(
+                                        fontSize: 9,
+                                        //color: Colors.grey[600],
+                                        fontWeight: FontWeight.normal
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 3.0),
+                          Expanded(
+                            flex: 1,
+                            child: Row(
+                              children: [
+                                for(int i = 0; i < 5; i++)
+                                  widget.reviewWrittenByMe.stars > i
+                                      ? Icon(
+                                    Icons.star, color: Colors.yellow,)
+                                      : Icon(Icons.star_border,
+                                    color: Colors.yellow,),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.0),
+                          Expanded(
+                              flex: 4,
+                              child: Text(widget.reviewWrittenByMe.review,
+                                  //maxLines: 3,
+                                  textAlign: TextAlign.start
                               )
-                            ],
                           ),
-                        ),
-                        SizedBox(height: 3.0),
-                        Expanded(
-                          flex: 1,
-                          child: Row(
-                            children: [
-                              for(int i = 0; i < 5; i++)
-                                widget.reviewWrittenByMe.stars > i
-                                    ? Icon(
-                                  Icons.star, color: Colors.yellow,)
-                                    : Icon(Icons.star_border,
-                                  color: Colors.yellow,),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 10.0),
-                        Expanded(
-                            flex: 4,
-                            child: Text(widget.reviewWrittenByMe.review,
-                                //maxLines: 3,
-                                textAlign: TextAlign.start
-                            )
-                        ),
-                      ],
-                    ),
-                    widget.isSelectionModeOn != null && widget.isSelectionModeOn() == true ?
-                    Positioned(
-                        bottom: 20,
-                        right: 20,
-                        child: isSelected ?
-                        Icon(Icons.check_box_outlined) :
-                        Icon(Icons.check_box_outline_blank_outlined)
-                    ) : Container()
-                  ],
-                ),
-              )
-            ],
+                        ],
+                      ),
+                      widget.isSelectionModeOn != null && widget.isSelectionModeOn() == true ?
+                      Positioned(
+                          bottom: 20,
+                          right: 20,
+                          child: isSelected ?
+                          Icon(Icons.check_box_outlined) :
+                          Icon(Icons.check_box_outline_blank_outlined)
+                      ) : Container()
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

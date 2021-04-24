@@ -181,7 +181,7 @@ class Utils {
       likedBy: List.from(book['likedBy']),
       comment: book['comment'],
       insertionNumber: book['insertionNumber'],
-      price: book['price'],
+      price: book['price'].toDouble(),
       exchangeable: book['exchangeable'],
     );
     Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(userUid, bookToPush);

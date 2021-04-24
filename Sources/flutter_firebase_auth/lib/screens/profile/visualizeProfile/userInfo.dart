@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
+
 
 class UserInfo extends StatefulWidget {
 
@@ -30,12 +32,14 @@ class _UserInfoState extends State<UserInfo> {
       image = Image.network(widget.user.userProfileImageURL);
     }
 
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Container(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Divider(height: 10.0, thickness: 0.0,),
+            Divider(height: _isTablet ? 60.0 : 10.0, thickness: 0.0,),
             CircleAvatar(
               backgroundColor: Colors.brown.shade800,
               radius: 120.0,
@@ -76,7 +80,7 @@ class _UserInfoState extends State<UserInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: EdgeInsets.fromLTRB(_isTablet ? 75.0 : 20.0, _isTablet ? 25.0 : 0.0, _isTablet ? 75.0 : 20.0, 0.0),
                     child: Text(
                       widget.user.username,
                       textAlign: TextAlign.left,
@@ -86,7 +90,7 @@ class _UserInfoState extends State<UserInfo> {
                   ),
                   widget.user.receivedReviews != null && widget.user.receivedReviews.length != 0 ?
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 20.0),
                     child: Row(
                       children: [
                         for(int i = 0; i < 5; i++)
@@ -112,13 +116,13 @@ class _UserInfoState extends State<UserInfo> {
                   ) : Container(),
                   widget.user.bio != null && widget.user.bio != '' ?
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    padding: EdgeInsets.symmetric(vertical: _isTablet ? 24.0 : 10.0, horizontal: _isTablet ? 75.0 : 20.0),
                     child: Text(
                       widget.user.bio,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ) : Container(),
-                  !widget.self ? Divider(height: 10, thickness: 2,) : Container(),
+                  !widget.self ? Divider(height: _isTablet ? 40.0 : 10.0, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,) : Container(),
                   !widget.self ? Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -154,60 +158,74 @@ class _UserInfoState extends State<UserInfo> {
                       ],
                     ),
                   ) : Container(),
-                  Divider(height: 10, thickness: 2,),
+                  Divider(height: _isTablet ? 40.0 : 10.0, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,),
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.people_alt_outlined),
+                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
                       dense: true,
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             widget.user.followers.toString() + '  followers',
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              fontSize: _isTablet ? 17.0 : 14.0,
+                            ),
                           ),
                           Text(
                             widget.user.following.toString() + '  following',
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              fontSize: _isTablet ? 17.0 : 14.0,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                   widget.user.fullName != null && widget.user.fullName != '' ?
-                    Divider(height: 10, thickness: 2,) : Container(),
+                    Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,) : Container(),
                   widget.user.fullName != null && widget.user.fullName != '' ?
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.drive_file_rename_outline),
+                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
                       dense: true,
                       title: Text(
                         widget.user.fullName,
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(
+                          fontSize: _isTablet ? 17.0 : 14.0,
+                        ),
                       ),
                     ),
                   ) : Container(),
                   widget.user.city != null && widget.user.city != '' ?
-                    Divider(height: 10, thickness: 2,) : Container(),
+                    Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,) : Container(),
                   widget.user.city != null && widget.user.city != '' ?
                     Container(
                       child: ListTile(
                         leading: Icon(Icons.place_outlined),
+                        contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
                         dense: true,
                         title: Text(
                           widget.user.city,
-                          style: Theme.of(context).textTheme.subtitle2,
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                            fontSize: _isTablet ? 17.0 : 14.0,
+                          ),
                         ),
                       ),
                     ) : Container(),
-                  Divider(height: 10, thickness: 2,),
+                  Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,),
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.email_outlined),
+                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
                       dense: true,
                       title: Text(
                         widget.user.email,
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Theme.of(context).textTheme.subtitle2.copyWith(
+                          fontSize: _isTablet ? 17.0 : 14.0,
+                        ),
                       ),
                     ),
                   ),

@@ -32,7 +32,9 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
   Widget build(BuildContext context) {
     
     ForumDiscussion discussion = Provider.of<ForumDiscussion>(context);
-    
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -42,7 +44,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("No messages yet", style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic),),
+                Text("No messages yet", style: TextStyle(fontSize: _isTablet ? 17.0 : 15.0, fontStyle: FontStyle.italic),),
                 Icon(Icons.message),
               ],
             ),
@@ -58,7 +60,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                   color: Colors.transparent,
                   elevation: 0.0,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 18.0, 32.0, 18.0),
+                    padding: EdgeInsets.fromLTRB(8.0, _isTablet ? 24.0 : 18.0, 32.0, _isTablet ? 24.0 : 18.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -109,13 +111,13 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                                       ),
                                     ),*/
                                     Text(discussion.messages[index].nameSender,
-                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
                                       discussion.messages[index].time.toString().split(' ')[0],
-                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -132,7 +134,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                           ),
                         ),
                         Expanded(
-                          flex: 5,
+                          flex: _isTablet ? 7 : 5,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -141,14 +143,14 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                   child: Text(discussion.messages[index].messageBody,
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: _isTablet ? 18.0 : 16.0),
                                       overflow: TextOverflow.visible
                                   ),
                                 ),
                               ),
                               Text(
                                 discussion.messages[index].time.toString().split(' ')[1].split('.')[0].substring(0, 5),
-                                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 :  14.0),
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                               )

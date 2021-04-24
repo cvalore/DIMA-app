@@ -116,8 +116,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                height: 90,
-                width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
+                height: _isTablet ? 150 : 90,
+                width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : MediaQuery.of(context).size.width),
                 child: SearchBookForm(
                   setTitle: setTitle,
                   setAuthor: setAuthor,
@@ -222,7 +222,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
               },
               key: _filterExpansionTileKey,
               initiallyExpanded: false,
-              title: Text("Filter result", style: TextStyle(fontSize: 15),),
+              title: Text("Filter result", style: TextStyle(fontSize: _isTablet ? 19.0 : 15),),
               children: <Widget>[
                 Form(
                   key: _priceFormKey,
@@ -238,10 +238,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             children: <Widget>[
                               Text("Price", style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: _isTablet ? 18.0 : 15.0,
                               ),),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
-                              Text("Min €"),
+                              Text("Min €", style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                 width: 60,
@@ -251,7 +251,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   //initialValue: _greaterThanPrice,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                                   decoration: InputDecoration(
-                                    hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                    hintStyle: TextStyle(fontSize: _isTablet ? 17.0 : 14.0, color: Colors.white12,),
                                     hintText: "Price",
                                     focusedErrorBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
@@ -265,7 +265,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   },
                                 ),
                               ),
-                              Text("Max €"),
+                              Text("Max €", style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                 width: 60,
@@ -275,7 +275,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   //initialValue: _lessThanPrice,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                                   decoration: InputDecoration(
-                                    hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                    hintStyle: TextStyle(fontSize: _isTablet ? 17.0 : 14.0, color: Colors.white12,),
                                     hintText: "Price",
                                     focusedErrorBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
@@ -296,7 +296,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             children: <Widget>[
                               Text("Photos", style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: _isTablet ? 18.0 : 15.0,
                               ),),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 0.0),),
                               Checkbox(
@@ -310,7 +310,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0),),
                               Text("Exchangeable", style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: _isTablet ? 18.0 : 15.0,
                               ),),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 0.0),),
                               Checkbox(
@@ -328,7 +328,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             children: <Widget>[
                               Text("Genre", style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: _isTablet ? 18.0 : 15.0,
                               ),),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
                               DropdownButton(
@@ -345,8 +345,9 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                         child: Container(
                                         width: 200,
                                         alignment: AlignmentDirectional.center,
-                                        child: Text("All genres", textAlign: TextAlign.center,)
-                                        )
+                                        child: Text("All genres", textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),
+                                        ))
                                       ),
                                     ) :
                                     items.add(
@@ -354,7 +355,9 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                         child: Container(
                                           width: 200,
                                           alignment: AlignmentDirectional.center,
-                                          child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,)
+                                          child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),
+                                          )
                                         )
                                       ),
                                     );
@@ -365,11 +368,15 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                     i == 0 ?
                                       DropdownMenuItem(
                                         value: i,
-                                        child: Text("All genres", textAlign: TextAlign.center,),
+                                        child: Text("All genres", textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,)
+                                        ),
                                       ) :
                                       DropdownMenuItem(
                                         value: i,
-                                        child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,),
+                                        child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),
+                                        ),
                                       ),
                                 ],
                                 onChanged: (value) {
@@ -387,7 +394,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             children: <Widget>[
                               Text("ISBN", style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: _isTablet ? 18.0 : 15.0,
                               ),),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
                               Container(
@@ -395,7 +402,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                 child: TextFormField(
                                   controller: _isbnFormFieldController,
                                   decoration: InputDecoration(
-                                    hintStyle: TextStyle(fontSize: 14, color: Colors.white12,),
+                                    hintStyle: TextStyle(fontSize: _isTablet ? 17.0 : 14.0, color: Colors.white12,),
                                     hintText: "Insert ISBN (also partial)",
                                   ),
                                   onChanged: (value) {
@@ -421,7 +428,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                     _filterExpansionTileKey.currentState.collapse();
                                   });
                                 },
-                                child: Text("Apply",),
+                                child: Text("Apply",style: TextStyle(fontSize: _isTablet ? 20.0 : 17.0,),),
                               ),
                               _isRemoveFilterEnabled ? TextButton(
                                 onPressed: () {
@@ -440,8 +447,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                     _filterExpansionTileKey.currentState.collapse();
                                   });
                                 },
-                                child: Text("Remove",)
-                              ) : TextButton(child: Text("Remove",)
+                                child: Text("Remove",style: TextStyle(fontSize: _isTablet ? 20.0 : 17.0,),)
+                              ) : TextButton(child: Text("Remove",style: TextStyle(fontSize: _isTablet ? 20.0 : 17.0,),)
                               )
                             ],
                           ),
@@ -466,10 +473,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 },
                 key: _orderbyExpansionTileKey,
                 initiallyExpanded: false,
-                title: Text("Order by", style: TextStyle(fontSize: 15),),
+                title: Text("Order by", style: TextStyle(fontSize: _isTablet ? 19.0 : 15),),
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: _isTablet ? 8.0 : 0.0),
                     width: MediaQuery.of(context).size.width,
                     child: CustomRadioButton(
                       initialSelection: _selectedOrderValue,
@@ -490,13 +497,13 @@ class _SearchBookPageState extends State<SearchBookPage> {
                           _searchLoading = false;
                         });
                       },
-                      buttonHeight: 30,
-                      lineSpace: 0,
-                      fontSize: 14,
+                      buttonHeight: _isTablet ? 40.0 : 30,
+                      lineSpace: _isTablet ? 15.0 : 0.0,
+                      fontSize: _isTablet ? 17.0 : 14,
                       elevation: 0.0,
                       horizontal: true,
                       enableShape: true,
-                      buttonSpace: 5.0,
+                      buttonSpace: _isTablet ? 13.0 : 5.0,
                       textColor: Colors.white,
                       selectedTextColor: Colors.black,
                       buttonColor: Colors.white12,
@@ -511,11 +518,11 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     items: [
                       DropdownMenuItem(
                         value: orderByAscendingWayValue,
-                        child: Text(orderByAscendingWay),
+                        child: Text(orderByAscendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                       DropdownMenuItem(
                         value: orderByDescendingWayValue,
-                        child: Text(orderByDescendingWay),
+                        child: Text(orderByDescendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                     ],
                     onChanged: (value) {
@@ -535,8 +542,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
             ),
           ) : Container(),
           Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0.0),
-              child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+              padding: EdgeInsets.symmetric(vertical: _isTablet ? 20.0 : 0.0),
+              child: Divider(height: 2.0, thickness: 2.0, indent: _isTablet ? 50.0 : 12.0, endIndent: _isTablet ? 50.0 : 12.0,)
           ),
           _searchLoading ? Expanded(flex: 26, child: Loading()) :
           (
@@ -577,20 +584,20 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               Theme(
                                 data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                                 child: ExpansionTile(
-                                  tilePadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                                  tilePadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: _isTablet ? 90.0 : 20.0),
                                   title: Column(
                                     children: <Widget>[
                                       Text(booksAllInfo[i][0]['book']['title'],
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 17
+                                            fontSize:  _isTablet ? 22.0 : 17.0
                                         ),
                                       ),
                                       Text(booksAllInfo[i][0]['book']['author'],
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: _isTablet ? 18.0 : 14.0,
                                           fontStyle: FontStyle.italic,
                                         ),
                                       ),
@@ -601,7 +608,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                         Text("€"+booksAllInfo[i][0]['book']['price'].toStringAsFixed(2),
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: _isTablet ? 20.0 : 15.0,
                                           ),
                                         ) :
                                         Row(
@@ -610,13 +617,13 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                             Text("€"+booksAllInfo[i][0]['book']['price'].toStringAsFixed(2),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                fontSize: 15,
+                                                fontSize: _isTablet ? 18.0 : 15.0,
                                               ),
                                             ),
                                             Text(" and others..",
                                               style: TextStyle(
                                                 fontStyle: FontStyle.italic,
-                                                fontSize: 14.0,
+                                                fontSize: _isTablet ? 17.0 : 14.0,
                                               ),
                                             )
                                           ],
@@ -626,9 +633,12 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   children: <Widget>[
                                     Column(
                                       children: <Widget>[
-                                        SearchBookInfoBody(
-                                          book: booksAllInfo[i],
-                                          bookInfo: booksAllInfo[i][0]['info'],
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: _isTablet ? 90.0 : 0.0),
+                                          child: SearchBookInfoBody(
+                                            book: booksAllInfo[i],
+                                            bookInfo: booksAllInfo[i][0]['info'],
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -640,7 +650,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               ),
                               Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                  child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+                                  child: Divider(height: 2.0, thickness: 2.0, indent: _isTablet ? 100.0 : 12.0, endIndent: _isTablet ? 100.0 : 12.0,)
                               ),
                             ],
                           )

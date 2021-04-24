@@ -52,7 +52,7 @@ class BookHomePageView extends StatelessWidget {
         Center(
           child: Text(
             books[index]["title"],
-            style: TextStyle(color: Colors.white, fontSize: isTablet ? 24 : 17, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontSize: isTablet ? 23 : 17, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
           ),
@@ -60,7 +60,7 @@ class BookHomePageView extends StatelessWidget {
         Center(
           child: Text(
             books[index]["author"],
-            style: TextStyle(color: Colors.white, fontSize: isTablet ? 20 : 15, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontSize: isTablet ? 19 : 15, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
           ),
