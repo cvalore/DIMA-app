@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/screens/forum/discussionTab.dart';
 import 'package:flutter_firebase_auth/screens/forum/newDiscussionPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class ForumMainPage extends StatefulWidget {
 
@@ -23,11 +24,13 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
         isAnonymous: userFromAuth != null ? userFromAuth.isAnonymous : false);
     DatabaseService _db = DatabaseService(user: user);
 
-     return Scaffold(
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
+    return Scaffold(
        floatingActionButton: FloatingActionButton.extended(
          heroTag: "newForumThread",
          icon: Icon(Icons.add_circle_outline_outlined),
-         label: Text("New discussion"),
+         label: Text("New discussion", style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0),),
          onPressed: () {
            Navigator.push(
                context,

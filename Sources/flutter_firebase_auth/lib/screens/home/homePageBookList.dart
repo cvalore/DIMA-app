@@ -57,7 +57,7 @@ class HomePageBookList extends StatelessWidget {
             genre,
             style: TextStyle(
               color: Colors.white,
-              fontSize: _isTablet ? 26.0 : 20.0,
+              fontSize: _isTablet ? 24.0 : 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -89,8 +89,8 @@ class HomePageBookList extends StatelessWidget {
                           )
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      height: _isTablet ? imageHeight*1.5 : imageHeight*0.9,
-                      width: (_isTablet ? (imageHeight*1.5) : (imageHeight*0.9)) * imageWidth/imageHeight,
+                      height: _isTablet ? imageHeight*1.4 : imageHeight*0.9,
+                      width: (_isTablet ? (imageHeight*1.4) : (imageHeight*0.9)) * imageWidth/imageHeight,
                       child: perGenreBooks[index].thumbnail != null &&
                           perGenreBooks[index].thumbnail.toString() != "" ?
                       CachedNetworkImage(
@@ -112,13 +112,13 @@ class HomePageBookList extends StatelessWidget {
                       ) : Container(),
                     ),
                     Container(
-                      width: (_isTablet ? (imageHeight*1.8) : (imageHeight*0.9)) * imageWidth/imageHeight,
+                      width: (_isTablet ? (imageHeight*1.4) : (imageHeight*0.9)) * imageWidth/imageHeight,
                       child: Column(
                         children: [
                           Center(
                             child: Text(
                               perGenreBooks[index].title,
-                              style: TextStyle(color: Colors.white, fontSize: _isTablet ? 24 : 16, fontWeight: FontWeight.bold),
+                              style: TextStyle(color: Colors.white, fontSize: _isTablet ? 23 : 16, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -126,7 +126,7 @@ class HomePageBookList extends StatelessWidget {
                           Center(
                             child: Text(
                               perGenreBooks[index].author,
-                              style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20 : 12, fontWeight: FontWeight.bold),
+                              style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19 : 12, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.ellipsis,
                             ),

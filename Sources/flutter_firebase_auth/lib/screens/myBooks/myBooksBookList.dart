@@ -82,9 +82,14 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
         children: [
           GridView.count(
               crossAxisCount: 2,
-              padding: EdgeInsets.fromLTRB(24.0 * (widget._isTablet ? 5 : 1), 36.0 * (widget._isTablet ? 3 : 1), 24.0 * (widget._isTablet ? 5 : 1), 36.0 * (widget._isTablet ? 3 : 2)),
-              mainAxisSpacing: 36.0 * (widget._isTablet ? 2.5 : 1),
-              crossAxisSpacing: 36.0 * (widget._isTablet ? 4.5 : 1),
+              padding: EdgeInsets.fromLTRB(
+                  24.0 * (widget._isTablet ? 5 : 1),
+                  36.0 * (widget._isTablet ? 3 : 1),
+                  24.0 * (widget._isTablet ? 5 : 1),
+                  36.0 * (widget._isTablet ? 3 : 2)
+              ),
+              mainAxisSpacing: 36.0 * (widget._isTablet ? 4  : 1),
+              crossAxisSpacing: 36.0 * (widget._isTablet ? 6 : 1),
               scrollDirection: Axis.vertical,
               childAspectRatio: imageWidth / (imageHeight*1.1),
               children: List.generate(widget.books.keys.length, (index) {

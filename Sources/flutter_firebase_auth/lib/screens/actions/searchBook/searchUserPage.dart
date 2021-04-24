@@ -56,8 +56,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
             children: <Widget>[
               Container(
                 alignment: AlignmentDirectional.center,
-                height: 90,
-                width: -100 + (_isTablet ? MediaQuery.of(context).size.width/2 : MediaQuery.of(context).size.width),
+                height: _isTablet ? 150 : 90,
+                width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : MediaQuery.of(context).size.width),
                 child: Form(
                   key: _searchUserFormKey,
                   child: Padding(
@@ -83,7 +83,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       ),
                       textAlignVertical: TextAlignVertical.center,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 17.0,),
+                      style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0,),
                       onChanged: (value) {
                         setState(() {
                           _searchUsername = value;
@@ -172,7 +172,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
               child: ManuallyCloseableExpansionTile(
                 key: _orderbyExpansionTileKey,
                 initiallyExpanded: false,
-                title: Text("Order by", style: TextStyle(fontSize: 15),),
+                title: Text("Order by", style: TextStyle(fontSize: _isTablet ? 19.0 : 15),),
                 children: <Widget>[
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -196,13 +196,13 @@ class _SearchUserPageState extends State<SearchUserPage> {
                           _searchLoading = false;
                         });
                       },
-                      buttonHeight: 30,
-                      lineSpace: 0,
-                      fontSize: 14,
+                      buttonHeight: _isTablet ? 40.0 : 30,
+                      lineSpace: _isTablet ? 15.0 : 0.0,
+                      fontSize: _isTablet ? 17.0 : 14,
                       elevation: 0.0,
                       horizontal: true,
                       enableShape: true,
-                      buttonSpace: 5.0,
+                      buttonSpace: _isTablet ? 13.0 : 5.0,
                       textColor: Colors.white,
                       selectedTextColor: Colors.black,
                       buttonColor: Colors.white12,
@@ -217,11 +217,11 @@ class _SearchUserPageState extends State<SearchUserPage> {
                     items: [
                       DropdownMenuItem(
                         value: orderByAscendingWayValue,
-                        child: Text(orderByAscendingWay),
+                        child: Text(orderByAscendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                       DropdownMenuItem(
                         value: orderByDescendingWayValue,
-                        child: Text(orderByDescendingWay),
+                        child: Text(orderByDescendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                     ],
                     onChanged: (value) {
@@ -241,8 +241,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
             ),
           ) : Container(),
           Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0.0),
-              child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+              padding: EdgeInsets.symmetric(vertical: _isTablet ? 20.0 : 0.0),
+              child: Divider(height: 2.0, thickness: 2.0, indent: _isTablet ? 50.0 : 12.0, endIndent: _isTablet ? 50.0 : 12.0,)
           ),
           _searchLoading ? Expanded(flex: 26, child: Loading()) : (
               allUsersFound == null || allUsersFound.length == 0 ?
@@ -316,11 +316,11 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                           children: <Widget>[
                                             CircleAvatar(
                                               backgroundColor: Colors.brown.shade800,
-                                              radius: 25.0,
+                                              radius: _isTablet ? 40.0 : 25.0,
                                               child: allUsersFound[i]['userProfileImageURL'] != null &&
                                                   allUsersFound[i]['userProfileImageURL'].toString().isNotEmpty ?
                                               CircleAvatar(
-                                                radius: 25.0,
+                                                radius: _isTablet ? 40.0 : 25.0,
                                                 backgroundImage: NetworkImage(allUsersFound[i]['userProfileImageURL']),
                                                 //FileImage(File(user.userProfileImagePath))
                                               ) : Text(
@@ -329,28 +329,29 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                              padding: EdgeInsets.symmetric(horizontal: _isTablet ? 50.0 : 25.0),
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(allUsersFound[i]['username'].toString(),
-                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: _isTablet ? 20.0 : 16.0),),
                                                   Text(allUsersFound[i]['email'].toString(),
-                                                    style: TextStyle(fontSize: 14.0),),
+                                                    style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0),),
                                                 ],
                                               ),
                                             ),
                                           ],
                                         ),
+                                        _isTablet ? Padding(padding: const EdgeInsets.symmetric(vertical: 10.0),) : Container(),
                                         Padding(
-                                          padding: const EdgeInsets.only(right: 12.5),
+                                          padding: EdgeInsets.only(right: _isTablet ? 50.0 : 12.5),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               for(int j = 0; j < 5; j++)
                                                 Container(
                                                   padding: EdgeInsets.all(5.0),
-                                                  width: 30.0,
+                                                  width: _isTablet ? 35.0 : 30.0,
                                                   child: allUsersFound[i]['averageRating'] > i && allUsersFound[i]['averageRating'] < i + 1 ?
                                                   Icon(Icons.star_half_outlined, color: Colors.yellow,) :
                                                   allUsersFound[i]['averageRating'] > i ?
@@ -363,7 +364,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                                 allUsersFound[i]['receivedReviews'].length.toString() + ' reviews' :
                                                 '1 review',
                                                 textAlign: TextAlign.left,
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),
                                               ),
                                             ],
                                           ),
@@ -375,7 +376,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 16.0),
-                                child: Divider(height: 2.0, thickness: 2.0, indent: 12.0, endIndent: 12.0,)
+                                child: Divider(height: 2.0, thickness: 2.0, indent: _isTablet ? 100.0 : 12.0, endIndent: _isTablet ? 100.0 : 12.0,)
                               ),
                             ]
                           )

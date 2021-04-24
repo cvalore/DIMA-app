@@ -170,7 +170,6 @@ class Utils {
 
 
   static Future<void> pushBookPage(BuildContext context, book, String userUid) async {
-    print(book['price']);
     InsertedBook bookToPush = InsertedBook(
       id: book['id'],
       title: book['title'],

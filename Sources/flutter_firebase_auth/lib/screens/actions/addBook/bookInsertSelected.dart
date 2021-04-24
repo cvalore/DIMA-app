@@ -3,6 +3,7 @@ import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 import 'addBookSelection.dart';
 import 'addBookUserInfo.dart';
@@ -27,6 +28,9 @@ class _BookInsertSelectedState extends State<BookInsertSelected> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //backgroundColor: Colors.black,
@@ -57,22 +61,28 @@ class _BookInsertSelectedState extends State<BookInsertSelected> {
                 //print("the index is $index");
                 setState(() {
                   widget.currentPageValue = index;
-                  print("Setting current page value to " + widget.currentPageValue.toString());
-                  print("Eq " + (widget.currentPageValue == widget.pageViewSize - 1 ? "True" : "False"));
+                  //print("Setting current page value to " + widget.currentPageValue.toString());
+                  //print("Eq " + (widget.currentPageValue == widget.pageViewSize - 1 ? "True" : "False"));
                 });
               },
               children: <Widget>[
-                AddBookSelection(
-                  setSelected: null, //non dovrebbe importare
-                  selectedBook: widget.selectedBook,
-                  showDots: true,
-                  appBarHeight: Scaffold.of(context).appBarMaxHeight,
-                  showGeneralInfo: true,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 0.0, _isTablet ? 32.0 : 0.0, _isTablet ? 100.0 : 0.0, 0.0),
+                  child: AddBookSelection(
+                    setSelected: null, //non dovrebbe importare
+                    selectedBook: widget.selectedBook,
+                    showDots: true,
+                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                    showGeneralInfo: true,
+                  ),
                 ),
-                AddBookUserInfo(
-                  insertedBook: widget.insertedBook,
-                  isInsert: true,
-                  appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 0.0, _isTablet ? 32.0 : 0.0, _isTablet ? 100.0 : 0.0, 0.0),
+                  child: AddBookUserInfo(
+                    insertedBook: widget.insertedBook,
+                    isInsert: true,
+                    appBarHeight: Scaffold.of(context).appBarMaxHeight,
+                  ),
                 ),
               ],
             );

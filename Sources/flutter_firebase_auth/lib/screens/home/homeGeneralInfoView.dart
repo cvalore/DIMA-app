@@ -14,7 +14,7 @@ class HomeBookGeneralInfoView extends StatelessWidget {
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: _isTablet ? 100.0 : 20.0, vertical: 10.0),
       child: Column(
         children: <Widget>[
           Text(selectedBook["title"], textAlign: TextAlign.center,style: TextStyle(color: Colors.white, fontSize: _isTablet ? 18.0 : 14.0),),

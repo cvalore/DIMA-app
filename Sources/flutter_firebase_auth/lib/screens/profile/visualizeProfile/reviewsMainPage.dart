@@ -40,11 +40,11 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.download_outlined),
-                label: 'Received reviews',
+                label: 'Received',
               ),
               BottomNavigationBarItem(
                   icon: Icon(Icons.upload_outlined),
-                  label: 'My reviews'
+                  label: 'Sent'
               ),
             ],
             currentIndex: _selectedIndexForBottomNavigationBar,
