@@ -170,6 +170,7 @@ class Utils {
 
 
   static Future<void> pushBookPage(BuildContext context, book, String userUid) async {
+    print(book['price']);
     InsertedBook bookToPush = InsertedBook(
       id: book['id'],
       title: book['title'],
@@ -181,7 +182,7 @@ class Utils {
       likedBy: List.from(book['likedBy']),
       comment: book['comment'],
       insertionNumber: book['insertionNumber'],
-      price: book['price'],
+      price: double.parse(book['price'].toString()),
       exchangeable: book['exchangeable'],
     );
     Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(userUid, bookToPush);
@@ -207,6 +208,7 @@ class Utils {
               book: bookToPush,
               isSell: true,
               userUid: userUid,
+              self: userUid == mySelf.uid,
             )
         )
     );

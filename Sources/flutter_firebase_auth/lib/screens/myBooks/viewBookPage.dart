@@ -139,7 +139,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
           )
         ],
       ),
-      floatingActionButton: widget.isSell ?
+      floatingActionButton: widget.isSell  && !widget.self?
           FloatingActionButton.extended(
             backgroundColor: Colors.white24,
             heroTag: "purchaseBtn",

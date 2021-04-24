@@ -191,15 +191,21 @@ class _BuyBooksState extends State<BuyBooks> {
                           leading: Icon(Icons.add_circle_outlined),
                           onTap: () async {
                             List<dynamic> myExchangeableBooksFromDb = await Utils.databaseService.getMyExchangeableBooks();
+                            print(sellerMatchingBooksForExchange.length);
                             List<dynamic> myBookIndexesAlreadyUsed = sellerMatchingBooksForExchange.length > 0 ?
                             sellerMatchingBooksForExchange.values.map((e) => e['insertionNumber']).toList() : List<int>();
                             List<int> bookIndexesToRemove = List<int>();
+                            print(myBookIndexesAlreadyUsed.length);
+                            print(myBookIndexesAlreadyUsed);
+                            print('aaa');
                             for (int j = 0; j < myBookIndexesAlreadyUsed.length; j++){
+                              print(myExchangeableBooksFromDb.length);
                               for (int k = 0; k < myExchangeableBooksFromDb.length; k++){
                                 if(myBookIndexesAlreadyUsed[j] == myExchangeableBooksFromDb[k]['insertionNumber'])
                                   bookIndexesToRemove.add(k);
                               }
                             }
+                            print(bookIndexesToRemove);
                             for (int j = bookIndexesToRemove.length - 1; j > -1; j--)
                               myExchangeableBooksFromDb.removeAt(bookIndexesToRemove[j]);
 
@@ -501,7 +507,7 @@ class _BuyBooksState extends State<BuyBooks> {
             ],
           )
       );
-    } else if (payCash == false) {
+    } else if (payCash == false && booksDefiningTotalPrice.length > 0) {
       showDialog(
           context: context,
           barrierDismissible: true,
@@ -527,6 +533,7 @@ class _BuyBooksState extends State<BuyBooks> {
                   onPressed: () async {
                     await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, shippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
                     Navigator.pop(context);
+                    //Navigator.pop(context);
                   },
                   child: Text('YES')),
               FlatButton(

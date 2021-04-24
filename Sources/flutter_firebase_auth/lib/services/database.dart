@@ -224,7 +224,7 @@ class DatabaseService {
     numberOfInsertedItems += 1;
     book.setInsertionNumber(numberOfInsertedItems);
     var mapBook = book.toMap();
-    if (mapBook['exchangeable'] == true) mapBook['exchangeStatus'] = 'available';
+    mapBook['exchangeStatus'] = mapBook['exchangeable'] == true ? 'available' : 'notAvailable';
     // add book to the user collection
     await usersCollection.doc(user.uid).update({
       'books': FieldValue.arrayUnion([mapBook]),
@@ -304,8 +304,17 @@ class DatabaseService {
     books[index]["status"] = book.status;
     books[index]["category"] = book.category;
     books[index]["price"] = book.price;
-    books[index]["exchangeable"] = book.exchangeable;
     books[index]["imagesUrl"] = book.imagesUrl;
+
+    if (book.exchangeStatus == 'pending'){
+      //if the status of the book is pending the user cannot change its mode to not exchangeable
+      book.exchangeable = true;
+      books[index]["exchangeable"] = true;
+      books[index]["exchangeStatus"] = book.exchangeStatus;
+    } else {
+      books[index]["exchangeable"] = book.exchangeable;
+      books[index]["exchangeStatus"] = book.exchangeable == true ? 'available' : 'notAvailable';
+    }
 
     await usersCollection.doc(user.uid).update({
       'books': books
@@ -775,9 +784,10 @@ class DatabaseService {
     await usersCollection.doc(user.uid).get().then(
         (doc) {
           myBooks = doc.data()['books'];
-          myExchangeableBooks = myBooks.where((element) => element['exchangeable'] == true).toList();
+          myExchangeableBooks = myBooks.where((element) => element['exchangeable'] == true && element['exchangeStatus'] == 'available').toList();
         }
     );
+
 
     return myExchangeableBooks;
   }
@@ -1069,6 +1079,7 @@ class DatabaseService {
   //region Purchase
   Future<void> purchaseAndProposeExchange(String sellingUser, chosenShippingMode, shippingAddress, payCash, List<InsertedBook> booksToPurchase, Map<InsertedBook, Map<String, dynamic>> booksToExchange) async {
 
+    bool transactionSuccessfullyCompleted = false;
     Map<String, dynamic> transaction = Map<String, dynamic>();
     List<Map<String, dynamic>> booksToPurchaseMap = List<Map<String, dynamic>>();
     Map<String, dynamic> bookMap;
@@ -1101,10 +1112,11 @@ class DatabaseService {
     List<int> booksToRemove = List<int>();
     List<int> exchangingBooks = List<int>();
     List<int> buyerExchangingBooks = List<int>();
+    List<InsertedBook> booksToExchangeKeys = List<InsertedBook>();
     List<String> booksToRemoveId;
     List<bool> sellerHasDuplicate;
 
-    FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
+    await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
 
       // check on the seller's books exchanged
       DocumentSnapshot sellerUserSnapshot = await transactionOnDb.get(sellerUserReference);
@@ -1112,6 +1124,7 @@ class DatabaseService {
         throw Exception("User does not exist!");
       }
       sellerBooks = sellerUserSnapshot.data()['books'];
+      booksToExchangeKeys = booksToExchange.keys.toList();
       for (int i = 0; i < sellerBooks.length; i++){
         for (int j = 0; j < booksToPurchase.length; j++) {
           if (sellerBooks[i]['insertionNumber'] ==
@@ -1119,14 +1132,24 @@ class DatabaseService {
             booksToRemove.add(i);
           }
         }
+        print(booksToExchange);
         for (int j = 0; j < booksToExchange.length; j++){
-          if (sellerBooks[i]['insertionNumber'] == booksToExchange[j]['insertionNumber']){
+          print('Quaaaaa');
+          print(booksToExchangeKeys[j]);
+          //if (sellerBooks[i]['insertionNumber'] == booksToExchange[booksToExchangeKeys[j]]['insertionNumber']){
+          if (sellerBooks[i]['insertionNumber'] == booksToExchangeKeys[j].insertionNumber){
+            print('ma qua');
             exchangingBooks.add(i);
+            print('e qua');
             if (sellerBooks[i]['exchangeStatus'] != 'available')
               throw Exception("Some books you want to exchange are no more available");
           }
         }
       }
+      print(booksToRemove.length);
+      print(booksToPurchase.length);
+      print(exchangingBooks.length);
+      print(booksToExchange.length);
       if (booksToRemove.length != booksToPurchase.length || exchangingBooks.length != booksToExchange.length)
         throw Exception("A problem occurred with books you want to buy. They might have been already sold or the user might have deleted it");
 
@@ -1141,7 +1164,7 @@ class DatabaseService {
         buyerBooks = buyerSnapshot.data()['books'];
         for (int i = 0; i < buyerBooks.length; i++){
           for (int j = 0; j < booksToExchange.length; j++){
-            if (buyerBooks[i]['insertionNumber'] == booksToExchange[j]['insertionNumber']){
+            if (buyerBooks[i]['insertionNumber'] == booksToExchange[booksToExchangeKeys[j]]['insertionNumber']){
               buyerExchangingBooks.add(i);
               if (buyerBooks[i]['exchangeStatus'] != 'available')
                 throw Exception("Not all the books you selected for exchange are available");
@@ -1155,22 +1178,42 @@ class DatabaseService {
       //remove books from seller user document
       booksToRemoveId = List<String>();
       for (int i = 0; i < exchangingBooks.length; i++)
-        sellerBooks[i]['exchangeStatus'] = 'pending';
+        sellerBooks[exchangingBooks[i]]['exchangeStatus'] = 'pending';
       for (int i = booksToRemove.length - 1; i > -1; i--){
         var removedBook = sellerBooks.removeAt(booksToRemove[i]);
         booksToRemoveId.add(removedBook['id']);
       }
       for (int i = buyerExchangingBooks.length - 1; i > -1; i--)
-        buyerBooks[i]['exchangeStatus'] = 'pending';
+        buyerBooks[buyerExchangingBooks[i]]['exchangeStatus'] = 'pending';
+
 
       //check if selling user had duplicates of the sold books
-
-      Map<String, int> booksCountById = Map<String, int>();
       Set<String> booksToRemoveIdSet = booksToRemoveId.toSet();
       List<String> booksToRemoveIdNoDuplicates = booksToRemoveIdSet.toList();
-      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++)
+
+      Map<String, int> booksCountById = Map<String, int>();
+      Map<String, int> booksHaveImagesById = Map<String, int>();
+      Map<String, int> booksAreExchangeableById = Map<String, int>();
+
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
         booksCountById[booksToRemoveIdNoDuplicates[i]] = 0;
-      booksToRemoveIdSet.forEach((element) {booksCountById[element]++;});
+        booksHaveImagesById[booksToRemoveIdNoDuplicates[i]] = 0;
+        booksAreExchangeableById[booksToRemoveIdNoDuplicates[i]] = 0;
+      }
+      for (int i = 0; i < booksToRemoveId.length; i++)
+        booksCountById[booksToRemoveId[i]]++;
+
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
+        for (int j = 0; j < booksToPurchase.length; j++) {
+          if (booksToPurchase[j].id == booksToRemoveIdNoDuplicates[i]) {
+            if (booksToPurchase[j].exchangeable)
+              booksAreExchangeableById[booksToRemoveIdNoDuplicates[i]]++;
+            if (booksToPurchase[j].imagesUrl != null &&
+                booksToPurchase[j].imagesUrl.length > 0)
+              booksHaveImagesById[booksToRemoveIdNoDuplicates[i]]++;
+          }
+        }
+      }
 
       sellerHasDuplicate = List.filled(booksToRemoveIdNoDuplicates.length, false);
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
@@ -1181,7 +1224,8 @@ class DatabaseService {
         }
       }
 
-      Map<String, dynamic> booksFromBooksCollection = Map<String, dynamic>();
+      Map<String, dynamic> booksFromBooksCollectionToModify = Map<String, dynamic>();
+      List<String> booksFromBooksCollectionToDelete = List<String>();
       Map<String, List<String>> booksToRemoveFromBooksPerGenres = Map<String, List<String>>();
 
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
@@ -1190,6 +1234,8 @@ class DatabaseService {
         dynamic bookData = bookSnap.data();
 
         bookData['availableNum'] = bookData['availableNum'] - booksCountById[booksToRemoveIdNoDuplicates[i]];
+        bookData['exchangeable'] = bookData['exchangeable'] - booksAreExchangeableById[booksToRemoveIdNoDuplicates[i]];
+        bookData['haveImages'] = bookData['haveImages'] - booksHaveImagesById[booksToRemoveIdNoDuplicates[i]];
         if (!sellerHasDuplicate[i]) {
           List<String> owners = List.from(bookData['owners']);
           owners.remove(sellingUser);
@@ -1197,6 +1243,7 @@ class DatabaseService {
         }
 
         if (bookData['availableNum'] == 0) {
+          booksFromBooksCollectionToDelete.add(booksToRemoveIdNoDuplicates[i]);
           String category;
           for (int i = 0; i < booksToPurchase.length; i++){
             if (bookData['id'] == booksToPurchase[i].id) {
@@ -1212,8 +1259,9 @@ class DatabaseService {
             booksToRemoveFromBooksPerGenres[category] = books;
           }
         }
-
-        booksFromBooksCollection[booksToRemoveIdNoDuplicates[i]] = bookData;
+        else {
+          booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] = bookData;
+        }
       }
 
       Map<String, dynamic> booksFromBooksPerGenresCollection = Map<String, dynamic>();
@@ -1236,48 +1284,91 @@ class DatabaseService {
       }
 
       //TODO the following still to be tested
-      /*
-      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      for (int i = 0; i < booksFromBooksCollectionToDelete.length; i++){
+        print(booksFromBooksCollectionToDelete[i]);
+        print('cancellato');
+      }
 
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
-        DocumentReference documentReference = bookCollection.doc(booksToRemoveIdNoDuplicates[i]);
-        batch.update(documentReference, booksFromBooksCollection[booksToRemoveIdNoDuplicates[i]]);
-      }
-
-      if (booksToRemoveFromBooksPerGenres.length > 0) {
-        for (int i = 0; i < genres.length; i++){
-          DocumentReference documentReference = booksPerGenreCollection.doc(genres[i]);
-          batch.update(documentReference, booksFromBooksPerGenresCollection[genres[i]]);
+        if (booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] != null){
+          print(booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]]);
+        } else {
+          print('else quindi cancellato');
         }
       }
-      batch.update(buyerUserReference, {'books': buyerBooks});
-      batch.update(sellerUserReference, {'books': sellerBooks});
-      batch.commit();
+
+      /*
+      if (booksToRemoveFromBooksPerGenres.length > 0) {
+        for (int i = 0; i < genres.length; i++){
+          print(booksFromBooksPerGenresCollection[genres[i]][0]);
+        }
+      }
 
        */
 
-    }).then((value) => print("transaction ended successfully"))
+      if (booksToExchange != null && booksToExchange.length > 0) {
+        print(buyerBooks);
+      }
+      print(sellerBooks);
+
+      print('Step 1');
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      for (int i = 0; i < booksFromBooksCollectionToDelete.length; i++){
+        DocumentReference documentReference = bookCollection.doc(booksFromBooksCollectionToDelete[i]);
+        batch.delete(documentReference);
+      }
+      print('Step 2');
+
+
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
+        if (booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] != null){
+          DocumentReference documentReference = bookCollection.doc(booksToRemoveIdNoDuplicates[i]);
+          batch.update(documentReference, booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]]);
+        }
+      }
+
+      print('Step 4');
+      if (booksToRemoveFromBooksPerGenres.length > 0) {
+        for (int i = 0; i < genres.length; i++){
+          DocumentReference documentReference = booksPerGenreCollection.doc(genres[i]);
+          batch.update(documentReference, {'books': booksFromBooksPerGenresCollection[genres[i]]});
+        }
+      }
+
+      print('Step 5');
+      if (booksToExchange != null && booksToExchange.length > 0) {
+        batch.update(buyerUserReference, {'books': buyerBooks});
+      }
+
+      print('Step 6');
+      batch.update(sellerUserReference, {'books': sellerBooks});
+      batch.commit();
+    }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
       .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 
 
-    //TODO wip
-    /*
-    await transactionsCollection.doc(transaction['id']).set(transaction)
-        .catchError((error) => print("Failed to add transaction: $error"));
+    if (transactionSuccessfullyCompleted) {
+      print('Step 7');
+      await transactionsCollection.doc(transaction['id']).set(transaction)
+          .catchError((error) => print("Failed to add transaction: $error"));
 
-    await usersCollection.doc(transaction['seller']).update({
-      'transactionsAsSeller': transaction['id']
-    }).then((value) => print("transaction added for seller"))
-        .catchError((error) =>
-        print("Failed to add transaction for seller: $error"));
+      print('Step 8');
+      await usersCollection.doc(transaction['seller']).update({
+        'transactionsAsSeller': FieldValue.arrayUnion([transaction['id']]),
+      }).then((value) => print("transaction added for seller"))
+          .catchError((error) =>
+          print("Failed to add transaction for seller: $error"));
 
-    await usersCollection.doc(user.uid).update({
-      'transactionsAsSeller': transaction['id']
-    }).then((value) => print("transaction added for seller"))
-        .catchError((error) =>
-        print("Failed to add transaction for seller: $error"));
-
-     */
+      print('Step 9');
+      await usersCollection.doc(user.uid).update({
+        'transactionsAsBuyer': FieldValue.arrayUnion([transaction['id']]),
+      }).then((value) => print("transaction added for buyer"))
+          .catchError((error) =>
+          print("Failed to add transaction for buyer: $error"));
+      print('Step 10');
+    }
   }
   //endregion
 }

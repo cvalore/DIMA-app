@@ -271,7 +271,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 hadImages: hadImages,
                 wasExchangeable: wasExchangeable,
                 fatherContext: context,
-                isSell: false,
+                isSell: true,
                 self: widget.self,
                 userUid: widget.self ? null : widget.userUid
             )

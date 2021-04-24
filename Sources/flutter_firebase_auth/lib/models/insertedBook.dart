@@ -16,6 +16,7 @@ class InsertedBook {
   String comment;
   double price;
   bool exchangeable;
+  String exchangeStatus;
 
 
 
@@ -33,6 +34,7 @@ class InsertedBook {
     this.insertionNumber,
     this.price,
     this.exchangeable = false,
+    this.exchangeStatus,
     this.bookGeneralInfo});
 
   void setBookGeneralInfo(BookGeneralInfo bookGeneralInfo) {
@@ -106,6 +108,7 @@ class InsertedBook {
     insertedBook['likedBy'] = likedBy ?? [];
     insertedBook['insertionNumber'] = insertionNumber;
     insertedBook['exchangeable'] = exchangeable ?? false;
+    insertedBook['exchangeStatus'] = exchangeStatus ?? exchangeable ? 'available' : null; //TODO double check
     insertedBook['price'] = price ?? 0.0;
     insertedBook['category'] = category ?? "Generic";
     insertedBook['thumbnail'] = bookGeneralInfo.thumbnail ?? null;

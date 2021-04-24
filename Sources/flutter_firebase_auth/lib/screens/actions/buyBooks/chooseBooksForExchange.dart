@@ -60,7 +60,8 @@ class _ChooseBooksForExchangeState extends State<ChooseBooksForExchange> {
                             image: DecorationImage(
                               image: book['imagePath'] != null ?
                                   FileImage(File(book['imagePath'])) :
-                              AssetImage(
+                                  book['thumbnail'] != null && book['thumbnail'].toString() != '' ?
+                                  NetworkImage(book['thumbnail']) : AssetImage(
                                   "assets/images/no_image_available.png"),
                               fit: BoxFit.cover,
                             )
