@@ -146,7 +146,13 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
               ),
             );
           }).toList(),
-        ) : Container(child: Text('Add all your favorite books here!'))
+        ) :
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text('Add all your favorite books here!'), Icon(Icons.favorite)]
+          ),
+        ),
     );
   }
 }

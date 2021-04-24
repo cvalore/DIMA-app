@@ -55,84 +55,103 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2.0),
                 child: Card(
+                  color: Colors.transparent,
+                  elevation: 0.0,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8.0, 18.0, 32.0, 18.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Flexible(
-                          flex: 1,
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            onTap: () async {
-                              if (discussion.messages[index].uidSender != Utils.mySelf.uid) {
-                                DatabaseService databaseService = DatabaseService(
-                                    user: CustomUser(
-                                        discussion.messages[index].uidSender));
-                                CustomUser user = await databaseService
-                                    .getUserSnapshot();
-                                BookPerGenreUserMap userBooks = await databaseService
-                                    .getUserBooksPerGenreSnapshot();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (
-                                            context) =>
-                                            VisualizeProfileMainPage(
-                                                user: user,
-                                                books: userBooks
-                                                    .result,
-                                                self: false)
-                                    )
-                                );
-                              }
-                            },
-                            child: Column(
-                              children: <Widget>[
-                                Text('Sent by', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 8.0),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.brown.shade800,
-                                    radius: 35.0,
-                                    child: Text(
-                                      discussion.messages[index].nameSender[0].toUpperCase(),
-                                      //textScaleFactor: 3,
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
+                            child: InkWell(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              onTap: () async {
+                                if (discussion.messages[index].uidSender != Utils.mySelf.uid) {
+                                  DatabaseService databaseService = DatabaseService(
+                                      user: CustomUser(
+                                          discussion.messages[index].uidSender));
+                                  CustomUser user = await databaseService
+                                      .getUserSnapshot();
+                                  BookPerGenreUserMap userBooks = await databaseService
+                                      .getUserBooksPerGenreSnapshot();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (
+                                              context) =>
+                                              VisualizeProfileMainPage(
+                                                  user: user,
+                                                  books: userBooks
+                                                      .result,
+                                                  self: false)
+                                      )
+                                  );
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    //Text('Sent by', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),),
+                                    /*Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0, vertical: 8.0),
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.brown.shade800,
+                                        radius: 35.0,
+                                        child: Text(
+                                          discussion.messages[index].nameSender[0].toUpperCase(),
+                                          //textScaleFactor: 3,
+                                        ),
+                                      ),
+                                    ),*/
+                                    Text(discussion.messages[index].nameSender,
+                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
+                                    Text(
+                                      discussion.messages[index].time.toString().split(' ')[0],
+                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    /*Text(
+                                      discussion.messages[index].time.toString().split(' ')[1].split('.')[0],
+                                      style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    )*/
+                                  ],
                                 ),
-                                Text(discussion.messages[index].nameSender,
-                                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  discussion.messages[index].time.toString().split(' ')[0],
-                                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  discussion.messages[index].time.toString().split(' ')[1].split('.')[0],
-                                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              ],
+                              ),
                             ),
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 5,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                              Text(discussion.messages[index].messageBody,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.visible
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                  child: Text(discussion.messages[index].messageBody,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.visible
+                                  ),
+                                ),
                               ),
+                              Text(
+                                discussion.messages[index].time.toString().split(' ')[1].split('.')[0].substring(0, 5),
+                                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14.0),
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis,
+                              )
                             ],
                           ),
                         )

@@ -758,9 +758,11 @@ class DatabaseService {
               found = true;
             }
           }
-          currentBook = userBooks[bookIndex];
-          currentBook['uid'] = likedBooks[i]['userUid'];
-          books.add(currentBook);
+          if(bookIndex != null) {
+            currentBook = userBooks[bookIndex];
+            currentBook['uid'] = likedBooks[i]['userUid'];
+            books.add(currentBook);
+          }
         });
       }
     });
