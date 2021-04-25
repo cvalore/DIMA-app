@@ -24,7 +24,7 @@ class HomeBookInfoBody extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return ExpansionTile(
           initiallyExpanded: index == 1 ? true : false,
-          tilePadding: EdgeInsets.symmetric(horizontal: _isTablet ? 32.0 : 0.0, vertical: _isTablet ? 12.0 : 0.0),
+          tilePadding: EdgeInsets.symmetric(horizontal: _isTablet ? 32.0 : 12.0, vertical: _isTablet ? 12.0 : 0.0),
           title:
           index == 0 ?
             Text('Book general info', style: TextStyle(fontSize: _isTablet ? 20.0 : 16.0),) :

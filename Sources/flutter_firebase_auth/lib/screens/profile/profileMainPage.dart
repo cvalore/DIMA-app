@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/chat/chatProfile.dart';
 import 'package:flutter_firebase_auth/screens/profile/favorites/favorites.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile.dart';
@@ -42,6 +43,7 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
                         Divider(height: 15, thickness: 2,),
                         Orders(height: _isTablet ? 100.0 : 60.0),
                         Divider(height: 15, thickness: 2,),
+                        ChatProfile(height: _isTablet ? 100.0 : 60.0),
                         // dettagli pagamento
                       ],
                     ),

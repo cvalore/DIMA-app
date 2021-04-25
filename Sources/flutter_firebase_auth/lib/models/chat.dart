@@ -10,6 +10,9 @@ class Chat {
   List<Message> messages;
   final DateTime time;
 
+  bool user1Read = false;
+  bool user2Read = false;
+
   Chat(this.userUid1, this.userUid2, this.otherUsername, this.messages, this.time);
 
   setKey() {
@@ -31,6 +34,8 @@ class Chat {
     chatMap['time'] = time;
     List<dynamic> messagesMap = messages.map((e) => e.toMap()).toList();
     chatMap['messages'] = messagesMap;
+    chatMap['user1Read'] = user1Read;
+    chatMap['user2Read'] = user2Read;
     return chatMap;
   }
 
@@ -39,13 +44,15 @@ class Chat {
 
     Chat chat = Chat(
       chatMap['userUid1'],
-      chatMap['userUid1'],
+      chatMap['userUid2'],
       chatMap['otherUsername'],
         messages,
         timestamp ?
         DateTime.fromMillisecondsSinceEpoch(chatMap['time'].seconds * 1000) :
         chatMap['time'],
     );
+    chat.user1Read = chatMap['user1Read'];
+    chat.user2Read = chatMap['user2Read'];
     chat.setKnownKey(chatMap['chatKey']);
     return chat;
   }

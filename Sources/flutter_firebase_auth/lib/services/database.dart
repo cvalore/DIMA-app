@@ -1400,6 +1400,25 @@ class DatabaseService {
 
   //region Chat
 
+  Future<dynamic> getMyChats() async {
+    dynamic result = [];
+    dynamic chatKeys = [];
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        chatKeys.addAll(doc.data()['chats']);
+      }
+    });
+
+    for(int i = 0; i < chatKeys.length; i++) {
+      await chatsCollection.doc(chatKeys[i]).get().then((DocumentSnapshot doc) {
+        if(doc.exists) {
+          result.add(doc.data());
+        }
+      });
+    }
+    return result;
+  }
+
   Future<dynamic> createNewChat(String userUid1, String userUid2, String otherUsername) async {
     dynamic result = null;
 
@@ -1413,6 +1432,7 @@ class DatabaseService {
         Chat newChat = Chat(
             userUid1, userUid2, otherUsername, List<Message>(), time
         );
+        newChat.user1Read = true;
         newChat.setKnownKey(chatKey);
         await chatsCollection.doc(chatKey).set(newChat.toMap())
             .then((value) {result = newChat.toMap(); print("Chat Added");})
