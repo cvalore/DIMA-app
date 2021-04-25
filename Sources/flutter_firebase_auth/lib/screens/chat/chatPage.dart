@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/message.dart';
+import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPageBody.dart';
+import 'package:flutter_firebase_auth/screens/chat/pendingPage.dart';
+import 'package:flutter_firebase_auth/screens/chat/pendingPageBody.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPageBody.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -43,9 +47,23 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: StreamProvider<Chat>.value(
         value: widget.db.chatInfo,
-        child: ChatPageBody(
-          db: widget.db,
-          user: user,
+        child: DefaultTabController(
+          length: 2,
+          child: TabBarView(
+            children: <Widget>[
+              ChatPageBody(
+                db: widget.db,
+                user: user,
+              ),
+              StreamProvider<List<MyTransaction>>.value(
+                value: widget.db.transactionsInfo,
+                child: PendingPage(
+                  db: widget.db,
+                  user: user,
+                ),
+              ),
+            ],
+          )
         ),
       ),
     );

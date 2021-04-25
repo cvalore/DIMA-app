@@ -7,6 +7,7 @@ import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
@@ -143,6 +144,14 @@ class DatabaseService {
     return result;
   }
 
+  Stream<List<MyTransaction>> get transactionsInfo {
+    Stream<List<MyTransaction>> result = usersCollection
+        .doc(user.uid)
+        .snapshots()
+        .map(_transactionFromSnapshot);
+    return result;
+  }
+
   ForumDiscussion _forumDiscussionFromSnapshot(DocumentSnapshot documentSnapshot) {
     dynamic result = documentSnapshot.data();
     List<Message> messages = List<Message>();
@@ -159,6 +168,15 @@ class DatabaseService {
       messages.add(Message.fromDynamicToMessage(result['messages'][i]));
     };
     return Chat.FromDynamicToChat(result, messages);
+  }
+
+  List<MyTransaction> _transactionFromSnapshot(DocumentSnapshot documentSnapshot) {
+    dynamic transactions = documentSnapshot.data()['transactionsAsSeller'] ?? [];
+    List<MyTransaction> result = List<MyTransaction>();
+    transactions.forEach((tr) {
+      result.add(MyTransaction(tr));
+    });
+    return result;
   }
 
   //endregion
@@ -1106,6 +1124,7 @@ class DatabaseService {
   //endregion
 
   //region Purchase
+
   Future<void> purchaseAndProposeExchange(String sellingUser, chosenShippingMode, shippingAddress, payCash, List<InsertedBook> booksToPurchase, Map<InsertedBook, Map<String, dynamic>> booksToExchange) async {
 
     bool transactionSuccessfullyCompleted = false;
@@ -1399,6 +1418,17 @@ class DatabaseService {
       print('Step 10');
     }
   }
+
+  Future<dynamic> getTransactionFromKey(String transactionKey) async {
+    dynamic result;
+    await transactionsCollection.doc(transactionKey).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        result = doc.data();
+      }
+    });
+    return result;
+  }
+
   //endregion
 
   //region Chat

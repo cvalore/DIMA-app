@@ -93,6 +93,7 @@ class CustomUser {
     user['userProfileImagePath'] = '';
     user['books'] = [];
     user['numberOfInsertedItems'] = books != null ? books.length : user['numberOfInsertedItems'] = 0;
+    user['chats'] = [];
     return user;
   }
 }

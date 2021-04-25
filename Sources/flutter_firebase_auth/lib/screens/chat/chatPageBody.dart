@@ -8,6 +8,7 @@ import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -162,81 +163,88 @@ class _ChatPageBodyState extends State<ChatPageBody> {
             },
           ),
         ),
-        ManuallyCloseableExpansionTile(
-          initiallyExpanded: true,
-          title: Text("Send a new message on this chat!"),
-          children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Form(
-                    key: _messageFormKey,
-                    child: Flexible(
-                      flex: 6,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                        child: Container(
-                          //width: MediaQuery.of(context).size.width / 1.5,
-                          child: TextFormField(
-                            controller: _messageFormFieldController,
-                            maxLength: maxForumMessageLength,
-                            maxLines: null,
-                            //expands: true,
-                            keyboardType: TextInputType.multiline,
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(fontSize: 16,
-                                //color: Colors.white
+        Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ManuallyCloseableExpansionTile(
+            initiallyExpanded: true,
+            title: Text("Send a new message on this chat!"),
+            children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Form(
+                      key: _messageFormKey,
+                      child: Flexible(
+                        flex: 6,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                          child: Container(
+                            //width: MediaQuery.of(context).size.width / 1.5,
+                            child: TextFormField(
+                              controller: _messageFormFieldController,
+                              maxLength: maxForumMessageLength,
+                              maxLines: null,
+                              //expands: true,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                labelStyle: TextStyle(fontSize: 16,
+                                  //color: Colors.white
+                                ),
+                                labelText: "Message",
+                                contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                                //hintStyle: TextStyle(color: Colors.white,),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(7.0),),
+                                  //borderSide: BorderSide(color: Colors.white)
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                  //borderSide: BorderSide(color: Colors.white)
+                                ),
+                                filled: true,
+                                //fillColor: Colors.white24,
                               ),
-                              labelText: "Message",
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                              //hintStyle: TextStyle(color: Colors.white,),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(7.0),),
-                                //borderSide: BorderSide(color: Colors.white)
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                //borderSide: BorderSide(color: Colors.white)
-                              ),
-                              filled: true,
-                              //fillColor: Colors.white24,
+                              validator: (value) =>
+                              value.isEmpty
+                                  ?
+                              'Enter a valid message' : null,
+                              onChanged: (value) {
+                                setState(() {
+                                  _message = value;
+                                });
+                              },
                             ),
-                            validator: (value) =>
-                            value.isEmpty
-                                ?
-                            'Enter a valid message' : null,
-                            onChanged: (value) {
-                              setState(() {
-                                _message = value;
-                              });
-                            },
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: MaterialButton(
-                      onPressed: () async {
-                        CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
-                        List<Message> messages = await widget.db.addMessageToChat(_message, chat, userFromDb);
-                        setState(() {
-                          _messageFormFieldController.clear();
-                          _message = "";
-                          //discussion.messages = messages;
-                        });
-                      },
-                      shape: CircleBorder(side: BorderSide(width: 2, color: Colors.white, style: BorderStyle.solid)),
-                      child: Icon(Icons.send),
+                    Expanded(
+                      flex: 1,
+                      child: MaterialButton(
+                        onPressed: () async {
+                          CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
+                          List<Message> messages = await widget.db.addMessageToChat(_message, chat, userFromDb);
+                          setState(() {
+                            _messageFormFieldController.clear();
+                            _message = "";
+                            //discussion.messages = messages;
+                          });
+                        },
+                        shape: CircleBorder(side: BorderSide(width: 2, color: Colors.white, style: BorderStyle.solid)),
+                        child: Icon(Icons.send),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,8.0),
+          child: BottomTwoDots(size: 8.0, darkerIndex: 0,),
         ),
       ],
     );
