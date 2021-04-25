@@ -1408,7 +1408,9 @@ class DatabaseService {
     dynamic chatKeys = [];
     await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
       if(doc.exists) {
-        chatKeys.addAll(doc.data()['chats']);
+        if(doc.data()['chats'] != null) {
+          chatKeys.addAll(doc.data()['chats']);
+        }
       }
     });
 
