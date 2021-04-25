@@ -33,10 +33,12 @@ class ChatProfileBody extends StatelessWidget {
     Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("No chats yet",
-          style: TextStyle(
-            fontStyle: FontStyle.italic,
-            fontSize: _isTablet ? 17.0 : 15.0,
+        Center(
+          child: Text("No chats yet",
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: _isTablet ? 17.0 : 15.0,
+            ),
           ),
         ),
         Padding(
