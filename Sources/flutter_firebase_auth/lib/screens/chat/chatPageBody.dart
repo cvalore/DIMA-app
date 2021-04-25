@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -10,18 +11,18 @@ import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class DiscussionPageBody extends StatefulWidget {
+class ChatPageBody extends StatefulWidget {
 
   final DatabaseService db;
   final CustomUser user;
 
-  const DiscussionPageBody({Key key, this.db, this.user}) : super(key: key);
+  const ChatPageBody({Key key, this.db, this.user}) : super(key: key);
 
   @override
-  _DiscussionPageBodyState createState() => _DiscussionPageBodyState();
+  _ChatPageBodyState createState() => _ChatPageBodyState();
 }
 
-class _DiscussionPageBodyState extends State<DiscussionPageBody> {
+class _ChatPageBodyState extends State<ChatPageBody> {
 
   final GlobalKey<FormState> _messageFormKey = GlobalKey();
   final _messageFormFieldController = TextEditingController();
@@ -30,15 +31,15 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    
-    ForumDiscussion discussion = Provider.of<ForumDiscussion>(context);
+
+    Chat chat = Provider.of<Chat>(context);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        discussion == null || discussion.messages == null || discussion.messages.length == 0 ?
+        chat == null || chat.messages == null || chat.messages.length == 0 ?
         Expanded(
           child: Center(
             child: Column(
@@ -52,7 +53,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
         ) :
         Expanded(
           child: ListView.builder(
-            itemCount: discussion.messages.length,
+            itemCount: chat.messages.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -71,10 +72,10 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                             child: InkWell(
                               borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               onTap: () async {
-                                if (discussion.messages[index].uidSender != Utils.mySelf.uid) {
+                                if (chat.messages[index].uidSender != Utils.mySelf.uid) {
                                   DatabaseService databaseService = DatabaseService(
                                       user: CustomUser(
-                                          discussion.messages[index].uidSender));
+                                          chat.messages[index].uidSender));
                                   CustomUser user = await databaseService
                                       .getUserSnapshot();
                                   BookPerGenreUserMap userBooks = await databaseService
@@ -110,13 +111,13 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                                         ),
                                       ),
                                     ),*/
-                                    Text(discussion.messages[index].nameSender,
+                                    Text(chat.messages[index].nameSender,
                                       style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
-                                      discussion.messages[index].time.toString().split(' ')[0],
+                                      chat.messages[index].time.toString().split(' ')[0],
                                       style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
@@ -142,14 +143,14 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                               Card(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                  child: Text(discussion.messages[index].messageBody,
+                                  child: Text(chat.messages[index].messageBody,
                                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: _isTablet ? 18.0 : 16.0),
                                       overflow: TextOverflow.visible
                                   ),
                                 ),
                               ),
                               Text(
-                                discussion.messages[index].time.toString().split(' ')[1].split('.')[0].substring(0, 5),
+                                chat.messages[index].time.toString().split(' ')[1].split('.')[0].substring(0, 5),
                                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 :  14.0),
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,
@@ -225,7 +226,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                     child: MaterialButton(
                       onPressed: () async {
                         CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
-                        List<Message> messages = await widget.db.addMessageToForum(_message, discussion, userFromDb);
+                        List<Message> messages = await widget.db.addMessageToChat(_message, chat, userFromDb);
                         setState(() {
                           _messageFormFieldController.clear();
                           _message = "";

@@ -288,23 +288,21 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                                 child: InkWell(
                                   onTap: () async {
-                                    if (allUsersFound[i]['uid'] != Utils.mySelf.uid) {
-                                      DatabaseService databaseService = DatabaseService(
-                                          user: CustomUser(allUsersFound[i]['uid']));
-                                      CustomUser user = await databaseService
-                                          .getUserSnapshot();
-                                      BookPerGenreUserMap userBooks = await databaseService
-                                          .getUserBooksPerGenreSnapshot();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              VisualizeProfileMainPage(
-                                                  user: user,
-                                                  books: userBooks.result,
-                                                  self: false)
-                                          )
-                                      );
-                                    }
+                                    DatabaseService databaseService = DatabaseService(
+                                        user: CustomUser(allUsersFound[i]['uid']));
+                                    CustomUser user = await databaseService
+                                        .getUserSnapshot();
+                                    BookPerGenreUserMap userBooks = await databaseService
+                                        .getUserBooksPerGenreSnapshot();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            VisualizeProfileMainPage(
+                                                user: user,
+                                                books: userBooks.result,
+                                                self: allUsersFound[i]['uid'] == Utils.mySelf.uid)
+                                        )
+                                    );
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 0.0),

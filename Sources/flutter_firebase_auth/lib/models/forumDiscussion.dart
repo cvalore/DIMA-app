@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_firebase_auth/models/forumMessage.dart';
+import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class ForumDiscussion {
@@ -7,7 +7,7 @@ class ForumDiscussion {
   final String startedBy;
   final String title;
   final String category;
-  List<ForumMessage> messages;
+  List<Message> messages;
   final DateTime time;
 
   String startedByProfilePicture;
@@ -43,7 +43,7 @@ class ForumDiscussion {
     return discussionForumMap;
   }
 
-  static ForumDiscussion FromDynamicToForumDiscussion(dynamic discussion, List<ForumMessage> messages) {
+  static ForumDiscussion FromDynamicToForumDiscussion(dynamic discussion, List<Message> messages) {
     bool timestamp = discussion['time'].runtimeType == Timestamp;
 
     ForumDiscussion disc = ForumDiscussion(
