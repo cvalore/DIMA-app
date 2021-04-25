@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
-import 'package:flutter_firebase_auth/models/forumMessage.dart';
+import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
@@ -23,7 +24,6 @@ class DatabaseService {
 
   StorageService storageService = StorageService();
 
-  // collection reference
   final CollectionReference bookCollection = FirebaseFirestore.instance
       .collection('books');
   final CollectionReference usersCollection = FirebaseFirestore.instance
@@ -34,6 +34,8 @@ class DatabaseService {
       .collection('forumDiscussion');
   final CollectionReference transactionsCollection = FirebaseFirestore.instance
       .collection('transactions');
+  final CollectionReference chatsCollection = FirebaseFirestore.instance
+      .collection('chats');
 
   //endregion
 
@@ -115,9 +117,14 @@ class DatabaseService {
   }
 
   ForumDiscussion _discussion;
+  Chat _chat;
 
   void setForumDiscussion(ForumDiscussion discussion) {
     this._discussion = discussion;
+  }
+
+  void setChat(Chat chat) {
+    this._chat = chat;
   }
 
   Stream<ForumDiscussion> get discussionInfo {
@@ -128,13 +135,30 @@ class DatabaseService {
     return result;
   }
 
+  Stream<Chat> get chatInfo {
+    Stream<Chat> result = chatsCollection
+        .doc(_chat.chatKey)
+        .snapshots()
+        .map(_chatFromSnapshot);
+    return result;
+  }
+
   ForumDiscussion _forumDiscussionFromSnapshot(DocumentSnapshot documentSnapshot) {
     dynamic result = documentSnapshot.data();
-    List<ForumMessage> messages = List<ForumMessage>();
+    List<Message> messages = List<Message>();
     for(int i = 0; i < result['messages'].length; i++) {
-      messages.add(ForumMessage.fromDynamicToForumMessage(result['messages'][i]));
+      messages.add(Message.fromDynamicToMessage(result['messages'][i]));
     };
     return ForumDiscussion.FromDynamicToForumDiscussion(result, messages);
+  }
+
+  Chat _chatFromSnapshot(DocumentSnapshot documentSnapshot) {
+    dynamic result = documentSnapshot.data();
+    List<Message> messages = List<Message>();
+    for(int i = 0; i < result['messages'].length; i++) {
+      messages.add(Message.fromDynamicToMessage(result['messages'][i]));
+    };
+    return Chat.FromDynamicToChat(result, messages);
   }
 
   //endregion
@@ -1043,7 +1067,7 @@ class DatabaseService {
     await forumDiscussionCollection.doc(title).get().then((DocumentSnapshot doc) async {
       if (!doc.exists) {
         ForumDiscussion newDiscussion = ForumDiscussion(
-          title, category, List<ForumMessage>(), DateTime.now(), user.uid
+          title, category, List<Message>(), DateTime.now(), user.uid
         );
         newDiscussion.setKey();
         await forumDiscussionCollection.doc(title).set(newDiscussion.toMap())
@@ -1055,7 +1079,7 @@ class DatabaseService {
     return result;
   }
 
-  Future<List<ForumMessage>> addMessage(String message, ForumDiscussion discussion, CustomUser userFromDb) async {
+  Future<List<Message>> addMessageToForum(String message, ForumDiscussion discussion, CustomUser userFromDb) async {
     dynamic currentMessages;
     await forumDiscussionCollection.doc(discussion.title).get().then((DocumentSnapshot doc) async {
       if (doc.exists) {
@@ -1063,7 +1087,7 @@ class DatabaseService {
       }
     });
 
-    ForumMessage newMessage = ForumMessage  (
+    Message newMessage = Message  (
         userFromDb.uid, userFromDb.username ?? "", DateTime.now(), message
     );
     newMessage.setKey();
@@ -1072,9 +1096,9 @@ class DatabaseService {
       {"messages" : currentMessages}
     );
 
-    List<ForumMessage> messages = List<ForumMessage>();
+    List<Message> messages = List<Message>();
     currentMessages.forEach((element) => messages.add(
-      ForumMessage.fromDynamicToForumMessage(element)
+      Message.fromDynamicToMessage(element)
     ));
     return messages;
   }
@@ -1376,4 +1400,104 @@ class DatabaseService {
     }
   }
   //endregion
+
+  //region Chat
+
+  Future<dynamic> getMyChats() async {
+    dynamic result = [];
+    dynamic chatKeys = [];
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        chatKeys.addAll(doc.data()['chats']);
+      }
+    });
+
+    for(int i = 0; i < chatKeys.length; i++) {
+      await chatsCollection.doc(chatKeys[i]).get().then((DocumentSnapshot doc) {
+        if(doc.exists) {
+          result.add(doc.data());
+        }
+      });
+    }
+    return result;
+  }
+
+  Future<dynamic> createNewChat(String userUid1, String userUid2, String otherUsername) async {
+    dynamic result = null;
+
+    String keyPart1 = userUid1.compareTo(userUid2) > 0 ? userUid1 : userUid2;
+    String keyPart2 = userUid1.compareTo(userUid2) > 0 ? userUid2 : userUid1;
+    DateTime time = DateTime.now();
+    String chatKey = Utils.encodeBase64(keyPart1 + "_" + keyPart2);
+
+    await chatsCollection.doc(chatKey).get().then((DocumentSnapshot doc) async {
+      if (!doc.exists) {
+        Chat newChat = Chat(
+            userUid1, userUid2, otherUsername, List<Message>(), time
+        );
+        newChat.user1Read = true;
+        newChat.setKnownKey(chatKey);
+        await chatsCollection.doc(chatKey).set(newChat.toMap())
+            .then((value) {result = newChat.toMap(); print("Chat Added");})
+            .catchError((error) {print("Failed to add chat: $error");});
+      }
+      else {
+        result = doc.data();
+      }
+    });
+
+    await usersCollection
+        .where('uid', isEqualTo: userUid1)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+          if (querySnapshot.size == 1) {
+            usersCollection.doc(querySnapshot.docs[0].id)
+                .update({
+              'chats': FieldValue.arrayUnion([chatKey]),
+            });
+          }
+    });
+
+    await usersCollection
+        .where('uid', isEqualTo: userUid2)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.size == 1) {
+        usersCollection.doc(querySnapshot.docs[0].id)
+            .update({
+          'chats': FieldValue.arrayUnion([chatKey]),
+        });
+      }
+    });
+
+    return result;
+  }
+
+  Future<List<Message>> addMessageToChat(String message, Chat chat, CustomUser userFromDb) async {
+    dynamic currentMessages;
+    await chatsCollection.doc(chat.chatKey).get().then((DocumentSnapshot doc) async {
+      if (doc.exists) {
+        currentMessages = doc.get("messages");
+      }
+    });
+
+    Message newMessage = Message  (
+        userFromDb.uid, userFromDb.username ?? "", DateTime.now(), message
+    );
+    newMessage.setKey();
+    currentMessages.add(newMessage.toMap());
+    await chatsCollection.doc(chat.chatKey).update(
+        {"messages" : currentMessages}
+    );
+
+    List<Message> messages = List<Message>();
+    currentMessages.forEach((element) => messages.add(
+        Message.fromDynamicToMessage(element)
+    ));
+    return messages;
+  }
+
+
+  //endregion
+
 }

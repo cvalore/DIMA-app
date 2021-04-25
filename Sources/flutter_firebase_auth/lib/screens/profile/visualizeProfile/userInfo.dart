@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
+import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:provider/provider.dart';
 
 
 class UserInfo extends StatefulWidget {
@@ -21,7 +24,6 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfoState extends State<UserInfo> {
-
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +124,7 @@ class _UserInfoState extends State<UserInfo> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ) : Container(),
-                  !widget.self ? Divider(height: _isTablet ? 40.0 : 10.0, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,) : Container(),
+                  !widget.self ? Divider(height: _isTablet ? 40.0 : 10.0, thickness: 2, indent: _isTablet ? 70.0 : 10, endIndent: _isTablet ? 70.0 : 10,) : Container(),
                   !widget.self ? Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -147,8 +149,25 @@ class _UserInfoState extends State<UserInfo> {
                             child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
                               Text('UNFOLLOW') : Text('FOLLOW')),
                         ElevatedButton(
-                            onPressed: null,
-                            child: Text('SEND MSG')),
+                            onPressed: () async {
+
+                              //DatabaseService db = DatabaseService(user: CustomUser(Utils.mySelf.uid));
+                              dynamic chat = await Utils.databaseService.createNewChat(
+                                  Utils.mySelf.uid, widget.user.uid, widget.user.username
+                              );
+
+                              if(chat != null) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        ChatPage(
+                                          chat: Utils.toChat(chat),
+                                        ))
+                                );
+                              }
+                            },
+                            child: Text('CHAT')
+                        ),
                         ElevatedButton(
                             onPressed: () {
                               print(widget.user.uid);
@@ -158,11 +177,11 @@ class _UserInfoState extends State<UserInfo> {
                       ],
                     ),
                   ) : Container(),
-                  Divider(height: _isTablet ? 40.0 : 10.0, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,),
+                  Divider(height: _isTablet ? 40.0 : 10.0, thickness: 2, indent: _isTablet ? 70.0 : 10, endIndent: _isTablet ? 70.0 : 10,),
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.people_alt_outlined),
-                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
+                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 20.0, vertical: _isTablet ? 20.0 : 0),
                       dense: true,
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,12 +203,12 @@ class _UserInfoState extends State<UserInfo> {
                     ),
                   ),
                   widget.user.fullName != null && widget.user.fullName != '' ?
-                    Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,) : Container(),
+                    Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 10, endIndent: _isTablet ? 70.0 : 10,) : Container(),
                   widget.user.fullName != null && widget.user.fullName != '' ?
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.drive_file_rename_outline),
-                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
+                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 20.0, vertical: _isTablet ? 20.0 : 0),
                       dense: true,
                       title: Text(
                         widget.user.fullName,
@@ -200,12 +219,12 @@ class _UserInfoState extends State<UserInfo> {
                     ),
                   ) : Container(),
                   widget.user.city != null && widget.user.city != '' ?
-                    Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,) : Container(),
+                    Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 10, endIndent: _isTablet ? 70.0 : 10,) : Container(),
                   widget.user.city != null && widget.user.city != '' ?
                     Container(
                       child: ListTile(
                         leading: Icon(Icons.place_outlined),
-                        contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
+                        contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 20.0, vertical: _isTablet ? 20.0 : 0),
                         dense: true,
                         title: Text(
                           widget.user.city,
@@ -215,11 +234,11 @@ class _UserInfoState extends State<UserInfo> {
                         ),
                       ),
                     ) : Container(),
-                  Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 0, endIndent: _isTablet ? 70.0 : 0,),
+                  Divider(height: 10, thickness: 2, indent: _isTablet ? 70.0 : 10, endIndent: _isTablet ? 70.0 : 10,),
                   Container(
                     child: ListTile(
                       leading: Icon(Icons.email_outlined),
-                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 0.0, vertical: _isTablet ? 20.0 : 0),
+                      contentPadding: EdgeInsets.symmetric(horizontal: _isTablet ? 75.0 : 20.0, vertical: _isTablet ? 20.0 : 0),
                       dense: true,
                       title: Text(
                         widget.user.email,

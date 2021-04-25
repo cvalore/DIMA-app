@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
-class ForumMessage {
+class Message {
   String messageKey;
   final String uidSender;
   String nameSender;
@@ -9,7 +9,7 @@ class ForumMessage {
 
   final String messageBody;
 
-  ForumMessage(this.uidSender, this.nameSender, this.time, this.messageBody);
+  Message(this.uidSender, this.nameSender, this.time, this.messageBody);
 
   setKey() {
     this.messageKey = Utils.encodeBase64(uidSender + time.toString());
@@ -29,11 +29,11 @@ class ForumMessage {
     return forumMessageMap;
   }
 
-  static ForumMessage fromDynamicToForumMessage(dynamic element) {
+  static Message fromDynamicToMessage(dynamic element) {
 
     bool timestamp = element['time'].runtimeType == Timestamp;
 
-    ForumMessage message = ForumMessage(
+    Message message = Message(
         element['uidSender'],
         element['nameSender'],
         timestamp ?

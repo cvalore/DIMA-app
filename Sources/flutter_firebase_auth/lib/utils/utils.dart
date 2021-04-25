@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
-import 'package:flutter_firebase_auth/models/forumMessage.dart';
+import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
@@ -155,10 +156,10 @@ class Utils {
 
   static ForumDiscussion toForumDiscussion(dynamic discussion) {
 
-    List<ForumMessage> messages = List<ForumMessage>();
+    List<Message> messages = List<Message>();
     discussion['messages'].forEach(
             (element) {
-          messages.add(ForumMessage.fromDynamicToForumMessage(element));
+          messages.add(Message.fromDynamicToMessage(element));
         }
     );
 
@@ -166,6 +167,19 @@ class Utils {
     forumDiscussion.setStartedByProfilePicture(discussion['startedByProfilePicture']);
     forumDiscussion.setStartedByUsername(discussion['startedByUsername']);
     return forumDiscussion;
+  }
+
+  static Chat toChat(dynamic chatMap) {
+
+    List<Message> messages = List<Message>();
+    chatMap['messages'].forEach(
+            (element) {
+          messages.add(Message.fromDynamicToMessage(element));
+        }
+    );
+
+    Chat chat = Chat.FromDynamicToChat(chatMap, messages);
+    return chat;
   }
 
 
