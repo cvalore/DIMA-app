@@ -70,11 +70,13 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
     return loading == true ? Loading() : Scaffold(
       floatingActionButton: widget.self == false ?
       selectionModeOn ? FloatingActionButton(
+        heroTag: 'go ahead buying selected items',
         child: Icon(Icons.arrow_forward_ios),
         onPressed: () {
           _pushBuyItems(context);
         },
       ) : FloatingActionButton.extended(
+          heroTag: 'select items to buy',
           onPressed: () {
             setState(() {
               if (selectionModeOn == false)
@@ -190,7 +192,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                     }
                   },
                   onTap: () {
-                    _pushBookPage(index, context);
+                    _pushBookPage(index, context, widget.books[index]['thumbnail']);
                   },
                   child: InkWell(
                     onTap: selectionModeOn == false ? null : () {
@@ -233,6 +235,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
               left: 20,
               bottom: 20,
               child: FloatingActionButton(
+                heroTag: 'deselect items to buy',
                 child: Icon(Icons.cancel_outlined, size: 30),
                 onPressed: () {
                   setState(() {
@@ -252,7 +255,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
     _tapPosition = details.globalPosition;
   }
 
-  void _pushBookPage(int index, BuildContext context) async {
+  void _pushBookPage(int index, BuildContext context, String thumbnail) async {
     InsertedBook book = await _db.getBook(index);
     bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
     bool wasExchangeable = book.exchangeable;
@@ -283,7 +286,8 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 wasExchangeable: wasExchangeable,
                 fatherContext: context,
                 self: widget.self,
-                userUid: widget.self ? null : widget.userUid
+                userUid: widget.self ? null : widget.userUid,
+                thumbnail: thumbnail,
             )
         )
     );
@@ -295,6 +299,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
     });
     List<InsertedBook> booksToBuy = List<InsertedBook>();
     InsertedBook book;
+    Map<int, String> selectedBooksThumbnails = Map<int, String>();
     for (int index = 0; index < selectedBooks.length; index++) {
       if (selectedBooks[index] == true) {
         book = await _db.getBook(index);
@@ -317,6 +322,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
         }
         book.imagesPath = bookPickedFilePaths;
         booksToBuy.add(book);
+        selectedBooksThumbnails[book.insertionNumber] = widget.books[index]['thumbnail'];
       }
     }
 
@@ -326,6 +332,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
             builder: (newContext) =>
                 BuyBooks(
                   booksToBuy: booksToBuy,
+                  thumbnails : selectedBooksThumbnails,
                   sellingUserUid: widget.userUid,
                 )
         )

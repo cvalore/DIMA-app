@@ -43,7 +43,7 @@ class _SoldByViewState extends State<SoldByView> {
                 InkWell(
                   onTap: () async {
                     //print(widget.books[i]);
-                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid']);
+                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail']);
                   },
                   child: Column(
                       children: <Widget>[
@@ -153,6 +153,7 @@ class _SoldByViewState extends State<SoldByView> {
                                           } else {
                                             await databaseService.addLike(widget
                                                 .books[i]['book']['insertionNumber'],
+                                                widget.books[i]['thumbnail'],
                                                 Utils.mySelf.uid);
                                             setState(() {
                                               widget.books[i]['book']['likedBy']

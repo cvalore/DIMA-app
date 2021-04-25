@@ -32,7 +32,7 @@ class _AddShippingInfoState extends State<AddShippingInfo> {
       infoState['fullName'] = widget.info['fullName'];
       infoState['state'] = widget.info['state'];
       infoState['address 1'] = widget.info['address 1'];
-      infoState['address 2 (optional)'] = widget.info['address 2 (optional)'];
+      infoState['address 2'] = widget.info['address 2'];
       infoState['CAP'] = widget.info['CAP'];
       infoState['city'] = widget.info['city'];
     }

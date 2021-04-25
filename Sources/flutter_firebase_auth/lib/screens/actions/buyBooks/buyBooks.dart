@@ -16,9 +16,10 @@ import 'chooseBooksForExchange.dart';
 class BuyBooks extends StatefulWidget {
 
   List<InsertedBook> booksToBuy;
+  Map<int, String> thumbnails;
   String sellingUserUid;
 
-  BuyBooks({Key key, @required this.booksToBuy, @required this.sellingUserUid});
+  BuyBooks({Key key, @required this.booksToBuy, @required this.thumbnails, @required this.sellingUserUid});
 
   @override
   _BuyBooksState createState() => _BuyBooksState();
@@ -94,7 +95,7 @@ class _BuyBooksState extends State<BuyBooks> {
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,
             children: [
               for (int i = 0; i < widget.booksToBuy.length; i++)
-                ItemToPurchase(book: widget.booksToBuy[i], isLast: i == widget.booksToBuy.length - 1),
+                ItemToPurchase(book: widget.booksToBuy[i], thumbnail: widget.thumbnails[widget.booksToBuy[i].insertionNumber], isLast: i == widget.booksToBuy.length - 1),
               booksDefiningTotalPrice.length > 0 ? Divider(height: 5, thickness: 2,) : Container(),
               for (int i = 0; i < booksDefiningTotalPrice.length; i++)
                 Container(

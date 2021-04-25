@@ -163,7 +163,7 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
                     hintText: 'E.g. 000',
                     labelStyle: TextStyle(fontSize: 16,
                     ),
-                    labelText: "Security code",
+                    labelText: "CVV/CV2",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(7.0),),
                     ),

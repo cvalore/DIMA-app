@@ -6,9 +6,10 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 class ItemToPurchase extends StatelessWidget {
 
   InsertedBook book;
+  String thumbnail;
   bool isLast;
 
-  ItemToPurchase({Key key, @required this.book, @required this.isLast});
+  ItemToPurchase({Key key, @required this.book,@required this.thumbnail, @required this.isLast});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,9 @@ class ItemToPurchase extends StatelessWidget {
                     child: book.imagesPath != null && book.imagesPath.length > 0 ?
                     Image.file(
                         File(book.imagesPath[0])
-                    ) : Image.asset("assets/images/no_image_available.png"),
+                    ) : thumbnail != null && thumbnail != '' ?
+                        Image.network(thumbnail) :
+                        Image.asset("assets/images/no_image_available.png"),
                   ),
                 ),
               ),

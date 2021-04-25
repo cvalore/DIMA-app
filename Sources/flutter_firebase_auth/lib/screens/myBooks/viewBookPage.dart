@@ -24,8 +24,9 @@ class ViewBookPage extends StatefulWidget {
   BuildContext fatherContext;
   bool self;
   String userUid;
+  String thumbnail;
 
-  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.wasExchangeable, this.fatherContext, this.self, this.userUid}) : super(key: key);
+  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.wasExchangeable, this.fatherContext, this.self, this.userUid, this.thumbnail}) : super(key: key);
 
   @override
   _ViewBookPageState createState() => _ViewBookPageState();
@@ -148,6 +149,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
                   MaterialPageRoute(
                       builder: (newContext) => BuyBooks(
                         booksToBuy: [widget.book],
+                        thumbnails: {widget.book.insertionNumber: widget.thumbnail},
                         sellingUserUid: widget.userUid,
                       )
                   )

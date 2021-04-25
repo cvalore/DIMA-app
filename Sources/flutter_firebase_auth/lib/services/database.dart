@@ -717,6 +717,7 @@ class DatabaseService {
     var usersData = [];
     await bookCollection.doc(bookId).get().then((valueBook) async {
       for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+        String thumbnail = valueBook.data()['thumbnail'];
         String own = valueBook.data()['owners'][i];
         await usersCollection.doc(own).get().then((valueUser) {
           dynamic userData = valueUser.data();
@@ -739,6 +740,7 @@ class DatabaseService {
                   "userProfileImageURL": userData["userProfileImageURL"],
                   "email": userData["email"],
                   "book": bookResults[k],
+                  "thumbnail" : thumbnail
                 }
             );
           }
@@ -866,7 +868,7 @@ class DatabaseService {
     });
   }
 
-  Future<void> addLike(int bookInsertionNumber, String userWhoLikes) async {
+  Future<void> addLike(int bookInsertionNumber, String thumbnail, String userWhoLikes) async {
     List<dynamic> books;
     List<dynamic> booksILike;
     Map<String, dynamic> bookLiked = Map<String, dynamic>();
@@ -890,6 +892,7 @@ class DatabaseService {
     //add book liked to my favorites
     bookLiked['userUid'] = user.uid;
     bookLiked['insertionNumber'] = bookInsertionNumber;
+    bookLiked['thumbnail'] = thumbnail;
 
     await usersCollection.doc(Utils.mySelf.uid).update({
       'booksILike': FieldValue.arrayUnion([bookLiked]),
