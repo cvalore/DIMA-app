@@ -205,7 +205,6 @@ class Utils {
         MaterialPageRoute(
             builder: (newContext) => ViewBookPage(
               book: bookToPush,
-              isSell: true,
               userUid: userUid,
               self: userUid == mySelf.uid,
             )

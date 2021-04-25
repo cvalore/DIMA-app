@@ -40,9 +40,9 @@ class StorageService {
   }
 
   Future addBookPicture(String useruid, String bookTitle,
-      int numberOfInsertedItems, String imagePath, int index) async {
+      int insertionNumber, String imagePath, int index) async {
 
-    String basePath = useruid + "/" + bookTitle + '_' + numberOfInsertedItems.toString();
+    String basePath = useruid + "/" + bookTitle + '_' + insertionNumber.toString();
     String fileName = bookTitle + '_' + index.toString();
     Reference reference = storage.ref().child("$basePath/$fileName");
 

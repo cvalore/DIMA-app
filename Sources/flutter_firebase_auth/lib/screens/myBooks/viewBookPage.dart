@@ -21,12 +21,11 @@ class ViewBookPage extends StatefulWidget {
   int index;
   bool hadImages;
   bool wasExchangeable;
-  bool isSell;
   BuildContext fatherContext;
   bool self;
   String userUid;
 
-  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.isSell, this.wasExchangeable, this.fatherContext, this.self, this.userUid}) : super(key: key);
+  ViewBookPage({Key key, this.book, this.index, this.hadImages, this.wasExchangeable, this.fatherContext, this.self, this.userUid}) : super(key: key);
 
   @override
   _ViewBookPageState createState() => _ViewBookPageState();
@@ -64,7 +63,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             letterSpacing: 0.5,
           ),
         ),
-        actions: widget.isSell || !widget.self ? [] : <Widget>[
+        actions: !widget.self ? [] : <Widget>[
           PopupMenuButton(
             onSelected: (value) async {
               if(value == editBookPopupIndex) {
@@ -139,7 +138,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
           )
         ],
       ),
-      floatingActionButton: widget.isSell  && !widget.self?
+      floatingActionButton: !widget.self?
           FloatingActionButton.extended(
             backgroundColor: Colors.white24,
             heroTag: "purchaseBtn",

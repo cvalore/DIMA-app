@@ -260,15 +260,15 @@ class DatabaseService {
       bool wasExchangeable) async {
     List<dynamic> books;
 
-    int numberOfInsertedItems;
+    //int numberOfInsertedItems;
 
     await storageService.removeBookPicture(
         user.uid, book.title, book.insertionNumber);
 
-    await usersCollection.doc(user.uid).get().then(
+    /*await usersCollection.doc(user.uid).get().then(
             (userDoc) {
           numberOfInsertedItems = userDoc.data()['numberOfInsertedItems'];
-        });
+        });*/
 
     await usersCollection.doc(user.uid).get().then(
             (userDoc) {
@@ -284,7 +284,7 @@ class DatabaseService {
         Reference imgRef = await storageService.addBookPicture(
             user.uid,
             book.title,
-            numberOfInsertedItems,
+            book.insertionNumber,
             book.imagesPath[i],
             i
         );
@@ -297,7 +297,7 @@ class DatabaseService {
     else {
       book.imagesUrl = List<String>();
     }
-    book.setInsertionNumber(numberOfInsertedItems);
+    //book.setInsertionNumber(numberOfInsertedItems);
 
     books[index]["insertionNumber"] = book.insertionNumber;
     books[index]["comment"] = book.comment;

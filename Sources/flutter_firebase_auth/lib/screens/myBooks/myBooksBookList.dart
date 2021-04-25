@@ -44,7 +44,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
 
   @override
   void initState() {
-    for(int i = 0; i < widget.books.length; i++)
+    for(int i = 0; i < widget.books.keys.length; i++)
       selectedBooks.add(false);
     super.initState();
   }
@@ -52,6 +52,12 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
   @override
   Widget build(BuildContext context) {
     widget._isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
+    if(selectedBooks.length != widget.books.keys.length) {
+      for(int i = 0; i < widget.books.keys.length - selectedBooks.length; i++) {
+        selectedBooks.add(false);
+      }
+    }
 
     if (widget.self) {
       user = CustomUser(Utils.mySelf.uid);
@@ -276,7 +282,6 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 hadImages: hadImages,
                 wasExchangeable: wasExchangeable,
                 fatherContext: context,
-                isSell: true,
                 self: widget.self,
                 userUid: widget.self ? null : widget.userUid
             )
