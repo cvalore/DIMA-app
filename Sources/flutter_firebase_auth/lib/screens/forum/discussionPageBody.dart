@@ -27,6 +27,24 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
   final _messageFormFieldController = TextEditingController();
 
   String _message = "";
+  bool firstTime = true;
+
+  ScrollController _scrollController = ScrollController();
+
+  _scrollToBottom(ForumDiscussion discussion) {
+    if(discussion == null || discussion.messages == null || discussion.messages.length == 0) {
+      return;
+    }
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent + (firstTime ? 300.0 : 0.0));
+    firstTime = false;
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    firstTime = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +52,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
     ForumDiscussion discussion = Provider.of<ForumDiscussion>(context);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom(discussion));
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -52,6 +71,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
         ) :
         Expanded(
           child: ListView.builder(
+            controller: _scrollController,
             itemCount: discussion.messages.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(

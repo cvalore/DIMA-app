@@ -29,8 +29,8 @@ class AddBookSelection extends StatefulWidget {
 class _AddBookSelectionState extends State<AddBookSelection> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = 'narnia';
-  String _author = 'lewis';
+  String _title = '';
+  String _author = '';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
 
   final booksAPI = GoogleBooksAPI();

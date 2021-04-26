@@ -174,7 +174,9 @@ class DatabaseService {
     dynamic transactions = documentSnapshot.data()['transactionsAsSeller'] ?? [];
     List<MyTransaction> result = List<MyTransaction>();
     transactions.forEach((tr) {
-      result.add(MyTransaction(tr));
+      if(_chat.userUid1.compareTo(tr['buyer']) == 0 || _chat.userUid2.compareTo(tr['buyer']) == 0) {
+        result.add(MyTransaction(tr['transactionId'], tr['buyer']));
+      }
     });
     return result;
   }
@@ -793,6 +795,45 @@ class DatabaseService {
     return usersData;
   }
 
+  Future<dynamic> viewBookByIdAndInsertionNumber(String bookId, int bookInsertionNumber, String userUid) async {
+    var usersData = [];
+    await bookCollection.doc(bookId).get().then((valueBook) async {
+      for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+        if(valueBook.data()['owners'][i].compareTo(userUid) != 0)
+          continue;
+        String thumbnail = valueBook.data()['thumbnail'];
+        String own = valueBook.data()['owners'][i];
+        await usersCollection.doc(own).get().then((valueUser) {
+          dynamic userData = valueUser.data();
+          dynamic userBook = userData['books'];
+          dynamic bookResults = [];
+          for (int j = 0; j < userBook.length; j++) {
+            if (userBook[j]['id'] == bookId && userBook[j]['insertionNumber'] == bookInsertionNumber) {
+              if (userBook[j]['likedBy'] == null) {
+                userBook[j]['likedBy'] = List<String>();
+              }
+              bookResults.add(userBook[j]);
+            }
+          }
+
+          for(int k = 0; k < bookResults.length; k++) {
+            usersData.add(
+                {
+                  "uid": userData["uid"],
+                  "username": userData["username"],
+                  "userProfileImageURL": userData["userProfileImageURL"],
+                  "email": userData["email"],
+                  "book": bookResults[k],
+                  "thumbnail" : thumbnail
+                }
+            );
+          }
+        });
+      }
+    });
+
+    return usersData;
+  }
 
   Future<dynamic> getMyFavoriteBooks() async {
     List<dynamic> likedBooks;

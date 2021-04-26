@@ -81,26 +81,30 @@ class ChatProfileBody extends StatelessWidget {
                                   child: InkWell(
                                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                     onTap: () async {
-                                      if (chats[i].userUid2 != Utils.mySelf.uid) {
-                                        DatabaseService databaseService = DatabaseService(
-                                            user: CustomUser(chats[i].userUid2));
-                                        CustomUser user = await databaseService
-                                            .getUserSnapshot();
-                                        BookPerGenreUserMap userBooks = await databaseService
-                                            .getUserBooksPerGenreSnapshot();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (
-                                                    context) =>
-                                                    VisualizeProfileMainPage(
-                                                        user: user,
-                                                        books: userBooks
-                                                            .result,
-                                                        self: false)
-                                            )
-                                        );
-                                      }
+                                      String userUid = chats[i].userUid1 == Utils.mySelf.uid ?
+                                        chats[i].userUid2 :
+                                        chats[i].userUid2 == Utils.mySelf.uid ?
+                                          chats[i].userUid1 :
+                                          chats[i].userUid2;
+
+                                      DatabaseService databaseService = DatabaseService(
+                                          user: CustomUser(userUid));
+                                      CustomUser user = await databaseService
+                                          .getUserSnapshot();
+                                      BookPerGenreUserMap userBooks = await databaseService
+                                          .getUserBooksPerGenreSnapshot();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (
+                                                  context) =>
+                                                  VisualizeProfileMainPage(
+                                                      user: user,
+                                                      books: userBooks
+                                                          .result,
+                                                      self: false)
+                                          )
+                                      );
                                     },
                                     child: Column(
                                       children: <Widget>[

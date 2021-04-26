@@ -45,7 +45,7 @@ class SearchBookForm extends StatelessWidget {
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0,),
-                  initialValue: 'narnia',
+                  initialValue: '',
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book title' : null,
                   onChanged: (value) {
@@ -84,7 +84,7 @@ class SearchBookForm extends StatelessWidget {
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0),
-                  initialValue: 'lewis',
+                  initialValue: '',
                   validator: (value) =>
                   value.isEmpty ? 'Enter the book author' : null,
                   onChanged: (value) {

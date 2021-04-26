@@ -18,8 +18,9 @@ class SoldByView extends StatefulWidget {
 
   final dynamic books;
   final bool showOnlyExchangeable;
+  final bool fromPending;
 
-  const SoldByView({Key key, this.books, this.showOnlyExchangeable}) : super(key: key);
+  const SoldByView({Key key, this.books, this.showOnlyExchangeable, this.fromPending}) : super(key: key);
 
   @override
   _SoldByViewState createState() => _SoldByViewState();
@@ -43,7 +44,7 @@ class _SoldByViewState extends State<SoldByView> {
                 InkWell(
                   onTap: () async {
                     //print(widget.books[i]);
-                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail']);
+                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], false);
                   },
                   child: Column(
                       children: <Widget>[
@@ -52,7 +53,9 @@ class _SoldByViewState extends State<SoldByView> {
                           padding: const EdgeInsets.fromLTRB(10.0, 0.0, 5.0, 0.0),
                           child: Column(
                             children: [
-                              InkWell(
+                              widget.fromPending ?
+                                Text("Details", style: TextStyle(fontWeight: FontWeight.bold),) :
+                                InkWell(
                                 onTap: () async {
                                   if (widget.books[i]['uid'] != Utils.mySelf.uid) {
                                     DatabaseService databaseService = DatabaseService(
@@ -214,7 +217,7 @@ class _SoldByViewState extends State<SoldByView> {
                           ) : Text("NO IMAGES", style: TextStyle(fontStyle: FontStyle.italic),),
                         ),
                         SizedBox(height: 25.0,),
-                        Divider(height: 1.0, thickness: 1.0, indent: 5, endIndent: 5, color: Colors.white,),
+                        widget.fromPending ? Container() : Divider(height: 1.0, thickness: 1.0, indent: 5, endIndent: 5, color: Colors.white,),
                       ]
                   ),
                 )

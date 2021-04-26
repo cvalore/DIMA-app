@@ -59,7 +59,10 @@ class _CategoryState extends State<Category> {
                             child: Text(
                               widget.insertedBook.category,
                               textAlign: TextAlign.right,
-                            style: TextStyle(color: Colors.white),)) :
+                            style: TextStyle(color: Colors.white),
+                            overflow: TextOverflow.ellipsis,
+                            )
+                        ) :
                         Container(),
                     ],
                   )

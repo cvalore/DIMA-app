@@ -43,21 +43,8 @@ class PendingPage extends StatelessWidget {
     dynamic result = [];
     for(int i = 0; i < transaction.length; i++) {
       dynamic tr = await db.getTransactionFromKey(transaction[i].transactionKey);
-      if(tr['buyer'].compareTo(chat.userUid1) == 0 || tr['buyer'].compareTo(chat.userUid2) == 0) {
-        result.add(tr);
-      }
+      result.add(tr);
     }
-
-    result.forEach((tr) {
-      tr['exchanges'].removeWhere((ex) =>
-      ex['exchangeStatus'].compareTo("pending") != 0
-      );
-    });
-
-    result.removeWhere((el) =>
-      el['exchanges'] == null || el['exchanges'].length == 0
-    );
-
     return result;
   }
 }

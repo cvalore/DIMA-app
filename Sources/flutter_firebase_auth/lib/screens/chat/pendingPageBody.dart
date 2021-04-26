@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/chat/viewPendingBook.dart';
+import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
+import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
@@ -18,9 +21,18 @@ class PendingPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Chat chat = Provider.of<Chat>(context);
+    //Chat chat = Provider.of<Chat>(context);
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
+    transactions.forEach((tr) {
+      tr['exchanges'].removeWhere((ex) =>
+      ex['exchangeStatus'].compareTo("pending") != 0
+      );
+    });
+    transactions.removeWhere((el) =>
+      el['exchanges'] == null || el['exchanges'].length == 0
+    );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -59,8 +71,21 @@ class PendingPageBody extends StatelessWidget {
                                         Text("You get:  "),
                                         Flexible(
                                           child: InkWell(
-                                            onTap: () {
-                                              print("TODO: push book " + transactions[index]['exchanges'][i]['offeredBook']['title']);
+                                            onTap: () async {
+                                              String bookId = transactions[index]['exchanges'][i]['offeredBook']['id'];
+                                              int bookInsertionNumber = transactions[index]['exchanges'][i]['offeredBook']['insertionNumber'];
+                                              dynamic bookGeneralInfo = await db.getGeneralBookInfo(bookId);
+                                              dynamic book = await db.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transactions[index]['buyer']);
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (newContext) => ViewPendingBook(
+                                                        youGet: true,
+                                                        book: book,
+                                                        bookGeneralInfo: bookGeneralInfo
+                                                      ),
+                                                  )
+                                              );
                                             },
                                             child: Container(
                                               alignment: AlignmentDirectional.centerStart,
@@ -84,8 +109,21 @@ class PendingPageBody extends StatelessWidget {
                                         Text("You give: "),
                                         Flexible(
                                           child: InkWell(
-                                            onTap: () {
-                                              print("TODO: push book " + transactions[index]['exchanges'][i]['receivedBook']['title']);
+                                            onTap: () async {
+                                              String bookId = transactions[index]['exchanges'][i]['receivedBook']['id'];
+                                              int bookInsertionNumber = transactions[index]['exchanges'][i]['receivedBook']['insertionNumber'];
+                                              dynamic bookGeneralInfo = await db.getGeneralBookInfo(bookId);
+                                              dynamic book = await db.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transactions[index]['seller']);
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (newContext) => ViewPendingBook(
+                                                        youGet: true,
+                                                        book: book,
+                                                        bookGeneralInfo: bookGeneralInfo
+                                                    ),
+                                                  )
+                                              );
                                             },
                                             child: Container(
                                               alignment: AlignmentDirectional.centerStart,

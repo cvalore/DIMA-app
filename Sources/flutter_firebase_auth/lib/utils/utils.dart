@@ -183,7 +183,7 @@ class Utils {
   }
 
 
-  static Future<void> pushBookPage(BuildContext context, book, String userUid, String thumbnail) async {
+  static Future<void> pushBookPage(BuildContext context, book, String userUid, String thumbnail, bool canBuy) async {
     InsertedBook bookToPush = InsertedBook(
       id: book['id'],
       title: book['title'],
@@ -222,6 +222,7 @@ class Utils {
               userUid: userUid,
               self: userUid == mySelf.uid,
               thumbnail: thumbnail,
+              canBuy: canBuy
             )
         )
     );
