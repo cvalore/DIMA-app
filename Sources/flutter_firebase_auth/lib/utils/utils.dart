@@ -266,6 +266,7 @@ class Utils {
       offeredBook['author'] = value['author'];
       offeredBook['imagesUrl'] = value['imageUrl'];
       offeredBook['status'] = value['status'];
+      offeredBook['insertionNumber'] = value['insertionNumber'];
 
       // init currentExchange
       currentExchange['receivedBook'] = receivedBook;
