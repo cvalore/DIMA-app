@@ -47,6 +47,17 @@ class PendingPage extends StatelessWidget {
         result.add(tr);
       }
     }
+
+    result.forEach((tr) {
+      tr['exchanges'].removeWhere((ex) =>
+      ex['exchangeStatus'].compareTo("pending") != 0
+      );
+    });
+
+    result.removeWhere((el) =>
+      el['exchanges'] == null || el['exchanges'].length == 0
+    );
+
     return result;
   }
 }

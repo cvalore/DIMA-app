@@ -224,6 +224,12 @@ class _ChatPageBodyState extends State<ChatPageBody> {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () async {
+
+                          RegExp regExp1 = RegExp(r'(^[ ]*$)');
+                          if(regExp1.hasMatch(_message)){
+                            return;
+                          }
+
                           CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
                           List<Message> messages = await widget.db.addMessageToChat(_message, chat, userFromDb);
                           setState(() {
