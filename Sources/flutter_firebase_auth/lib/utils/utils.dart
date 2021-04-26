@@ -256,6 +256,7 @@ class Utils {
       receivedBook['author'] = keys[i].author;
       receivedBook['imagesUrl'] = keys[i].imagesUrl;
       receivedBook['status'] = keys[i].status;
+      receivedBook['insertionNumber'] = keys[i].insertionNumber;
 
       var value = exchangedBooks[keys[i]];
 

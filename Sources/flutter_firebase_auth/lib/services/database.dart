@@ -1404,7 +1404,9 @@ class DatabaseService {
 
       print('Step 8');
       await usersCollection.doc(transaction['seller']).update({
-        'transactionsAsSeller': FieldValue.arrayUnion([transaction['id']]),
+        'transactionsAsSeller': FieldValue.arrayUnion([
+          {'transactionId': transaction['id'], 'buyer': transaction['buyer']}
+        ]),
       }).then((value) => print("transaction added for seller"))
           .catchError((error) =>
           print("Failed to add transaction for seller: $error"));
