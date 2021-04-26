@@ -159,7 +159,7 @@ class ChatProfileBody extends StatelessWidget {
                                   Container() :
                                 chats[i].userUid2 == Utils.mySelf.uid && chats[i].user2Read ?
                                   Container() :
-                                  (Icons.mark_chat_unread_outlined)
+                                  Icon(Icons.mark_chat_unread_outlined)
                               ],
                             ),
                           ),

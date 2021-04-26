@@ -1048,6 +1048,21 @@ class DatabaseService {
     return allUsers;
   }
 
+
+  Future<dynamic> saveShippingAddressInfo(Map<String, dynamic> info) async {
+    await usersCollection.doc(user.uid).update({
+      'shippingAddressInfo': FieldValue.arrayUnion([info])
+    });
+  }
+
+  Future<dynamic> savePaymentCardInfo(Map<String, dynamic> info) async {
+    await usersCollection.doc(user.uid).update({
+      'paymentCardInfo': FieldValue.arrayUnion([info])
+    });
+  }
+
+
+
   //endregion
 
   //region Forum

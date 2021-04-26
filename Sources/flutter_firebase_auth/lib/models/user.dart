@@ -86,6 +86,7 @@ class CustomUser {
     user['reviewsWrittenByMe'] = reviewsWrittenByMe != null ? reviewsWrittenByMe : [];
     user['transactionsAsSeller'] = transactionsAsSeller != null ? transactionsAsSeller : [];
     user['transactionsAsBuyer'] = transactionsAsBuyer != null ? transactionsAsBuyer : [];
+
     user['booksILike'] = booksILike != null ? booksILike : [];
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;

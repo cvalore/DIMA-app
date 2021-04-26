@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class AddPaymentMethod extends StatefulWidget {
 
@@ -42,15 +45,49 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
       appBar: AppBar(
         title: Text('Payment method info'),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          if (_ownerNameKey.currentState.validate() && _cardNumber.currentState.validate()
-              && _expiringDateKey.currentState.validate() && _securityCodeKey.currentState.validate()){
-            Navigator.pop(context, infoState);
-          }
+      floatingActionButton: Builder(
+        builder: (BuildContext context) {
+          return FloatingActionButton.extended(
+            onPressed: () {
+              if (_ownerNameKey.currentState.validate() && _cardNumber.currentState.validate()
+                  && _expiringDateKey.currentState.validate() && _securityCodeKey.currentState.validate()){
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (_) => AlertDialog(
+                      content: Text('Do you want to save this payment card for future purchases?'),
+                      actions: [
+                        FlatButton(
+                            onPressed: () {
+                              Utils.databaseService.savePaymentCardInfo(infoState);
+                              Navigator.pop(context);
+                            },
+                            child: Text('SAVE')),
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('NO')),
+                      ],
+                    )
+                );
+                Navigator.pop(context, infoState);
+                final snackBar = SnackBar(
+                  backgroundColor: Colors.white24,
+                  duration: Duration(seconds: 1),
+                  content: Text(
+                    'Your card has been successfully added',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                );
+                Scaffold.of(context).showSnackBar(snackBar);
+                Timer(Duration(milliseconds: 1500), () {Navigator.pop(context);});
+              }
+            },
+            label: Text('Save payment method'),
+            icon: Icon(Icons.check_outlined),
+          );
         },
-        label: Text('Save payment method'),
-        icon: Icon(Icons.check_outlined),
       ),
       resizeToAvoidBottomInset: false,
       body: Container(

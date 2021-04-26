@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/utils/availableCountries.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class AddShippingInfo extends StatefulWidget {
 
@@ -46,14 +49,48 @@ class _AddShippingInfoState extends State<AddShippingInfo> {
       appBar: AppBar(
         title: Text('Shipping info'),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          if (_fullNameKey.currentState.validate() && _addressKey.currentState.validate() && _CAPKey.currentState.validate()){
-            Navigator.pop(context, infoState);
-          }
+      floatingActionButton: Builder(
+        builder: (BuildContext context) {
+          return FloatingActionButton.extended(
+            onPressed: () {
+              if (_fullNameKey.currentState.validate() && _addressKey.currentState.validate() && _CAPKey.currentState.validate()){
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (_) => AlertDialog(
+                      content: Text('Do you want to save this address for future purchases?'),
+                      actions: [
+                        FlatButton(
+                            onPressed: () {
+                              Utils.databaseService.saveShippingAddressInfo(infoState);
+                              Navigator.pop(context);
+                            },
+                            child: Text('SAVE')),
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('NO')),
+                      ],
+                    )
+                );
+                Navigator.pop(context, infoState);
+                final snackBar = SnackBar(
+                  backgroundColor: Colors.white24,
+                  duration: Duration(seconds: 1),
+                  content: Text(
+                    'The shipping address has been successfully added',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                );
+                Scaffold.of(context).showSnackBar(snackBar);
+                Timer(Duration(milliseconds: 1500), () {Navigator.pop(context);});
+              }
+            },
+            label: Text('Confirm address'),
+            icon: Icon(Icons.check_outlined),
+          );
         },
-        label: Text('Save address'),
-        icon: Icon(Icons.check_outlined),
       ),
       resizeToAvoidBottomInset: false,
       body: Container(
