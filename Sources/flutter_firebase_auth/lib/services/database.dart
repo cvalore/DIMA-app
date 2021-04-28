@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +153,14 @@ class DatabaseService {
     return result;
   }
 
+  Stream<List<MyTransaction>> get allTransactionsInfo {
+    Stream<List<MyTransaction>> result = usersCollection
+        .doc(user.uid)
+        .snapshots()
+        .map(_allTransactionFromSnapshot);
+    return result;
+  }
+
   ForumDiscussion _forumDiscussionFromSnapshot(DocumentSnapshot documentSnapshot) {
     dynamic result = documentSnapshot.data();
     List<Message> messages = List<Message>();
@@ -174,7 +183,18 @@ class DatabaseService {
     dynamic transactions = documentSnapshot.data()['transactionsAsSeller'] ?? [];
     List<MyTransaction> result = List<MyTransaction>();
     transactions.forEach((tr) {
-      result.add(MyTransaction(tr));
+      if(_chat.userUid1.compareTo(tr['buyer']) == 0 || _chat.userUid2.compareTo(tr['buyer']) == 0) {
+        result.add(MyTransaction(tr['transactionId'], tr['buyer']));
+      }
+    });
+    return result;
+  }
+
+  List<MyTransaction> _allTransactionFromSnapshot(DocumentSnapshot documentSnapshot) {
+    dynamic transactions = documentSnapshot.data()['transactionsAsSeller'] ?? [];
+    List<MyTransaction> result = List<MyTransaction>();
+    transactions.forEach((tr) {
+        result.add(MyTransaction(tr['transactionId'], tr['buyer']));
     });
     return result;
   }
@@ -792,6 +812,45 @@ class DatabaseService {
     return usersData;
   }
 
+  Future<dynamic> viewBookByIdAndInsertionNumber(String bookId, int bookInsertionNumber, String userUid) async {
+    var usersData = [];
+    await bookCollection.doc(bookId).get().then((valueBook) async {
+      for (int i = 0; i < valueBook.data()['owners'].length; i++) {
+        if(valueBook.data()['owners'][i].compareTo(userUid) != 0)
+          continue;
+        String thumbnail = valueBook.data()['thumbnail'];
+        String own = valueBook.data()['owners'][i];
+        await usersCollection.doc(own).get().then((valueUser) {
+          dynamic userData = valueUser.data();
+          dynamic userBook = userData['books'];
+          dynamic bookResults = [];
+          for (int j = 0; j < userBook.length; j++) {
+            if (userBook[j]['id'] == bookId && userBook[j]['insertionNumber'] == bookInsertionNumber) {
+              if (userBook[j]['likedBy'] == null) {
+                userBook[j]['likedBy'] = List<String>();
+              }
+              bookResults.add(userBook[j]);
+            }
+          }
+
+          for(int k = 0; k < bookResults.length; k++) {
+            usersData.add(
+                {
+                  "uid": userData["uid"],
+                  "username": userData["username"],
+                  "userProfileImageURL": userData["userProfileImageURL"],
+                  "email": userData["email"],
+                  "book": bookResults[k],
+                  "thumbnail" : thumbnail
+                }
+            );
+          }
+        });
+      }
+    });
+
+    return usersData;
+  }
 
   Future<dynamic> getMyFavoriteBooks() async {
     List<dynamic> likedBooks;
@@ -880,6 +939,24 @@ class DatabaseService {
   //endregion
 
   //region Profile/User
+
+  Future<Timestamp> getLastNotificationDate() async {
+    Timestamp when = null;
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        if(doc.data().containsKey('lastNotificationDate')) {
+          when = doc.data()['lastNotificationDate'];
+        }
+      }
+    });
+    return when;
+  }
+
+  Future<void> setNowAsLastNotificationDate() async {
+    await usersCollection.doc(user.uid).update({
+      'lastNotificationDate' : DateTime.now()
+    });
+  }
 
   Future<void> followUser(CustomUser followed) async {
     await usersCollection.doc(user.uid)
@@ -1172,6 +1249,15 @@ class DatabaseService {
     transaction['payCash'] = payCash;
 
     transaction['exchanges'] = Utils.exchangedBookFromMap(booksToExchange);
+
+    String buyerUsername = "";
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        buyerUsername = doc.data()['username'];
+      }
+    });
+    transaction['buyerUsername'] = buyerUsername;
+    transaction['time'] = DateTime.now();
 
     DocumentReference buyerUserReference = usersCollection.doc(user.uid);
     DocumentReference sellerUserReference = usersCollection.doc(sellingUser);
@@ -1496,7 +1582,7 @@ class DatabaseService {
             .catchError((error) {print("Failed to add chat: $error");});
       }
       else {
-        result = doc.data();
+        return doc.data();
       }
     });
 
@@ -1553,5 +1639,24 @@ class DatabaseService {
 
 
   //endregion
+
+  /*Future<void> addFakeTransaction() async {
+    String randomId = Random.secure().nextInt(100).toString();
+    await transactionsCollection.doc('RandomId'+randomId).set(
+      {
+        'id': ('RandomId'+randomId),
+        'time': DateTime.now(),
+        'buyer': 'Fake Buyer UID',
+        'buyerUsername': 'Fake Buyer Username',
+        'seller': user.uid,
+      }
+    );
+    await usersCollection.doc(user.uid).update({
+      'transactionsAsSeller': FieldValue.arrayUnion([{
+        'buyer': 'Fake Buyer UID',
+        'transactionId': 'RandomId'+randomId,
+      }]),
+    });
+  }*/
 
 }

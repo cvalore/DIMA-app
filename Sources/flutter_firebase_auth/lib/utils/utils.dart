@@ -183,7 +183,7 @@ class Utils {
   }
 
 
-  static Future<void> pushBookPage(BuildContext context, book, String userUid, String thumbnail) async {
+  static Future<void> pushBookPage(BuildContext context, book, String userUid, String thumbnail, bool canBuy) async {
     InsertedBook bookToPush = InsertedBook(
       id: book['id'],
       title: book['title'],
@@ -222,6 +222,7 @@ class Utils {
               userUid: userUid,
               self: userUid == mySelf.uid,
               thumbnail: thumbnail,
+              canBuy: canBuy
             )
         )
     );
@@ -266,6 +267,7 @@ class Utils {
       offeredBook['author'] = value['author'];
       offeredBook['imagesUrl'] = value['imageUrl'];
       offeredBook['status'] = value['status'];
+      offeredBook['insertionNumber'] = value['insertionNumber'];
 
       // init currentExchange
       currentExchange['receivedBook'] = receivedBook;

@@ -56,7 +56,7 @@ class HomeBookInfoBody extends StatelessWidget {
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     else
-                      return SoldByView(books: snapshot.data, showOnlyExchangeable: false);
+                      return SoldByView(books: snapshot.data, showOnlyExchangeable: false, fromPending: false,);
                 }
               },
             ) :
@@ -69,7 +69,7 @@ class HomeBookInfoBody extends StatelessWidget {
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     else
-                      return SoldByView(books: snapshot.data, showOnlyExchangeable: true,);
+                      return SoldByView(books: snapshot.data, showOnlyExchangeable: true, fromPending: false,);
                 }
               },
             )

@@ -42,8 +42,8 @@ class SearchBookInfoBody extends StatelessWidget {
                 HomeBookGeneralInfoView(selectedBook: bookInfo,) :
                 (
                   index == 1 ?
-                    SoldByView(books: book, showOnlyExchangeable: false,) :
-                    SoldByView(books: book, showOnlyExchangeable: true,)
+                    SoldByView(books: book, showOnlyExchangeable: false, fromPending: false,) :
+                    SoldByView(books: book, showOnlyExchangeable: true, fromPending: false,)
                 )
               ]
           ),

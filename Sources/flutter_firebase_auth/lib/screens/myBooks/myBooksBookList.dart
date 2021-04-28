@@ -288,6 +288,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 self: widget.self,
                 userUid: widget.self ? null : widget.userUid,
                 thumbnail: thumbnail,
+                canBuy: true,
             )
         )
     );

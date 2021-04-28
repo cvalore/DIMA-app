@@ -39,6 +39,7 @@ dependencies:
   device_preview: ^0.5.5
   intl: any
   radio_grouped_buttons: 1.0.0+2
+  toast: ^0.1.5
 
 dev_dependencies:
   flutter_test:

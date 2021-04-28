@@ -32,8 +32,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
   final _greaterThanFormFieldController = TextEditingController();
   final _isbnFormFieldController = TextEditingController();
 
-  String _title = 'narnia';
-  String _author = 'lewis';
+  String _title = '';
+  String _author = '';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
 
   bool _openModifiersSection = false;

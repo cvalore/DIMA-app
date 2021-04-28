@@ -91,7 +91,7 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
                 setState(() {
                   loading = true;
                 });
-                await Utils.pushBookPage(context, book, book['uid'], book['thumbnail']);
+                await Utils.pushBookPage(context, book, book['uid'], book['thumbnail'], true);
                 setState(() {
                   loading = false;
                 });
