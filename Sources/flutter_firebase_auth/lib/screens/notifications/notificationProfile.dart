@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/screens/notifications/notificationPage.dart';
@@ -17,7 +18,11 @@ class NotificationProfile extends StatelessWidget {
     return Container(
         height: height,
         child: GestureDetector(
-          onTap: () {
+          onTap: () async {
+
+            Timestamp lastNotificationDate = await Utils.databaseService.getLastNotificationDate();
+            await Utils.databaseService.setNowAsLastNotificationDate();
+
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return Scaffold(
                   resizeToAvoidBottomInset: false,
@@ -34,15 +39,15 @@ class NotificationProfile extends StatelessWidget {
                     /*actions: [
                       IconButton(
                         icon: Icon(Icons.system_update),
-                        onPressed: () {
-                          print("TODO: add fake transaction");
+                        onPressed: () async {
+                          await Utils.databaseService.addFakeTransaction();
                         },
                       )
                     ],*/
                   ),
                   body: StreamProvider<List<MyTransaction>>.value(
                     value: Utils.databaseService.allTransactionsInfo,
-                    child: NotificationPage(),
+                    child: NotificationPage(lastNotificationDate: lastNotificationDate),
                   ),
               );
             }));

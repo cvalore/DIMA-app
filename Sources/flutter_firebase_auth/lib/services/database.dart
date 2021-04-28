@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -940,6 +941,24 @@ class DatabaseService {
 
   //region Profile/User
 
+  Future<Timestamp> getLastNotificationDate() async {
+    Timestamp when = null;
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        if(doc.data().containsKey('lastNotificationDate')) {
+          when = doc.data()['lastNotificationDate'];
+        }
+      }
+    });
+    return when;
+  }
+
+  Future<void> setNowAsLastNotificationDate() async {
+    await usersCollection.doc(user.uid).update({
+      'lastNotificationDate' : DateTime.now()
+    });
+  }
+
   Future<void> followUser(CustomUser followed) async {
     await usersCollection.doc(user.uid)
         .update({
@@ -1210,6 +1229,15 @@ class DatabaseService {
     transaction['payCash'] = payCash;
 
     transaction['exchanges'] = Utils.exchangedBookFromMap(booksToExchange);
+
+    String buyerUsername = "";
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        buyerUsername = doc.data()['username'];
+      }
+    });
+    transaction['buyerUsername'] = buyerUsername;
+    transaction['time'] = DateTime.now();
 
     DocumentReference buyerUserReference = usersCollection.doc(user.uid);
     DocumentReference sellerUserReference = usersCollection.doc(sellingUser);
@@ -1591,5 +1619,24 @@ class DatabaseService {
 
 
   //endregion
+
+  /*Future<void> addFakeTransaction() async {
+    String randomId = Random.secure().nextInt(100).toString();
+    await transactionsCollection.doc('RandomId'+randomId).set(
+      {
+        'id': ('RandomId'+randomId),
+        'time': DateTime.now(),
+        'buyer': 'Fake Buyer UID',
+        'buyerUsername': 'Fake Buyer Username',
+        'seller': user.uid,
+      }
+    );
+    await usersCollection.doc(user.uid).update({
+      'transactionsAsSeller': FieldValue.arrayUnion([{
+        'buyer': 'Fake Buyer UID',
+        'transactionId': 'RandomId'+randomId,
+      }]),
+    });
+  }*/
 
 }

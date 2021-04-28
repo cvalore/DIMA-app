@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
@@ -7,6 +8,11 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class NotificationPage extends StatelessWidget {
+
+  final Timestamp lastNotificationDate;
+
+  const NotificationPage({Key key, this.lastNotificationDate}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
 
@@ -23,6 +29,7 @@ class NotificationPage extends StatelessWidget {
               else
                 return NotificationPageBody(
                   transactions: snapshot.data,
+                  lastNotificationDate: lastNotificationDate,
                 );
           }
         }
