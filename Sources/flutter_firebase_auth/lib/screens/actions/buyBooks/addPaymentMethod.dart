@@ -1,13 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:flutter_firebase_auth/screens/actions/buyBooks/addNewPaymentMethod.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
+
+import 'addNewShippingInfo.dart';
 
 class AddPaymentMethod extends StatefulWidget {
 
-  Map<String, dynamic> info;
+  List<dynamic> savedPaymentMethods;
+  dynamic currentPaymentMethod;
 
-  AddPaymentMethod({Key key , @required this.info});
+  AddPaymentMethod({Key key, @required this.savedPaymentMethods, this.currentPaymentMethod});
 
   @override
   _AddPaymentMethodState createState() => _AddPaymentMethodState();
@@ -15,218 +17,67 @@ class AddPaymentMethod extends StatefulWidget {
 
 class _AddPaymentMethodState extends State<AddPaymentMethod> {
 
-  final _ownerNameKey = GlobalKey<FormFieldState>();
-  final _cardNumber = GlobalKey<FormFieldState>();
-  final _expiringDateKey = GlobalKey<FormFieldState>();
-  final _securityCodeKey = GlobalKey<FormFieldState>();
-  Map<String, dynamic> infoState = Map<String, dynamic>();
-
+  dynamic chosenPaymentMethod;
 
   @override
   void initState() {
-    if (widget.info['ownerName'] == null) {
-      infoState['ownerName'] = '';
-      infoState['cardNumber'] = '';
-      infoState['expiringDate'] = '';
-      infoState['securityCode'] = '';
-    } else {
-      infoState['ownerName'] = widget.info['ownerName'];
-      infoState['cardNumber'] = widget.info['cardNumber'];
-      infoState['expiringDate'] = widget.info['expiringDate'];
-      infoState['securityCode'] = widget.info['securityCode'];
-    }
+    chosenPaymentMethod = widget.currentPaymentMethod;
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
+
+    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment method info'),
+        title: Text('Choose payment card'),
       ),
-      floatingActionButton: Builder(
-        builder: (BuildContext context) {
-          return FloatingActionButton.extended(
-            onPressed: () {
-              if (_ownerNameKey.currentState.validate() && _cardNumber.currentState.validate()
-                  && _expiringDateKey.currentState.validate() && _securityCodeKey.currentState.validate()){
-                showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (_) => AlertDialog(
-                      content: Text('Do you want to save this payment card for future purchases?'),
-                      actions: [
-                        FlatButton(
-                            onPressed: () {
-                              Utils.databaseService.savePaymentCardInfo(infoState);
-                              Navigator.pop(context);
-                            },
-                            child: Text('SAVE')),
-                        FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('NO')),
-                      ],
-                    )
-                );
-                Navigator.pop(context, infoState);
-                final snackBar = SnackBar(
-                  backgroundColor: Colors.white24,
-                  duration: Duration(seconds: 1),
-                  content: Text(
-                    'Your card has been successfully added',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                );
-                Scaffold.of(context).showSnackBar(snackBar);
-                Timer(Duration(milliseconds: 1500), () {Navigator.pop(context);});
-              }
-            },
-            label: Text('Save payment method'),
-            icon: Icon(Icons.check_outlined),
+      body: ListView.builder(
+        itemCount: widget.savedPaymentMethods.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          return index == 0 ? ListTileTheme(
+            tileColor: Colors.white38,
+            child: ListTile(
+              title: Text('Add new card'),
+              trailing: Icon(Icons.add_circle_outlined),
+              onTap: () async {
+                var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    AddNewPaymentMethod()));
+                if (result != null) {
+                  setState(() {
+                    widget.savedPaymentMethods.add(result);
+                  });
+                }
+              },
+            ),
+          ) : Padding(
+            padding: EdgeInsets.symmetric(horizontal: _isTablet ? 150.0 : 0.0),
+            child: RadioListTile(
+              activeColor: Colors.white,
+              title: Text(widget.savedPaymentMethods[index - 1]['ownerName'], style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              subtitle: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: Text('**** **** **** ${widget.savedPaymentMethods[index - 1]['cardNumber']
+                    .substring(widget.savedPaymentMethods[index - 1]['cardNumber'].length - 4)}'
+                    '\t   ${widget.savedPaymentMethods[index - 1]['expiringDate']}', style: TextStyle(color: Colors.white)),
+              ),
+              value: widget.savedPaymentMethods[index - 1],
+              controlAffinity: ListTileControlAffinity.trailing,
+              groupValue: chosenPaymentMethod,
+              onChanged: (value) {
+                setState(() {
+                  chosenPaymentMethod = value;
+                });
+                Navigator.pop(context, [widget.savedPaymentMethods, chosenPaymentMethod]);
+              },
+            ),
           );
         },
-      ),
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 10.0),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: TextFormField(
-                  key: _ownerNameKey,
-                  initialValue: infoState['ownerName'] == '' ? null : infoState['ownerName'],
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(fontSize: 16,
-                    ),
-                    labelText: "Name and Surname",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0),),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    filled: true,
-                  ),
-                  validator: (value) {
-                    RegExp regExp = RegExp(r'^[A-Za-z]+( [A-Za-z]+){1,2}');
-                    return !regExp.hasMatch(value) ? 'Enter a valid name' : null;
-                  },
-                  onChanged: (value) {
-                    if(value != '') {
-                      setState(() {
-                        infoState['ownerName'] = value;
-                      });
-                    }
-                  },
-                ),
-              ),
-              Divider(height: 20, thickness: 2,),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: TextFormField(
-                  key: _cardNumber,
-                  initialValue: infoState['cardNumber'] == '' ? null : infoState['cardNumber'],
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: '0000 0000 0000 0000',
-                    labelStyle: TextStyle(fontSize: 16,
-                    ),
-                    labelText: "Card number",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0),),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    filled: true,
-                  ),
-                  validator: (value) {
-                    RegExp regExp = RegExp(r'^\d{4}( \d{4}){3}$');
-                    return !regExp.hasMatch(value) ? 'Enter a valid card number' : null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      infoState['cardNumber'] = value;
-                    });
-                  },
-                ),
-              ),
-              Divider(height: 20, thickness: 2,),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: TextFormField(
-                  key: _expiringDateKey,
-                  initialValue: infoState['expiringDate'] == '' ? null : infoState['expiringDate'],
-                  keyboardType: TextInputType.datetime,
-                  decoration: InputDecoration(
-                    hintText: 'MM/AA',
-                    labelStyle: TextStyle(fontSize: 16,
-                    ),
-                    labelText: "Expiring date",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0),),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    filled: true,
-                  ),
-                  validator: (value) {
-                    RegExp regExp = RegExp(r'^\d{2}/\d{2}$');
-                    return !regExp.hasMatch(value) ? 'Enter a valid expiring date' : null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      infoState['expiringDate'] = value;
-                    }
-                    );
-                  },
-                ),
-              ),
-              Divider(height: 20, thickness: 2,),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: TextFormField(
-                  key: _securityCodeKey,
-                  initialValue: infoState['securityCode'] == '' ? null: infoState['securityCode'],
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'E.g. 000',
-                    labelStyle: TextStyle(fontSize: 16,
-                    ),
-                    labelText: "CVV/CV2",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0),),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    filled: true,
-                  ),
-                  validator: (value) {
-                    RegExp regExp1 = RegExp(r'^[\d]{3,4}$');
-                    return !regExp1.hasMatch(value) ?
-                    'Enter a valid security code' : null;
-                  },
-                  onChanged: (value) {
-                    if(value != '') {
-                      setState(() {
-                        infoState['securityCode'] = value;
-                      });
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
 }
+
+

@@ -1,16 +1,17 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/screens/actions/buyBooks/addPaymentMethod.dart';
-import 'package:flutter_firebase_auth/screens/actions/buyBooks/addShippingInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/itemToPurchase.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
+import 'addPaymentMethod.dart';
+import 'addShippingInfo.dart';
 import 'chooseBooksForExchange.dart';
 
 class BuyBooks extends StatefulWidget {
@@ -18,8 +19,9 @@ class BuyBooks extends StatefulWidget {
   List<InsertedBook> booksToBuy;
   Map<int, String> thumbnails;
   String sellingUserUid;
+  Map<String, List<dynamic>> purchaseInfo;
 
-  BuyBooks({Key key, @required this.booksToBuy, @required this.thumbnails, @required this.sellingUserUid});
+  BuyBooks({Key key, @required this.booksToBuy, @required this.thumbnails, @required this.sellingUserUid, @required this.purchaseInfo});
 
   @override
   _BuyBooksState createState() => _BuyBooksState();
@@ -29,10 +31,12 @@ class _BuyBooksState extends State<BuyBooks> {
 
   final GlobalKey<ManuallyCloseableExpansionTileState> _shippingModeKey = GlobalKey();
   List<String> shippingModes = ['express courier', 'live dispatch'];
+  List<dynamic> shippingAddresses;
+  List<dynamic> paymentCards;
   String chosenShippingMode;
   bool payCash = false;
-  Map<String, dynamic> shippingAddress = Map<String, dynamic>();
-  Map<String, dynamic> paymentInfo = Map<String, dynamic>();
+  Map<String, dynamic> chosenShippingAddress;
+  Map<String, dynamic> chosenPaymentCard;
 
   Widget bookExchangeTrailingIcon = Icon(Icons.keyboard_arrow_right, color: Colors.white);
   Widget shippingModeTrailingIcon = Icon(Icons.keyboard_arrow_right, color: Colors.white);
@@ -49,6 +53,8 @@ class _BuyBooksState extends State<BuyBooks> {
         booksForExchange.add(widget.booksToBuy[i]);
       }
     }
+    shippingAddresses = widget.purchaseInfo['shippingAddressInfo'];
+    paymentCards = widget.purchaseInfo['paymentCardInfo'];
     super.initState();
   }
 
@@ -57,7 +63,6 @@ class _BuyBooksState extends State<BuyBooks> {
   Widget build(BuildContext context) {
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
-
 
     return Scaffold(
       appBar: AppBar(
@@ -72,15 +77,19 @@ class _BuyBooksState extends State<BuyBooks> {
             constraints: BoxConstraints(maxHeight: 60),
             child: Container(
                 child: Center(
-                  child: ElevatedButton(
-                    child: booksDefiningTotalPrice.length == 0 ?
-                      Text('Propose exchange') :
+                  child: Builder(
+                    builder: (BuildContext context) {
+                      return ElevatedButton(
+                        child: booksDefiningTotalPrice.length == 0 ?
+                        Text('Propose exchange') :
                         sellerMatchingBooksForExchange.length == 0 ?
-                            Text('Pay') :
-                            Text('Pay and propose exchange'),
-                    onPressed: () {
-                      _handleButtonClick(context);
-                    },
+                        Text('Pay') :
+                        Text('Pay and propose exchange'),
+                        onPressed: () {
+                          _handleButtonClick(context);
+                        },
+                      );
+                    }
                   ),
                 )
             ),
@@ -196,9 +205,6 @@ class _BuyBooksState extends State<BuyBooks> {
                             List<dynamic> myBookIndexesAlreadyUsed = sellerMatchingBooksForExchange.length > 0 ?
                             sellerMatchingBooksForExchange.values.map((e) => e['insertionNumber']).toList() : List<int>();
                             List<int> bookIndexesToRemove = List<int>();
-                            print(myBookIndexesAlreadyUsed.length);
-                            print(myBookIndexesAlreadyUsed);
-                            print('aaa');
                             for (int j = 0; j < myBookIndexesAlreadyUsed.length; j++){
                               print(myExchangeableBooksFromDb.length);
                               for (int k = 0; k < myExchangeableBooksFromDb.length; k++){
@@ -206,7 +212,6 @@ class _BuyBooksState extends State<BuyBooks> {
                                   bookIndexesToRemove.add(k);
                               }
                             }
-                            print(bookIndexesToRemove);
                             for (int j = bookIndexesToRemove.length - 1; j > -1; j--)
                               myExchangeableBooksFromDb.removeAt(bookIndexesToRemove[j]);
 
@@ -408,9 +413,11 @@ class _BuyBooksState extends State<BuyBooks> {
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: () async {
                     var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                        AddShippingInfo(info: shippingAddress)));
-                    if (result != null)
-                      shippingAddress = result;
+                        AddShippingInfo(savedShippingAddress: shippingAddresses, currentShippingAddress: chosenShippingAddress,)));
+                    if (result != null){
+                      shippingAddresses = result[0];
+                      chosenShippingAddress = result[1];
+                    }
                   },
                 ),
               ),
@@ -442,9 +449,11 @@ class _BuyBooksState extends State<BuyBooks> {
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: () async {
                     var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                        AddPaymentMethod(info: paymentInfo)));
-                    if (result != null)
-                      paymentInfo = result;
+                        AddPaymentMethod(savedPaymentMethods: paymentCards, currentPaymentMethod: chosenPaymentCard)));
+                    if (result != null){
+                      paymentCards = result[0];
+                      chosenPaymentCard = result[1];
+                    }
                   },
                 ),
               ),
@@ -493,7 +502,7 @@ class _BuyBooksState extends State<BuyBooks> {
             ],
           )
       );
-    } else if (chosenShippingMode == 'express courier' && shippingAddress.length == 0){
+    } else if (chosenShippingMode == 'express courier' && chosenShippingAddress.length == 0){
       showDialog(
           context: context,
           barrierDismissible: true,
@@ -508,7 +517,7 @@ class _BuyBooksState extends State<BuyBooks> {
             ],
           )
       );
-    } else if (payCash == false && booksDefiningTotalPrice.length > 0) {
+    } else if (payCash == false && booksDefiningTotalPrice.length > 0 && chosenPaymentCard == null) {
       showDialog(
           context: context,
           barrierDismissible: true,
@@ -532,9 +541,8 @@ class _BuyBooksState extends State<BuyBooks> {
             actions: [
               FlatButton(
                   onPressed: () async {
-                    await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, shippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
+                    await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
                     Navigator.pop(context);
-                    //Navigator.pop(context);
                   },
                   child: Text('YES')),
               FlatButton(
@@ -544,6 +552,18 @@ class _BuyBooksState extends State<BuyBooks> {
                   child: Text('NO')),
             ],
           )
+      ).then((value) {
+        final snackBar = SnackBar(
+          backgroundColor: Colors.white24,
+          duration: Duration(seconds: 1),
+          content: Text(
+            'The shipping address has been successfully added',
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+        );
+        Scaffold.of(context).showSnackBar(snackBar);
+        Timer(Duration(milliseconds: 1500), () {Navigator.pop(context);});
+      }
       );
     }
   }

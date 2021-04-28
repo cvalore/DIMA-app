@@ -495,7 +495,6 @@ class DatabaseService {
   CustomUser _userInfoFromSnapshot(DocumentSnapshot documentSnapshot) {
     CustomUser user;
     Map<String, dynamic> userMap;
-    List<InsertedBook> books = [];
     List<String> followedByMe = List<String>();
     List<String> followingMe = List<String>();
     List<ReceivedReview> receivedReviews = List<ReceivedReview>();
@@ -912,7 +911,6 @@ class DatabaseService {
 
   Future<void> addLike(int bookInsertionNumber, String thumbnail, String userWhoLikes) async {
     List<dynamic> books;
-    List<dynamic> booksILike;
     Map<String, dynamic> bookLiked = Map<String, dynamic>();
     int bookToModifyIndex;
     await usersCollection.doc(user.uid).get().then(
@@ -1079,7 +1077,14 @@ class DatabaseService {
     });
   }
 
-
+  Future getPurchaseInfo() async {
+    Map<String, List<dynamic>> result = Map<String, List<dynamic>>();
+    await usersCollection.doc(user.uid).get().then((doc) {
+      result['paymentCardInfo'] = doc.data()['paymentCardInfo'];
+      result['shippingAddressInfo'] = doc.data()['shippingAddressInfo'];
+    });
+    return result;
+  }
 
   //endregion
 
@@ -1095,7 +1100,7 @@ class DatabaseService {
   }
 
   Future<dynamic> createNewDiscussion(String category, String title) async {
-    dynamic result = null;
+    dynamic result;
 
     await forumDiscussionCollection.doc(title).get().then((DocumentSnapshot doc) async {
       if (!doc.exists) {
@@ -1411,7 +1416,6 @@ class DatabaseService {
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
       .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 
-
     if (transactionSuccessfullyCompleted) {
       print('Step 7');
       await transactionsCollection.doc(transaction['id']).set(transaction)
@@ -1434,6 +1438,7 @@ class DatabaseService {
           print("Failed to add transaction for buyer: $error"));
       print('Step 10');
     }
+
   }
 
   Future<dynamic> getTransactionFromKey(String transactionKey) async {

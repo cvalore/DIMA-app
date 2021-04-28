@@ -330,10 +330,20 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
         context,
         MaterialPageRoute(
             builder: (newContext) =>
-                BuyBooks(
-                  booksToBuy: booksToBuy,
-                  thumbnails : selectedBooksThumbnails,
-                  sellingUserUid: widget.userUid,
+                FutureBuilder(
+                  future: Utils.databaseService.getPurchaseInfo(),
+                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting)
+                      return Loading();
+                    else {
+                      return BuyBooks(
+                        purchaseInfo: snapshot.data,
+                        booksToBuy: booksToBuy,
+                        thumbnails : selectedBooksThumbnails,
+                        sellingUserUid: widget.userUid,
+                      );
+                    }
+                  },
                 )
         )
     );
