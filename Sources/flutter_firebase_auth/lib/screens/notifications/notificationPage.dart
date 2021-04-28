@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
-import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/chat/pendingPageBody.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/screens/notifications/notificationPageBody.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class PendingPage extends StatelessWidget {
-
-  final DatabaseService db;
-  final CustomUser user;
-
-  const PendingPage({Key key, this.db, this.user}) : super(key: key);
-
+class NotificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    //Chat chat = Provider.of<Chat>(context);
     List<MyTransaction> transactions = Provider.of<List<MyTransaction>>(context);
 
     return FutureBuilder(
@@ -29,9 +21,7 @@ class PendingPage extends StatelessWidget {
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
               else
-                return PendingPageBody(
-                  db: db,
-                  user: user,
+                return NotificationPageBody(
                   transactions: snapshot.data,
                 );
           }
@@ -42,7 +32,7 @@ class PendingPage extends StatelessWidget {
   Future<dynamic> _onlyTranslationInvolved(List<MyTransaction> transaction) async {
     dynamic result = [];
     for(int i = 0; i < transaction.length; i++) {
-      dynamic tr = await db.getTransactionFromKey(transaction[i].transactionKey);
+      dynamic tr = await Utils.databaseService.getTransactionFromKey(transaction[i].transactionKey);
       result.add(tr);
     }
     return result;

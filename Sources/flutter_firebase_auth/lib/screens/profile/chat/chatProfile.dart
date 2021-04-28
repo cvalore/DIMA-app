@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/screens/profile/chat/chatProfileBody.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
-class ChatProfile extends StatefulWidget {
+import 'chatProfileBody.dart';
 
+class ChatProfile extends StatelessWidget {
+  
   final double height;
 
   const ChatProfile({Key key, this.height}) : super(key: key);
-
-  @override
-  _ChatProfileState createState() => _ChatProfileState();
-}
-
-class _ChatProfileState extends State<ChatProfile> {
+  
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: widget.height,
+        height: height,
         child: GestureDetector(
           onTap: () async {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return FutureBuilder(
                   future: Utils.databaseService.getMyChats(),
-                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if(snapshot.connectionState == ConnectionState.waiting)
+                  builder: (BuildContext context,
+                      AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting)
                       return Loading();
                     else
                       return Scaffold(
@@ -40,7 +37,7 @@ class _ChatProfileState extends State<ChatProfile> {
                               letterSpacing: 1.0,
                             ),),
                           ),
-                        body: ChatProfileBody(chatsMap: snapshot.data)
+                          body: ChatProfileBody(chatsMap: snapshot.data)
                       );
                   }
               );

@@ -152,6 +152,14 @@ class DatabaseService {
     return result;
   }
 
+  Stream<List<MyTransaction>> get allTransactionsInfo {
+    Stream<List<MyTransaction>> result = usersCollection
+        .doc(user.uid)
+        .snapshots()
+        .map(_allTransactionFromSnapshot);
+    return result;
+  }
+
   ForumDiscussion _forumDiscussionFromSnapshot(DocumentSnapshot documentSnapshot) {
     dynamic result = documentSnapshot.data();
     List<Message> messages = List<Message>();
@@ -177,6 +185,15 @@ class DatabaseService {
       if(_chat.userUid1.compareTo(tr['buyer']) == 0 || _chat.userUid2.compareTo(tr['buyer']) == 0) {
         result.add(MyTransaction(tr['transactionId'], tr['buyer']));
       }
+    });
+    return result;
+  }
+
+  List<MyTransaction> _allTransactionFromSnapshot(DocumentSnapshot documentSnapshot) {
+    dynamic transactions = documentSnapshot.data()['transactionsAsSeller'] ?? [];
+    List<MyTransaction> result = List<MyTransaction>();
+    transactions.forEach((tr) {
+        result.add(MyTransaction(tr['transactionId'], tr['buyer']));
     });
     return result;
   }
@@ -1517,7 +1534,7 @@ class DatabaseService {
             .catchError((error) {print("Failed to add chat: $error");});
       }
       else {
-        result = doc.data();
+        return doc.data();
       }
     });
 
