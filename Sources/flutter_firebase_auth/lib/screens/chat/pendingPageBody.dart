@@ -8,6 +8,7 @@ import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class PendingPageBody extends StatelessWidget {
@@ -146,14 +147,19 @@ class PendingPageBody extends StatelessWidget {
                                 ),
                               ),
                               InkWell(
-                                onTap: () {
+                                onTap: () async {
+                                  await DatabaseService().acceptExchange(transactions[index]['seller'],
+                                      transactions[index]['exchanges'][i]['receivedBook'], transactions[index]['buyer'], transactions[index]['exchanges'][i]['offeredBook']);
+                                  print('hola');
                                   print("TODO: Exchanged accepted");
                                 },
                                 child: Icon(Icons.check, color: Colors.green,),
                               ),
                               Container(width: _isTablet ? 50.0 : 10.0,),
                               InkWell(
-                                onTap: () {
+                                onTap: () async {
+                                  await DatabaseService().declineExchange(transactions[index]['id'], transactions[index]['seller'],
+                                      transactions[index]['exchanges'][i]['receivedBook'], transactions[index]['buyer'], transactions[index]['exchanges'][i]['offeredBook']);
                                   print("TODO: Exchanged declined");
                                 },
                                 child: Icon(Icons.delete_forever_outlined, color: Colors.red,),

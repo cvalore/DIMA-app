@@ -1222,9 +1222,10 @@ class DatabaseService {
 
   //region Purchase
 
-  Future<void> purchaseAndProposeExchange(String sellingUser, chosenShippingMode, shippingAddress, payCash, List<InsertedBook> booksToPurchase, Map<InsertedBook, Map<String, dynamic>> booksToExchange) async {
+  Future purchaseAndProposeExchange(String sellingUser, chosenShippingMode, shippingAddress, payCash, List<InsertedBook> booksToPurchase, Map<InsertedBook, Map<String, dynamic>> booksToExchange) async {
 
     bool transactionSuccessfullyCompleted = false;
+    String usernameToReturn;
     Map<String, dynamic> transaction = Map<String, dynamic>();
     List<Map<String, dynamic>> booksToPurchaseMap = List<Map<String, dynamic>>();
     Map<String, dynamic> bookMap;
@@ -1238,6 +1239,7 @@ class DatabaseService {
       bookMap['imagesUrl'] = booksToPurchase[i].imagesUrl;
       bookMap['status'] = booksToPurchase[i].status;
       bookMap['price'] = booksToPurchase[i].price;
+      bookMap['insertionNumber'] = booksToPurchase[i].insertionNumber;
       booksToPurchaseMap.add(bookMap);
     }
     transaction['id'] = transactionId;
@@ -1278,6 +1280,7 @@ class DatabaseService {
         throw Exception("User does not exist!");
       }
       sellerBooks = sellerUserSnapshot.data()['books'];
+      usernameToReturn = sellerUserSnapshot.data()['username'];
       booksToExchangeKeys = booksToExchange.keys.toList();
       for (int i = 0; i < sellerBooks.length; i++){
         for (int j = 0; j < booksToPurchase.length; j++) {
@@ -1286,24 +1289,14 @@ class DatabaseService {
             booksToRemove.add(i);
           }
         }
-        print(booksToExchange);
         for (int j = 0; j < booksToExchange.length; j++){
-          print('Quaaaaa');
-          print(booksToExchangeKeys[j]);
-          //if (sellerBooks[i]['insertionNumber'] == booksToExchange[booksToExchangeKeys[j]]['insertionNumber']){
           if (sellerBooks[i]['insertionNumber'] == booksToExchangeKeys[j].insertionNumber){
-            print('ma qua');
             exchangingBooks.add(i);
-            print('e qua');
             if (sellerBooks[i]['exchangeStatus'] != 'available')
               throw Exception("Some books you want to exchange are no more available");
           }
         }
       }
-      print(booksToRemove.length);
-      print(booksToPurchase.length);
-      print(exchangingBooks.length);
-      print(booksToExchange.length);
       if (booksToRemove.length != booksToPurchase.length || exchangingBooks.length != booksToExchange.length)
         throw Exception("A problem occurred with books you want to buy. They might have been already sold or the user might have deleted it");
 
@@ -1340,7 +1333,6 @@ class DatabaseService {
       for (int i = buyerExchangingBooks.length - 1; i > -1; i--)
         buyerBooks[buyerExchangingBooks[i]]['exchangeStatus'] = 'pending';
 
-
       //check if selling user had duplicates of the sold books
       Set<String> booksToRemoveIdSet = booksToRemoveId.toSet();
       List<String> booksToRemoveIdNoDuplicates = booksToRemoveIdSet.toList();
@@ -1373,10 +1365,12 @@ class DatabaseService {
       for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
         for (int j = 0; j < sellerBooks.length; j++) {
           if (sellerBooks[j]['id'] == booksToRemoveIdNoDuplicates[i]) {
-            sellerHasDuplicate[j] = true;
+            sellerHasDuplicate[i] = true;
           }
         }
       }
+      print('seller has duplicate');
+      print(sellerHasDuplicate);
 
       Map<String, dynamic> booksFromBooksCollectionToModify = Map<String, dynamic>();
       List<String> booksFromBooksCollectionToDelete = List<String>();
@@ -1396,15 +1390,16 @@ class DatabaseService {
           bookData['owners'] = owners;
         }
 
+        String category;
+        for (int i = 0; i < booksToPurchase.length; i++){
+          if (bookData['id'] == booksToPurchase[i].id) {
+            category = booksToPurchase[i].category;
+            break;
+          }
+        }
+
         if (bookData['availableNum'] == 0) {
           booksFromBooksCollectionToDelete.add(booksToRemoveIdNoDuplicates[i]);
-          String category;
-          for (int i = 0; i < booksToPurchase.length; i++){
-            if (bookData['id'] == booksToPurchase[i].id) {
-              category = booksToPurchase[i].category;
-              break;
-            }
-          }
           if (booksToRemoveFromBooksPerGenres[category] == null)
             booksToRemoveFromBooksPerGenres[category] = [bookData['id']];
           else {
@@ -1415,6 +1410,30 @@ class DatabaseService {
         }
         else {
           booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] = bookData;
+          bool removeBookFromBooksPerGenre = true;
+
+          for (int j = 0; j < bookData['owners'].length && removeBookFromBooksPerGenre; j++){
+            List<String> owners = List.from(bookData['owners']);
+            print(owners[j]);
+            DocumentReference bookRef = usersCollection.doc(owners[j]);
+            DocumentSnapshot bookSnap = await transactionOnDb.get(bookRef);
+            dynamic userBooks = bookSnap.data()['books'];
+            print(userBooks);
+            for (int k = 0; k < userBooks.length && removeBookFromBooksPerGenre; k++) {
+              if (userBooks[k]['id'] == bookData['id'] && userBooks[k]['category'] == category)
+                removeBookFromBooksPerGenre = false;
+            }
+          }
+
+          if (removeBookFromBooksPerGenre) {
+            if (booksToRemoveFromBooksPerGenres[category] == null)
+              booksToRemoveFromBooksPerGenres[category] = [bookData['id']];
+            else {
+              List<String> books = booksToRemoveFromBooksPerGenres[category];
+              books.add(bookData['id']);
+              booksToRemoveFromBooksPerGenres[category] = books;
+            }
+          }
         }
       }
 
@@ -1525,7 +1544,393 @@ class DatabaseService {
       print('Step 10');
     }
 
+
+    return [usernameToReturn];
   }
+
+
+  Future<void> acceptExchange(String seller, Map<String, dynamic> sellerBook,
+      String buyer, Map<String, dynamic> buyerBook
+      ) async {
+
+
+    bool transactionSuccessfullyCompleted = false;
+    DocumentReference buyerUserReference = usersCollection.doc(buyer);
+    DocumentReference sellerUserReference = usersCollection.doc(seller);
+    List<dynamic> buyerBooks;
+    List<dynamic> sellerBooks;
+    int buyerBookToRemoveIndex;
+    int sellerBookToRemoveIndex;
+    List<String> booksToRemoveId;
+    List<bool> thereAreDuplicates;
+
+    await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
+      // check on the seller's books exchanged
+      DocumentSnapshot sellerUserSnapshot = await transactionOnDb.get(
+          sellerUserReference);
+      DocumentSnapshot buyerUserSnapshot = await transactionOnDb.get(
+          buyerUserReference);
+      if (!sellerUserSnapshot.exists) {
+        throw Exception("User does not exist!");
+      }
+
+      sellerBooks = sellerUserSnapshot.data()['books'];
+      for (int i = 0; i < sellerBooks.length &&
+          sellerBookToRemoveIndex == null; i++) {
+        if (sellerBooks[i]['insertionNumber'] ==
+            sellerBook['insertionNumber']) {
+          sellerBookToRemoveIndex = i;
+        }
+      }
+
+      print('e qua');
+      print(buyerBook);
+      buyerBooks = buyerUserSnapshot.data()['books'];
+      for (int i = 0; i < buyerBooks.length &&
+          buyerBookToRemoveIndex == null; i++) {
+        if (buyerBooks[i]['insertionNumber'] == buyerBook['insertionNumber']) {
+          buyerBookToRemoveIndex = i;
+        }
+      }
+      print(buyerBookToRemoveIndex);
+      print('almeno qua');
+
+      // check on the buyer's books exchanged
+      // still to check this if
+
+      //remove books from seller user document
+      booksToRemoveId = List<String>();
+      var removedFromSeller = sellerBooks.removeAt(sellerBookToRemoveIndex);
+      print(removedFromSeller);
+      print('aa');
+      booksToRemoveId.add(removedFromSeller['id']);
+      var removedFromBuyer = buyerBooks.removeAt(buyerBookToRemoveIndex);
+      print(removedFromBuyer);
+      booksToRemoveId.add(removedFromBuyer['id']);
+
+      //check if selling user had duplicates of the sold books
+      Set<String> booksToRemoveIdSet = booksToRemoveId.toSet();
+      List<String> booksToRemoveIdNoDuplicates = booksToRemoveIdSet.toList();
+
+      Map<String, int> booksCountById = Map<String, int>();
+      Map<String, int> booksHaveImagesById = Map<String, int>();
+      Map<String, int> booksAreExchangeableById = Map<String, int>();
+
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
+        booksCountById[booksToRemoveIdNoDuplicates[i]] = 0;
+        booksHaveImagesById[booksToRemoveIdNoDuplicates[i]] = 0;
+        booksAreExchangeableById[booksToRemoveIdNoDuplicates[i]] = 0;
+      }
+
+      for (int i = 0; i < booksToRemoveId.length; i++)
+        booksCountById[booksToRemoveId[i]]++;
+
+      booksAreExchangeableById[sellerBook['id']]++;
+      booksAreExchangeableById[buyerBook['id']]++;
+
+      if (sellerBook['imagesUrl'] != null && sellerBook['imagesUrl'].length > 0)
+        booksHaveImagesById[sellerBook['id']]++;
+      if (buyerBook['imagesUrl'] != null && buyerBook['imagesUrl'].length > 0)
+        booksHaveImagesById[buyerBook['id']]++;
+
+      print('ci arrivo');
+      thereAreDuplicates = List.filled(2, false);
+      for (int j = 0; j < sellerBooks.length && !thereAreDuplicates[0]; j++) {
+        if (sellerBooks[j]['id'] == booksToRemoveId[0]) {
+          thereAreDuplicates[0] = true;
+        }
+      }
+      for (int j = 0; j < buyerBooks.length && !thereAreDuplicates[1]; j++) {
+        if (buyerBooks[j]['id'] == booksToRemoveId[1]) {
+          thereAreDuplicates[1] = true;
+        }
+      }
+      print(thereAreDuplicates);
+
+      Map<String, dynamic> booksFromBooksCollectionToModify = Map<String,dynamic>();
+      List<String> booksFromBooksCollectionToDelete = List<String>();
+      Map<String, List<String>> booksToRemoveFromBooksPerGenres = Map<String,List<String>>();
+
+
+      if (booksToRemoveIdNoDuplicates.length == 1) {
+        DocumentReference bookRef = bookCollection.doc(
+            booksToRemoveIdNoDuplicates[0]);
+        DocumentSnapshot bookSnap = await transactionOnDb.get(bookRef);
+        dynamic bookData = bookSnap.data();
+
+        bookData['availableNum'] = bookData['availableNum'] - 2;
+        bookData['exchangeable'] = bookData['exchangeable'] - 2;
+        bookData['haveImages'] = bookData['haveImages'] -
+            booksHaveImagesById[booksToRemoveIdNoDuplicates[0]];
+        for (int j = 0; j < thereAreDuplicates.length; j++) {
+          if (!thereAreDuplicates[j]) {
+            List<String> owners = List.from(bookData['owners']);
+            if (j == 0)
+              owners.remove(seller);
+            else
+              owners.remove(buyer);
+            bookData['owners'] = owners;
+          }
+        }
+
+        for (int i = 0; i < booksToRemoveId.length; i++) {
+          String category;
+          if (i == 0)
+            category = sellerBook['category'];
+          else
+            category = buyerBook['category'];
+          bool removeBookFromBooksPerGenre = true;
+          for (int j = 0; j < bookData['owners'].length &&
+              removeBookFromBooksPerGenre; j++) {
+            List<String> owners = List.from(bookData['owners']);
+            DocumentReference bookRef = usersCollection.doc(owners[j]);
+            DocumentSnapshot bookSnap = await transactionOnDb.get(bookRef);
+            dynamic userBooks = bookSnap.data()['books'];
+            for (int k = 0; k < userBooks.length &&
+                removeBookFromBooksPerGenre; k++) {
+              if (userBooks[k]['id'] == bookData['id'] &&
+                  userBooks[k]['category'] == category)
+                removeBookFromBooksPerGenre = false;
+            }
+          }
+          if (removeBookFromBooksPerGenre) {
+            if (booksToRemoveFromBooksPerGenres[category] == null)
+              booksToRemoveFromBooksPerGenres[category] = [bookData['id']];
+            else {
+              List<String> books = booksToRemoveFromBooksPerGenres[category];
+              books.add(bookData['id']);
+              booksToRemoveFromBooksPerGenres[category] = books;
+            }
+          }
+        }
+      } else {
+        for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++) {
+          DocumentReference bookRef = bookCollection.doc(
+              booksToRemoveIdNoDuplicates[i]);
+          DocumentSnapshot bookSnap = await transactionOnDb.get(bookRef);
+          dynamic bookData = bookSnap.data();
+
+          bookData['availableNum'] = bookData['availableNum'] -
+              booksCountById[booksToRemoveIdNoDuplicates[i]];
+          bookData['exchangeable'] = bookData['exchangeable'] -
+              booksAreExchangeableById[booksToRemoveIdNoDuplicates[i]];
+          bookData['haveImages'] = bookData['haveImages'] -
+              booksHaveImagesById[booksToRemoveIdNoDuplicates[i]];
+          if (!thereAreDuplicates[i]) {
+            List<String> owners = List.from(bookData['owners']);
+            if (i == 0)
+              owners.remove(seller);
+            else
+              owners.remove(buyer);
+            bookData['owners'] = owners;
+          }
+
+          String category;
+          print(sellerBook['category']);
+          print(buyerBook['category']);
+          if (i == 0)
+            category = sellerBook['category'];
+          else
+            category = buyerBook['category'];
+          print('aaaaa');
+          print(category);
+
+          if (bookData['availableNum'] == 0) {
+            booksFromBooksCollectionToDelete.add(
+                booksToRemoveIdNoDuplicates[i]);
+            if (booksToRemoveFromBooksPerGenres[category] == null)
+              booksToRemoveFromBooksPerGenres[category] = [bookData['id']];
+            else {
+              List<String> books = booksToRemoveFromBooksPerGenres[category];
+              books.add(bookData['id']);
+              booksToRemoveFromBooksPerGenres[category] = books;
+            }
+          }
+          else {
+            booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] =
+                bookData;
+            bool removeBookFromBooksPerGenre = true;
+
+            for (int j = 0; j < bookData['owners'].length &&
+                removeBookFromBooksPerGenre; j++) {
+              List<String> owners = List.from(bookData['owners']);
+              print(owners[j]);
+              DocumentReference bookRef = usersCollection.doc(owners[j]);
+              DocumentSnapshot bookSnap = await transactionOnDb.get(bookRef);
+              dynamic userBooks = bookSnap.data()['books'];
+              print(userBooks);
+              for (int k = 0; k < userBooks.length &&
+                  removeBookFromBooksPerGenre; k++) {
+                if (userBooks[k]['id'] == bookData['id'] &&
+                    userBooks[k]['category'] == category)
+                  removeBookFromBooksPerGenre = false;
+              }
+            }
+
+            if (removeBookFromBooksPerGenre) {
+              if (booksToRemoveFromBooksPerGenres[category] == null)
+                booksToRemoveFromBooksPerGenres[category] = [bookData['id']];
+              else {
+                List<String> books = booksToRemoveFromBooksPerGenres[category];
+                books.add(bookData['id']);
+                booksToRemoveFromBooksPerGenres[category] = books;
+              }
+            }
+          }
+        }
+      }
+
+      print('also here');
+      Map<String, dynamic> booksFromBooksPerGenresCollection = Map<String, dynamic>();
+      List<String> genres = booksToRemoveFromBooksPerGenres.keys.toList();
+      for(int i = 0; i < booksToRemoveFromBooksPerGenres.length; i++){
+        print(genres[i]);
+        DocumentReference documentReference = booksPerGenreCollection.doc(genres[i]);
+        DocumentSnapshot booksPerGenreSnap = await transactionOnDb.get(documentReference);
+        print('qua non gli piace');
+        List<dynamic> booksPerGenre = booksPerGenreSnap.data()['books'];
+        print('qua non gli paice');
+        List<int> booksToRemoveIndexes = List<int>();
+        for (int j = 0; j < booksPerGenre.length; j++){
+          for (int k = 0; k < booksToRemoveFromBooksPerGenres[genres[i]].length; k++){
+            if (booksPerGenre[j][booksToRemoveFromBooksPerGenres[genres[i]][k]] != null)
+              booksToRemoveIndexes.add(j);
+          }
+        }
+        for (int i = booksToRemoveIndexes.length - 1; i > -1; i--)
+          booksPerGenre.removeAt(booksToRemoveIndexes[i]);
+
+        booksFromBooksPerGenresCollection[genres[i]] = booksPerGenre;
+      }
+
+      for (int i = 0; i < booksFromBooksCollectionToDelete.length; i++){
+        print(booksFromBooksCollectionToDelete[i]);
+        print('cancellato');
+      }
+
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
+        if (booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] != null){
+          print(booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]]);
+        } else {
+          print('else quindi cancellato');
+        }
+      }
+
+      print('Step 1');
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      for (int i = 0; i < booksFromBooksCollectionToDelete.length; i++){
+        DocumentReference documentReference = bookCollection.doc(booksFromBooksCollectionToDelete[i]);
+        batch.delete(documentReference);
+      }
+      print('Step 2');
+
+      for (int i = 0; i < booksToRemoveIdNoDuplicates.length; i++){
+        if (booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]] != null){
+          DocumentReference documentReference = bookCollection.doc(booksToRemoveIdNoDuplicates[i]);
+          batch.update(documentReference, booksFromBooksCollectionToModify[booksToRemoveIdNoDuplicates[i]]);
+        }
+      }
+
+      print('Step 4');
+      if (booksToRemoveFromBooksPerGenres.length > 0) {
+        for (int i = 0; i < genres.length; i++){
+          DocumentReference documentReference = booksPerGenreCollection.doc(genres[i]);
+          batch.update(documentReference, {'books': booksFromBooksPerGenresCollection[genres[i]]});
+        }
+      }
+
+      print('Step 6');
+      batch.update(sellerUserReference, {'books': sellerBooks});
+      batch.update(buyerUserReference, {'books': buyerBooks});
+
+      //batch.commit();
+    }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
+        .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
+
+    /*
+    if (transactionSuccessfullyCompleted) {
+      print('Step 7');
+      List<dynamic> exchanges;
+      await transactionsCollection.doc(transaction['id']).get().then((doc) {
+        exchanges = doc.data()['exchanges'];
+        for (int i = 0; i < exchanges.length; i++) {
+          if (exchanges[i]['receivedBook']['insertionNumber'] ==
+              sellerBook['insertionNumber'] &&
+              exchanges[i]['offeredBook']['insertionNumber'] ==
+                  buyerBook['insertionNumber']) {
+            print('accettato');
+            exchanges[i]['exchangeStatus'] = 'accepted';
+          }
+        }
+      }).catchError((error) => print("Failed to complete transaction: $error"));
+
+      await transactionsCollection.doc(transaction['id']).update({
+        'exchanges': exchanges}).catchError((error) =>
+          print("Failed to complete transaction: $error"));
+    }
+
+     */
+  }
+
+
+  Future<void> declineExchange(String transactionId, String seller, Map<String, dynamic> sellerBook,
+      String buyer, Map<String, dynamic> buyerBook
+      ) async {
+
+    DocumentReference buyerUserReference = usersCollection.doc(user.uid);
+    DocumentReference sellerUserReference = usersCollection.doc(seller);
+    DocumentReference transactionReference = transactionsCollection.doc(transactionId);
+
+    List<dynamic> buyerBooks;
+    List<dynamic> sellerBooks;
+    List<dynamic> booksFromTransaction;
+
+    await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
+      DocumentSnapshot sellerUserSnapshot = await transactionOnDb.get(
+          sellerUserReference);
+      DocumentSnapshot buyerUserSnapshot = await transactionOnDb.get(
+          buyerUserReference);
+      DocumentSnapshot transactionSnapshot = await transactionOnDb.get(
+          transactionReference);
+
+      if (!sellerUserSnapshot.exists) {
+        throw Exception("User does not exist!");
+      }
+      sellerBooks = sellerUserSnapshot.data()['books'];
+      for (int i = 0; i < sellerBooks.length; i++) {
+        if (sellerBooks[i]['insertionNumber'] ==
+            sellerBook['insertionNumber']) {
+          sellerBooks[i]['exchangeStatus'] = 'available';
+        }
+      }
+
+      buyerBooks = buyerUserSnapshot.data()['books'];
+      for (int i = 0; i < buyerBooks.length; i++) {
+        if (buyerBooks[i]['insertionNumber'] == buyerBook['insertionNumber']) {
+          buyerBooks[i]['exchangeStatus'] = 'available';
+        }
+      }
+
+      booksFromTransaction = transactionSnapshot.data()['exchanges'];
+      for (int i = 0; i < booksFromTransaction.length; i++){
+        if (booksFromTransaction[i]['receivedBook']['insertionNumber'] == sellerBook['insertionNumber'] &&
+            booksFromTransaction[i]['offeredBook']['insertionNumber'] == buyerBook['insertionNumber'])
+          booksFromTransaction[i]['exchangeStatus'] = 'rejected';
+      }
+
+      print('Step 1');
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      print('Step 2');
+      batch.update(sellerUserReference, {'books': sellerBooks});
+      batch.update(buyerUserReference, {'books': buyerBooks});
+      batch.update(transactionReference, {'exchanges': booksFromTransaction});
+      batch.commit();
+    }).then((value) {print("the exchange has been declined");})
+        .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
+  }
+
 
   Future<dynamic> getTransactionFromKey(String transactionKey) async {
     dynamic result;
@@ -1563,7 +1968,7 @@ class DatabaseService {
   }
 
   Future<dynamic> createNewChat(String userUid1, String userUid2, String otherUsername) async {
-    dynamic result = null;
+    dynamic result;
 
     String keyPart1 = userUid1.compareTo(userUid2) > 0 ? userUid1 : userUid2;
     String keyPart2 = userUid1.compareTo(userUid2) > 0 ? userUid2 : userUid1;

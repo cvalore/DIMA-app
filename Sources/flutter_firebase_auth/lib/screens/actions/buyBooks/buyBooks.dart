@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/itemToPurchase.dart';
+import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
@@ -487,6 +488,8 @@ class _BuyBooksState extends State<BuyBooks> {
   }
 
   void _handleButtonClick(BuildContext context) {
+    bool transactionCompleted = false;
+    dynamic chat;
     if (chosenShippingMode == null){
       showDialog(
           context: context,
@@ -541,7 +544,16 @@ class _BuyBooksState extends State<BuyBooks> {
             actions: [
               FlatButton(
                   onPressed: () async {
-                    await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
+                    dynamic sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
+                    if (sellerUsername != null) {
+                      if (sellerUsername is List<String>) {
+                        chat = await Utils.databaseService.createNewChat(
+                            Utils.mySelf.uid, widget.sellingUserUid, sellerUsername[0]);
+                      } else {
+                        print('error');
+                        //TODO
+                      }
+                    }
                     Navigator.pop(context);
                   },
                   child: Text('YES')),
@@ -553,16 +565,29 @@ class _BuyBooksState extends State<BuyBooks> {
             ],
           )
       ).then((value) {
-        final snackBar = SnackBar(
-          backgroundColor: Colors.white24,
-          duration: Duration(seconds: 1),
-          content: Text(
-            'The shipping address has been successfully added',
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-        );
-        Scaffold.of(context).showSnackBar(snackBar);
-        Timer(Duration(milliseconds: 1500), () {Navigator.pop(context);});
+        if (transactionCompleted) {
+          final snackBar = SnackBar(
+            backgroundColor: Colors.white24,
+            duration: Duration(seconds: 1),
+            content: Text(
+              'The shipping address has been successfully added',
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2,
+            ),
+          );
+          Scaffold.of(context).showSnackBar(snackBar);
+          Timer(Duration(milliseconds: 1500), () {
+            if (chat != null) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(chat: Utils.toChat(chat))));
+            } else {
+              Navigator.pop(context);
+            }
+          });
+        } else {
+          //TODO stampare a schermo l'erroe
+        }
       }
       );
     }

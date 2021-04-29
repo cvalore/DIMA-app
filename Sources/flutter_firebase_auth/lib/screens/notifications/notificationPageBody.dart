@@ -54,7 +54,7 @@ class NotificationPageBody extends StatelessWidget {
                     title: Text("Transaction ID: " + transactions[i]['id'].substring(0,10) + " ... " + DateTime.fromMillisecondsSinceEpoch(transactions[i]['time'].seconds * 1000).toString().split('.')[0],
                       overflow: TextOverflow.ellipsis,
                     ),
-                    initiallyExpanded: lastNotificationDate.compareTo(transactions[i]['time']) < 0,
+                    initiallyExpanded: lastNotificationDate == null ? true: lastNotificationDate.compareTo(transactions[i]['time']) < 0,
                     children: <Widget>[
                       NotificationText(
                         transaction: transactions[i],

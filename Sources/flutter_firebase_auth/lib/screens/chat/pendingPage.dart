@@ -21,7 +21,7 @@ class PendingPage extends StatelessWidget {
     List<MyTransaction> transactions = Provider.of<List<MyTransaction>>(context);
 
     return FutureBuilder(
-        future: _onlyTranslationInvolved(transactions),
+        future: _onlyTransactionInvolved(transactions),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting: return Center(child: Loading());
@@ -39,7 +39,7 @@ class PendingPage extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _onlyTranslationInvolved(List<MyTransaction> transaction) async {
+  Future<dynamic> _onlyTransactionInvolved(List<MyTransaction> transaction) async {
     dynamic result = [];
     for(int i = 0; i < transaction.length; i++) {
       dynamic tr = await db.getTransactionFromKey(transaction[i].transactionKey);

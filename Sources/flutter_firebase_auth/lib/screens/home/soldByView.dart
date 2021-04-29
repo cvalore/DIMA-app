@@ -44,7 +44,7 @@ class _SoldByViewState extends State<SoldByView> {
                 InkWell(
                   onTap: () async {
                     //print(widget.books[i]);
-                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], false);
+                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], true);
                   },
                   child: Column(
                       children: <Widget>[
