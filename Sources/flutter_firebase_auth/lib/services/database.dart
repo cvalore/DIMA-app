@@ -1975,6 +1975,8 @@ class DatabaseService {
     DateTime time = DateTime.now();
     String chatKey = Utils.encodeBase64(keyPart1 + "_" + keyPart2);
 
+    bool newChatCreated = true;
+
     await chatsCollection.doc(chatKey).get().then((DocumentSnapshot doc) async {
       if (!doc.exists) {
         Chat newChat = Chat(
@@ -1987,33 +1989,36 @@ class DatabaseService {
             .catchError((error) {print("Failed to add chat: $error");});
       }
       else {
-        return doc.data();
+        newChatCreated = false;
+        result = doc.data();
       }
     });
 
-    await usersCollection
-        .where('uid', isEqualTo: userUid1)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-          if (querySnapshot.size == 1) {
-            usersCollection.doc(querySnapshot.docs[0].id)
-                .update({
-              'chats': FieldValue.arrayUnion([chatKey]),
-            });
-          }
-    });
+    if(result != null && newChatCreated) {
+      await usersCollection
+          .where('uid', isEqualTo: userUid1)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        if (querySnapshot.size == 1) {
+          usersCollection.doc(querySnapshot.docs[0].id)
+              .update({
+            'chats': FieldValue.arrayUnion([chatKey]),
+          });
+        }
+      });
 
-    await usersCollection
-        .where('uid', isEqualTo: userUid2)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      if (querySnapshot.size == 1) {
-        usersCollection.doc(querySnapshot.docs[0].id)
-            .update({
-          'chats': FieldValue.arrayUnion([chatKey]),
-        });
-      }
-    });
+      await usersCollection
+          .where('uid', isEqualTo: userUid2)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        if (querySnapshot.size == 1) {
+          usersCollection.doc(querySnapshot.docs[0].id)
+              .update({
+            'chats': FieldValue.arrayUnion([chatKey]),
+          });
+        }
+      });
+    }
 
     return result;
   }

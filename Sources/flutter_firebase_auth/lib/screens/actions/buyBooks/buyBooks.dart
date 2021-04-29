@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/itemToPurchase.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -547,8 +548,10 @@ class _BuyBooksState extends State<BuyBooks> {
                     dynamic sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
                     if (sellerUsername != null) {
                       if (sellerUsername is List<String>) {
+                        CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
+                        String myUsername = me.username;
                         chat = await Utils.databaseService.createNewChat(
-                            Utils.mySelf.uid, widget.sellingUserUid, sellerUsername[0]);
+                            Utils.mySelf.uid, widget.sellingUserUid, myUsername, sellerUsername[0]);
                       } else {
                         print('error');
                         //TODO
