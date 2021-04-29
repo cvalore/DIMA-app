@@ -10,15 +10,14 @@ import 'package:provider/provider.dart';
 class NotificationPage extends StatelessWidget {
 
   final Timestamp lastNotificationDate;
+  //final List<MyTransaction> transactions;
+  final dynamic transactions;
 
-  const NotificationPage({Key key, this.lastNotificationDate}) : super(key: key);
+  const NotificationPage({Key key, this.lastNotificationDate, this.transactions}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    List<MyTransaction> transactions = Provider.of<List<MyTransaction>>(context);
-
-    return FutureBuilder(
+    /*return FutureBuilder(
         future: _onlyTranslationInvolved(transactions),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           switch (snapshot.connectionState) {
@@ -33,15 +32,19 @@ class NotificationPage extends StatelessWidget {
                 );
           }
         }
+    );*/
+    return NotificationPageBody(
+      transactions: transactions,
+      lastNotificationDate: lastNotificationDate,
     );
   }
 
-  Future<dynamic> _onlyTranslationInvolved(List<MyTransaction> transaction) async {
+  /*Future<dynamic> _onlyTranslationInvolved(List<MyTransaction> transaction) async {
     dynamic result = [];
     for(int i = 0; i < transaction.length; i++) {
       dynamic tr = await Utils.databaseService.getTransactionFromKey(transaction[i].transactionKey);
       result.add(tr);
     }
     return result;
-  }
+  }*/
 }

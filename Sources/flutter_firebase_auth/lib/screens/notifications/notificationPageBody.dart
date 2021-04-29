@@ -16,11 +16,12 @@ class NotificationPageBody extends StatelessWidget {
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
-    transactions.sort((a ,b) {
+    //already done before
+    /*transactions.sort((a ,b) {
       Timestamp timeA = a['time'];
       Timestamp timeB = b['time'];
       return -timeA.compareTo(timeB);
-    });
+    });*/
 
     return
       transactions == null || transactions.length == 0 ?

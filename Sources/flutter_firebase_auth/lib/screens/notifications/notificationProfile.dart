@@ -11,21 +11,32 @@ class NotificationProfile extends StatelessWidget {
 
   final double height;
   bool newNotifications = false;
+  final dynamic transactions;
+  final BuildContext oldContext;
+  final Timestamp lastNotificationDate;
 
-  NotificationProfile({Key key, this.height}) : super(key: key);
+  NotificationProfile({Key key, this.height, this.transactions, this.oldContext, this.lastNotificationDate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    newNotifications = false;
+    for(int i = 0; transactions != null && i < transactions.length; i++) {
+      if(lastNotificationDate.compareTo(transactions[i]['time']) < 0) {
+        newNotifications = true;
+        break;
+      }
+    }
 
     return Container(
         height: height,
         child: GestureDetector(
           onTap: () async {
 
-            Timestamp lastNotificationDate = await Utils.databaseService.getLastNotificationDate();
+            //Timestamp lastNotificationDate = await Utils.databaseService.getLastNotificationDate();
             await Utils.databaseService.setNowAsLastNotificationDate();
 
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(oldContext, MaterialPageRoute(builder: (context) {
               return Scaffold(
                   resizeToAvoidBottomInset: false,
                   //backgroundColor: Colors.black,
@@ -47,9 +58,9 @@ class NotificationProfile extends StatelessWidget {
                       )
                     ],*/
                   ),
-                  body: StreamProvider<List<MyTransaction>>.value(
-                    value: Utils.databaseService.allTransactionsInfo,
-                    child: NotificationPage(lastNotificationDate: lastNotificationDate),
+                  body: NotificationPage(
+                    lastNotificationDate: lastNotificationDate,
+                    transactions: transactions,
                   ),
               );
             }));
