@@ -1549,7 +1549,7 @@ class DatabaseService {
   }
 
 
-  Future<void> acceptExchange(String seller, Map<String, dynamic> sellerBook,
+  Future acceptExchange(String transactionId, String seller, Map<String, dynamic> sellerBook,
       String buyer, Map<String, dynamic> buyerBook
       ) async {
 
@@ -1557,12 +1557,15 @@ class DatabaseService {
     bool transactionSuccessfullyCompleted = false;
     DocumentReference buyerUserReference = usersCollection.doc(buyer);
     DocumentReference sellerUserReference = usersCollection.doc(seller);
+    DocumentReference transactionReference = transactionsCollection.doc(transactionId);
+
     List<dynamic> buyerBooks;
     List<dynamic> sellerBooks;
     int buyerBookToRemoveIndex;
     int sellerBookToRemoveIndex;
     List<String> booksToRemoveId;
     List<bool> thereAreDuplicates;
+    List<dynamic> booksFromTransaction;
 
     await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
       // check on the seller's books exchanged
@@ -1570,8 +1573,17 @@ class DatabaseService {
           sellerUserReference);
       DocumentSnapshot buyerUserSnapshot = await transactionOnDb.get(
           buyerUserReference);
+      DocumentSnapshot transactionSnapshot = await transactionOnDb.get(
+          transactionReference);
       if (!sellerUserSnapshot.exists) {
         throw Exception("User does not exist!");
+      }
+
+      booksFromTransaction = transactionSnapshot.data()['exchanges'];
+      for (int i = 0; i < booksFromTransaction.length; i++){
+        if (booksFromTransaction[i]['receivedBook']['insertionNumber'] == sellerBook['insertionNumber'] &&
+            booksFromTransaction[i]['offeredBook']['insertionNumber'] == buyerBook['insertionNumber'])
+          booksFromTransaction[i]['exchangeStatus'] = 'accepted';
       }
 
       sellerBooks = sellerUserSnapshot.data()['books'];
@@ -1583,8 +1595,6 @@ class DatabaseService {
         }
       }
 
-      print('e qua');
-      print(buyerBook);
       buyerBooks = buyerUserSnapshot.data()['books'];
       for (int i = 0; i < buyerBooks.length &&
           buyerBookToRemoveIndex == null; i++) {
@@ -1593,7 +1603,6 @@ class DatabaseService {
         }
       }
       print(buyerBookToRemoveIndex);
-      print('almeno qua');
 
       // check on the buyer's books exchanged
       // still to check this if
@@ -1633,7 +1642,6 @@ class DatabaseService {
       if (buyerBook['imagesUrl'] != null && buyerBook['imagesUrl'].length > 0)
         booksHaveImagesById[buyerBook['id']]++;
 
-      print('ci arrivo');
       thereAreDuplicates = List.filled(2, false);
       for (int j = 0; j < sellerBooks.length && !thereAreDuplicates[0]; j++) {
         if (sellerBooks[j]['id'] == booksToRemoveId[0]) {
@@ -1726,15 +1734,10 @@ class DatabaseService {
           }
 
           String category;
-          print(sellerBook['category']);
-          print(buyerBook['category']);
           if (i == 0)
             category = sellerBook['category'];
           else
             category = buyerBook['category'];
-          print('aaaaa');
-          print(category);
-
           if (bookData['availableNum'] == 0) {
             booksFromBooksCollectionToDelete.add(
                 booksToRemoveIdNoDuplicates[i]);
@@ -1780,16 +1783,12 @@ class DatabaseService {
         }
       }
 
-      print('also here');
       Map<String, dynamic> booksFromBooksPerGenresCollection = Map<String, dynamic>();
       List<String> genres = booksToRemoveFromBooksPerGenres.keys.toList();
       for(int i = 0; i < booksToRemoveFromBooksPerGenres.length; i++){
-        print(genres[i]);
         DocumentReference documentReference = booksPerGenreCollection.doc(genres[i]);
         DocumentSnapshot booksPerGenreSnap = await transactionOnDb.get(documentReference);
-        print('qua non gli piace');
         List<dynamic> booksPerGenre = booksPerGenreSnap.data()['books'];
-        print('qua non gli paice');
         List<int> booksToRemoveIndexes = List<int>();
         for (int j = 0; j < booksPerGenre.length; j++){
           for (int k = 0; k < booksToRemoveFromBooksPerGenres[genres[i]].length; k++){
@@ -1843,41 +1842,22 @@ class DatabaseService {
       print('Step 6');
       batch.update(sellerUserReference, {'books': sellerBooks});
       batch.update(buyerUserReference, {'books': buyerBooks});
+      batch.update(transactionReference, {'exchanges': booksFromTransaction});
 
-      //batch.commit();
+      batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
         .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 
-    /*
-    if (transactionSuccessfullyCompleted) {
-      print('Step 7');
-      List<dynamic> exchanges;
-      await transactionsCollection.doc(transaction['id']).get().then((doc) {
-        exchanges = doc.data()['exchanges'];
-        for (int i = 0; i < exchanges.length; i++) {
-          if (exchanges[i]['receivedBook']['insertionNumber'] ==
-              sellerBook['insertionNumber'] &&
-              exchanges[i]['offeredBook']['insertionNumber'] ==
-                  buyerBook['insertionNumber']) {
-            print('accettato');
-            exchanges[i]['exchangeStatus'] = 'accepted';
-          }
-        }
-      }).catchError((error) => print("Failed to complete transaction: $error"));
-
-      await transactionsCollection.doc(transaction['id']).update({
-        'exchanges': exchanges}).catchError((error) =>
-          print("Failed to complete transaction: $error"));
-    }
-
-     */
+    if (transactionSuccessfullyCompleted)
+      return 'ok';
   }
 
 
-  Future<void> declineExchange(String transactionId, String seller, Map<String, dynamic> sellerBook,
+  Future declineExchange(String transactionId, String seller, Map<String, dynamic> sellerBook,
       String buyer, Map<String, dynamic> buyerBook
       ) async {
 
+    bool transactionSuccessfullyCompleted;
     DocumentReference buyerUserReference = usersCollection.doc(user.uid);
     DocumentReference sellerUserReference = usersCollection.doc(seller);
     DocumentReference transactionReference = transactionsCollection.doc(transactionId);
@@ -1927,8 +1907,11 @@ class DatabaseService {
       batch.update(buyerUserReference, {'books': buyerBooks});
       batch.update(transactionReference, {'exchanges': booksFromTransaction});
       batch.commit();
-    }).then((value) {print("the exchange has been declined");})
+    }).then((value) {print("the exchange has been declined"); transactionSuccessfullyCompleted = true;})
         .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
+
+    if (transactionSuccessfullyCompleted)
+      return 'ok';
   }
 
 

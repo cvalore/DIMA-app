@@ -258,6 +258,7 @@ class Utils {
       receivedBook['imagesUrl'] = keys[i].imagesUrl;
       receivedBook['status'] = keys[i].status;
       receivedBook['insertionNumber'] = keys[i].insertionNumber;
+      receivedBook['category'] = keys[i].category;
 
       var value = exchangedBooks[keys[i]];
 
@@ -268,6 +269,7 @@ class Utils {
       offeredBook['imagesUrl'] = value['imageUrl'];
       offeredBook['status'] = value['status'];
       offeredBook['insertionNumber'] = value['insertionNumber'];
+      offeredBook['category'] = value['category'];
 
       // init currentExchange
       currentExchange['receivedBook'] = receivedBook;

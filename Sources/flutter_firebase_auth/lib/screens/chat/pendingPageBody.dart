@@ -11,175 +11,187 @@ import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class PendingPageBody extends StatelessWidget {
+
+class PendingPageBody extends StatefulWidget {
 
   final DatabaseService db;
   final CustomUser user;
-  dynamic transactions;
+  List<dynamic> transactions;
 
   PendingPageBody({Key key, this.db, this.user, this.transactions}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  _PendingPageBodyState createState() => _PendingPageBodyState();
+}
 
-    //Chat chat = Provider.of<Chat>(context);
+class _PendingPageBodyState extends State<PendingPageBody> {
+
+  @override
+  Widget build(BuildContext context) {
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 
-    transactions.forEach((tr) {
+    widget.transactions.forEach((tr) {
       tr['exchanges'].removeWhere((ex) =>
       ex['exchangeStatus'].compareTo("pending") != 0
       );
     });
-    transactions.removeWhere((el) =>
-      el['exchanges'] == null || el['exchanges'].length == 0
+    widget.transactions.removeWhere((el) =>
+    el['exchanges'] == null || el['exchanges'].length == 0
     );
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        transactions == null || transactions.length == 0 ?
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('No transaction to approve yet',
-                style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
-              Icon(Icons.add_alert_outlined, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
-            ],
-          ),
-        ) :
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: _isTablet ? 20.0 : 12.0, vertical: _isTablet ? 20.0 : 12.0),
-            child: ListView.builder(
-              itemCount: transactions.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: <Widget>[
-                    for(int i = 0; i < transactions[index]['exchanges'].length; i++)
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text("You get:  "),
-                                        Flexible(
-                                          child: InkWell(
-                                            onTap: () async {
-                                              String bookId = transactions[index]['exchanges'][i]['offeredBook']['id'];
-                                              int bookInsertionNumber = transactions[index]['exchanges'][i]['offeredBook']['insertionNumber'];
-                                              dynamic bookGeneralInfo = await db.getGeneralBookInfo(bookId);
-                                              dynamic book = await db.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transactions[index]['buyer']);
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          widget.transactions == null || widget.transactions.length == 0 ?
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('No transaction to approve yet',
+                  style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
+                Icon(Icons.add_alert_outlined, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
+              ],
+            ),
+          ) :
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: _isTablet ? 20.0 : 12.0, vertical: _isTablet ? 20.0 : 12.0),
+              child: ListView.builder(
+                itemCount: widget.transactions.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: <Widget>[
+                      for(int i = 0; i < widget.transactions[index]['exchanges'].length; i++)
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Text("You get:  "),
+                                          Flexible(
+                                            child: InkWell(
+                                              onTap: () async {
+                                                String bookId = widget.transactions[index]['exchanges'][i]['offeredBook']['id'];
+                                                int bookInsertionNumber = widget.transactions[index]['exchanges'][i]['offeredBook']['insertionNumber'];
+                                                dynamic bookGeneralInfo = await widget.db.getGeneralBookInfo(bookId);
+                                                dynamic book = await widget.db.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, widget.transactions[index]['buyer']);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
                                                       builder: (newContext) => ViewPendingBook(
-                                                        youGet: true,
-                                                        book: book,
-                                                        bookGeneralInfo: bookGeneralInfo
+                                                          youGet: true,
+                                                          book: book,
+                                                          bookGeneralInfo: bookGeneralInfo
                                                       ),
-                                                  )
-                                              );
-                                            },
-                                            child: Container(
-                                              alignment: AlignmentDirectional.centerStart,
-                                              height: _isTablet ? 100.0 : 50.0,
-                                              child: Text(
-                                                  transactions[index]['exchanges'][i]['offeredBook']['title'] +
-                                                   " by " + transactions[index]['exchanges'][i]['offeredBook']['author'],
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration: TextDecoration.underline,
+                                                    )
+                                                );
+                                              },
+                                              child: Container(
+                                                alignment: AlignmentDirectional.centerStart,
+                                                height: _isTablet ? 100.0 : 50.0,
+                                                child: Text(
+                                                  widget.transactions[index]['exchanges'][i]['offeredBook']['title'] +
+                                                      " by " + widget.transactions[index]['exchanges'][i]['offeredBook']['author'],
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.underline,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Text("You give: "),
-                                        Flexible(
-                                          child: InkWell(
-                                            onTap: () async {
-                                              String bookId = transactions[index]['exchanges'][i]['receivedBook']['id'];
-                                              int bookInsertionNumber = transactions[index]['exchanges'][i]['receivedBook']['insertionNumber'];
-                                              dynamic bookGeneralInfo = await db.getGeneralBookInfo(bookId);
-                                              dynamic book = await db.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transactions[index]['seller']);
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (newContext) => ViewPendingBook(
-                                                        youGet: true,
-                                                        book: book,
-                                                        bookGeneralInfo: bookGeneralInfo
-                                                    ),
-                                                  )
-                                              );
-                                            },
-                                            child: Container(
-                                              alignment: AlignmentDirectional.centerStart,
-                                              height: _isTablet ? 100.0 : 50.0,
-                                              child: Text(
-                                                transactions[index]['exchanges'][i]['receivedBook']['title'] +
-                                                    " by " + transactions[index]['exchanges'][i]['receivedBook']['author'],
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration: TextDecoration.underline,
+                                        ],
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          Text("You give: "),
+                                          Flexible(
+                                            child: InkWell(
+                                              onTap: () async {
+                                                String bookId = widget.transactions[index]['exchanges'][i]['receivedBook']['id'];
+                                                int bookInsertionNumber = widget.transactions[index]['exchanges'][i]['receivedBook']['insertionNumber'];
+                                                dynamic bookGeneralInfo = await widget.db.getGeneralBookInfo(bookId);
+                                                dynamic book = await widget.db.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, widget.transactions[index]['seller']);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (newContext) => ViewPendingBook(
+                                                          youGet: true,
+                                                          book: book,
+                                                          bookGeneralInfo: bookGeneralInfo
+                                                      ),
+                                                    )
+                                                );
+                                              },
+                                              child: Container(
+                                                alignment: AlignmentDirectional.centerStart,
+                                                height: _isTablet ? 100.0 : 50.0,
+                                                child: Text(
+                                                  widget.transactions[index]['exchanges'][i]['receivedBook']['title'] +
+                                                      " by " + widget.transactions[index]['exchanges'][i]['receivedBook']['author'],
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.underline,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  await DatabaseService().acceptExchange(transactions[index]['seller'],
-                                      transactions[index]['exchanges'][i]['receivedBook'], transactions[index]['buyer'], transactions[index]['exchanges'][i]['offeredBook']);
-                                  print('hola');
-                                  print("TODO: Exchanged accepted");
-                                },
-                                child: Icon(Icons.check, color: Colors.green,),
-                              ),
-                              Container(width: _isTablet ? 50.0 : 10.0,),
-                              InkWell(
-                                onTap: () async {
-                                  await DatabaseService().declineExchange(transactions[index]['id'], transactions[index]['seller'],
-                                      transactions[index]['exchanges'][i]['receivedBook'], transactions[index]['buyer'], transactions[index]['exchanges'][i]['offeredBook']);
-                                  print("TODO: Exchanged declined");
-                                },
-                                child: Icon(Icons.delete_forever_outlined, color: Colors.red,),
-                              ),
-                            ],
+                                InkWell(
+                                  onTap: () async {
+                                    var result = await DatabaseService().acceptExchange(widget.transactions[index]['id'], widget.transactions[index]['seller'],
+                                        widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
+                                    if (result is String && result == 'ok'){
+                                        setState(() {
+                                          widget.transactions.removeAt(index);
+                                        });
+                                      }
+                                    },
+                                  child: Icon(Icons.check, color: Colors.green,),
+                                ),
+                                Container(width: _isTablet ? 50.0 : 10.0,),
+                                InkWell(
+                                  onTap: () async {
+                                    var result = await DatabaseService().declineExchange(widget.transactions[index]['id'], widget.transactions[index]['seller'],
+                                        widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
+                                    if (result is String && result == 'ok'){
+                                      setState(() {
+                                        widget.transactions.removeAt(index);
+                                      });
+                                    }
+                                  },
+                                  child: Icon(Icons.delete_forever_outlined, color: Colors.red,),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    Divider(height: 10, thickness: 2, indent: _isTablet ? 20.0 : 8.0, endIndent: _isTablet ? 20.0 : 8.0,),
-                  ],
-                );
-              },
+                      Divider(height: 10, thickness: 2, indent: _isTablet ? 20.0 : 8.0, endIndent: _isTablet ? 20.0 : 8.0,),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,8.0),
-          child: BottomTwoDots(size: 8.0, darkerIndex: 1,),
-        ),
-      ]
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0,0.0,0.0,8.0),
+            child: BottomTwoDots(size: 8.0, darkerIndex: 1,),
+          ),
+        ]
     );
   }
 }
