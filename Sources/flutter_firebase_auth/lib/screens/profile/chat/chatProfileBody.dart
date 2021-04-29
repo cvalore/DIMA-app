@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/message.dart';
@@ -12,8 +13,9 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 class ChatProfileBody extends StatelessWidget {
 
   final dynamic chatsMap;
+  final Timestamp lastChatsDate;
 
-  const ChatProfileBody({Key key, this.chatsMap}) : super(key: key);
+  const ChatProfileBody({Key key, this.chatsMap, this.lastChatsDate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,25 @@ class ChatProfileBody extends StatelessWidget {
         messages.add(Message.fromDynamicToMessage(e));
       });
       chats.add(Chat.FromDynamicToChat(elem, messages));
+    });
+
+    chats.forEach((elem) {
+      bool showNew = false;
+      if(lastChatsDate != null) {
+        DateTime lastChatsDateTime = DateTime.fromMillisecondsSinceEpoch(lastChatsDate.seconds * 1000);
+        for(int i = 0; i < elem.messages.length; i++) {
+          if(elem.messages[i].uidSender != Utils.mySelf.uid && elem.messages[i].time.compareTo(lastChatsDateTime) > 0) {
+            showNew = true;
+            break;
+          }
+        }
+
+        showNew = !showNew ? elem.time.compareTo(lastChatsDateTime) > 0 && elem.userUid1Username != Utils.mySelf.uid : showNew;
+      }
+      else {
+        showNew = true;
+      }
+      elem.setShowNew(showNew);
     });
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
@@ -70,103 +91,109 @@ class ChatProfileBody extends StatelessWidget {
                               ))
                           );
                         },
-                        child: Card(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(_isTablet ? 32.0 : 8.0, _isTablet ? 28.0 : 18.0, 32.0, _isTablet ? 28.0 : 18.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Flexible(
-                                  flex: 1,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                    onTap: () async {
-                                      String userUid = chats[i].userUid1 == Utils.mySelf.uid ?
-                                        chats[i].userUid2 :
-                                        chats[i].userUid2 == Utils.mySelf.uid ?
-                                          chats[i].userUid1 :
-                                          chats[i].userUid2;
+                        child: Stack(
+                          alignment: AlignmentDirectional.topEnd,
+                          children: [
+                            Card(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(_isTablet ? 32.0 : 8.0, _isTablet ? 28.0 : 18.0, 32.0, _isTablet ? 28.0 : 18.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Flexible(
+                                      flex: 1,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                        onTap: () async {
+                                          String userUid = chats[i].userUid1 == Utils.mySelf.uid ?
+                                            chats[i].userUid2 :
+                                            chats[i].userUid2 == Utils.mySelf.uid ?
+                                              chats[i].userUid1 :
+                                              chats[i].userUid2;
 
-                                      DatabaseService databaseService = DatabaseService(
-                                          user: CustomUser(userUid));
-                                      CustomUser user = await databaseService
-                                          .getUserSnapshot();
-                                      BookPerGenreUserMap userBooks = await databaseService
-                                          .getUserBooksPerGenreSnapshot();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (
-                                                  context) =>
-                                                  VisualizeProfileMainPage(
-                                                      user: user,
-                                                      books: userBooks
-                                                          .result,
-                                                      self: false)
-                                          )
-                                      );
-                                    },
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(chats[i].userUid1 == Utils.mySelf.uid ? chats[i].userUid2Username : chats[i].userUid1Username,
-                                          style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
+                                          DatabaseService databaseService = DatabaseService(
+                                              user: CustomUser(userUid));
+                                          CustomUser user = await databaseService
+                                              .getUserSnapshot();
+                                          BookPerGenreUserMap userBooks = await databaseService
+                                              .getUserBooksPerGenreSnapshot();
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (
+                                                      context) =>
+                                                      VisualizeProfileMainPage(
+                                                          user: user,
+                                                          books: userBooks
+                                                              .result,
+                                                          self: false)
+                                              )
+                                          );
+                                        },
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(chats[i].userUid1 == Utils.mySelf.uid ? chats[i].userUid2Username : chats[i].userUid1Username,
+                                              style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
+                                              softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(DateTime.parse(
+                                                chats[i].time.toString()
+                                            ).toString().split(' ')[0],
+                                              style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
+                                              softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(DateTime.parse(
+                                                chats[i].time.toString()
+                                            ).toString().split(' ')[1].split('.')[0],
+                                              style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
+                                              softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                            )
+                                          ],
                                         ),
-                                        Text(DateTime.parse(
-                                            chats[i].time.toString()
-                                        ).toString().split(' ')[0],
-                                          style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(DateTime.parse(
-                                            chats[i].time.toString()
-                                        ).toString().split(' ')[1].split('.')[0],
-                                          style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text("Last message sent",
-                                        style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Padding(padding: const EdgeInsets.symmetric(vertical: 2.0),),
-                                      Text(
-                                        chats[i].messages == null || chats[i].messages.length == 0 ?
-                                        "No messages yet" :
-                                        chats[i].messages[chats[i].messages.length - 1].messageBody,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: _isTablet ? 19.0 : 16.0,
-                                            fontStyle:
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text("Last message sent",
+                                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Padding(padding: const EdgeInsets.symmetric(vertical: 2.0),),
+                                          Text(
                                             chats[i].messages == null || chats[i].messages.length == 0 ?
-                                            FontStyle.italic :
-                                            FontStyle.normal
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                            "No messages yet" :
+                                            chats[i].messages[chats[i].messages.length - 1].messageBody,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: _isTablet ? 19.0 : 16.0,
+                                                fontStyle:
+                                                chats[i].messages == null || chats[i].messages.length == 0 ?
+                                                FontStyle.italic :
+                                                FontStyle.normal
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    chats[i].userUid1 == Utils.mySelf.uid && chats[i].user1Read ?
+                                      Container() :
+                                    chats[i].userUid2 == Utils.mySelf.uid && chats[i].user2Read ?
+                                      Container() :
+                                      Icon(Icons.mark_chat_unread_outlined)
+                                  ],
                                 ),
-                                chats[i].userUid1 == Utils.mySelf.uid && chats[i].user1Read ?
-                                  Container() :
-                                chats[i].userUid2 == Utils.mySelf.uid && chats[i].user2Read ?
-                                  Container() :
-                                  Icon(Icons.mark_chat_unread_outlined)
-                              ],
+                              ),
                             ),
-                          ),
+                            chats[i].showNew ? Icon(Icons.fiber_new) : Container(),
+                          ],
                         ),
                       ),
                     ),

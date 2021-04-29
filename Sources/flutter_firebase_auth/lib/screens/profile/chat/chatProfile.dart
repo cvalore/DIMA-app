@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
@@ -16,6 +17,10 @@ class ChatProfile extends StatelessWidget {
         height: height,
         child: GestureDetector(
           onTap: () async {
+
+            Timestamp lastChatsDate = await Utils.databaseService.getLastChatsDate();
+            await Utils.databaseService.setNowAsLastChatsDate();
+
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return FutureBuilder(
                   future: Utils.databaseService.getMyChats(),
@@ -37,7 +42,7 @@ class ChatProfile extends StatelessWidget {
                               letterSpacing: 1.0,
                             ),),
                           ),
-                          body: ChatProfileBody(chatsMap: snapshot.data)
+                          body: ChatProfileBody(chatsMap: snapshot.data, lastChatsDate: lastChatsDate,)
                       );
                   }
               );
