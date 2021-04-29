@@ -21,10 +21,15 @@ class NotificationProfile extends StatelessWidget {
   Widget build(BuildContext context) {
 
     newNotifications = false;
-    for(int i = 0; transactions != null && i < transactions.length; i++) {
-      if(lastNotificationDate.compareTo(transactions[i]['time']) < 0) {
-        newNotifications = true;
-        break;
+    if(lastNotificationDate == null && transactions != null && transactions.length == 0) {
+      newNotifications = true;
+    }
+    else {
+      for (int i = 0; transactions != null && i < transactions.length; i++) {
+        if (lastNotificationDate.compareTo(transactions[i]['time']) < 0) {
+          newNotifications = true;
+          break;
+        }
       }
     }
 

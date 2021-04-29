@@ -12,41 +12,13 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class ChatProfileBody extends StatelessWidget {
 
-  final dynamic chatsMap;
+  final List<Chat> chats;
   final Timestamp lastChatsDate;
 
-  const ChatProfileBody({Key key, this.chatsMap, this.lastChatsDate}) : super(key: key);
+  const ChatProfileBody({Key key, this.chats, this.lastChatsDate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    List<Chat> chats = List<Chat>();
-    chatsMap.forEach((elem) {
-      List<Message> messages = List<Message>();
-      elem['messages'].forEach((e) {
-        messages.add(Message.fromDynamicToMessage(e));
-      });
-      chats.add(Chat.FromDynamicToChat(elem, messages));
-    });
-
-    chats.forEach((elem) {
-      bool showNew = false;
-      if(lastChatsDate != null) {
-        DateTime lastChatsDateTime = DateTime.fromMillisecondsSinceEpoch(lastChatsDate.seconds * 1000);
-        for(int i = 0; i < elem.messages.length; i++) {
-          if(elem.messages[i].uidSender != Utils.mySelf.uid && elem.messages[i].time.compareTo(lastChatsDateTime) > 0) {
-            showNew = true;
-            break;
-          }
-        }
-
-        showNew = !showNew ? elem.time.compareTo(lastChatsDateTime) > 0 && elem.userUid1Username != Utils.mySelf.uid : showNew;
-      }
-      else {
-        showNew = true;
-      }
-      elem.setShowNew(showNew);
-    });
 
     bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
 

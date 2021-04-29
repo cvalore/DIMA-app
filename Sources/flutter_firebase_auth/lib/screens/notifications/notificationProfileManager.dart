@@ -22,7 +22,7 @@ class NotificationProfileManager extends StatelessWidget {
 
     return
     transactions == null || transactions.length == 0 ?
-    NotificationProfile(height: height, transactions: null, oldContext: context,) :
+    NotificationProfile(height: height, transactions: null, oldContext: context, ) :
     FutureBuilder(
         future: _onlyTranslationInvolved(transactions),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
