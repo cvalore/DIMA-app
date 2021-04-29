@@ -1,5 +1,7 @@
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/paymentCardInfo.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
+import 'package:flutter_firebase_auth/models/shippingAddressInfo.dart';
 
 import 'bookILike.dart';
 
@@ -22,6 +24,8 @@ class CustomUser {
   final List<ReviewWrittenByMe> reviewsWrittenByMe;
   List<String> transactionsAsSeller;
   List<String> transactionsAsBuyer;
+  List<ShippingAddressInfo> shippingAddressInfo;
+  List<PaymentCardInfo> paymentCardInfo;
   List<BookILike> booksILike;
   double averageRating;
   String userProfileImagePath;
@@ -40,6 +44,8 @@ class CustomUser {
     this.reviewsWrittenByMe,
     this.transactionsAsSeller,
     this.transactionsAsBuyer,
+    this.shippingAddressInfo,
+    this.paymentCardInfo,
     this.booksILike,
     this.bio,
     this.followers,
@@ -86,6 +92,8 @@ class CustomUser {
     user['reviewsWrittenByMe'] = reviewsWrittenByMe != null ? reviewsWrittenByMe : [];
     user['transactionsAsSeller'] = transactionsAsSeller != null ? transactionsAsSeller : [];
     user['transactionsAsBuyer'] = transactionsAsBuyer != null ? transactionsAsBuyer : [];
+    user['shippingAddressInfo'] = shippingAddressInfo != null ? shippingAddressInfo : [];
+    user['paymentCardInfo'] = paymentCardInfo != null ? paymentCardInfo : [];
     user['booksILike'] = booksILike != null ? booksILike : [];
     user['followers'] = followers != null ? followers : 0;
     user['following'] = following != null ? following : 0;
