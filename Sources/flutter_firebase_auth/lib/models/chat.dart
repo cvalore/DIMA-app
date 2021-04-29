@@ -14,6 +14,8 @@ class Chat {
   bool user1Read = false;
   bool user2Read = false;
 
+  bool showNew = false;
+
   Chat(this.userUid1, this.userUid2, this.userUid1Username, this.userUid2Username, this.messages, this.time);
 
   setKey() {
@@ -24,6 +26,10 @@ class Chat {
 
   setKnownKey(String key) {
     this.chatKey = key;
+  }
+
+  setShowNew(bool val) {
+    this.showNew = val;
   }
 
   Map<String, dynamic> toMap() {

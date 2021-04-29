@@ -958,6 +958,24 @@ class DatabaseService {
     });
   }
 
+  Future<Timestamp> getLastChatsDate() async {
+    Timestamp when = null;
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        if(doc.data().containsKey('lastChatsDate')) {
+          when = doc.data()['lastChatsDate'];
+        }
+      }
+    });
+    return when;
+  }
+
+  Future<void> setNowAsLastChatsDate() async {
+    await usersCollection.doc(user.uid).update({
+      'lastChatsDate' : DateTime.now()
+    });
+  }
+
   Future<void> followUser(CustomUser followed) async {
     await usersCollection.doc(user.uid)
         .update({
