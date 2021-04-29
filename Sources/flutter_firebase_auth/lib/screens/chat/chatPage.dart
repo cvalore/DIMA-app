@@ -43,7 +43,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.chat.otherUsername),
+        title: Text(widget.chat.userUid1 == Utils.mySelf.uid ? widget.chat.userUid2Username : widget.chat.userUid1Username),
       ),
       body: StreamProvider<Chat>.value(
         value: widget.db.chatInfo,

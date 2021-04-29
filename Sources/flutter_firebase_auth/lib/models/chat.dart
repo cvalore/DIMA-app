@@ -6,14 +6,15 @@ class Chat {
   String chatKey;
   final String userUid1;
   final String userUid2;
-  final String otherUsername;
+  final String userUid1Username;
+  final String userUid2Username;
   List<Message> messages;
   final DateTime time;
 
   bool user1Read = false;
   bool user2Read = false;
 
-  Chat(this.userUid1, this.userUid2, this.otherUsername, this.messages, this.time);
+  Chat(this.userUid1, this.userUid2, this.userUid1Username, this.userUid2Username, this.messages, this.time);
 
   setKey() {
     String keyPart1 = userUid1.compareTo(userUid2) > 0 ? userUid1 : userUid2;
@@ -30,7 +31,8 @@ class Chat {
     chatMap['chatKey'] = chatKey;
     chatMap['userUid1'] = userUid1;
     chatMap['userUid2'] = userUid2;
-    chatMap['otherUsername'] = otherUsername;
+    chatMap['userUid1Username'] = userUid1Username;
+    chatMap['userUid2Username'] = userUid2Username;
     chatMap['time'] = time;
     List<dynamic> messagesMap = messages.map((e) => e.toMap()).toList();
     chatMap['messages'] = messagesMap;
@@ -45,7 +47,8 @@ class Chat {
     Chat chat = Chat(
       chatMap['userUid1'],
       chatMap['userUid2'],
-      chatMap['otherUsername'],
+      chatMap['userUid1Username'],
+      chatMap['userUid2Username'],
         messages,
         timestamp ?
         DateTime.fromMillisecondsSinceEpoch(chatMap['time'].seconds * 1000) :

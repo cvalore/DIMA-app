@@ -1542,7 +1542,7 @@ class DatabaseService {
     return result;
   }
 
-  Future<dynamic> createNewChat(String userUid1, String userUid2, String otherUsername) async {
+  Future<dynamic> createNewChat(String userUid1, String userUid2, String userUid1Username, String userUid2Username) async {
     dynamic result = null;
 
     String keyPart1 = userUid1.compareTo(userUid2) > 0 ? userUid1 : userUid2;
@@ -1553,7 +1553,7 @@ class DatabaseService {
     await chatsCollection.doc(chatKey).get().then((DocumentSnapshot doc) async {
       if (!doc.exists) {
         Chat newChat = Chat(
-            userUid1, userUid2, otherUsername, List<Message>(), time
+            userUid1, userUid2, userUid1Username, userUid2Username, List<Message>(), time
         );
         newChat.user1Read = true;
         newChat.setKnownKey(chatKey);

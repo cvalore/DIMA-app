@@ -108,7 +108,7 @@ class ChatProfileBody extends StatelessWidget {
                                     },
                                     child: Column(
                                       children: <Widget>[
-                                        Text(chats[i].otherUsername,
+                                        Text(chats[i].userUid1 == Utils.mySelf.uid ? chats[i].userUid2Username : chats[i].userUid1Username,
                                           style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis,

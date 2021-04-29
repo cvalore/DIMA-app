@@ -10,11 +10,13 @@ import 'package:provider/provider.dart';
 class NotificationProfile extends StatelessWidget {
 
   final double height;
+  bool newNotifications = false;
 
-  const NotificationProfile({Key key, this.height}) : super(key: key);
+  NotificationProfile({Key key, this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
         height: height,
         child: GestureDetector(
@@ -79,6 +81,7 @@ class NotificationProfile extends StatelessWidget {
                           ),
                         ),
                       ),
+                      newNotifications ? Icon(Icons.fiber_new) : Container(),
                     ],
                   )
               ),

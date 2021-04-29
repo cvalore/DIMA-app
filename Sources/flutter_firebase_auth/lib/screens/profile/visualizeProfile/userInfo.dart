@@ -151,9 +151,11 @@ class _UserInfoState extends State<UserInfo> {
                         ElevatedButton(
                             onPressed: () async {
 
+                              CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
+                              String myUsername = me.username;
                               //DatabaseService db = DatabaseService(user: CustomUser(Utils.mySelf.uid));
                               dynamic chat = await Utils.databaseService.createNewChat(
-                                  Utils.mySelf.uid, widget.user.uid, widget.user.username
+                                  Utils.mySelf.uid, widget.user.uid, myUsername, widget.user.username
                               );
 
                               if(chat != null) {

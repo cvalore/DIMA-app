@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/notifications/notificationProfile.dart';
@@ -11,6 +12,9 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 
 
 class ProfileMainPage extends StatefulWidget {
+
+  const ProfileMainPage({Key key}) : super(key: key);
+
   @override
   _ProfileMainPageState createState() => _ProfileMainPageState();
 }
@@ -46,7 +50,7 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
                         Divider(height: 15, thickness: 2,),
                         ChatProfile(height: _isTablet ? 100.0 : 60.0),
                         Divider(height: 15, thickness: 2,),
-                        NotificationProfile(height: _isTablet ? 100.0 : 60.0),
+                        NotificationProfile(height: _isTablet ? 100.0 : 60.0,),
                         // dettagli pagamento
                       ],
                     ),
