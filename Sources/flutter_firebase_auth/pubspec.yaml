@@ -41,6 +41,7 @@ dependencies:
   radio_grouped_buttons: 1.0.0+2
   toast: ^0.1.5
   fluttertoast: ^7.1.0
+  connectivity: ^0.4.8+6
 
 dev_dependencies:
   flutter_test:
