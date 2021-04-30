@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/profile/favorites/favoritesMainPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/ordersMainPage.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 class Orders extends StatefulWidget {
 
@@ -23,7 +19,7 @@ class _OrdersState extends State<Orders> {
 
     return Container(
         height: widget.height,
-        child: GestureDetector(
+        child: InkWell(
           onTap: () async {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return FutureBuilder(

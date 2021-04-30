@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/utils/boolWrapper.dart';
 import 'package:flutter_firebase_auth/utils/stringWrapper.dart';
 import 'package:image_picker/image_picker.dart';

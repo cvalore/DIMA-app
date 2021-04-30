@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/home/homeBookInfoBody.dart';
-import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
-import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
 

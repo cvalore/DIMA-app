@@ -5,9 +5,9 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/exchange.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 
 class AddBookUserInfo extends StatelessWidget {
 

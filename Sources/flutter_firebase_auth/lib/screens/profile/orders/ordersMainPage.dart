@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
 
 class OrdersMainPage extends StatefulWidget {
 

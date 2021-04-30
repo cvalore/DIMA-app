@@ -19,7 +19,7 @@ void main() {
     expect(find.byType(Container), findsNWidgets(3));
     expect(find.byType(Icon), findsOneWidget);
     expect(find.byType(Text), findsOneWidget);
-    await tester.tap(find.byType(GestureDetector));
+    await tester.tap(find.byType(InkWell));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 

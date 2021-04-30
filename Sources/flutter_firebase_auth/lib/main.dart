@@ -1,20 +1,14 @@
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
-import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
-import 'package:flutter_firebase_auth/screens/profile/favorites/favorites.dart';
-import 'package:flutter_firebase_auth/screens/profile/favorites/favoritesMainPage.dart';
-import 'package:flutter_firebase_auth/screens/profile/orders.dart';
+import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
-import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -175,7 +169,6 @@ class _AppState extends State<App> {
            CategoryBox.routeName: (context) => CategoryBox(),
            PriceBox.routeName: (context) => PriceBox(),
            //ProfileHomePage.routeName: (context) => ProfileHomePage(),
-           OrdersPage.routeName: (context) => OrdersPage(),
            AddUserReview.routeName: (context) => AddUserReview(),
          }
        ),

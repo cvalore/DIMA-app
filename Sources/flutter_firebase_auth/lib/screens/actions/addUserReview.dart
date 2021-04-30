@@ -35,6 +35,7 @@ class _AddUserReviewState extends State<AddUserReview> {
         onPressed: () async {
           ReceivedReview review = ReceivedReview(stars: stars, review: reviewString, reviewerUid: Utils.mySelf.uid, time: DateTime.now());
           await DatabaseService(user: user).addReview(review);
+          user.receivedReviews.add(review);
           print('review added');
           Navigator.pop(context);
         },

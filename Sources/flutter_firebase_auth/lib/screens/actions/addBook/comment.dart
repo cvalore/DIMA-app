@@ -22,7 +22,7 @@ class _CommentState extends State<Comment> {
   Widget build(BuildContext context) {
     return Container(
         height: widget.height,
-        child: GestureDetector(
+        child: InkWell(
           onTap: () async {
             dynamic result = await Navigator.pushNamed(
                 context, CommentBox.routeName,

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
@@ -71,7 +70,7 @@ class HomePageBookList extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12.0 : 5.0),
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   _pushBookPage(perGenreBooks, index, context);
                 },

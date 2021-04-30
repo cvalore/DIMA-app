@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class Price extends StatefulWidget {
 
@@ -20,7 +19,7 @@ class _PriceState extends State<Price> {
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
-      child: GestureDetector(
+      child: InkWell(
         onTap: () async {
           if(!widget.justView) {
             dynamic result = await Navigator.pushNamed(

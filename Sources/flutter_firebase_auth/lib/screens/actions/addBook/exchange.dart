@@ -18,7 +18,7 @@ class _ExchangeState extends State<Exchange> {
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
-      child: GestureDetector(
+      child: InkWell(
         onTap: () async {
           if(!widget.justView) {
             setState(() {

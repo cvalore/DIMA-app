@@ -1,13 +1,10 @@
-import 'dart:io';
-import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
-import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -969,6 +966,29 @@ class DatabaseService {
 
   //region Profile/User
 
+  Future<bool> canIReview(String toReviewUid) async {
+    bool result = false;
+
+    dynamic myTransactionsAsBuyer;
+    await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        myTransactionsAsBuyer = doc.data()['transactionsAsBuyer'];
+      }
+    });
+
+    if(myTransactionsAsBuyer != null) {
+      for(int i = 0; !result && i < myTransactionsAsBuyer.length; i++) {
+        await transactionsCollection.doc(myTransactionsAsBuyer[i]).get().then((DocumentSnapshot doc) {
+          if(doc.exists && doc.data()['seller'] == toReviewUid) {
+            result = true;
+          }
+        });
+      }
+    }
+
+    return result;
+  }
+
   Future<Timestamp> getLastNotificationDate() async {
     Timestamp when = null;
     await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
@@ -1187,7 +1207,6 @@ class DatabaseService {
     }
     return allUsers;
   }
-
 
   Future<dynamic> saveShippingAddressInfo(Map<String, dynamic> info) async {
     await usersCollection.doc(user.uid).update({
@@ -2015,7 +2034,6 @@ class DatabaseService {
         Chat newChat = Chat(
             userUid1, userUid2, userUid1Username, userUid2Username, List<Message>(), time
         );
-        newChat.user1Read = true;
         newChat.setKnownKey(chatKey);
         await chatsCollection.doc(chatKey).set(newChat.toMap())
             .then((value) {result = newChat.toMap(); print("Chat Added");})

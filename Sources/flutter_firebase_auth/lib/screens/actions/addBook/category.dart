@@ -21,7 +21,7 @@ class _CategoryState extends State<Category> {
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
-        child: GestureDetector(
+        child: InkWell(
           onTap: () async {
             if(!widget.justView) {
               dynamic result = await Navigator.pushNamed(

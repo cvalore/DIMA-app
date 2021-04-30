@@ -1,13 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
-import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsWrittenByMe.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/receivedReviews.dart';
-
-import 'dart:math';
-import 'dart:convert';
-
-import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsWrittenByMe.dart';
 
 class ReviewsMainPage extends StatefulWidget {
 

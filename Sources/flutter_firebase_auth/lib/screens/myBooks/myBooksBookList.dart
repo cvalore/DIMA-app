@@ -1,20 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
-import 'package:flutter_firebase_auth/services/auth.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
 
 import 'bookHomePageView.dart';
 

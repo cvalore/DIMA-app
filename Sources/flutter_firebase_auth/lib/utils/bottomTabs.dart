@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
-import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchPage.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'bookPerGenreMap.dart';
