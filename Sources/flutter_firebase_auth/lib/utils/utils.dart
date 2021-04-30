@@ -310,5 +310,18 @@ class Utils {
     return message;
   }
 
+  static void showNeedToBeLogged(BuildContext context, int duration) {
+    final snackBar = SnackBar(
+      duration: Duration(seconds: duration),
+      content: Text(
+        'You need to be logged in to access this functionality',
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Colors.black87,
+    );
+    // Find the Scaffold in the widget tree and use
+    // it to show a SnackBar.
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 
 }

@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchPage.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'bookPerGenreMap.dart';
@@ -117,16 +118,7 @@ class BottomTabs extends StatelessWidget {
           }
         }
         else {
-          final snackBar = SnackBar(
-            duration: Duration(seconds: 1),
-            content: Text(
-                'You need to be logged in to access this functionality'
-            ),
-            backgroundColor: Colors.white24,
-          );
-          // Find the Scaffold in the widget tree and use
-          // it to show a SnackBar.
-          Scaffold.of(context).showSnackBar(snackBar);
+          Utils.showNeedToBeLogged(context, 1);
         }
       },
     );

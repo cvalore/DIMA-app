@@ -138,7 +138,9 @@ class DiscussionTabBody extends StatelessWidget {
                                                                 perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture']),
                                                             //FileImage(File(user.userProfileImagePath))
                                                           ) : Text(
-                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase(),
+                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'] != null ?
+                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase()[0] :
+                                                            "A",
                                                             //textScaleFactor: 3,
                                                           ),
                                                         ),

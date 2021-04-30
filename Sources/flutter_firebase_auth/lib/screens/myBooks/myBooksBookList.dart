@@ -73,6 +73,10 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
       ) : FloatingActionButton.extended(
           heroTag: 'select items to buy',
           onPressed: () {
+            if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
+              Utils.showNeedToBeLogged(context, 1);
+              return;
+            }
             setState(() {
               if (selectionModeOn == false)
                 selectionModeOn = true;

@@ -126,7 +126,8 @@ class _UserInfoState extends State<UserInfo> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton(
+                        Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
+                          ElevatedButton(
                             //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
                             onPressed: () async {
                               if (widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid)) {
@@ -144,8 +145,15 @@ class _UserInfoState extends State<UserInfo> {
                               }
                             },
                             child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
-                              Text('UNFOLLOW') : Text('FOLLOW')),
-                        ElevatedButton(
+                              Text('UNFOLLOW') : Text('FOLLOW')) :
+                          ElevatedButton(
+                            onPressed: () {
+                              Utils.showNeedToBeLogged(context, 1);
+                            },
+                            child: Text('FOLLOW'),
+                          ),
+                        Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
+                          ElevatedButton(
                             onPressed: () async {
 
                               CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
@@ -166,8 +174,15 @@ class _UserInfoState extends State<UserInfo> {
                               }
                             },
                             child: Text('CHAT')
+                        ) :
+                          ElevatedButton(
+                          onPressed: () {
+                            Utils.showNeedToBeLogged(context, 1);
+                          },
+                          child: Text('CHAT'),
                         ),
-                        ElevatedButton(
+                        Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
+                          ElevatedButton(
                             onPressed: () async {
 
                               bool canIReview = await Utils.databaseService.canIReview(widget.user.uid);
@@ -187,7 +202,13 @@ class _UserInfoState extends State<UserInfo> {
 
                               Navigator.pushNamed(context, AddUserReview.routeName, arguments: widget.user);
                             },
-                            child: Text('REVIEW')),
+                            child: Text('REVIEW')):
+                          ElevatedButton(
+                          onPressed: () {
+                            Utils.showNeedToBeLogged(context, 1);
+                          },
+                          child: Text('REVIEW'),
+                        ),
                       ],
                     ),
                   ) : Container(),

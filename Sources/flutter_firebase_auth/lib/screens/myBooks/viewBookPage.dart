@@ -140,7 +140,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
           )
         ],
       ),
-      floatingActionButton: !widget.self && widget.canBuy ?
+      floatingActionButton: !widget.self && widget.canBuy && (Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous) ?
           FloatingActionButton.extended(
             backgroundColor: Colors.white24,
             heroTag: "purchaseBtn",
@@ -165,7 +165,6 @@ class _ViewBookPageState extends State<ViewBookPage> {
                       )
                   )
               );
-              print("TODO: --- Add to Cart");
             },
             icon: Icon(Icons.add_shopping_cart),
             label: Text("Buy"),

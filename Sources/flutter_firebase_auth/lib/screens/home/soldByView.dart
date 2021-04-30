@@ -134,6 +134,12 @@ class _SoldByViewState extends State<SoldByView> {
                                     SizedBox(width: 30.0),
                                     IconButton(
                                       onPressed: () async {
+
+                                        if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
+                                          Utils.showNeedToBeLogged(context, 1);
+                                          return;
+                                        }
+
                                         if (widget.books[i]['uid'] !=
                                             Utils.mySelf.uid) {
                                           DatabaseService databaseService = DatabaseService(

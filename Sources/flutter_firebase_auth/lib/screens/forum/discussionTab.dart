@@ -49,8 +49,14 @@ class _DiscussionTabState extends State<DiscussionTab> {
   Future<dynamic> getDiscussionStartedByUserInfo(dynamic discussions) async {
     for(int i = 0; i < discussions.length; i++) {
       CustomUser user = await widget.db.getUserById(discussions[i]['startedBy']);
-      discussions[i]['startedByUsername'] = user.username;
-      discussions[i]['startedByProfilePicture'] = user.userProfileImageURL;
+      if(user == null || user.username == null || user.username == "") {
+        discussions[i]['startedByUsername'] = "ANONYMOUS:" + discussions[i]['startedBy'];
+        discussions[i]['startedByProfilePicture'] = null;
+      }
+      else {
+        discussions[i]['startedByUsername'] = user.username;
+        discussions[i]['startedByProfilePicture'] = user.userProfileImageURL;
+      }
     }
   }
 
