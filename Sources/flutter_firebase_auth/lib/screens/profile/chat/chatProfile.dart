@@ -163,7 +163,9 @@ class ChatProfile extends StatelessWidget {
       if(!newNotifications) {
         for(int i = 0; i < chats.length; i++) {
           for(int j = 0; chats[i].messages != null && j < chats[i].messages.length; j++) {
-            if (chats[i].messages[j].time.compareTo(lastChatsDateTime) > 0) {
+            if (chats[i].messages[j].time.compareTo(lastChatsDateTime) > 0 &&
+              chats[i].messages[j].uidSender != Utils.mySelf.uid
+            ) {
               newNotifications = true;
               break;
             }
