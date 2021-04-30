@@ -7,7 +7,7 @@ import 'package:flutter_firebase_auth/screens/notifications/notificationProfile.
 import 'package:flutter_firebase_auth/screens/notifications/notificationProfileManager.dart';
 import 'package:flutter_firebase_auth/screens/profile/chat/chatProfile.dart';
 import 'package:flutter_firebase_auth/screens/profile/favorites/favorites.dart';
-import 'package:flutter_firebase_auth/screens/profile/orders.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/orders.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';

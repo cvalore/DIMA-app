@@ -785,7 +785,7 @@ class DatabaseService {
           dynamic userBook = userData['books'];
           dynamic bookResults = [];
           for (int j = 0; j < userBook.length; j++) {
-            if (userBook[j]['id'] == bookId) {
+            if (userBook[j]['id'] == bookId && userBook[j]['exchangeStatus'] != 'pending') {
               if (userBook[j]['likedBy'] == null) {
                 userBook[j]['likedBy'] = List<String>();
               }
@@ -879,6 +879,35 @@ class DatabaseService {
     });
 
     return books;
+  }
+
+  Future<dynamic> getMyOrders() async {
+    List<String> transactionsAsBuyer;
+    List<dynamic> myPurchasedBooks = List<dynamic>();
+    List<dynamic> myPendingExchanges = List<dynamic>();
+    List<dynamic> myCompletedExchanges = List<dynamic>();
+    List<dynamic> currentExchanges;
+    List<dynamic> currentPaidBooks;
+    await usersCollection.doc(user.uid).get().then((userDoc) async {
+      transactionsAsBuyer = userDoc.data()['transactionsAsBuyer'];
+      for (int i = 0; i < transactionsAsBuyer.length; i++) {
+        await transactionsCollection.doc(transactionsAsBuyer[i]).get().then((userDoc) {
+          currentExchanges = userDoc.data()['exchanges'];
+          currentPaidBooks = userDoc.data()['paidBooks'];
+          for (int i = 0; i < currentExchanges.length; i++){
+            if (currentExchanges[i]['exchangeStatus'] == 'pending')
+              myPendingExchanges.add(currentExchanges[i]);
+            else
+              myCompletedExchanges.add(currentExchanges[i]);
+          }
+          for (int i = 0; i < currentPaidBooks.length; i++){
+            myPurchasedBooks.add(currentPaidBooks[i]);
+          }
+        });
+      }
+    });
+
+    return [myPurchasedBooks, myCompletedExchanges, myPendingExchanges];
   }
 
   Future<List<dynamic>> getMyExchangeableBooks() async {
@@ -1535,10 +1564,11 @@ class DatabaseService {
 
       print('Step 6');
       batch.update(sellerUserReference, {'books': sellerBooks});
-      batch.commit();
+      //batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
       .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 
+    /*
     if (transactionSuccessfullyCompleted) {
       print('Step 7');
       await transactionsCollection.doc(transaction['id']).set(transaction)
@@ -1561,6 +1591,8 @@ class DatabaseService {
           print("Failed to add transaction for buyer: $error"));
       print('Step 10');
     }
+
+     */
 
 
     return [usernameToReturn];
@@ -2032,7 +2064,7 @@ class DatabaseService {
       }
     });
 
-    Message newMessage = Message  (
+    Message newMessage = Message (
         userFromDb.uid, userFromDb.username ?? "", DateTime.now(), message
     );
     newMessage.setKey();

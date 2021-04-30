@@ -160,6 +160,18 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                           widget.transactions.removeAt(index);
                                         });
                                       }
+                                    final snackBar = SnackBar(
+                                      backgroundColor: Colors.white24,
+                                      duration: Duration(seconds: 2),
+                                      content: Text(
+                                        'The exchange has been accepted',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText2,
+                                      ),
+                                    );
+                                    Scaffold.of(context).showSnackBar(snackBar);
                                     },
                                   child: Icon(Icons.check, color: Colors.green,),
                                 ),
@@ -173,6 +185,18 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                         widget.transactions.removeAt(index);
                                       });
                                     }
+                                    final snackBar = SnackBar(
+                                      backgroundColor: Colors.white24,
+                                      duration: Duration(seconds: 2),
+                                      content: Text(
+                                        'The exchange has been rejected',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText2,
+                                      ),
+                                    );
+                                    Scaffold.of(context).showSnackBar(snackBar);
                                   },
                                   child: Icon(Icons.delete_forever_outlined, color: Colors.red,),
                                 ),

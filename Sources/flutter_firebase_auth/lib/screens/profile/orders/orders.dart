@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/profile/favorites/favoritesMainPage.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/ordersMainPage.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class Orders extends StatefulWidget {
 
-  final double height;
+  double height;
 
   Orders({Key key, @required this.height}) : super(key: key);
 
@@ -13,17 +20,22 @@ class Orders extends StatefulWidget {
 class _OrdersState extends State<Orders> {
   @override
   Widget build(BuildContext context) {
+
     return Container(
         height: widget.height,
         child: GestureDetector(
           onTap: () async {
-            dynamic result = await Navigator.pushNamed(
-                context, OrdersPage.routeName);
-            setState(() {
-              if (result != null)
-                //TODO
-                print('//TODO');
-            });
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return FutureBuilder(
+                  future: Utils.databaseService.getMyOrders(),
+                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting)
+                      return Loading();
+                    else
+                      return OrdersMainPage(orders: snapshot.data);
+                  }
+              );
+            }));
           },
           child: Row(
             children: [
@@ -43,11 +55,11 @@ class _OrdersState extends State<Orders> {
                         flex: 5,
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("My orders",
+                          child: Text("My favorites",
                             style: TextStyle(
-                                fontSize: 20,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -63,20 +75,6 @@ class _OrdersState extends State<Orders> {
           ),
         )
     );
-  }
-}
-
-class OrdersPage extends StatefulWidget {
-  static const routeName = '/orders';
-
-  @override
-  _OrdersPageState createState() => _OrdersPageState();
-}
-
-class _OrdersPageState extends State<OrdersPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: Text('//TODO'));
   }
 }
 

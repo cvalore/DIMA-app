@@ -281,5 +281,34 @@ class Utils {
     return result;
   }
 
+  static String buildDefaultMessage(sellerUsername, List<InsertedBook> soldBooks, Map<InsertedBook, Map<String, dynamic>> sellerMatchingBooksForExchange) {
+    String message = "Hi $sellerUsername!\n";
+    if (soldBooks != null && soldBooks.length > 0) {
+      message = message + 'I just bought: ';
+      for (int i = 0; i < soldBooks.length; i++) {
+        if (i == soldBooks.length - 1)
+          message = message + soldBooks[i].title + '.\n';
+        else
+          message = message + soldBooks[i].title + ', ';
+      }
+    }
+    if (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0){
+      List<InsertedBook> keys = sellerMatchingBooksForExchange.keys.toList();
+      message = message + 'I also offer you: ';
+      for (int i = 0; i < keys.length; i++){
+        if (i == keys.length - 1) {
+          message = message + keys[i].title;
+          message = message + ' in exchange of my ' +
+              sellerMatchingBooksForExchange[keys[i]]['title'] + '.';
+        } else {
+          message = message + keys[i].title;
+          message = message + ' in exchange of my ' +
+              sellerMatchingBooksForExchange[keys[i]]['title'] + ',';
+        }
+      }
+    }
+    return message;
+  }
+
 
 }

@@ -69,8 +69,24 @@ class _BuyBooksState extends State<BuyBooks> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Purchase'),
+        actions: [
+          Builder(
+              builder: (BuildContext context) {
+                return ElevatedButton(
+                  child: booksDefiningTotalPrice.length == 0 ?
+                  Text('Exchange') :
+                  sellerMatchingBooksForExchange.length == 0 ?
+                  Text('Pay') :
+                  Text('Pay and exchange'),
+                  onPressed: () {
+                    _handleButtonClick(context);
+                  },
+                );
+              }
+          ),
+        ],
       ),
-      bottomNavigationBar: Padding(
+      /*bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
           elevation: 10.0,
@@ -97,7 +113,7 @@ class _BuyBooksState extends State<BuyBooks> {
             ),
           ),
         ),
-      ),
+      ),*/
       body: Container(
         height: MediaQuery.of(context).size.height,// - appBarHeight,
         padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 20.0, 0.0, _isTablet ? 100.0 : 20.0, 0.0),
@@ -491,6 +507,9 @@ class _BuyBooksState extends State<BuyBooks> {
   void _handleButtonClick(BuildContext context) {
     bool transactionCompleted = false;
     dynamic chat;
+    dynamic sellerUsername;
+    String message;
+    String myUsername;
     if (chosenShippingMode == null){
       showDialog(
           context: context,
@@ -545,13 +564,16 @@ class _BuyBooksState extends State<BuyBooks> {
             actions: [
               FlatButton(
                   onPressed: () async {
-                    dynamic sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
+                    sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
                     if (sellerUsername != null) {
+                      print('username diverso da null');
                       if (sellerUsername is List<String>) {
+                        transactionCompleted = true;
                         CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
-                        String myUsername = me.username;
+                        myUsername = me.username;
                         chat = await Utils.databaseService.createNewChat(
                             Utils.mySelf.uid, widget.sellingUserUid, myUsername, sellerUsername[0]);
+                        print('chat creata');
                       } else {
                         print('error');
                         //TODO
@@ -570,8 +592,8 @@ class _BuyBooksState extends State<BuyBooks> {
       ).then((value) {
         if (transactionCompleted) {
           final snackBar = SnackBar(
-            backgroundColor: Colors.white24,
-            duration: Duration(seconds: 1),
+            backgroundColor: Colors.white24.withOpacity(0.2),
+            duration: Duration(seconds: 2),
             content: Text(
               'The shipping address has been successfully added',
               style: Theme
@@ -581,15 +603,15 @@ class _BuyBooksState extends State<BuyBooks> {
             ),
           );
           Scaffold.of(context).showSnackBar(snackBar);
-          Timer(Duration(milliseconds: 1500), () {
-            if (chat != null) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(chat: Utils.toChat(chat))));
-            } else {
-              Navigator.pop(context);
-            }
-          });
+          Timer(Duration(milliseconds: 2500), () async {
+            Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+            if (chat != null && (payCash || (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0))) {
+              message = Utils.buildDefaultMessage(sellerUsername[0], booksDefiningTotalPrice,sellerMatchingBooksForExchange);
+              await Utils.databaseService.addMessageToChat(message, chat, CustomUser(Utils.mySelf.uid, username: myUsername));
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>ChatPage(chat: Utils.toChat(chat))));
+            }});
         } else {
-          //TODO stampare a schermo l'erroe
+          //TODO stampare a schermo l'errore
         }
       }
       );
