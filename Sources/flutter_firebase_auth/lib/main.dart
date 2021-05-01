@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/mainPage.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'package:flutter_firebase_auth/utils/appLifecycleReactor.dart';
 import 'package:flutter_firebase_auth/utils/networkStatusService.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,7 @@ class _AppState extends State<App> {
      return StreamProvider<NetworkStatus>(
         create: (context) =>
           NetworkStatusService().networkStatusController.stream,
-        child: MainPage(),
+        child: AppLifecycleReactor(),
      );
    }
  }
