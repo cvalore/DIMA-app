@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
-import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
@@ -155,11 +154,6 @@ class ChatProfileBody extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    chats[i].userUid1 == Utils.mySelf.uid && chats[i].user1Read ?
-                                      Container() :
-                                    chats[i].userUid2 == Utils.mySelf.uid && chats[i].user2Read ?
-                                      Container() :
-                                      Icon(Icons.mark_chat_unread_outlined)
                                   ],
                                 ),
                               ),

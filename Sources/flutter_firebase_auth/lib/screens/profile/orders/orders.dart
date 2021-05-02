@@ -19,7 +19,7 @@ class _OrdersState extends State<Orders> {
 
     return Container(
         height: widget.height,
-        child: GestureDetector(
+        child: InkWell(
           onTap: () async {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return FutureBuilder(

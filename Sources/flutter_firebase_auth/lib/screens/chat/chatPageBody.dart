@@ -50,7 +50,10 @@ class _ChatPageBodyState extends State<ChatPageBody> {
 
     Chat chat = Provider.of<Chat>(context);
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom(chat));
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,

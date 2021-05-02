@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
-import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
@@ -10,8 +8,6 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class DiscussionTabBody extends StatelessWidget {
 
@@ -83,7 +79,7 @@ class DiscussionTabBody extends StatelessWidget {
                                 for(int j = 0; j < perCategoryDiscussion[forumDiscussionCategories[i]].length; j++)
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: _isTablet ? 6.0 : 2.0),
-                                    child: GestureDetector(
+                                    child: InkWell(
                                       onTap: () {
                                         Navigator.push(
                                             context,
@@ -142,7 +138,9 @@ class DiscussionTabBody extends StatelessWidget {
                                                                 perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture']),
                                                             //FileImage(File(user.userProfileImagePath))
                                                           ) : Text(
-                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase(),
+                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'] != null ?
+                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase()[0] :
+                                                            "A",
                                                             //textScaleFactor: 3,
                                                           ),
                                                         ),

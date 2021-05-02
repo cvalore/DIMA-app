@@ -1,14 +1,11 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 
 class UserInfo extends StatefulWidget {
@@ -34,7 +31,10 @@ class _UserInfoState extends State<UserInfo> {
       image = Image.network(widget.user.userProfileImageURL);
     }
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Container(
       child: SingleChildScrollView(
@@ -45,7 +45,7 @@ class _UserInfoState extends State<UserInfo> {
             CircleAvatar(
               backgroundColor: Colors.brown.shade800,
               radius: 120.0,
-              child: GestureDetector(
+              child: InkWell(
               onTap: () {
                 if (widget.user.userProfileImageURL != '') {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -129,7 +129,8 @@ class _UserInfoState extends State<UserInfo> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton(
+                        Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
+                          ElevatedButton(
                             //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
                             onPressed: () async {
                               if (widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid)) {
@@ -147,8 +148,15 @@ class _UserInfoState extends State<UserInfo> {
                               }
                             },
                             child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
-                              Text('UNFOLLOW') : Text('FOLLOW')),
-                        ElevatedButton(
+                              Text('UNFOLLOW') : Text('FOLLOW')) :
+                          ElevatedButton(
+                            onPressed: () {
+                              Utils.showNeedToBeLogged(context, 1);
+                            },
+                            child: Text('FOLLOW'),
+                          ),
+                        Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
+                          ElevatedButton(
                             onPressed: () async {
 
                               CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
@@ -169,13 +177,41 @@ class _UserInfoState extends State<UserInfo> {
                               }
                             },
                             child: Text('CHAT')
+                        ) :
+                          ElevatedButton(
+                          onPressed: () {
+                            Utils.showNeedToBeLogged(context, 1);
+                          },
+                          child: Text('CHAT'),
                         ),
-                        ElevatedButton(
-                            onPressed: () {
-                              print(widget.user.uid);
+                        Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
+                          ElevatedButton(
+                            onPressed: () async {
+
+                              bool canIReview = await Utils.databaseService.canIReview(widget.user.uid);
+
+                              if(!canIReview) {
+                                final snackBar = SnackBar(
+                                  backgroundColor: Colors.black87,
+                                  duration: Duration(seconds: 2),
+                                  content: Text(
+                                    "You cannot review an user if you have not bought anything from him",
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                );
+                                Scaffold.of(context).showSnackBar(snackBar);
+                                return;
+                              }
+
                               Navigator.pushNamed(context, AddUserReview.routeName, arguments: widget.user);
                             },
-                            child: Text('REVIEW')),
+                            child: Text('REVIEW')):
+                          ElevatedButton(
+                          onPressed: () {
+                            Utils.showNeedToBeLogged(context, 1);
+                          },
+                          child: Text('REVIEW'),
+                        ),
                       ],
                     ),
                   ) : Container(),
@@ -271,7 +307,7 @@ class LargerImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
+      body: InkWell(
         onTap: () {
           Navigator.pop(context);
         },

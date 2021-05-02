@@ -11,9 +11,6 @@ class Chat {
   List<Message> messages;
   final DateTime time;
 
-  bool user1Read = false;
-  bool user2Read = false;
-
   bool showNew = false;
 
   Chat(this.userUid1, this.userUid2, this.userUid1Username, this.userUid2Username, this.messages, this.time);
@@ -42,8 +39,6 @@ class Chat {
     chatMap['time'] = time;
     List<dynamic> messagesMap = messages.map((e) => e.toMap()).toList();
     chatMap['messages'] = messagesMap;
-    chatMap['user1Read'] = user1Read;
-    chatMap['user2Read'] = user2Read;
     return chatMap;
   }
 
@@ -60,8 +55,6 @@ class Chat {
         DateTime.fromMillisecondsSinceEpoch(chatMap['time'].seconds * 1000) :
         chatMap['time'],
     );
-    chat.user1Read = chatMap['user1Read'];
-    chat.user2Read = chatMap['user2Read'];
     chat.setKnownKey(chatMap['chatKey']);
     return chat;
   }

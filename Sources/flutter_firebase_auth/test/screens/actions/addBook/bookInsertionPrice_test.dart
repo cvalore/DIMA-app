@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
-import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -19,7 +17,7 @@ void main() {
     expect(find.byType(Container), findsNWidgets(3));
     expect(find.byType(Icon), findsOneWidget);
     expect(find.byType(Text), findsOneWidget);
-    await tester.tap(find.byType(GestureDetector));
+    await tester.tap(find.byType(InkWell));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 

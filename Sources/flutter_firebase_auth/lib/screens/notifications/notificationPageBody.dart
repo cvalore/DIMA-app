@@ -52,7 +52,11 @@ class NotificationPageBody extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(top: i != 0 ? 0.0: _isTablet ? 40.0 : 15.0),
                   child: ManuallyCloseableExpansionTile(
-                    title: Text("Transaction ID: " + transactions[i]['id'].substring(0,10) + " ... " + DateTime.fromMillisecondsSinceEpoch(transactions[i]['time'].seconds * 1000).toString().split('.')[0],
+                    /*title: Text("Transaction ID: " + transactions[i]['id'].substring(0,10) + " ... " + DateTime.fromMillisecondsSinceEpoch(transactions[i]['time'].seconds * 1000).toString().split('.')[0],
+                      overflow: TextOverflow.ellipsis,
+                    ),*/
+                    title: Text("Transaction " + DateTime.fromMillisecondsSinceEpoch(transactions[i]['time'].seconds * 1000).toString().split('.')[0] +
+                        " by " + transactions[i]['buyerUsername'],
                       overflow: TextOverflow.ellipsis,
                     ),
                     initiallyExpanded: lastNotificationDate == null ? true: lastNotificationDate.compareTo(transactions[i]['time']) < 0,

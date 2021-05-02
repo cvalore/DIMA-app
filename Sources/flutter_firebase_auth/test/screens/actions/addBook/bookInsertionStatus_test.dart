@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
-import 'package:flutter_firebase_auth/utils/bookGenres.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

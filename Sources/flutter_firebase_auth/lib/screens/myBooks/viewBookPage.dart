@@ -2,11 +2,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/category.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/comment.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/exchange.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
@@ -53,7 +51,10 @@ class _ViewBookPageState extends State<ViewBookPage> {
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Scaffold(
       appBar: AppBar(
@@ -142,7 +143,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
           )
         ],
       ),
-      floatingActionButton: !widget.self && widget.canBuy ?
+      floatingActionButton: !widget.self && widget.canBuy && (Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous) ?
           FloatingActionButton.extended(
             backgroundColor: Colors.white24,
             heroTag: "purchaseBtn",
@@ -167,7 +168,6 @@ class _ViewBookPageState extends State<ViewBookPage> {
                       )
                   )
               );
-              print("TODO: --- Add to Cart");
             },
             icon: Icon(Icons.add_shopping_cart),
             label: Text("Buy"),

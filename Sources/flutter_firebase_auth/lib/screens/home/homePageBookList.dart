@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
@@ -46,7 +45,10 @@ class HomePageBookList extends StatelessWidget {
       }
     }
 
-    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +73,7 @@ class HomePageBookList extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12.0 : 5.0),
-              child: GestureDetector(
+              child: InkWell(
                 onTap: () {
                   _pushBookPage(perGenreBooks, index, context);
                 },

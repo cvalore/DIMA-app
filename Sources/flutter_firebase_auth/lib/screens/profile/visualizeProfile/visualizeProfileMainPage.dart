@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -31,7 +30,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    
+
     CustomUser user;
     user = widget.user != null ? widget.user : Provider.of<CustomUser>(context);
 

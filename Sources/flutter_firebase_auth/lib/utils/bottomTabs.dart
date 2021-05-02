@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
-import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchPage.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
@@ -25,7 +23,10 @@ class BottomTabs extends StatelessWidget {
 
     AuthCustomUser user = Provider.of<AuthCustomUser>(context);
 
-    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     Map<String,dynamic> booksMap = Provider.of<BookPerGenreMap>(context) != null ?
     Provider.of<BookPerGenreMap>(context).result : null;
@@ -120,16 +121,7 @@ class BottomTabs extends StatelessWidget {
           }
         }
         else {
-          final snackBar = SnackBar(
-            duration: Duration(seconds: 1),
-            content: Text(
-                'You need to be logged in to access this functionality'
-            ),
-            backgroundColor: Colors.white24,
-          );
-          // Find the Scaffold in the widget tree and use
-          // it to show a SnackBar.
-          Scaffold.of(context).showSnackBar(snackBar);
+          Utils.showNeedToBeLogged(context, 1);
         }
       },
     );

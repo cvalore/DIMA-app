@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/message.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 import 'chatProfileBody.dart';
@@ -25,7 +24,7 @@ class ChatProfile extends StatelessWidget {
 
     return Container(
         height: height,
-        child: GestureDetector(
+        child: InkWell(
           onTap: () async {
 
             //Timestamp lastChatsDate = await Utils.databaseService.getLastChatsDate();
@@ -164,7 +163,9 @@ class ChatProfile extends StatelessWidget {
       if(!newNotifications) {
         for(int i = 0; i < chats.length; i++) {
           for(int j = 0; chats[i].messages != null && j < chats[i].messages.length; j++) {
-            if (chats[i].messages[j].time.compareTo(lastChatsDateTime) > 0) {
+            if (chats[i].messages[j].time.compareTo(lastChatsDateTime) > 0 &&
+              chats[i].messages[j].uidSender != Utils.mySelf.uid
+            ) {
               newNotifications = true;
               break;
             }

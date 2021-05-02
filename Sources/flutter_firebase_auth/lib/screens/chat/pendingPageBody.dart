@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/chat.dart';
-import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/chat/viewPendingBook.dart';
-import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
-import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 
 class PendingPageBody extends StatefulWidget {
@@ -29,7 +23,10 @@ class _PendingPageBodyState extends State<PendingPageBody> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     widget.transactions.forEach((tr) {
       tr['exchanges'].removeWhere((ex) =>

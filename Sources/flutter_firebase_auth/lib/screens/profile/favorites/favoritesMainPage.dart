@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
@@ -24,10 +23,10 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isTablet = MediaQuery
-        .of(context)
-        .size
-        .width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return  loading ? Loading() :
     Scaffold(

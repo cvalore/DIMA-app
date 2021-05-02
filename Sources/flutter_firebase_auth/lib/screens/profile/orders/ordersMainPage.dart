@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
 
 class OrdersMainPage extends StatefulWidget {
 

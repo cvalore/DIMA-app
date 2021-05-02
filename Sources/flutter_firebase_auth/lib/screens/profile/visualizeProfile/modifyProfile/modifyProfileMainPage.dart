@@ -7,7 +7,6 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/boolWrapper.dart';
 import 'package:flutter_firebase_auth/utils/stringWrapper.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:intl/intl.dart';
 
 class ModifyProfileMainPage extends StatefulWidget {
   static const routeName = '/modifyProfile';

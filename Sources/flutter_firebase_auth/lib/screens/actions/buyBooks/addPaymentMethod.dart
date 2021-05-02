@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/addNewPaymentMethod.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 
-import 'addNewShippingInfo.dart';
-
 class AddPaymentMethod extends StatefulWidget {
 
   List<dynamic> savedPaymentMethods;

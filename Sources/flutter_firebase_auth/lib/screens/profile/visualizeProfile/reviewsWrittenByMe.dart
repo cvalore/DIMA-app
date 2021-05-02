@@ -3,12 +3,10 @@ import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
 
 
 class ReviewsWrittenByMe extends StatefulWidget {
@@ -202,7 +200,10 @@ class _ReviewItemState extends State<ReviewItem> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return InkWell(
       onLongPress: () {
@@ -227,7 +228,7 @@ class _ReviewItemState extends State<ReviewItem> {
               children: [
                 Expanded(
                   flex: 5,
-                  child: GestureDetector(
+                  child: InkWell(
                     onTap: () async {
                       if (widget.isSelectionModeOn == null ||
                           !widget.isSelectionModeOn()) {

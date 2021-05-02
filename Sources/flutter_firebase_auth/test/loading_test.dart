@@ -6,14 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/screens/authenticate/signIn.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:flutter_firebase_auth/main.dart';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

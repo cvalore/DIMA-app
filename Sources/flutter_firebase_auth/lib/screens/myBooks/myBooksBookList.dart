@@ -1,20 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/models/perGenreBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
-import 'package:flutter_firebase_auth/services/auth.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
 
 import 'bookHomePageView.dart';
 
@@ -51,7 +46,10 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
 
   @override
   Widget build(BuildContext context) {
-    widget._isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    widget._isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     if(selectedBooks.length != widget.books.keys.length) {
       for(int i = 0; i < widget.books.keys.length - selectedBooks.length; i++) {
@@ -78,6 +76,10 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
       ) : FloatingActionButton.extended(
           heroTag: 'select items to buy',
           onPressed: () {
+            if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
+              Utils.showNeedToBeLogged(context, 1);
+              return;
+            }
             setState(() {
               if (selectionModeOn == false)
                 selectionModeOn = true;
@@ -89,7 +91,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
       body: Stack(
         children: [
           GridView.count(
-              crossAxisCount: 2,
+              crossAxisCount: _isPortrait ? 2 : 4,
               padding: EdgeInsets.fromLTRB(
                   24.0 * (widget._isTablet ? 5 : 1),
                   36.0 * (widget._isTablet ? 3 : 1),

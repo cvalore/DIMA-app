@@ -1,14 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/shared/loading.dart';
-import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -138,6 +134,12 @@ class _SoldByViewState extends State<SoldByView> {
                                     SizedBox(width: 30.0),
                                     IconButton(
                                       onPressed: () async {
+
+                                        if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
+                                          Utils.showNeedToBeLogged(context, 1);
+                                          return;
+                                        }
+
                                         if (widget.books[i]['uid'] !=
                                             Utils.mySelf.uid) {
                                           DatabaseService databaseService = DatabaseService(

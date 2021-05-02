@@ -10,7 +10,19 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<AuthCustomUser>(context);
 
-    return OrientationBuilder(
+    if(user == null) {
+      return Container(
+          child: Authenticate()
+      );
+    }
+    else {
+      Utils.initDatabaseService(user);
+      return Container(
+        child: Home(),
+      );
+    }
+
+    /*return OrientationBuilder(
       builder: (context, orientation) {
         if(orientation == Orientation.portrait) {
           if(user == null) {
@@ -34,6 +46,8 @@ class Wrapper extends StatelessWidget {
           );
         }
       },
-    );
+    );*/
+
+
   }
 }

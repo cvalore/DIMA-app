@@ -130,7 +130,9 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                                         ),
                                       ),
                                     ),*/
-                                    Text(discussion.messages[index].nameSender,
+                                    Text(discussion.messages[index].nameSender == null || discussion.messages[index].nameSender == "" ?
+                                      "ANONYMOUS:"+discussion.messages[index].uidSender :
+                                      discussion.messages[index].nameSender,
                                       style: TextStyle(fontStyle: FontStyle.italic, fontSize: _isTablet ? 17.0 : 14.0),
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis,
@@ -244,6 +246,18 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                     flex: 1,
                     child: MaterialButton(
                       onPressed: () async {
+
+                        if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
+                          CustomUser userFromDb = CustomUser(Utils.mySelf.uid, username: null);
+                          List<Message> messages = await widget.db.addMessageToForum(_message, discussion, userFromDb);
+                          setState(() {
+                            _messageFormFieldController.clear();
+                            _message = "";
+                            //discussion.messages = messages;
+                          });
+                          return;
+                        }
+
                         CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
                         List<Message> messages = await widget.db.addMessageToForum(_message, discussion, userFromDb);
                         setState(() {

@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
@@ -11,7 +11,6 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
-import 'package:flutter_firebase_auth/screens/profile/orders/viewBoughtItemPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/viewExchangedItemPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
@@ -316,6 +315,19 @@ class Utils {
     return message;
   }
 
+  static void showNeedToBeLogged(BuildContext context, int duration) {
+    final snackBar = SnackBar(
+      duration: Duration(seconds: duration),
+      content: Text(
+        'You need to be logged in to access this functionality',
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Colors.black87,
+    );
+    // Find the Scaffold in the widget tree and use
+    // it to show a SnackBar.
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
 
   static pushBoughtItemPage(BuildContext context, Map<String, dynamic> boughtItem) async {
     InsertedBook bookToPush = InsertedBook(title: boughtItem['title'],

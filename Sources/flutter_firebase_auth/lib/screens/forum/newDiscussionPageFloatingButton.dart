@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class NewDiscussionPageFloatingButton extends StatelessWidget {

@@ -7,10 +7,8 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.d
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsertSelected.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
-import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:provider/provider.dart';
 
 class BookInsert extends StatefulWidget {

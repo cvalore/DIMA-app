@@ -22,7 +22,10 @@ class _AddUserReviewState extends State<AddUserReview> {
   Widget build(BuildContext context) {
 
     final CustomUser user = ModalRoute.of(context).settings.arguments as CustomUser;
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Scaffold(
       appBar: AppBar(
@@ -35,6 +38,7 @@ class _AddUserReviewState extends State<AddUserReview> {
         onPressed: () async {
           ReceivedReview review = ReceivedReview(stars: stars, review: reviewString, reviewerUid: Utils.mySelf.uid, time: DateTime.now());
           await DatabaseService(user: user).addReview(review);
+          user.receivedReviews.add(review);
           print('review added');
           Navigator.pop(context);
         },
