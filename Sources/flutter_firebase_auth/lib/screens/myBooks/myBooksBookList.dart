@@ -46,7 +46,10 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
 
   @override
   Widget build(BuildContext context) {
-    widget._isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    widget._isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     if(selectedBooks.length != widget.books.keys.length) {
       for(int i = 0; i < widget.books.keys.length - selectedBooks.length; i++) {

@@ -98,7 +98,10 @@ class _CategoryBoxState extends State<CategoryBox> {
     chosenGenre = ModalRoute.of(context).settings.arguments != null ?
             ModalRoute.of(context).settings.arguments : '';
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Scaffold(
       appBar: AppBar(

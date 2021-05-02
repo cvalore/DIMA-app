@@ -47,7 +47,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
-    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    _isTablet =
+        _isPortrait ?
+        MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),

@@ -73,7 +73,7 @@ class _AppState extends State<App> {
      return StreamProvider<NetworkStatus>(
         create: (context) =>
           NetworkStatusService().networkStatusController.stream,
-        child: AppLifecycleReactor(),
+        child: MainPage(),
      );
    }
  }
