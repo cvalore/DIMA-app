@@ -45,7 +45,10 @@ class HomePageBookList extends StatelessWidget {
       }
     }
 
-    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

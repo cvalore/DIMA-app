@@ -91,7 +91,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
       body: Stack(
         children: [
           GridView.count(
-              crossAxisCount: 2,
+              crossAxisCount: _isPortrait ? 2 : 4,
               padding: EdgeInsets.fromLTRB(
                   24.0 * (widget._isTablet ? 5 : 1),
                   36.0 * (widget._isTablet ? 3 : 1),

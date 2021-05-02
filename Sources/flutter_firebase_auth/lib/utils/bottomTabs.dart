@@ -23,7 +23,10 @@ class BottomTabs extends StatelessWidget {
 
     AuthCustomUser user = Provider.of<AuthCustomUser>(context);
 
-    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     Map<String,dynamic> booksMap = Provider.of<BookPerGenreMap>(context) != null ?
     Provider.of<BookPerGenreMap>(context).result : null;
