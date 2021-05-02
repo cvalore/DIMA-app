@@ -27,8 +27,13 @@ class _OrdersState extends State<Orders> {
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if(snapshot.connectionState == ConnectionState.waiting)
                       return Loading();
-                    else
-                      return OrdersMainPage(orders: snapshot.data);
+                    else {
+                      print(snapshot.data);
+                      return OrdersMainPage(
+                          completedPurchases: snapshot.data[0],
+                          completedExchanges: snapshot.data[1],
+                          pendingExchanges: snapshot.data[2]);
+                    }
                   }
               );
             }));
@@ -51,7 +56,7 @@ class _OrdersState extends State<Orders> {
                         flex: 5,
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("My favorites",
+                          child: Text("My orders",
                             style: TextStyle(
                               fontSize: 20,
                               fontStyle: FontStyle.normal,

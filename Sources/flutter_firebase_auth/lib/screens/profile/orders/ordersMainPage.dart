@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
 
 class OrdersMainPage extends StatefulWidget {
 
-  List<dynamic> orders;
+  List<dynamic> completedPurchases;
+  List<dynamic> completedExchanges;
+  List<dynamic> pendingExchanges;
 
-  OrdersMainPage({Key key, this.orders});
+  OrdersMainPage({Key key, this.completedPurchases, this.completedExchanges, this.pendingExchanges});
 
   @override
   _OrdersMainPageState createState() => _OrdersMainPageState();
@@ -17,115 +21,48 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
 
-    /*
     bool _isTablet = MediaQuery
         .of(context)
         .size
         .width > mobileMaxWidth;
 
-    return  loading ? Loading() :
-    Scaffold(
-      appBar: AppBar(
-        title: Text('My orders'),
-      ),
-      /*
-      floatingActionButton: selectionModeOn ? FloatingActionButton.extended(
-          label: Text('Remove like'),
-          onPressed: () {
-            //method removing likes from db
-          },
-          ) : null,
-       */
-      body: DefaultTabController(
+    return DefaultTabController(
+      initialIndex: 0,
       length: 3,
       child: Scaffold(
-        key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        //backgroundColor: Colors.black,
         appBar: AppBar(
-          //backgroundColor: Colors.black,
           elevation: 0.0,
-          title: Text('BookYourBook', style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 24.0,
-            letterSpacing: 1.0,
-          ),),
-          actions: <Widget>[
-            Theme(
-              data: Theme.of(context).copyWith(
-                textButtonTheme: _textButtonThemeData,
-              ),
-              child: TextButton.icon(
-                icon: Icon(Icons.logout, color: Colors.white,),
-                label: Text(''),
-                onPressed: () async {
-                  await _auth.signOut();
-                },
-              ),
+          title: Text('My orders', style:
+            TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
+              letterSpacing: 1.0,
             ),
-          ],
-          bottom: _selectedBottomTab == 0 ?
-          TabBar(
+          ),
+          bottom: TabBar(
             indicatorColor: Colors.white,
             tabs: <Widget>[
-              Container(
-                  height: _isTablet ? 60.0 : 40.0,
-                  child: Center(child: Text('For Sale',
-                    style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
-              ),
-              Container(
-                  height: _isTablet ? 60.0 : 40.0,
-                  child: Center(child: Text('My Books',
-                    style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
-              ),
+              Tab(text: 'Purchases',
+              icon: Icon(Icons.info_outline)),
+              Tab(text: 'Exchanges',
+              icon: Icon(Icons.rate_review_outlined)),
+              Tab(text: 'Pending',
+                  icon: Icon(Icons.rate_review_outlined)),
             ],
-          ) :
-          null,
+          ),
         ),
-        body: Builder(
-          builder: (BuildContext context) {
-            return _selectedBottomTab != 0 ?
-            _widgetsBottomOptions.elementAt(_selectedBottomTab) :
-            TabBarView(
+        body: TabBarView(
                 children: [
-                  HomePage(),
-                  MyBooks(self: true),
+                  Purchases(purchases: widget.completedPurchases),
+                  Exchanges(exchanges: widget.completedExchanges),
+                  Exchanges(exchanges: widget.pendingExchanges),
                 ]
-            );
-
-            return _widgetsBottomOptions.elementAt(_selectedBottomTab);
-            /*return _selectedBottomTab != 0 ?
-                  _widgetsBottomOptions.elementAt(_selectedBottomTab) :
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: UpperTabs(),
-                      ),
-                      Expanded(
-                        flex: 10,
-                        child: _widgetsBottomOptions.elementAt(_selectedBottomTab),
-                      ),
-                    ],
-                  );*/
-          },
+              ),
         ),
-        bottomNavigationBar: BottomTabs(
-          getIndex: getIndex,
-          setIndex: setIndex,
-        ),
-      ),
-    ),
-    );
+      );
   }
 }
 
-     */
-  }
-}

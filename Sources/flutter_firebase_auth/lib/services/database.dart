@@ -883,21 +883,35 @@ class DatabaseService {
     List<dynamic> myPurchasedBooks = List<dynamic>();
     List<dynamic> myPendingExchanges = List<dynamic>();
     List<dynamic> myCompletedExchanges = List<dynamic>();
+    Map<String, dynamic> transactionBody;
     List<dynamic> currentExchanges;
     List<dynamic> currentPaidBooks;
     await usersCollection.doc(user.uid).get().then((userDoc) async {
-      transactionsAsBuyer = userDoc.data()['transactionsAsBuyer'];
+      transactionsAsBuyer = List.from(userDoc.data()['transactionsAsBuyer']);
       for (int i = 0; i < transactionsAsBuyer.length; i++) {
         await transactionsCollection.doc(transactionsAsBuyer[i]).get().then((userDoc) {
-          currentExchanges = userDoc.data()['exchanges'];
-          currentPaidBooks = userDoc.data()['paidBooks'];
+          transactionBody = userDoc.data();
+          currentExchanges = List.from(transactionBody['exchanges']);
+          currentPaidBooks = List.from(transactionBody['paidBooks']);
           for (int i = 0; i < currentExchanges.length; i++){
+            currentExchanges[i]['chosenShippingMode'] = transactionBody['chosenShippingMode'];
+            currentExchanges[i]['payCash'] = transactionBody['payCash'];
+            currentExchanges[i]['shippingAddress'] = transactionBody['shippingAddress'];
+            currentExchanges[i]['time'] = transactionBody['time'];
+            currentExchanges[i]['seller'] = transactionBody['seller'];
+            currentExchanges[i]['sellerUsername'] = transactionBody['sellerUsername'];
             if (currentExchanges[i]['exchangeStatus'] == 'pending')
               myPendingExchanges.add(currentExchanges[i]);
             else
               myCompletedExchanges.add(currentExchanges[i]);
           }
           for (int i = 0; i < currentPaidBooks.length; i++){
+            currentPaidBooks[i]['chosenShippingMode'] = transactionBody['chosenShippingMode'];
+            currentPaidBooks[i]['payCash'] = transactionBody['payCash'];
+            currentPaidBooks[i]['shippingAddress'] = transactionBody['shippingAddress'];
+            currentPaidBooks[i]['time'] = transactionBody['time'];
+            currentPaidBooks[i]['seller'] = transactionBody['seller'];
+            currentPaidBooks[i]['sellerUsername'] = transactionBody['sellerUsername'];
             myPurchasedBooks.add(currentPaidBooks[i]);
           }
         });
@@ -917,8 +931,6 @@ class DatabaseService {
           myExchangeableBooks = myBooks.where((element) => element['exchangeable'] == true && element['exchangeStatus'] == 'available').toList();
         }
     );
-
-
     return myExchangeableBooks;
   }
 
@@ -1288,7 +1300,7 @@ class DatabaseService {
 
   //region Purchase
 
-  Future purchaseAndProposeExchange(String sellingUser, chosenShippingMode, shippingAddress, payCash, List<InsertedBook> booksToPurchase, Map<InsertedBook, Map<String, dynamic>> booksToExchange) async {
+  Future purchaseAndProposeExchange(String sellingUser, chosenShippingMode, shippingAddress, payCash, List<InsertedBook> booksToPurchase, Map<InsertedBook, Map<String, dynamic>> booksToExchange, Map<int, String> thumbnails) async {
 
     bool transactionSuccessfullyCompleted = false;
     String usernameToReturn;
@@ -1306,6 +1318,8 @@ class DatabaseService {
       bookMap['status'] = booksToPurchase[i].status;
       bookMap['price'] = booksToPurchase[i].price;
       bookMap['insertionNumber'] = booksToPurchase[i].insertionNumber;
+      bookMap['category'] = booksToPurchase[i].category;
+      bookMap['thumbnail'] = thumbnails[booksToPurchase[i].insertionNumber];
       booksToPurchaseMap.add(bookMap);
     }
     transaction['id'] = transactionId;
@@ -1316,7 +1330,7 @@ class DatabaseService {
     transaction['shippingAddress'] = shippingAddress;
     transaction['payCash'] = payCash;
 
-    transaction['exchanges'] = Utils.exchangedBookFromMap(booksToExchange);
+    transaction['exchanges'] = Utils.exchangedBookFromMap(booksToExchange, thumbnails);
 
     String buyerUsername = "";
     await usersCollection.doc(user.uid).get().then((DocumentSnapshot doc) {
@@ -1324,7 +1338,15 @@ class DatabaseService {
         buyerUsername = doc.data()['username'];
       }
     });
+
+    String sellerUsername = "";
+    await usersCollection.doc(sellingUser).get().then((DocumentSnapshot doc) {
+      if(doc.exists) {
+        sellerUsername = doc.data()['username'];
+      }
+    });
     transaction['buyerUsername'] = buyerUsername;
+    transaction['sellerUsername'] = sellerUsername;
     transaction['time'] = DateTime.now();
 
     DocumentReference buyerUserReference = usersCollection.doc(user.uid);
@@ -1537,15 +1559,6 @@ class DatabaseService {
         }
       }
 
-      /*
-      if (booksToRemoveFromBooksPerGenres.length > 0) {
-        for (int i = 0; i < genres.length; i++){
-          print(booksFromBooksPerGenresCollection[genres[i]][0]);
-        }
-      }
-
-       */
-
       if (booksToExchange != null && booksToExchange.length > 0) {
         print(buyerBooks);
       }
@@ -1583,11 +1596,10 @@ class DatabaseService {
 
       print('Step 6');
       batch.update(sellerUserReference, {'books': sellerBooks});
-      //batch.commit();
+      batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
       .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 
-    /*
     if (transactionSuccessfullyCompleted) {
       print('Step 7');
       await transactionsCollection.doc(transaction['id']).set(transaction)
@@ -1610,8 +1622,6 @@ class DatabaseService {
           print("Failed to add transaction for buyer: $error"));
       print('Step 10');
     }
-
-     */
 
 
     return [usernameToReturn];
@@ -1913,7 +1923,7 @@ class DatabaseService {
       batch.update(buyerUserReference, {'books': buyerBooks});
       batch.update(transactionReference, {'exchanges': booksFromTransaction});
 
-      batch.commit();
+      //batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
         .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 

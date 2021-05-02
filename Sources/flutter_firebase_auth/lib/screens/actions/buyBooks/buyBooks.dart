@@ -564,7 +564,7 @@ class _BuyBooksState extends State<BuyBooks> {
             actions: [
               FlatButton(
                   onPressed: () async {
-                    sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange);
+                    sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange, widget.thumbnails);
                     if (sellerUsername != null) {
                       print('username diverso da null');
                       if (sellerUsername is List<String>) {
@@ -606,9 +606,11 @@ class _BuyBooksState extends State<BuyBooks> {
           Timer(Duration(milliseconds: 2500), () async {
             Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
             if (chat != null && (payCash || (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0))) {
-              message = Utils.buildDefaultMessage(sellerUsername[0], booksDefiningTotalPrice,sellerMatchingBooksForExchange);
-              await Utils.databaseService.addMessageToChat(message, chat, CustomUser(Utils.mySelf.uid, username: myUsername));
+              print(chat.runtimeType);
+              /*message = Utils.buildDefaultMessage(sellerUsername[0], booksDefiningTotalPrice,sellerMatchingBooksForExchange);
+              await Utils.databaseService.addMessageToChat(message, Utils.toChat(chat), CustomUser(Utils.mySelf.uid, username: myUsername));
               Navigator.push(context, MaterialPageRoute(builder: (context) =>ChatPage(chat: Utils.toChat(chat))));
+               */
             }});
         } else {
           //TODO stampare a schermo l'errore

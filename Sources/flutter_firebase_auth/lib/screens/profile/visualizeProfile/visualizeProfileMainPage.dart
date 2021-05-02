@@ -6,6 +6,9 @@ import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/modifyPro
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/receivedReviews.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsMainPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.dart';
+import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 
@@ -23,6 +26,7 @@ class VisualizeProfileMainPage extends StatefulWidget {
 }
 
 class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/message.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/viewExchangedItemPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
@@ -240,7 +242,7 @@ class Utils {
     return bookMap;
   }
 
-  static List<Map<String, dynamic>> exchangedBookFromMap(Map<InsertedBook,Map<String,dynamic>> exchangedBooks){
+  static List<Map<String, dynamic>> exchangedBookFromMap(Map<InsertedBook,Map<String,dynamic>> exchangedBooks, Map<int, String> thumbnails){
     List<Map<String, dynamic>> result = List<Map<String, dynamic>>();
     Map<String, dynamic> currentExchange;
     Map<String, dynamic> receivedBook;
@@ -259,6 +261,8 @@ class Utils {
       receivedBook['status'] = keys[i].status;
       receivedBook['insertionNumber'] = keys[i].insertionNumber;
       receivedBook['category'] = keys[i].category;
+      receivedBook['thumbnail'] = thumbnails[keys[i].insertionNumber];
+
 
       var value = exchangedBooks[keys[i]];
 
@@ -266,10 +270,11 @@ class Utils {
       offeredBook['id'] = value['id'];
       offeredBook['title'] = value['title'];
       offeredBook['author'] = value['author'];
-      offeredBook['imagesUrl'] = value['imageUrl'];
+      offeredBook['imagesUrl'] = value['imagesUrl'];
       offeredBook['status'] = value['status'];
       offeredBook['insertionNumber'] = value['insertionNumber'];
       offeredBook['category'] = value['category'];
+      offeredBook['thumbnail'] = value['thumbnail'];
 
       // init currentExchange
       currentExchange['receivedBook'] = receivedBook;
@@ -323,5 +328,105 @@ class Utils {
     // it to show a SnackBar.
     Scaffold.of(context).showSnackBar(snackBar);
   }
+
+  static pushBoughtItemPage(BuildContext context, Map<String, dynamic> boughtItem) async {
+    InsertedBook bookToPush = InsertedBook(title: boughtItem['title'],
+        insertionNumber: boughtItem['insertionNumber'],
+        author: boughtItem['author'],
+        category: boughtItem['category'],
+        price: boughtItem['price'],
+        status: boughtItem['status'],
+    );
+    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(boughtItem['seller'], bookToPush);
+    List<String> bookPickedFilePaths = List<String>();
+    ListResult lr = await bookRef.listAll();
+    int count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    bookToPush.imagesPath = bookPickedFilePaths;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (newContext) => ViewBoughtItemPage(
+            boughtBook: bookToPush,
+            transactionsInfo : boughtItem
+          )
+      )
+    );
+  }
+
+  static pushExchangedBookPage(BuildContext context, Map<String, dynamic> exchangedItem) async {
+    InsertedBook receivedBook;
+    InsertedBook offeredBook;
+    Reference bookRef;
+    List<String> bookPickedFilePaths;
+    ListResult lr;
+    int count;
+    receivedBook = InsertedBook(title: exchangedItem['receivedBook']['title'],
+        insertionNumber: exchangedItem['receivedBook']['insertionNumber']);
+    bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['seller'], receivedBook);
+    bookPickedFilePaths = List<String>();
+    lr = await bookRef.listAll();
+    count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    receivedBook.imagesPath = bookPickedFilePaths;
+
+    offeredBook = InsertedBook(title: exchangedItem['offeredBook']['title'],
+        insertionNumber: exchangedItem['offeredBook']['insertionNumber']);
+    bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['seller'], offeredBook);
+    bookPickedFilePaths = List<String>();
+    lr = await bookRef.listAll();
+    count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    offeredBook.imagesPath = bookPickedFilePaths;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (newContext) => ViewExchangedItemPage(
+              receivedBook: receivedBook,
+              offeredBook: offeredBook,
+              transactionsInfo: exchangedItem,
+            )
+        )
+    );
+  }
+
+  /*
+  static computeHowLongAgoFromTimestamp(Timestamp timestamp) {
+    DateTime transactionDate = timestamp.toDate();
+    DateTime now = DateTime.now();
+    Datetime difference = now.difference(transactionDate);
+  }
+
+   */
 
 }
