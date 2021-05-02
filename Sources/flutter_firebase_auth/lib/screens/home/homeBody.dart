@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
+import 'package:flutter_firebase_auth/screens/actions/searchBook/searchPage.dart';
 import 'package:flutter_firebase_auth/screens/forum/forumMainPage.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/profile/profileMainPage.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bottomTabs.dart';
 import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'homePage.dart';
@@ -81,6 +86,27 @@ class _HomeBodyState extends State<HomeBody> {
     _db = DatabaseService(user: user);
 
 
+    //done in bottom tabs if is portrait
+    Map<String,dynamic> booksMap;
+    List<dynamic> books = List<dynamic>();
+    if(!_isPortrait) {
+      booksMap = Provider.of<BookPerGenreMap>(context) != null ?
+      Provider.of<BookPerGenreMap>(context).result : null;
+
+      if(booksMap != null && booksMap.length != 0) {
+        booksMap.removeWhere((key, value) {
+          bool empty = booksMap[key]['books'] == null ||
+              booksMap[key]['books'].length == 0;
+          return key == null || value == null || empty;
+        });
+      }
+      //books passed to search book page
+      for(int i = 0; booksMap != null && i < booksMap.length; i++) {
+        books.addAll(booksMap[booksMap.keys.elementAt(i).toString()]['books']);
+      }
+    }
+
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -142,117 +168,119 @@ class _HomeBodyState extends State<HomeBody> {
             }
             else {
               return MyVerticalTabs(
+                user: userFromAuth,
+                books: books,
                 disabledChangePageFromContentView: true,
                 tabBarSide: TabBarSide.right,
                 indicatorSide: IndicatorSide.end,
                 tabBarHeight: MediaQuery.of(context).size.height,
-                tabBarWidth: 60,
-                tabsWidth: 60,
+                tabBarWidth: 55,
+                tabsWidth: 55,
                 indicatorColor: Colors.white,
                 selectedTabBackgroundColor: Colors.white10,
                 tabBackgroundColor: Colors.black26,
                 selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
                 tabs: [
-                  Tab(child: GestureDetector(
-                    onTap: () {
-                      print("Tapped Home");
-                    },
-                    child: Container(
-                      height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined,
-                            size: _isTablet ? 28.0 : 21.0,),
-                          getIndex() == 0 ? Text("Home") : Container(),
-                        ],
-                      ),
+                  Tab(child: Container(
+                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined,
+                          size: _isTablet ? 28.0 : 21.0,),
+                        //getIndex() == 0 ? Text("Home") : Container(),
+                        Text("Home", style: TextStyle(fontSize: 13),),
+                      ],
                     ),
                   ),),
-                  Tab(child: GestureDetector(
-                    onTap: () {
-                      print("Tapped Search");
-                    },
-                    child: Container(
-                      height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined,
-                            size: _isTablet ? 28.0 : 21.0,),
-                          getIndex() == 1 ? Text("Search") : Container(),
-                        ],
-                      ),
+                  Tab(child: Container(
+                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined,
+                          size: _isTablet ? 28.0 : 21.0,),
+                        //getIndex() == 1 ? Text("Search") : Container(),
+                        Text("Search", style: TextStyle(fontSize: 13),),
+                      ],
                     ),
                   ),),
-                  Tab(child: GestureDetector(
-                    onTap: () {
-                      print("Tapped Insert Book");
-                    },
-                    child: Container(
-                      height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined,
-                            size: _isTablet ? 45.0 : 32.0,),
-                          getIndex() == 2 ? Text("Insert Book") : Container(),
-                        ],
-                      ),
+                  Tab(child: Container(
+                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined,
+                          size: _isTablet ? 45.0 : 32.0,),
+                        //getIndex() == 2 ? Text("Insert Book") : Container(),
+                        //Text("Insert Book", style: TextStyle(fontSize: 13),),
+                      ],
                     ),
                   ),),
-                  Tab(child: GestureDetector(
-                    onTap: () {
-                      print("Tapped Forum");
-                    },
-                    child: Container(
-                      height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined,
-                            size: _isTablet ? 28.0 : 21.0,),
-                          getIndex() == 3 ? Text("Forum") : Container(),
-                        ],
-                      ),
+                  Tab(child: Container(
+                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined,
+                          size: _isTablet ? 28.0 : 21.0,),
+                        //getIndex() == 3 ? Text("Forum") : Container(),
+                        Text("Forum", style: TextStyle(fontSize: 13),),
+                      ],
                     ),
                   ),),
-                  Tab(child: GestureDetector(
-                    onTap: () {
-                      print("Tapped Profile");
-                    },
-                    child: Container(
-                      height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined,
-                            size: _isTablet ? 28.0 : 21.0,),
-                          getIndex() == 4 ? Text("Profile") : Container(),
-                        ],
-                      ),
+                  Tab(child: Container(
+                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined,
+                          size: _isTablet ? 28.0 : 21.0,),
+                        //getIndex() == 4 ? Text("Profile") : Container(),
+                        Text("Profile", style: TextStyle(fontSize: 13),),
+                      ],
                     ),
                   ),),
                 ],
                 contents: [
                   MyVerticalTabs(
-                    tabBarHeight: 120,
-                    tabBarWidth: 80,
-                    tabsWidth: 80,
+                    //tabBarHeight: 120,
+                    tabBarHeight: MediaQuery.of(context).size.height,
+                    tabBarWidth: 85,
+                    tabsWidth: 85,
                     indicatorColor: Colors.blue,
                     selectedTabBackgroundColor: Colors.white10,
                     tabBackgroundColor: Colors.black26,
                     selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
                     tabs: <Tab>[
                       Tab(child: Container(
-                          height: 50,
+                          //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.3,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-                          child: Center(child: Text('Sale'))
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('For Sale', textAlign: TextAlign.center,),
+                              Icon(Icons.attach_money),
+                            ],
+                          ))
                       )),
                       Tab(child: Container(
-                          height: 50,
+                          //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-                          child: Center(child: Text('Exchange'))
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('My Books', textAlign: TextAlign.center,),
+                              Icon(Icons.collections_bookmark),
+                            ],
+                          ))
                       )),
                     ],
                     contents: <Widget>[
@@ -265,6 +293,13 @@ class _HomeBodyState extends State<HomeBody> {
                   ForumMainPage(),
                   ProfileMainPage(),
                 ],
+                onTaps: [
+                  trueFunction,
+                  onTapSearch,
+                  onTapInsert,
+                  trueFunction,
+                  onTapProfile,
+                ],
               );
             }
           },
@@ -275,5 +310,53 @@ class _HomeBodyState extends State<HomeBody> {
         ) : null,
       ),
     );
+  }
+
+  bool trueFunction(AuthCustomUser user, BuildContext buildContext, List<dynamic> books, int index) {
+    //setIndex(index);
+    //_selectedBottomTab = index;
+    return true;
+  }
+
+  bool onTapSearch(AuthCustomUser user, BuildContext buildContext, List<dynamic> books, int index) {
+    Navigator.push(
+        buildContext,
+        MaterialPageRoute(builder: (BuildContext context) {
+          return SearchPage(books: books,);
+        })
+    );
+    return false;
+  }
+
+  bool onTapInsert(AuthCustomUser user, BuildContext buildContext, List<dynamic> books, int index) {
+    if(isAnonymous(user)) {
+      Utils.showNeedToBeLogged(buildContext, 1);
+      return false;
+    }
+    Navigator.push(
+        buildContext,
+        MaterialPageRoute(builder: (BuildContext context) {
+          return BookInsert(
+            insertedBook: InsertedBook(),
+            edit: false,
+            editIndex: -1,
+          );
+        })
+    );
+    return false;
+  }
+
+  bool onTapProfile(AuthCustomUser user, BuildContext buildContext, List<dynamic> books, int index) {
+    if(isAnonymous(user)) {
+      Utils.showNeedToBeLogged(buildContext, 1);
+      return false;
+    }
+    //setIndex(index);
+    //_selectedBottomTab = index;
+    return true;
+  }
+
+  bool isAnonymous(AuthCustomUser user) {
+    return user == null || user.isAnonymous;
   }
 }
