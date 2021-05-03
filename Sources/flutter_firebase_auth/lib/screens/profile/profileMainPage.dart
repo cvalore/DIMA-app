@@ -28,13 +28,18 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return StreamProvider<CustomUser>.value(
       value: _db.userInfo,
       child: Container(
         padding: EdgeInsets.fromLTRB(_isTablet ? 150.0 : 25.0, _isTablet ? 10.0 : 0.0, _isTablet ? 150.0 : 25.0, 20.0),
-        child: Column(
+        child:
+        _isPortrait ?
+        Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Expanded(
@@ -61,6 +66,60 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
                   )
               ),
             ),
+          ],
+        ) :
+        Row(
+          children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width/4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              //do a sliver appbar with visualize profile??
+                              VisualizeProfile(height: _isTablet ? 200.0 : 120.0),
+                              // dettagli pagamento
+                            ],
+                          ),
+                        )
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 3*MediaQuery.of(context).size.width/4 - 105,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Favorites(height: _isTablet ? 100.0 : 60.0),
+                              Divider(height: 15, thickness: 2,),
+                              Orders(height: _isTablet ? 100.0 : 60.0),
+                              Divider(height: 15, thickness: 2,),
+                              ChatProfileManager(height: _isTablet ? 100.0 : 60.0),
+                              Divider(height: 15, thickness: 2,),
+                              StreamProvider<List<MyTransaction>>.value(
+                                  value: Utils.databaseService.allTransactionsInfo,
+                                  child: NotificationProfileManager(height: _isTablet ? 100.0 : 60.0,)
+                              ),
+                              // dettagli pagamento
+                            ],
+                          ),
+                        )
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
