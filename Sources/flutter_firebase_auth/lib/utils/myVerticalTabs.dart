@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/user.dart';
 
 enum IndicatorSide { start, end }
 enum TabBarSide { left, right }
@@ -15,6 +16,9 @@ class MyVerticalTabs extends StatefulWidget {
   final IndicatorSide indicatorSide;
   final TabBarSide tabBarSide;
   final List<Tab> tabs;
+  final List<dynamic> books;
+  final List<Function> onTaps;
+  final AuthCustomUser user;
   final List<Widget> contents;
   final TextDirection direction;
   final Color indicatorColor;
@@ -35,6 +39,9 @@ class MyVerticalTabs extends StatefulWidget {
       {this.key,
         @required this.tabs,
         @required this.contents,
+        this.user,
+        this.books,
+        this.onTaps,
         this.tabBarWidth = 200,
         this.tabBarHeight = 200,
         this.tabsWidth = 200,
@@ -57,7 +64,7 @@ class MyVerticalTabs extends StatefulWidget {
         this.onSelect,
         this.backgroundColor})
       : assert(
-  tabs != null && contents != null && tabs.length == contents.length),
+  tabs != null && contents != null && tabs.length == contents.length && (onTaps == null || onTaps.length == tabs.length)),
         super(key: key);
 
   @override
@@ -230,6 +237,13 @@ class _MyVerticalTabsState extends State<MyVerticalTabs>
                               ),
                               GestureDetector(
                                 onTap: () {
+                                  if(widget.onTaps != null) {
+                                    if(!widget.onTaps[index](widget.user, context, widget.books, index)) {
+                                      //print("Cannot select tab");
+                                      return;
+                                    }
+                                  }
+
                                   _changePageByTapView = true;
                                   setState(() {
                                     _selectTab(index);
@@ -411,6 +425,13 @@ class _MyVerticalTabsState extends State<MyVerticalTabs>
                               ),
                               GestureDetector(
                                 onTap: () {
+                                  if(widget.onTaps != null) {
+                                    if(!widget.onTaps[index](widget.user, context, widget.books, index)) {
+                                      //print("Cannot select tab");
+                                      return;
+                                    }
+                                  }
+
                                   _changePageByTapView = true;
                                   setState(() {
                                     _selectTab(index);

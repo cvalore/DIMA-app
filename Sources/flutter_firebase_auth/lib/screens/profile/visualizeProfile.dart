@@ -25,6 +25,8 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
     CustomUser user = Provider.of<CustomUser>(context);
     DatabaseService _db = DatabaseService(user: user);
 
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
     return user != null ?
     FutureBuilder(
         future: Utils.setUserProfileImagePath(user),
@@ -34,7 +36,8 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
           else {
             return Container(
               padding: EdgeInsets.symmetric(vertical: 10),
-              height: widget.height,
+              //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+              height: _isPortrait ? widget.height : MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight - 20,
               child: InkWell(
                 onTap: () async {
                   Navigator.push(
@@ -45,7 +48,9 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                     )
                   );
                 },
-                child: Row(
+                child:
+                _isPortrait ?
+                Row(
                   children: [
                     Expanded(
                         flex: 10,
@@ -87,6 +92,38 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                     Expanded(
                       flex: 1,
                       child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    )
+                  ],
+                ) :
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundColor: Colors.brown.shade800,
+                      radius: 60.0,
+                      child: user.userProfileImagePath != null && user.userProfileImagePath != '' ?
+                      CircleAvatar(
+                        radius: 60.0,
+                        backgroundImage: NetworkImage(user.userProfileImageURL),
+                        //FileImage(File(user.userProfileImagePath))
+                      ) : Text(
+                        user.username[0].toUpperCase(),
+                        textScaleFactor: 3,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(user.username,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: Colors.white),
+                      ],
                     )
                   ],
                 ),

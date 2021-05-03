@@ -176,7 +176,11 @@ class _ViewBookPageState extends State<ViewBookPage> {
       //backgroundColor: Colors.black,
       body: Container(
         height: MediaQuery.of(context).size.height,// - appBarHeight,
-        padding: EdgeInsets.fromLTRB(_isTablet ? 150.0 : 20.0, _isTablet ? 40.0 : 0.0, _isTablet ? 150.0 : 20.0, _isTablet ? 40.0 : 0.0),
+        padding: EdgeInsets.fromLTRB(
+            _isTablet ? 150.0 : _isPortrait ? 20.0 : 120.0,
+            _isTablet ? 40.0 : 0.0,
+            _isTablet ? 150.0 : _isPortrait ? 20.0 : 120.0,
+            _isTablet ? 40.0 : 0.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,

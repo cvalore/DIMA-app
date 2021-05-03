@@ -29,7 +29,10 @@ class _SoldByViewState extends State<SoldByView> {
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: _isTablet ? 45.0 : 20.0, vertical: 10.0),
@@ -40,7 +43,7 @@ class _SoldByViewState extends State<SoldByView> {
                 InkWell(
                   onTap: () async {
                     //print(widget.books[i]);
-                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], true);
+                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], widget.books[i]['uid'] != Utils.mySelf.uid);
                   },
                   child: Column(
                       children: <Widget>[
