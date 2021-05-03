@@ -412,6 +412,7 @@ class _BuyBooksState extends State<BuyBooks> {
                               setState(() {
                                 chosenShippingMode = value;
                                 if (chosenShippingMode == 'express courier') payCash = false;
+                                if (chosenShippingMode == 'live dispatch') payCash = true;
                                 _shippingModeKey.currentState.collapse();
                               });
                             },
@@ -448,12 +449,7 @@ class _BuyBooksState extends State<BuyBooks> {
                       'Pay cash',
                       style: Theme.of(context).textTheme.headline6
                   ),
-                  trailing: booksDefiningTotalPrice.length > 0 && payCash ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank_outlined),
-                  onTap: () async {
-                    setState(() {
-                      payCash = !payCash;
-                    });
-                  },
+                  trailing: booksDefiningTotalPrice.length > 0 && payCash ? Icon(Icons.check_outlined, color: Colors.green) : Icon(Icons.clear_outlined, color: Colors.red,),
                 ),
               ),
               ListTileTheme(
@@ -604,13 +600,11 @@ class _BuyBooksState extends State<BuyBooks> {
           );
           Scaffold.of(context).showSnackBar(snackBar);
           Timer(Duration(milliseconds: 2500), () async {
-            Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+            //Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
             if (chat != null && (payCash || (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0))) {
-              print(chat.runtimeType);
-              /*message = Utils.buildDefaultMessage(sellerUsername[0], booksDefiningTotalPrice,sellerMatchingBooksForExchange);
+              message = Utils.buildDefaultMessage(sellerUsername[0], booksDefiningTotalPrice,sellerMatchingBooksForExchange);
               await Utils.databaseService.addMessageToChat(message, Utils.toChat(chat), CustomUser(Utils.mySelf.uid, username: myUsername));
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>ChatPage(chat: Utils.toChat(chat))));
-               */
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>ChatPage(chat: Utils.toChat(chat))), ModalRoute.withName(Navigator.defaultRouteName));
             }});
         } else {
           //TODO stampare a schermo l'errore

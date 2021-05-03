@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/chat/viewPendingBook.dart';
@@ -152,23 +154,29 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                   onTap: () async {
                                     var result = await DatabaseService().acceptExchange(widget.transactions[index]['id'], widget.transactions[index]['seller'],
                                         widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
-                                    if (result is String && result == 'ok'){
+                                    if (result is String && result == 'ok') {
+                                      final snackBar = SnackBar(
+                                        backgroundColor: Colors.white24,
+                                        duration: Duration(seconds: 2),
+                                        content: Text(
+                                          'The exchange has been accepted',
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .bodyText2,
+                                        ),
+                                      );
+                                      Scaffold.of(context).showSnackBar(
+                                          snackBar);
+                                      /*
+                                      Timer(Duration(
+                                          milliseconds: 2500), () async {
                                         setState(() {
                                           widget.transactions.removeAt(index);
                                         });
-                                      }
-                                    final snackBar = SnackBar(
-                                      backgroundColor: Colors.white24,
-                                      duration: Duration(seconds: 2),
-                                      content: Text(
-                                        'The exchange has been accepted',
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText2,
-                                      ),
-                                    );
-                                    Scaffold.of(context).showSnackBar(snackBar);
+                                      });
+                                       */
+                                    }
                                     },
                                   child: Icon(Icons.check, color: Colors.green,),
                                 ),

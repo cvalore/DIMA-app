@@ -9,6 +9,7 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
+  static const routeName = '/chatPage';
 
   Chat chat;
   DatabaseService db;

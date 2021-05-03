@@ -6,8 +6,9 @@ class SearchBookForm extends StatelessWidget {
   final Function(String title) setTitle;
   final Function(String author) setAuthor;
   final Function() getKey;
+  final FocusNode myFocusNode;
 
-  const SearchBookForm({Key key, this.setTitle, this.setAuthor, this.getKey}) : super(key: key);
+  const SearchBookForm({Key key, this.setTitle, this.setAuthor, this.getKey, this.myFocusNode}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +67,7 @@ class SearchBookForm extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0,),
               child: TextFormField(
+                  focusNode: myFocusNode,
                   cursorColor: Colors.black,
                   //decoration: inputFieldDecoration.copyWith(hintText: 'Author'),
                   decoration: InputDecoration(

@@ -124,9 +124,13 @@ class _SoldByViewState extends State<SoldByView> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            Text('Exchange available', style: TextStyle(fontSize: _isTablet ? 19.0 : 16.0),),
-                                            widget.books[i]['book']['exchangeable'] == true ? Icon(Icons.check_outlined, color: Colors.green,  size: _isTablet ? 25.0 : 22.0,) :
-                                            Icon(Icons.clear_outlined, color: Colors.red, size: _isTablet ? 25.0 : 22.0,),
+                                            Text(
+                                              widget.books[i]['book']['exchangeStatus'] != 'pending' ? 'Exchange available' : 'Pending exchange',
+                                              style: TextStyle(fontSize: _isTablet ? 19.0 : 16.0),),
+                                            widget.books[i]['book']['exchangeStatus'] == 'pending' ? Icon(Icons.hourglass_bottom_outlined, color: Colors.grey,) :
+                                            widget.books[i]['book']['exchangeable'] == true ?
+                                              Icon(Icons.check_outlined, color: Colors.green,  size: _isTablet ? 25.0 : 22.0,) :
+                                              Icon(Icons.clear_outlined, color: Colors.red, size: _isTablet ? 25.0 : 22.0,),
                                           ],
                                         ),
                                       ],

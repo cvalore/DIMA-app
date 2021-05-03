@@ -222,6 +222,35 @@ class _ViewBoughtItemPageState extends State<ViewBoughtItemPage> {
                 ),
               ),
               Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,),
+              widget.transactionsInfo['shippingAddress'] != null ? Container(
+                height: 50,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text("Shipping address",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 3,
+                        child: Text(widget.transactionsInfo['shippingAddress']['address 1'],
+                            textAlign: TextAlign.right,
+                            style: TextStyle(color: Colors.white)
+                        )
+                    )
+                  ],
+                ),
+              ) : Container(),
+              widget.transactionsInfo['shippingAddress'] != null ? Divider(height: _isTablet ? 40.0 : 5.0, thickness: 2,) : Container(),
               Container(
                 height: 50,
                 child: Row(

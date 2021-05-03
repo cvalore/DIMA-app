@@ -32,10 +32,17 @@ class _AddBookSelectionState extends State<AddBookSelection> {
   String _title = '';
   String _author = '';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
+  FocusNode myFocusNode;
 
   final booksAPI = GoogleBooksAPI();
 
   List<dynamic> listItems;
+
+  @override
+  void initState() {
+    myFocusNode = FocusNode();
+    super.initState();
+  }
 
   void setTitle(String title) {
     _title = title;
@@ -47,6 +54,13 @@ class _AddBookSelectionState extends State<AddBookSelection> {
 
   GlobalKey getFormKey() {
     return _formKey;
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode = FocusNode();
+    super.dispose();
   }
 
   @override
@@ -76,6 +90,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                       setTitle: setTitle,
                       setAuthor: setAuthor,
                       getKey: getFormKey,
+                      myFocusNode: myFocusNode,
                     ),
                   ),
                   Flexible(
@@ -156,6 +171,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                             subtitle: Text(listItems[index]['volumeInfo']['authors'].toString(),
                               style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 15.0, fontStyle: FontStyle.italic),),
                             onTap: () {
+                              myFocusNode.requestFocus();
+                              myFocusNode.unfocus();
                               setState(() {
                                 widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);
                                 //widget.selectedBook = listItems[index];

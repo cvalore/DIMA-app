@@ -11,6 +11,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/viewBoughtItemPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/viewExchangedItemPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
@@ -215,7 +216,11 @@ class Utils {
       }
       count = count + 1;
     }
+
     bookToPush.imagesPath = bookPickedFilePaths;
+
+    if (book['exchangeStatus'] == 'pending') canBuy = false;
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -299,7 +304,10 @@ class Utils {
     }
     if (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0){
       List<InsertedBook> keys = sellerMatchingBooksForExchange.keys.toList();
-      message = message + 'I also offer you: ';
+      if (soldBooks != null && soldBooks.length > 0)
+        message = message + 'I also offer you: ';
+      else
+        message = message + 'I offer you: ';
       for (int i = 0; i < keys.length; i++){
         if (i == keys.length - 1) {
           message = message + keys[i].title;
@@ -371,8 +379,14 @@ class Utils {
     List<String> bookPickedFilePaths;
     ListResult lr;
     int count;
-    receivedBook = InsertedBook(title: exchangedItem['receivedBook']['title'],
-        insertionNumber: exchangedItem['receivedBook']['insertionNumber']);
+    receivedBook = InsertedBook(
+        title: exchangedItem['receivedBook']['title'],
+        insertionNumber: exchangedItem['receivedBook']['insertionNumber'],
+        author: exchangedItem['receivedBook']['author'],
+        category: exchangedItem['receivedBook']['category'],
+        price: exchangedItem['receivedBook']['price'],
+        status: exchangedItem['receivedBook']['status'],
+    );
     bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['seller'], receivedBook);
     bookPickedFilePaths = List<String>();
     lr = await bookRef.listAll();
@@ -390,9 +404,15 @@ class Utils {
     }
     receivedBook.imagesPath = bookPickedFilePaths;
 
-    offeredBook = InsertedBook(title: exchangedItem['offeredBook']['title'],
-        insertionNumber: exchangedItem['offeredBook']['insertionNumber']);
-    bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['seller'], offeredBook);
+    offeredBook = InsertedBook(
+        title: exchangedItem['offeredBook']['title'],
+        insertionNumber: exchangedItem['offeredBook']['insertionNumber'],
+        author: exchangedItem['offeredBook']['author'],
+        category: exchangedItem['offeredBook']['category'],
+        price: exchangedItem['offeredBook']['price'],
+        status: exchangedItem['offeredBook']['status'],
+    );
+    bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['buyer'], offeredBook);
     bookPickedFilePaths = List<String>();
     lr = await bookRef.listAll();
     count = 0;

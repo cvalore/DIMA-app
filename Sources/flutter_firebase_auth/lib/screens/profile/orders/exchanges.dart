@@ -32,7 +32,7 @@ class _ExchangesState extends State<Exchanges> {
         child: Card(
           elevation: 0.0,
           child: LimitedBox(
-            maxHeight: 150,
+            maxHeight: 170,
             child: Row(
               children: [
                 Expanded(
@@ -73,36 +73,48 @@ class _ExchangesState extends State<Exchanges> {
                           ),
                         ],
                       ),
-                      Text(
-                        widget.exchanges[index]['receivedBook']['title'],
-                        maxLines: 3,
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                      Flexible(
+                        child: Text(
+                          widget.exchanges[index]['receivedBook']['title'],
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Row(
                         children: [
                           Text('by\t\t '),
-                          Text(
-                            widget.exchanges[index]['receivedBook']['author'].substring(1, widget.exchanges[index]['receivedBook']['author'].length - 1),
-                            maxLines: 3,
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                          Flexible(
+                            child: Text(
+                              widget.exchanges[index]['receivedBook']['author'].substring(1, widget.exchanges[index]['receivedBook']['author'].length - 1),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ],
                       ),
                       SizedBox(height: 4),
-                      Text('exchanged for your '),
+                      Text('exchanged for my '),
                       SizedBox(height: 4),
-                      Text(widget.exchanges[index]['offeredBook']['title'],
-                        maxLines: 3,
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                      Flexible(
+                        child: Text(widget.exchanges[index]['offeredBook']['title'],
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(height: 2),
                       Row(
                         children: [
                           Text('by\t\t '),
-                          Text(
-                            widget.exchanges[index]['offeredBook']['author'].substring(1, widget.exchanges[index]['offeredBook']['author'].length - 1),
-                            maxLines: 3,
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                          Flexible(
+                            child: Text(
+                              widget.exchanges[index]['offeredBook']['author'].substring(1, widget.exchanges[index]['offeredBook']['author'].length - 1),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ],
                       ),

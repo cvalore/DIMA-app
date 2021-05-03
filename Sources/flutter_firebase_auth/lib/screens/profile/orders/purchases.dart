@@ -41,7 +41,7 @@ class _PurchasesState extends State<Purchases> {
                   elevation: 0.0,
                   //height: MediaQuery.of(context).size.height / 5,
                   child: LimitedBox(
-                    maxHeight: 150,
+                    maxHeight: 170,
                     //setMaxHeight(widget.reviews[index].review),
                     child: Row(
                       children: [
@@ -82,19 +82,25 @@ class _PurchasesState extends State<Purchases> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                widget.purchases[index]['title'],
-                                maxLines: 3,
-                                style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                              Flexible(
+                                child: Text(
+                                  widget.purchases[index]['title'],
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                                ),
                               ),
                               SizedBox(height: 2),
                               Row(
                                 children: [
                                   Text('by\t\t '),
-                                  Text(
-                                    widget.purchases[index]['author'].substring(1, widget.purchases[index]['author'].length - 1),
-                                    maxLines: 3,
-                                    style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                                  Flexible(
+                                    child: Text(
+                                      widget.purchases[index]['author'].substring(1, widget.purchases[index]['author'].length - 1),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -104,70 +110,6 @@ class _PurchasesState extends State<Purchases> {
                                 style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 2),
-                              /*
-                              Expanded(
-                                flex: 1,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      flex: 7,
-                                      child: Text(
-                                          widget.reviews[index]
-                                              .reviewerUsername,
-                                          style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .subtitle1
-                                              .copyWith(
-                                              fontWeight: FontWeight.bold)
-                                        /*
-                                                TextStyle(
-                                                //color: Colors.black38,
-                                                  fontWeight: FontWeight.bold
-                                              ),
-
-                                               */
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        Utils.computeHowLongAgo(
-                                            widget.reviews[index].time),
-                                        style: TextStyle(
-                                            fontSize: 9,
-                                            //color: Colors.grey[600],
-                                            fontWeight: FontWeight.normal
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 3.0),
-                              Expanded(
-                                flex: 1,
-                                child: Row(
-                                  children: [
-                                    for(int i = 0; i < 5; i++)
-                                      widget.reviews[index].stars > i
-                                          ? Icon(
-                                        Icons.star, color: Colors.yellow,)
-                                          : Icon(Icons.star_border,
-                                        color: Colors.yellow,),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 10.0),
-                              Expanded(
-                                  flex: 4,
-                                  child: Text(widget.reviews[index].review,
-                                      //maxLines: 3,
-                                      textAlign: TextAlign.start
-                                  )
-                              )
-                              */
                             ],
                           ),
                         )

@@ -191,7 +191,15 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                   ),
                   validator: (value) {
                     RegExp regExp = RegExp(r'^\d{2}/\d{2}$');
-                    return !regExp.hasMatch(value) ? 'Enter a valid expiring date' : null;
+                    if (!regExp.hasMatch(value) || int.parse(value.substring(0,2)) > 12
+                        || int.parse(value.substring(0,2)) < 1) {
+                      return 'Enter a valid expiring date';
+                    }
+                    int expiringYearCard = int.parse("20" + value.substring(3,5));
+                    int expiringMonthCard = int.parse(value.substring(0,2));
+                    if (expiringYearCard > DateTime.now().year || (expiringYearCard == DateTime.now().year && expiringMonthCard > DateTime.now().month))
+                      return null;
+                    else return 'Enter a valid expiring date';
                   },
                   onChanged: (value) {
                     setState(() {
