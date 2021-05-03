@@ -112,8 +112,8 @@ class _ImageServiceState extends State<ImageService> {
 
     return widget.justView && (listItem == null || listItem.length == 0 ) ?
     Container(
-      padding: EdgeInsets.symmetric(vertical: 20.0),
-      height: MediaQuery.of(context).size.height / 8,
+      padding: EdgeInsets.symmetric(vertical: 40.0),
+      height: _isPortrait ? (MediaQuery.of(context).size.height / 7) : (MediaQuery.of(context).size.width / 7),
       child: Text(
         'NO IMAGE AVAILABLE',
         style: Theme.of(context).textTheme.headline6.copyWith(fontStyle: FontStyle.italic),

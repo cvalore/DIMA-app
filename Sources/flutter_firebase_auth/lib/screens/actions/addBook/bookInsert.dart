@@ -63,7 +63,11 @@ class _BookInsertState extends State<BookInsert> {
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
-    _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

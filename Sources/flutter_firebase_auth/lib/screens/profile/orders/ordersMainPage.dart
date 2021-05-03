@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 
 class OrdersMainPage extends StatefulWidget {
 
@@ -22,10 +23,10 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isTablet = MediaQuery
-        .of(context)
-        .size
-        .width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return DefaultTabController(
       initialIndex: 0,

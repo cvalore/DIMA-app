@@ -11,6 +11,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/viewBoughtItemPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/viewExchangedItemPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:http/http.dart';
