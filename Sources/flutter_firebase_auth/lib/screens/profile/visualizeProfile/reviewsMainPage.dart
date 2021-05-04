@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/receivedReviews.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsWrittenByMe.dart';
+import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 
 class ReviewsMainPage extends StatefulWidget {
 
@@ -23,9 +24,12 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
   @override
   Widget build(BuildContext context) {
 
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
     if (widget.self) {
       return Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
+          bottomNavigationBar: _isPortrait ?
+          BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             onTap: (int index) {
               setState(() {
@@ -43,10 +47,52 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
               ),
             ],
             currentIndex: _selectedIndexForBottomNavigationBar,
-          ),
-          body: _selectedIndexForBottomNavigationBar == 0 ?
+          ) : null,
+          body: _isPortrait ? _selectedIndexForBottomNavigationBar == 0 ?
           ReceivedReviews(reviews: widget.receivedReviews) :
           ReviewsWrittenByMe(reviews: widget.reviewsWrittenByMe)
+              :
+            MyVerticalTabs(
+              tabBarSide: TabBarSide.right,
+              disabledChangePageFromContentView: true,
+              tabBarHeight: MediaQuery.of(context).size.height,
+              tabBarWidth: 85,
+              tabsWidth: 85,
+              indicatorColor: Colors.blue,
+              selectedTabBackgroundColor: Colors.white10,
+              tabBackgroundColor: Colors.black26,
+              selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
+              tabs: <Tab>[
+                Tab(child: Container(
+                  //height: 50,
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.1,
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    child: Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Received', textAlign: TextAlign.center,),
+                        Icon(Icons.download_outlined),
+                      ],
+                    ))
+                )),
+                Tab(child: Container(
+                  //height: 50,
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    child: Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Sent', textAlign: TextAlign.center,),
+                        Icon(Icons.upload_outlined),
+                      ],
+                    ))
+                )),
+              ],
+              contents: [
+                ReceivedReviews(reviews: widget.receivedReviews),
+                ReviewsWrittenByMe(reviews: widget.reviewsWrittenByMe)
+              ],
+            ),
       );
     }
     else {

@@ -45,12 +45,12 @@ class _ReceivedReviewsState extends State<ReceivedReviews> {
               itemCount: widget.reviews.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: _isTablet ? 16.0 : 8.0, vertical: _isTablet ? 8.0 : 4.0),
+                  padding: EdgeInsets.symmetric(horizontal: _isTablet ? 16.0 : _isPortrait ? 8.0 : 100.0, vertical: _isTablet ? 8.0 : 4.0),
                   child: Card(
                     elevation: 0.0,
                     //height: MediaQuery.of(context).size.height / 5,
                     child: LimitedBox(
-                      maxHeight: 200,
+                      maxHeight: _isPortrait ? 200 : 150,
                       //setMaxHeight(widget.reviews[index].review),
                       child: Row(
                         children: [

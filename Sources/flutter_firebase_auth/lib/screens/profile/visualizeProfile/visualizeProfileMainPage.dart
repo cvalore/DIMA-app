@@ -8,6 +8,7 @@ import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsMa
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,8 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
     CustomUser user;
     user = widget.user != null ? widget.user : Provider.of<CustomUser>(context);
 
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
     //DatabaseService _db = DatabaseService(user: user);
 
     return user != null ?
@@ -45,40 +48,141 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
             actions: widget.self ? [
               myPopUpMenu(context, user)
             ] : [],
-            bottom: widget.self ?
-            TabBar(
-              tabs: [
-                Tab(text: 'Information',
-                    icon: Icon(Icons.info_outline)),
-                Tab(text: 'Reviews',
-                    icon: Icon(Icons.rate_review_outlined)
-                ),
-              ],
-            ) : TabBar(
-              tabs: [
-                Tab(text: 'Information',
-                    icon: Icon(Icons.info_outline)),
-                Tab(text: 'Library',
-                    icon: Icon(Icons.menu_book)),
-                Tab(text: 'Reviews',
-                    icon: Icon(Icons.rate_review_outlined)
-                ),
-              ],
-            ),
+            bottom:
+            _isPortrait ?
+              widget.self ?
+                TabBar(
+                  tabs: [
+                    Tab(text: 'Information',
+                        icon: Icon(Icons.info_outline)),
+                    Tab(text: 'Reviews',
+                        icon: Icon(Icons.rate_review_outlined)
+                    ),
+                  ],
+                ) :
+                TabBar(
+                  tabs: [
+                    Tab(text: 'Information',
+                        icon: Icon(Icons.info_outline)),
+                    Tab(text: 'Library',
+                        icon: Icon(Icons.menu_book)),
+                    Tab(text: 'Reviews',
+                        icon: Icon(Icons.rate_review_outlined)
+                    ),
+                  ],
+                ) :
+              null,
           ),
-          body: widget.self ?
-          TabBarView(
-            children: [
-              UserInfo(user: user, self: widget.self),
-              ReviewsMainPage(receivedReviews: user.receivedReviews, reviewsWrittenByMe: user.reviewsWrittenByMe, self: widget.self),
-            ],
-          ) : TabBarView(
-            children: [
-              UserInfo(user: user, self: widget.self),
-              widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),   //TODO questo controllo potrebbe essere inutile
-              ReceivedReviews(reviews: user.receivedReviews),
-            ],
-          ),
+          body: Builder(builder: (BuildContext context) {
+            return
+              widget.self ?
+                _isPortrait ?
+                  TabBarView(
+                    children: [
+                      UserInfo(user: user, self: widget.self),
+                      ReviewsMainPage(receivedReviews: user.receivedReviews, reviewsWrittenByMe: user.reviewsWrittenByMe, self: widget.self),
+                    ],
+                  ) :
+                  MyVerticalTabs(
+                    tabBarHeight: MediaQuery.of(context).size.height,
+                    tabBarWidth: 95,
+                    tabsWidth: 95,
+                    indicatorColor: Colors.blue,
+                    selectedTabBackgroundColor: Colors.white10,
+                    tabBackgroundColor: Colors.black26,
+                    selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                    tabs: <Tab>[
+                      Tab(child: Container(
+                        //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.1,
+                          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Information', textAlign: TextAlign.center,),
+                              Icon(Icons.info_outline),
+                            ],
+                          ))
+                      )),
+                      Tab(child: Container(
+                        //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
+                          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Reviews', textAlign: TextAlign.center,),
+                              Icon(Icons.rate_review_outlined),
+                            ],
+                          ))
+                      )),
+                    ],
+                    contents: [
+                      UserInfo(user: user, self: widget.self),
+                      ReviewsMainPage(receivedReviews: user.receivedReviews, reviewsWrittenByMe: user.reviewsWrittenByMe, self: widget.self),
+                    ],
+                  ) :
+                _isPortrait ?
+                  TabBarView(
+                    children: [
+                      UserInfo(user: user, self: widget.self),
+                      widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),   //TODO questo controllo potrebbe essere inutile
+                      ReceivedReviews(reviews: user.receivedReviews),
+                    ],
+                  ) :
+                  MyVerticalTabs(
+                    tabBarHeight: MediaQuery.of(context).size.height,
+                    tabBarWidth: 95,
+                    tabsWidth: 95,
+                    indicatorColor: Colors.blue,
+                    selectedTabBackgroundColor: Colors.white10,
+                    tabBackgroundColor: Colors.black26,
+                    selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                    tabs: <Tab>[
+                      Tab(child: Container(
+                        //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.3,
+                          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Information', textAlign: TextAlign.center,),
+                              Icon(Icons.info_outline),
+                            ],
+                          ))
+                      )),
+                      Tab(child: Container(
+                        //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.3,
+                          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Library', textAlign: TextAlign.center,),
+                              Icon(Icons.menu_book),
+                            ],
+                          ))
+                      )),
+                      Tab(child: Container(
+                        //height: 50,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
+                          //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                          child: Center(child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Reviews', textAlign: TextAlign.center,),
+                              Icon(Icons.rate_review_outlined),
+                            ],
+                          ))
+                      )),
+                    ],
+                    contents: [
+                      UserInfo(user: user, self: widget.self),
+                      widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),   //TODO questo controllo potrebbe essere inutile
+                      ReceivedReviews(reviews: user.receivedReviews),
+                    ],
+                  );
+          },),
         ),
       ) : Container();
   }
