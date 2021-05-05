@@ -22,10 +22,13 @@ class NotificationProfile extends StatelessWidget {
     }
     else {
       for (int i = 0; transactions != null && i < transactions.length; i++) {
-        if (lastNotificationDate.compareTo(transactions[i]['time']) < 0) {
+        if (lastNotificationDate != null && lastNotificationDate.compareTo(transactions[i]['time']) < 0) {
           newNotifications = true;
           break;
         }
+      }
+      if(lastNotificationDate == null) {
+        newNotifications = true;
       }
     }
 

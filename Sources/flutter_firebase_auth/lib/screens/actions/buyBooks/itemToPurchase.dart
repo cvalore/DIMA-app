@@ -13,6 +13,9 @@ class ItemToPurchase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
@@ -40,7 +43,7 @@ class ItemToPurchase extends StatelessWidget {
               Expanded(
                 child: Container(
                   constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.2,
+                    maxHeight: MediaQuery.of(context).size.height * (_isPortrait ? 0.2 : 0.25),
                   ),
                   padding: const EdgeInsets.all(8.0),
                   //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),

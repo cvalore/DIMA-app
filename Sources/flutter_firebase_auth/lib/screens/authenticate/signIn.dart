@@ -74,7 +74,10 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return _loading ? Loading() : Scaffold (
       appBar: AppBar(
@@ -179,7 +182,7 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 Text(_error, style: TextStyle(color: Colors.red[400], fontSize: 14),),
-                Row(
+                _isPortrait ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('Don\'t have an account yet?', style: TextStyle(color: Colors.white),),
@@ -195,9 +198,9 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ],
-                ),
-                Text('or', style: TextStyle(color: Colors.white),),
-                OutlinedButton(
+                ) : Container(),
+                _isPortrait ? Text('or', style: TextStyle(color: Colors.white),) : Container(),
+                _isPortrait ? OutlinedButton(
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<OutlinedBorder>(
                         RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0))
@@ -229,7 +232,63 @@ class _SignInState extends State<SignIn> {
                   onPressed: () {
                     _signWithGoogle(context);
                   },
-                ),
+                ) : Container(),
+                !_isPortrait ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Don\'t have an account yet?', style: TextStyle(color: Colors.white),),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            textButtonTheme: _textButtonThemeRed,
+                          ),
+                          child: TextButton(
+                            child: Text('Create account',),
+                            onPressed: () {
+                              widget.toggleView();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text('or', style: TextStyle(color: Colors.white),),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0))
+                        ),
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.white10;
+                              }
+                              else {
+                                return Colors.white24;
+                              }
+                            }),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0,),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text('Sign in with google', style: TextStyle(color: Colors.white),),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onPressed: () {
+                        _signWithGoogle(context);
+                      },
+                    ),
+                  ],
+                ) : Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
