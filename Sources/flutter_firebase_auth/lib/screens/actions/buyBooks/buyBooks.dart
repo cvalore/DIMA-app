@@ -591,7 +591,7 @@ class _BuyBooksState extends State<BuyBooks> {
             backgroundColor: Colors.white24.withOpacity(0.2),
             duration: Duration(seconds: 2),
             content: Text(
-              'The shipping address has been successfully added',
+              'The transaction completed successfully',
               style: Theme
                   .of(context)
                   .textTheme
@@ -602,10 +602,19 @@ class _BuyBooksState extends State<BuyBooks> {
           Timer(Duration(milliseconds: 2500), () async {
             //Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
             if (chat != null && (payCash || (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0))) {
-              message = Utils.buildDefaultMessage(sellerUsername[0], booksDefiningTotalPrice,sellerMatchingBooksForExchange);
-              await Utils.databaseService.addMessageToChat(message, Utils.toChat(chat), CustomUser(Utils.mySelf.uid, username: myUsername));
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>ChatPage(chat: Utils.toChat(chat))), ModalRoute.withName(Navigator.defaultRouteName));
-            }});
+              message = Utils.buildDefaultMessage(
+                  sellerUsername[0], booksDefiningTotalPrice,
+                  sellerMatchingBooksForExchange);
+              await Utils.databaseService.addMessageToChat(
+                  message, Utils.toChat(chat),
+                  CustomUser(Utils.mySelf.uid, username: myUsername));
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => ChatPage(chat: Utils.toChat(chat))),
+                  ModalRoute.withName(Navigator.defaultRouteName));
+            } else {
+              Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+            }
+            });
         } else {
           //TODO stampare a schermo l'errore
         }

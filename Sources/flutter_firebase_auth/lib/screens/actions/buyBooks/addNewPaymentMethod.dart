@@ -5,6 +5,11 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class AddNewPaymentMethod extends StatefulWidget {
 
+  Map<String, dynamic> paymentMethod;
+  bool viewModeOn;
+
+  AddNewPaymentMethod({Key key, this.paymentMethod, this.viewModeOn = false});
+
 
   @override
   _AddNewPaymentMethodState createState() => _AddNewPaymentMethodState();
@@ -44,7 +49,13 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
       appBar: AppBar(
         title: Text('Payment method info'),
         actions: [
-          Builder(
+          widget.viewModeOn == true ?
+              IconButton(
+                  icon: Icon(Icons.delete_outline),
+                  onPressed: () {
+                    Navigator.pop(context, 'delete');
+                  })
+              : Builder(
             builder: (BuildContext context) {
               return IconButton(
                 onPressed: () async {
@@ -63,34 +74,6 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                     await Utils.databaseService.savePaymentCardInfo(infoState);
                     Scaffold.of(context).showSnackBar(snackBar);
                     Timer(Duration(milliseconds: 1500), () {Navigator.pop(context, infoState);});
-                    /*showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (_) =>
-                            AlertDialog(
-                              content: Text(
-                                  'Do you want to save this payment card for future purchases?'),
-                              actions: [
-                                FlatButton(
-                                    onPressed: () async {
-                                      await Utils.databaseService
-                                          .savePaymentCardInfo(infoState);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('SAVE')),
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('NO')),
-                              ],
-                            )
-                    ).then((val) {
-                      Scaffold.of(context).showSnackBar(snackBar);
-                      Timer(Duration(milliseconds: 1500), () {
-                        Navigator.pop(context, infoState);
-                    }
-                    );*/
                   }
                 },
                 //label: Text('Save payment method'),
@@ -109,9 +92,10 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
               Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
+                  enabled: !widget.viewModeOn,
                   key: _ownerNameKey,
                   focusNode: myFocusNode,
-                  initialValue: infoState['ownerName'] == '' ? null : infoState['ownerName'],
+                  initialValue: widget.paymentMethod != null && widget.paymentMethod['ownerName'] != '' ? widget.paymentMethod['ownerName'] : null,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
                     labelStyle: TextStyle(fontSize: 16,
@@ -143,7 +127,8 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
                   key: _cardNumber,
-                  initialValue: infoState['cardNumber'] == '' ? null : infoState['cardNumber'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.paymentMethod != null && widget.paymentMethod['cardNumber'] != '' ? widget.paymentMethod['cardNumber'] : null,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: '0000 0000 0000 0000',
@@ -174,7 +159,8 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
                   key: _expiringDateKey,
-                  initialValue: infoState['expiringDate'] == '' ? null : infoState['expiringDate'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.paymentMethod != null && widget.paymentMethod['expiringDate'] != '' ? widget.paymentMethod['expiringDate'] : null,
                   keyboardType: TextInputType.datetime,
                   decoration: InputDecoration(
                     hintText: 'MM/AA',
@@ -214,7 +200,8 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
                   key: _securityCodeKey,
-                  initialValue: infoState['securityCode'] == '' ? null: infoState['securityCode'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.paymentMethod != null && widget.paymentMethod['securityCode'] != '' ? widget.paymentMethod['securityCode'] : null,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: 'E.g. 000',

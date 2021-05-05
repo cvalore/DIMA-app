@@ -1227,6 +1227,38 @@ class DatabaseService {
     return result;
   }
 
+  Future getPaymentInfo() async {
+    Map<String, List<dynamic>> result = Map<String, List<dynamic>>();
+    await usersCollection.doc(user.uid).get().then((doc) {
+      result['paymentCardInfo'] = doc.data()['paymentCardInfo'];
+    });
+    return result;
+  }
+
+  Future getShippingAddressInfo() async {
+    Map<String, List<dynamic>> result = Map<String, List<dynamic>>();
+    await usersCollection.doc(user.uid).get().then((doc) {
+      result['shippingAddressInfo'] = doc.data()['shippingAddressInfo'];
+    });
+    return result;
+  }
+
+  Future removePaymentInfo(Map<String, dynamic> paymentCardToRemove) async {
+    await usersCollection.doc(user.uid).update({
+      'paymentCardInfo': FieldValue.arrayRemove([paymentCardToRemove])
+    });
+  }
+
+  Future removeShippingAddress(Map<String, dynamic> shippingAddressToRemove) async {
+    await usersCollection.doc(user.uid).update({
+      'shippingAddressInfo': FieldValue.arrayRemove([shippingAddressToRemove])
+    });
+  }
+
+
+
+
+
   //endregion
 
   //region Forum

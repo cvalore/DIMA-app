@@ -6,6 +6,10 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class AddNewShippingInfo extends StatefulWidget {
 
+  Map<String, dynamic> shippingAddress;
+  bool viewModeOn;
+
+  AddNewShippingInfo({Key key, this.shippingAddress, this.viewModeOn = false});
 
   @override
   _AddNewShippingInfoState createState() => _AddNewShippingInfoState();
@@ -28,24 +32,6 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
     infoState['address 2'] = '';
     infoState['CAP'] = '';
     infoState['city'] = '';
-    /*
-    if (widget.info['fullName'] == null) {
-      infoState['fullName'] = '';
-      infoState['state'] = '';
-      infoState['address 1'] = '';
-      infoState['address 2'] = '';
-      infoState['CAP'] = '';
-      infoState['city'] = '';
-    } else {
-      infoState['fullName'] = widget.info['fullName'];
-      infoState['state'] = widget.info['state'];
-      infoState['address 1'] = widget.info['address 1'];
-      infoState['address 2'] = widget.info['address 2'];
-      infoState['CAP'] = widget.info['CAP'];
-      infoState['city'] = widget.info['city'];
-    }
-
-     */
     super.initState();
   }
 
@@ -63,7 +49,13 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
       appBar: AppBar(
         title: Text('Shipping info'),
         actions: [
-          Builder(
+          widget.viewModeOn == true ?
+          IconButton(
+              icon: Icon(Icons.delete_outline),
+              onPressed: () {
+                Navigator.pop(context, 'delete');
+              })
+              : Builder(
             builder: (BuildContext context) {
               return IconButton(
                 onPressed: () async {
@@ -86,7 +78,6 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                     Timer(Duration(milliseconds: 1500), () {Navigator.pop(context, infoState);});
                   }
                 },
-                //label: Text('Confirm address'),
                 icon: Icon(Icons.check_outlined),
               );
             },
@@ -104,8 +95,9 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
                   key: _fullNameKey,
+                  enabled: !widget.viewModeOn,
                   focusNode: myFocusNode,
-                  initialValue: infoState['fullName'] == '' ? null : infoState['fullName'],
+                  initialValue: widget.shippingAddress != null && widget.shippingAddress['fullName'] != '' ? widget.shippingAddress['fullName'] : null,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
                     labelStyle: TextStyle(fontSize: 16,
@@ -135,7 +127,23 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
               Divider(height: 20, thickness: 2,),
               Padding(
                 padding: const EdgeInsets.all(0.0),
-                child: Row(
+                child: widget.viewModeOn ?
+                  TextFormField(
+                    enabled: false,
+                    initialValue: widget.shippingAddress != null && widget.shippingAddress['state'] != '' ? widget.shippingAddress['state'] : null,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(fontSize: 16,
+                      ),
+                      labelText: "State",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(7.0),),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      filled: true,
+                    ),
+                  ): Row(
                   children: [
                     Expanded(
                       flex: 3,
@@ -185,7 +193,8 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
                   key: _addressKey,
-                  initialValue: infoState['address 1'] == '' ? null : infoState['address 1'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.shippingAddress != null && widget.shippingAddress['address 1'] != '' ? widget.shippingAddress['address 1'] : null,
                   keyboardType: TextInputType.streetAddress,
                   decoration: InputDecoration(
                     hintText: 'E.g. 221B Baker Street',
@@ -214,7 +223,8 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
               Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
-                  initialValue: infoState['address 2'] == '' ? null : infoState['address 2'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.shippingAddress != null && widget.shippingAddress['address 2'] != null && widget.shippingAddress['address 2'] != '' ? widget.shippingAddress['address 2'] : null,
                   keyboardType: TextInputType.streetAddress,
                   decoration: InputDecoration(
                     hintText: 'E.g. building n°2',
@@ -242,7 +252,8 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
                   key: _CAPKey,
-                  initialValue: infoState['CAP'] == '' ? null: infoState['CAP'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.shippingAddress != null && widget.shippingAddress['CAP'] != '' ? widget.shippingAddress['CAP'] : null,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: 'E.g. 82020',
@@ -275,7 +286,8 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
               Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: TextFormField(
-                  initialValue: infoState['city'] == '' ? null: infoState['city'],
+                  enabled: !widget.viewModeOn,
+                  initialValue: widget.shippingAddress != null && widget.shippingAddress['city'] != '' ? widget.shippingAddress['city'] : null,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelStyle: TextStyle(fontSize: 16,
