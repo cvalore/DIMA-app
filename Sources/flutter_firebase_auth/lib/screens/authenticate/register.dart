@@ -185,7 +185,7 @@ class _RegisterState extends State<Register> {
                 Text(_error,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.red[400], fontSize: 14),),
-                Row(
+                _isPortrait ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('Already have an account?', style: TextStyle(color: Colors.white),),
@@ -201,9 +201,9 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                   ],
-                ),
-                Text('or', style: TextStyle(color: Colors.white),),
-                Row(
+                ) : Container(),
+                _isPortrait ? Text('or', style: TextStyle(color: Colors.white),) : Container(),
+                _isPortrait ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('', style: TextStyle(color: Colors.white),),
@@ -229,7 +229,57 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                   ],
-                ),
+                ) : Container(),
+                !_isPortrait ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Already have an account?', style: TextStyle(color: Colors.white),),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            textButtonTheme: _textButtonThemeRed,
+                          ),
+                          child: TextButton(
+                            child: Text('Sign in',),
+                            onPressed: () {
+                              widget.toggleView();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text('or', style: TextStyle(color: Colors.white),),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('', style: TextStyle(color: Colors.white),),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            textButtonTheme: _textButtonThemeRed,
+                          ),
+                          child: TextButton(
+                            child: Text('Continue anonymously',),
+                            onPressed: () async {
+                              setState(() {
+                                _loading = true;
+                              });
+
+                              await _auth.signInAnonymously().then((result) {
+                                if(result == null) {
+                                  setState(() {
+                                    _loading = false;
+                                  });
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ) : Container(),
               ],
             ),
           ),

@@ -75,7 +75,9 @@ class _AddBookSelectionState extends State<AddBookSelection> {
       child: Container(
         height: MediaQuery.of(context).size.height - widget.appBarHeight,
         padding: EdgeInsets.symmetric(horizontal: _isTablet ? 50.0 : 15.0),
-        child: Column(
+        child:
+        _isPortrait || widget.showGeneralInfo ?
+          Column(
           mainAxisAlignment: _isTablet ? MainAxisAlignment.start : MainAxisAlignment.end,
           children: <Widget>[
             widget.showGeneralInfo ? Container() : Flexible(
@@ -195,7 +197,169 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                   ),
                 ) :
                 Container(
-                  child: BookGeneralInfoListView(selectedBook: widget.selectedBook,)
+                  child:
+                  _isPortrait ?
+                    BookGeneralInfoListView(selectedBook: widget.selectedBook,):
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 120.0),
+                      child: BookGeneralInfoListView(selectedBook: widget.selectedBook,),
+                    ),
+                ))
+            ),
+            /*Flexible(
+              flex: 2,
+              child: SizedBox(
+                height: 20.0,
+              ),
+            ),*/
+            Flexible(
+              flex: 2,
+              child: SizedBox(
+                height: 20.0,
+              ),
+            ),
+            widget.showDots ? BottomTwoDots(darkerIndex: 0, size: 9.0,) : Container(),
+            SizedBox(height: 15,)
+          ],
+        ) :
+          Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width/2.5,
+              child: Column(
+                children: <Widget>[
+                  widget.showGeneralInfo ? Container() : Flexible(
+                      flex:10,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
+                            child: SearchBookForm(
+                              setTitle: setTitle,
+                              setAuthor: setAuthor,
+                              getKey: getFormKey,
+                              myFocusNode: myFocusNode,
+                            ),
+                          ),
+                          Flexible(
+                            flex: 4,
+                            child: FloatingActionButton(
+                              heroTag: "searchBookBtn",
+                              elevation: 0.0,
+                              focusElevation: 0.0,
+                              hoverElevation: 0.0,
+                              highlightElevation: 0.0,
+                              backgroundColor: Colors.transparent,
+                              child: Icon(Icons.search, color: Colors.white,size: 35.0),
+                              onPressed: () async {
+                                if(_formKey.currentState.validate()) {
+                                  searchButtonPressed = true;
+                                  setState(() {
+                                    widget.loading = true;
+                                  });
+                                  print('Searching for \"' + _title + '\" by \"' + _author + '\"');
+                                  final result = await booksAPI.performSearch(_title, _author);
+                                  if(result != null) {
+                                    setState(() {
+                                      widget.loading = false;
+                                      widget.selectedBook = null;
+                                      if(widget.setSelected != null) {
+                                        widget.setSelected(widget.selectedBook);
+                                      }
+                                      //TestPage.of(context).selected = null;
+                                      listItems = result['items'];
+                                      //print(listItems);
+                                    });
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                  ),
+                  widget.showGeneralInfo ? Container() : Flexible(
+                    flex: 2,
+                    child: SizedBox(height: 20.0,),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+                flex: 35,
+                child: widget.loading == true ?
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        //color: Colors.black,
+                        border: Border.symmetric(
+                          vertical: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      child: Loading()
+                  ),
+                ) : (!widget.showGeneralInfo ?
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      //color: Colors.white,
+                      border: Border.symmetric(
+                        vertical: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    child: searchButtonPressed && (listItems == null || listItems.length == 0) ?
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'No results found',
+                          style: Theme.of(context).textTheme.headline6),
+                      ) : ListView.builder(
+                      itemCount: listItems != null ? listItems.length : 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: _isTablet ? 10.0 : 0.0),
+                          child: Container(
+                            child: ListTile(
+                              title: Text(listItems[index]['volumeInfo']['title'],
+                                style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 16.0, fontWeight: FontWeight.bold),),
+                              subtitle: Text(listItems[index]['volumeInfo']['authors'].toString(),
+                                style: TextStyle(color: Colors.white, fontSize: _isTablet ? 20.0 : 15.0, fontStyle: FontStyle.italic),),
+                              onTap: () {
+                                myFocusNode.requestFocus();
+                                myFocusNode.unfocus();
+                                setState(() {
+                                  widget.selectedBook = _initializeBookGeneralInfo(listItems[index]);
+                                  //widget.selectedBook = listItems[index];
+                                  if(widget.setSelected != null) {
+                                    widget.setSelected(widget.selectedBook);
+                                  }
+                                  //TestPage.of(context).selected = _selected;
+                                });
+                              },
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              border: Border(
+                                bottom: BorderSide(width: 0.3, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ) :
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Container(
+                    child: BookGeneralInfoListView(selectedBook: widget.selectedBook,)
+                  ),
                 ))
             ),
             /*Flexible(
