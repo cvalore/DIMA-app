@@ -66,68 +66,70 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
               Exchanges(exchanges: widget.pendingExchanges),
             ]
           ) :
-          MyVerticalTabs(
-            //tabBarHeight: 120,
-            tabBarHeight: MediaQuery.of(context).size.height,
-            tabBarWidth: 90,
-            tabsWidth: 90,
-            indicatorColor: Colors.blue,
-            selectedTabBackgroundColor: Colors.white10,
-            tabBackgroundColor: Colors.black26,
-            selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
-            tabs: <Tab>[
-              Tab(child: Container(
-                //height: 50,
-                  height: (MediaQuery.of(context).size.height)/4.2,
-                  //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-                  child: Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Purchases', textAlign: TextAlign.center,),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon(Icons.info_outline),
-                      ),
-                    ],
-                  ))
-              )),
-              Tab(child: Container(
-                //height: 50,
-                  height: (MediaQuery.of(context).size.height)/4.2,
-                  //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-                  child: Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Exchanges', textAlign: TextAlign.center,),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon(Icons.rate_review_outlined),
-                      ),
-                    ],
-                  ))
-              )),
-              Tab(child: Container(
-                //height: 50,
-                  height: (MediaQuery.of(context).size.height)/4.2,
-                  //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-                  child: Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Pending', textAlign: TextAlign.center,),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon(Icons.rate_review_outlined),
-                      ),
-                    ],
-                  ))
-              )),
-            ],
-            contents: [
-              Purchases(purchases: widget.completedPurchases),
-              Exchanges(exchanges: widget.completedExchanges),
-              Exchanges(exchanges: widget.pendingExchanges),
-            ]
-          ),
+          Builder(builder: (BuildContext context) {
+            return MyVerticalTabs(
+              //tabBarHeight: 120,
+                tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
+                tabBarWidth: 90,
+                tabsWidth: 90,
+                indicatorColor: Colors.blue,
+                selectedTabBackgroundColor: Colors.white10,
+                tabBackgroundColor: Colors.black26,
+                selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                tabs: <Tab>[
+                  Tab(child: Container(
+                    //height: 50,
+                      height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/3,
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                      child: Center(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Purchases', textAlign: TextAlign.center,),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Icon(Icons.info_outline),
+                          ),
+                        ],
+                      ))
+                  )),
+                  Tab(child: Container(
+                    //height: 50,
+                      height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/3,
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                      child: Center(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Exchanges', textAlign: TextAlign.center,),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Icon(Icons.rate_review_outlined),
+                          ),
+                        ],
+                      ))
+                  )),
+                  Tab(child: Container(
+                    //height: 50,
+                      height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/3,
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                      child: Center(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Pending', textAlign: TextAlign.center,),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Icon(Icons.rate_review_outlined),
+                          ),
+                        ],
+                      ))
+                  )),
+                ],
+                contents: [
+                  Purchases(purchases: widget.completedPurchases),
+                  Exchanges(exchanges: widget.completedExchanges),
+                  Exchanges(exchanges: widget.pendingExchanges),
+                ]
+            );
+          },)
         ),
       );
   }

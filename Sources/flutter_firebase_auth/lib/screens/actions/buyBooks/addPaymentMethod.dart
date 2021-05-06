@@ -37,18 +37,21 @@ class _AddPaymentMethodState extends State<AddPaymentMethod> {
         itemBuilder: (BuildContext context, int index) {
           return index == 0 ? ListTileTheme(
             tileColor: Colors.white38,
-            child: ListTile(
-              title: Text('Add new card'),
-              trailing: Icon(Icons.add_circle_outlined),
-              onTap: () async {
-                var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    AddNewPaymentMethod()));
-                if (result != null) {
-                  setState(() {
-                    widget.savedPaymentMethods.add(result);
-                  });
-                }
-              },
+            child: Padding(
+              padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
+              child: ListTile(
+                title: Text('Add new card'),
+                trailing: Icon(Icons.add_circle_outlined),
+                onTap: () async {
+                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      AddNewPaymentMethod()));
+                  if (result != null) {
+                    setState(() {
+                      widget.savedPaymentMethods.add(result);
+                    });
+                  }
+                },
+              ),
             ),
           ) : Padding(
             padding: EdgeInsets.symmetric(horizontal: _isTablet ? 150.0 : 0.0),

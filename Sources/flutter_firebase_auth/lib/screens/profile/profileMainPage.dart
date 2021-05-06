@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/shippingAddressInfo.dart';
@@ -77,9 +78,9 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
         Row(
           children: <Widget>[
             Container(
-              width: MediaQuery.of(context).size.width/4,
+              width: _isTablet ? MediaQuery.of(context).size.width/5 : MediaQuery.of(context).size.width/4,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
@@ -98,32 +99,30 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
               ),
             ),
             Container(
-              width: 3*MediaQuery.of(context).size.width/4 - 105,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                        child: Container(
-                          child: Column(
-                            children: [
-                              Favorites(height: _isTablet ? 100.0 : 60.0),
-                              Divider(height: 15, thickness: 2,),
-                              Orders(height: _isTablet ? 100.0 : 60.0),
-                              Divider(height: 15, thickness: 2,),
-                              ChatProfileManager(height: _isTablet ? 100.0 : 60.0),
-                              Divider(height: 15, thickness: 2,),
-                              StreamProvider<List<MyTransaction>>.value(
-                                  value: Utils.databaseService.allTransactionsInfo,
-                                  child: NotificationProfileManager(height: _isTablet ? 100.0 : 60.0,)
-                              ),
-                              // dettagli pagamento
-                            ],
-                          ),
-                        )
-                    ),
-                  ),
-                ],
+              width: _isTablet ? MediaQuery.of(context).size.width/2 : 3*MediaQuery.of(context).size.width/4 - 105,
+              height: MediaQuery.of(context).size.height,
+              alignment: AlignmentDirectional.center,
+              child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Favorites(height: _isTablet ? 100.0 : 60.0),
+                      Divider(height: 15, thickness: 2,),
+                      Orders(height: _isTablet ? 100.0 : 60.0),
+                      Divider(height: 15, thickness: 2,),
+                      ChatProfileManager(height: _isTablet ? 100.0 : 60.0),
+                      Divider(height: 15, thickness: 2,),
+                      StreamProvider<List<MyTransaction>>.value(
+                          value: Utils.databaseService.allTransactionsInfo,
+                          child: NotificationProfileManager(height: _isTablet ? 100.0 : 60.0,),
+                      ),
+                      Divider(height: 15, thickness: 2,),
+                      PaymentInfo(height: _isTablet ? 100.0 : 60.0),
+                      Divider(height: 15, thickness: 2,),
+                      ShippingAddress(height: _isTablet ? 100.0 : 60.0),
+                      // dettagli pagamento
+                    ],
+                  )
               ),
             )
           ],

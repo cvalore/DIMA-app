@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class AddNewPaymentMethod extends StatefulWidget {
@@ -45,6 +46,12 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
 
   @override
   Widget build(BuildContext context) {
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Payment method info'),
@@ -90,7 +97,7 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
             children: [
               SizedBox(height: 10.0),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   enabled: !widget.viewModeOn,
                   key: _ownerNameKey,
@@ -122,9 +129,9 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                   },
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   key: _cardNumber,
                   enabled: !widget.viewModeOn,
@@ -154,9 +161,9 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                   },
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   key: _expiringDateKey,
                   enabled: !widget.viewModeOn,
@@ -195,9 +202,9 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                   },
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   key: _securityCodeKey,
                   enabled: !widget.viewModeOn,

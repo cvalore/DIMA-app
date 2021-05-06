@@ -400,7 +400,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
               children: <Widget>[
                 Padding(padding: const EdgeInsets.symmetric(vertical: 5.0)),
                 Container(
-                  width: MediaQuery.of(context).size.width/2.5,
+                  width: MediaQuery.of(context).size.width/2.6,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -408,7 +408,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       Container(
                         alignment: AlignmentDirectional.center,
                         height: _isTablet ? 150 : 90,
-                        width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
+                        width: -100 + (_isTablet ? _isPortrait ? MediaQuery.of(context).size.width/1.75 : MediaQuery.of(context).size.width/2.5 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
                         child: Form(
                           key: _searchUserFormKey,
                           child: Padding(

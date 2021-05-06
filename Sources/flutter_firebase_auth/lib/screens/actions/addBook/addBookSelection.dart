@@ -237,7 +237,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
+                            width: -100 + (_isTablet ? _isPortrait ? MediaQuery.of(context).size.width/1.75 : MediaQuery.of(context).size.width/2.5 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
                             child: SearchBookForm(
                               setTitle: setTitle,
                               setAuthor: setAuthor,
