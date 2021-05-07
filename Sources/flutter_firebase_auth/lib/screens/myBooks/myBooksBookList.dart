@@ -198,9 +198,19 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                   },
                   child: InkWell(
                     onTap: selectionModeOn == false ? null : () {
-                      setState(() {
-                        selectedBooks[index] = !selectedBooks[index];
-                      });
+                      if (widget.books[index]['exchangeStatus'] == 'pending') {
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(seconds: 2, milliseconds: 500),
+                            content: Text(
+                              'You cannot select this book because it is involved in a pending transaction'),
+                            backgroundColor: Colors.grey.withOpacity(1.0)),
+                        );
+                      } else {
+                        setState(() {
+                          selectedBooks[index] = !selectedBooks[index];
+                        });
+                      }
                     },
                     child: Card(
                       elevation: 0.0,
@@ -290,7 +300,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 self: widget.self,
                 userUid: widget.self ? null : widget.userUid,
                 thumbnail: thumbnail,
-                canBuy: true,
+                canBuy: book.exchangeStatus != 'pending',
             )
         )
     );

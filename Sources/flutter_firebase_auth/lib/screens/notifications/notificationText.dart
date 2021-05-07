@@ -131,20 +131,7 @@ class NotificationText extends StatelessWidget {
                           for(int i = 0; i < transaction['paidBooks'].length; i++)
                             InkWell(
                               onTap: () async {
-                                /*String bookId = transaction['paidBooks'][i]['id'];
-                                int bookInsertionNumber = transaction['paidBooks'][i]['insertionNumber'];
-                                dynamic bookGeneralInfo = await Utils.databaseService.getGeneralBookInfo(bookId);
-                                dynamic book = await Utils.databaseService.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transaction['seller']);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (newContext) => ViewPendingBook(
-                                          youGet: true,
-                                          book: book,
-                                          bookGeneralInfo: bookGeneralInfo
-                                      ),
-                                    )
-                                );*/
+                                await Utils.pushBookFromTransaction(context, transaction['paidBooks'][i], transaction['seller']);
                               },
                               child: Text(transaction['paidBooks'][i]['title'] + " by " + transaction['paidBooks'][i]['author'] + "\n(€" + transaction['paidBooks'][i]['price'].toStringAsFixed(2) + ")",
                                 style: TextStyle(decoration: TextDecoration.underline),
@@ -171,20 +158,7 @@ class NotificationText extends StatelessWidget {
                                   Flexible(
                                     child: InkWell(
                                       onTap: () async {
-                                        String bookId = transaction['exchanges'][i]['receivedBook']['id'];
-                                        int bookInsertionNumber = transaction['exchanges'][i]['receivedBook']['insertionNumber'];
-                                        dynamic bookGeneralInfo = await Utils.databaseService.getGeneralBookInfo(bookId);
-                                        dynamic book = await Utils.databaseService.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transaction['seller']);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (newContext) => ViewPendingBook(
-                                              youGet: true,
-                                              book: book,
-                                              bookGeneralInfo: bookGeneralInfo
-                                            ),
-                                          )
-                                        );
+                                        await Utils.pushBookFromTransaction(context, transaction['exchanges'][i]['receivedBook'], transaction['seller']);
                                       },
                                       child: Text(transaction['exchanges'][i]['receivedBook']['title'] +
                                           " by " + transaction['exchanges'][i]['receivedBook']['author'],
@@ -202,20 +176,7 @@ class NotificationText extends StatelessWidget {
                                   Flexible(
                                     child: InkWell(
                                       onTap: () async {
-                                        String bookId = transaction['exchanges'][i]['offeredBook']['id'];
-                                        int bookInsertionNumber = transaction['exchanges'][i]['offeredBook']['insertionNumber'];
-                                        dynamic bookGeneralInfo = await Utils.databaseService.getGeneralBookInfo(bookId);
-                                        dynamic book = await Utils.databaseService.viewBookByIdAndInsertionNumber(bookId, bookInsertionNumber, transaction['buyer']);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (newContext) => ViewPendingBook(
-                                                  youGet: true,
-                                                  book: book,
-                                                  bookGeneralInfo: bookGeneralInfo
-                                              ),
-                                            )
-                                        );
+                                        await Utils.pushBookFromTransaction(context, transaction['exchanges'][i]['offeredBook'], transaction['buyer']);
                                       },
                                       child: Text(transaction['exchanges'][i]['offeredBook']['title'] +
                                           " by " + transaction['exchanges'][i]['offeredBook']['author'],
