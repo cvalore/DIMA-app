@@ -91,15 +91,15 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
       body: Stack(
         children: [
           GridView.count(
-              crossAxisCount: _isPortrait ? 2 : 4,
+              crossAxisCount: _isPortrait ? widget._isTablet ? 3 : 2 : 4,
               padding: EdgeInsets.fromLTRB(
-                  24.0 * (widget._isTablet ? 5 : 1),
-                  36.0 * (widget._isTablet ? 3 : 1),
-                  24.0 * (widget._isTablet ? 5 : 1),
-                  36.0 * (widget._isTablet ? 3 : 2)
+                  24.0 * (widget._isTablet ? 3 : 1),
+                  36.0 * (widget._isTablet ? 2 : 1),
+                  24.0 * (widget._isTablet ? 3 : 1),
+                  36.0 * (widget._isTablet ? 2 : 2)
               ),
-              mainAxisSpacing: 36.0 * (widget._isTablet ? 4  : 1),
-              crossAxisSpacing: 36.0 * (widget._isTablet ? 6 : 1),
+              mainAxisSpacing: widget._isTablet ? 64.0 : 36.0,
+              crossAxisSpacing: widget._isTablet ? 64.0 : 36.0,
               scrollDirection: Axis.vertical,
               childAspectRatio: imageWidth / (imageHeight*1.1),
               children: List.generate(widget.books.keys.length, (index) {

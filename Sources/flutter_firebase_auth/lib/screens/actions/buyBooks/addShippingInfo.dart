@@ -38,18 +38,21 @@ class _AddShippingInfoState extends State<AddShippingInfo> {
         itemBuilder: (BuildContext context, int index) {
           return index == 0 ? ListTileTheme(
             tileColor: Colors.white38,
-            child: ListTile(
-              title: Text('Add new shipping address'),
-              trailing: Icon(Icons.add_circle_outlined),
-              onTap: () async {
-                var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    AddNewShippingInfo()));
-                if (result != null) {
-                  setState(() {
-                    widget.savedShippingAddress.add(result);
-                  });
-                }
-              },
+            child: Padding(
+              padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
+              child: ListTile(
+                title: Text('Add new shipping address'),
+                trailing: Icon(Icons.add_circle_outlined),
+                onTap: () async {
+                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      AddNewShippingInfo()));
+                  if (result != null) {
+                    setState(() {
+                      widget.savedShippingAddress.add(result);
+                    });
+                  }
+                },
+              ),
             ),
           ) : Padding(
             padding: EdgeInsets.symmetric(horizontal: _isTablet ? 150.0 : 0.0),

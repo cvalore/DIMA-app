@@ -119,7 +119,7 @@ class _BuyBooksState extends State<BuyBooks> {
       ),*/
       body: Container(
         height: MediaQuery.of(context).size.height,// - appBarHeight,
-        padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 20.0, 0.0, _isTablet ? 100.0 : 20.0, 0.0),
+        padding: EdgeInsets.fromLTRB(_isTablet ? 100.0 : 20.0, _isTablet ? 40.0 : 0.0, _isTablet ? 100.0 : 20.0, 0.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: _isTablet ? MainAxisAlignment.center : MainAxisAlignment.end,

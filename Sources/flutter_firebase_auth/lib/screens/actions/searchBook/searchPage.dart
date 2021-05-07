@@ -55,7 +55,7 @@ class SearchPage extends StatelessWidget {
         ) :
         Builder(builder: (BuildContext context) {
           return MyVerticalTabs(
-            tabBarHeight: MediaQuery.of(context).size.height,
+            tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
             tabBarWidth: 85,
             tabsWidth: 85,
             indicatorColor: Colors.blue,
@@ -65,7 +65,7 @@ class SearchPage extends StatelessWidget {
             tabs: <Tab>[
               Tab(child: Container(
                 //height: 50,
-                  height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.2,
+                  height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                   //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                   child: Center(child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

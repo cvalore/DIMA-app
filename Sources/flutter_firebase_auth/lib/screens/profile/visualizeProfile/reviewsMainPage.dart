@@ -53,9 +53,10 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
           ReviewsWrittenByMe(reviews: widget.reviewsWrittenByMe)
               :
             MyVerticalTabs(
+              indicatorSide: IndicatorSide.end,
               tabBarSide: TabBarSide.right,
               disabledChangePageFromContentView: true,
-              tabBarHeight: MediaQuery.of(context).size.height,
+              tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
               tabBarWidth: 85,
               tabsWidth: 85,
               indicatorColor: Colors.blue,
@@ -65,7 +66,7 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
               tabs: <Tab>[
                 Tab(child: Container(
                   //height: 50,
-                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.1,
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                     //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                     child: Center(child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

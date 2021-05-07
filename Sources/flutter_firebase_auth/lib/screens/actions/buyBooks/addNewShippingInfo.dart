@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/shared/constants.dart';
 import 'package:flutter_firebase_auth/utils/availableCountries.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
@@ -45,6 +46,13 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool _isTablet =
+    _isPortrait ?
+    MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Shipping info'),
@@ -92,7 +100,7 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
             children: [
               SizedBox(height: 10.0),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   key: _fullNameKey,
                   enabled: !widget.viewModeOn,
@@ -124,9 +132,9 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                   },
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: widget.viewModeOn ?
                   TextFormField(
                     enabled: false,
@@ -188,9 +196,9 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                 ],
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   key: _addressKey,
                   enabled: !widget.viewModeOn,
@@ -219,9 +227,9 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                   },
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   enabled: !widget.viewModeOn,
                   initialValue: widget.shippingAddress != null && widget.shippingAddress['address 2'] != null && widget.shippingAddress['address 2'] != '' ? widget.shippingAddress['address 2'] : null,
@@ -247,9 +255,9 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                   },
                 ),
               ),
-              Divider(height: 20, thickness: 2,),
+              Divider(height: 20, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   key: _CAPKey,
                   enabled: !widget.viewModeOn,
@@ -282,9 +290,9 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                   },
                 ),
               ),
-              Divider(height: 15, thickness: 2,),
+              Divider(height: 15, thickness: 2, indent: _isTablet ? 20.0 : 0.0, endIndent: _isTablet ? 20.0 : 0.0,),
               Padding(
-                padding: const EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
                   enabled: !widget.viewModeOn,
                   initialValue: widget.shippingAddress != null && widget.shippingAddress['city'] != '' ? widget.shippingAddress['city'] : null,

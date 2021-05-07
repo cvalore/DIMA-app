@@ -37,7 +37,7 @@ class _UserInfoState extends State<UserInfo> {
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: _isTablet ? _isPortrait ? MainAxisAlignment.center : MainAxisAlignment.spaceEvenly : MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _isPortrait ? Container() : CircleAvatar(
@@ -76,13 +76,14 @@ class _UserInfoState extends State<UserInfo> {
             )
         ),
         Container(
-          child: SingleChildScrollView(
+            width: _isTablet ? MediaQuery.of(context).size.width / 2 : MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
             child:
             _isPortrait ?
               Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Divider(height: _isTablet ? 60.0 : 10.0, thickness: 0.0,),
+                _isTablet ? Container() : Divider(height: _isTablet ? 60.0 : 10.0, thickness: 0.0,),
                 CircleAvatar(
                   backgroundColor: Colors.brown.shade800,
                   radius: _isPortrait ? 120.0 : 80.0,

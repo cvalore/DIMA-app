@@ -75,14 +75,14 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
        */
       body: widget.likedBooks != null && widget.likedBooks.length != 0 ?
         GridView.count(
-        crossAxisCount: _isPortrait ? 2 : 5,
+        crossAxisCount: _isPortrait ? _isTablet ? 3 : 2 : 5,
         padding: EdgeInsets.symmetric(vertical: 36.0 * (_isTablet ? 3 : 1),
             horizontal: 24.0 * (_isTablet ? 5 : 1)),
         //2// columns
-        mainAxisSpacing: 36.0 * (_isTablet ? 2.5 : 1),
-        crossAxisSpacing: 36.0 * (_isTablet ? 4.5 : 1),
+        mainAxisSpacing: 36.0,
+        crossAxisSpacing: _isTablet ? 48.0 : 36.0,
         scrollDirection: Axis.vertical,
-        childAspectRatio: imageWidth / (imageHeight * 1.1),
+        childAspectRatio: imageWidth / (imageHeight * (_isTablet ? _isPortrait ? 1.1 : 1.2 : 1.1)),
         children:
           widget.likedBooks.map((book) {
             return InkWell(

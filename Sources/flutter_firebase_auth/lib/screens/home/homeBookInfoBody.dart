@@ -86,7 +86,7 @@ class HomeBookInfoBody extends StatelessWidget {
       Row(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: _isTablet ? 30.0 : 20.0),
+            padding: EdgeInsets.symmetric(vertical: _isTablet ? 15.0 : 20.0),
             child: Container(
               width: MediaQuery.of(context).size.width/2.5,
               height: MediaQuery.of(context).size.height,

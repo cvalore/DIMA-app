@@ -682,7 +682,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     children: <Widget>[
                       Container(
                         height: _isTablet ? 150 : 90,
-                        width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
+                        width: -100 + (_isTablet ? _isPortrait ? MediaQuery.of(context).size.width/1.75 : MediaQuery.of(context).size.width/2.5 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2.2),
                         child: SearchBookForm(
                           setTitle: setTitle,
                           setAuthor: setAuthor,
@@ -796,7 +796,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                           key: _priceFormKey,
                           child: Container(
                             //decoration: BoxDecoration(border: Border.all(color: Colors.red, width: 2.0)),
-                            height: 80,
+                            height: _isTablet ? 260.0 : 80.0,
                             child: ListView.builder(
                               itemCount: 6,
                               itemBuilder: (BuildContext context, int index) {
@@ -1271,7 +1271,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         title: Text("Order by", style: TextStyle(fontSize: _isTablet ? 19.0 : 15),),
                         children: <Widget>[
                           Container(
-                            height: 80,
+                            height: _isTablet ? 120.0 : 80.0,
                             child: ListView.builder(
                               itemCount: 2,
                               itemBuilder: (BuildContext context, int index) {

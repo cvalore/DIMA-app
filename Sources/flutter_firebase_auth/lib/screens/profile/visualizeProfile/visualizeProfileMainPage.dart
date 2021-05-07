@@ -84,7 +84,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     ],
                   ) :
                   MyVerticalTabs(
-                    tabBarHeight: MediaQuery.of(context).size.height,
+                    tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                     tabBarWidth: 95,
                     tabsWidth: 95,
                     indicatorColor: Colors.blue,
@@ -94,7 +94,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     tabs: <Tab>[
                       Tab(child: Container(
                         //height: 50,
-                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.1,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                           child: Center(child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +131,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     ],
                   ) :
                   MyVerticalTabs(
-                    tabBarHeight: MediaQuery.of(context).size.height,
+                    tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                     tabBarWidth: 95,
                     tabsWidth: 95,
                     indicatorColor: Colors.blue,
@@ -141,7 +141,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     tabs: <Tab>[
                       Tab(child: Container(
                         //height: 50,
-                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.3,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                           child: Center(child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -153,7 +153,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                       )),
                       Tab(child: Container(
                         //height: 50,
-                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.3,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                           child: Center(child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

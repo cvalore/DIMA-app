@@ -173,7 +173,7 @@ class _HomeBodyState extends State<HomeBody> {
                 disabledChangePageFromContentView: true,
                 tabBarSide: TabBarSide.right,
                 indicatorSide: IndicatorSide.end,
-                tabBarHeight: MediaQuery.of(context).size.height,
+                tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                 tabBarWidth: 55,
                 tabsWidth: 55,
                 indicatorColor: Colors.white,
@@ -181,8 +181,10 @@ class _HomeBodyState extends State<HomeBody> {
                 tabBackgroundColor: Colors.black26,
                 selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
                 tabs: [
-                  Tab(child: Container(
-                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                  Tab(
+                    child: Container(
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -195,7 +197,8 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                   ),),
                   Tab(child: Container(
-                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,7 +211,8 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                   ),),
                   Tab(child: Container(
-                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,7 +225,8 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                   ),),
                   Tab(child: Container(
-                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -234,7 +239,8 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                   ),),
                   Tab(child: Container(
-                    height: (MediaQuery.of(context).size.height-Scaffold.of(context).appBarMaxHeight)/6,
+                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,7 +256,7 @@ class _HomeBodyState extends State<HomeBody> {
                 contents: [
                   MyVerticalTabs(
                     //tabBarHeight: 120,
-                    tabBarHeight: MediaQuery.of(context).size.height,
+                    tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                     tabBarWidth: 85,
                     tabsWidth: 85,
                     indicatorColor: Colors.blue,
@@ -260,7 +266,7 @@ class _HomeBodyState extends State<HomeBody> {
                     tabs: <Tab>[
                       Tab(child: Container(
                           //height: 50,
-                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2.3,
+                          height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                           child: Center(child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
