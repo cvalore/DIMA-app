@@ -738,6 +738,7 @@ class DatabaseService {
       category: book["category"],
       price: book["price"] * 1.0,
       exchangeable: book["exchangeable"],
+      exchangeStatus: book['exchangeStatus']
     );
   }
 
@@ -919,7 +920,6 @@ class DatabaseService {
     );
     return myExchangeableBooks;
   }
-
 
   Future<dynamic> getBookForSearch(String bookId) async {
     var usersData = [];
@@ -1704,11 +1704,8 @@ class DatabaseService {
       //remove books from seller user document
       booksToRemoveId = List<String>();
       var removedFromSeller = sellerBooks.removeAt(sellerBookToRemoveIndex);
-      print(removedFromSeller);
-      print('aa');
       booksToRemoveId.add(removedFromSeller['id']);
       var removedFromBuyer = buyerBooks.removeAt(buyerBookToRemoveIndex);
-      print(removedFromBuyer);
       booksToRemoveId.add(removedFromBuyer['id']);
 
       //check if selling user had duplicates of the sold books
@@ -1747,7 +1744,6 @@ class DatabaseService {
           thereAreDuplicates[1] = true;
         }
       }
-      print(thereAreDuplicates);
 
       Map<String, dynamic> booksFromBooksCollectionToModify = Map<String,dynamic>();
       List<String> booksFromBooksCollectionToDelete = List<String>();
@@ -1896,6 +1892,7 @@ class DatabaseService {
         booksFromBooksPerGenresCollection[genres[i]] = booksPerGenre;
       }
 
+      /*
       for (int i = 0; i < booksFromBooksCollectionToDelete.length; i++){
         print(booksFromBooksCollectionToDelete[i]);
         print('cancellato');
@@ -1908,6 +1905,7 @@ class DatabaseService {
           print('else quindi cancellato');
         }
       }
+       */
 
       print('Step 1');
       WriteBatch batch = FirebaseFirestore.instance.batch();
@@ -1938,7 +1936,7 @@ class DatabaseService {
       batch.update(buyerUserReference, {'books': buyerBooks});
       batch.update(transactionReference, {'exchanges': booksFromTransaction});
 
-      batch.commit();
+      //batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
         .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 

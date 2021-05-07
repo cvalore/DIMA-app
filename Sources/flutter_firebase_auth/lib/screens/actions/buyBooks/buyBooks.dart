@@ -591,14 +591,14 @@ class _BuyBooksState extends State<BuyBooks> {
       ).then((value) {
         if (transactionCompleted) {
           final snackBar = SnackBar(
-            backgroundColor: Colors.white24.withOpacity(0.2),
+            backgroundColor: Colors.grey.withOpacity(1.0),
             duration: Duration(seconds: 2),
             content: Text(
               'The transaction completed successfully',
               style: Theme
                   .of(context)
                   .textTheme
-                  .bodyText2,
+                  .bodyText2.copyWith(color: Colors.black),
             ),
           );
           Scaffold.of(context).showSnackBar(snackBar);

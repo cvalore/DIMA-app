@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/screens/chat/viewPendingBook.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
+import 'package:flutter_firebase_auth/screens/notifications/viewBookFromTransaction.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/viewBoughtItemPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/viewExchangedItemPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
@@ -435,6 +437,41 @@ class Utils {
               receivedBook: receivedBook,
               offeredBook: offeredBook,
               transactionsInfo: exchangedItem,
+            )
+        )
+    );
+  }
+
+
+  static pushBookFromTransaction(BuildContext context, Map<String, dynamic> book, String ownerUid) async {
+    InsertedBook bookToPush = InsertedBook(title: book['title'],
+      insertionNumber: book['insertionNumber'],
+      author: book['author'],
+      category: book['category'],
+      price: book['price'],
+      status: book['status'],
+    );
+    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(ownerUid, bookToPush);
+    List<String> bookPickedFilePaths = List<String>();
+    ListResult lr = await bookRef.listAll();
+    int count = 0;
+    for(Reference r in lr.items) {
+      try {
+        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        if(filePath != null) {
+          bookPickedFilePaths.add(filePath);
+        }
+      } on FirebaseException catch (e) {
+        e.toString();
+      }
+      count = count + 1;
+    }
+    bookToPush.imagesPath = bookPickedFilePaths;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (newContext) => ViewBookFromTransaction(
+                book: bookToPush,
             )
         )
     );
