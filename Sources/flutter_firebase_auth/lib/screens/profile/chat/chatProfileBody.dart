@@ -153,6 +153,7 @@ class ChatProfileBody extends StatelessWidget {
                                                 FontStyle.normal
                                             ),
                                             overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
                                           ),
                                         ],
                                       ),
