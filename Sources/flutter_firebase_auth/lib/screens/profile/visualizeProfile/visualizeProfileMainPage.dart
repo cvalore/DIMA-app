@@ -28,6 +28,25 @@ class VisualizeProfileMainPage extends StatefulWidget {
 
 class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
 
+  int _selectedVerticalTab = 0;
+
+  int getIndexVerticalTab() {
+    return this._selectedVerticalTab;
+  }
+
+  void setIndexVerticalTab(int newIndex) {
+    this._selectedVerticalTab = newIndex;
+  }
+
+  int _selectedVerticalTabMain = 0;
+
+  int getIndexVerticalTabMain() {
+    return this._selectedVerticalTabMain;
+  }
+
+  void setIndexVerticalTabMain(int newIndex) {
+    this._selectedVerticalTabMain = newIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +103,8 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     ],
                   ) :
                   MyVerticalTabs(
+                    setIndex: setIndexVerticalTabMain,
+                    getIndex: getIndexVerticalTabMain,
                     tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                     tabBarWidth: 95,
                     tabsWidth: 95,
@@ -131,6 +152,8 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     ],
                   ) :
                   MyVerticalTabs(
+                    setIndex: setIndexVerticalTab,
+                    getIndex: getIndexVerticalTab,
                     tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                     tabBarWidth: 95,
                     tabsWidth: 95,

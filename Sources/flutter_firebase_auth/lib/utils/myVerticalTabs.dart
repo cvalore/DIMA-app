@@ -8,7 +8,7 @@ enum TabBarSide { left, right }
 /// A vertical tab widget for flutter
 class MyVerticalTabs extends StatefulWidget {
   final Key key;
-  final int initialIndex;
+  //final int initialIndex;
   final double tabBarWidth;
   final double tabBarHeight;
   final double tabsWidth;
@@ -34,6 +34,8 @@ class MyVerticalTabs extends StatefulWidget {
   final double tabsElevation;
   final Function(int tabIndex) onSelect;
   final Color backgroundColor;
+  final Function getIndex;
+  final Function(int) setIndex;
 
   MyVerticalTabs(
       {this.key,
@@ -48,7 +50,7 @@ class MyVerticalTabs extends StatefulWidget {
         this.indicatorWidth = 3,
         this.indicatorSide,
         this.tabBarSide = TabBarSide.left,
-        this.initialIndex = 0,
+        //this.initialIndex = 0,
         this.direction = TextDirection.ltr,
         this.indicatorColor = Colors.green,
         this.disabledChangePageFromContentView = false,
@@ -62,7 +64,7 @@ class MyVerticalTabs extends StatefulWidget {
         this.tabsShadowColor = Colors.black54,
         this.tabsElevation = 2.0,
         this.onSelect,
-        this.backgroundColor})
+        this.backgroundColor, this.getIndex, this.setIndex})
       : assert(
   tabs != null && contents != null && tabs.length == contents.length && (onTaps == null || onTaps.length == tabs.length)),
         super(key: key);
@@ -102,21 +104,21 @@ class _MyVerticalTabsState extends State<MyVerticalTabs>
 
   @override
   void initState() {
-    _selectedIndex = widget.initialIndex;
+    _selectedIndex = widget.getIndex();
     for (int i = 0; i < widget.tabs.length; i++) {
       animationControllers.add(AnimationController(
         duration: const Duration(milliseconds: 400),
         vsync: this,
       ));
     }
-    _selectTab(widget.initialIndex);
+    _selectTab(_selectedIndex);
 
     if (widget.disabledChangePageFromContentView == true)
       pageScrollPhysics = NeverScrollableScrollPhysics();
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      pageController.jumpToPage(widget.initialIndex);
+      pageController.jumpToPage(_selectedIndex);
       setState(() {});
     });
   }
@@ -470,6 +472,7 @@ class _MyVerticalTabsState extends State<MyVerticalTabs>
 
   void _selectTab(index) {
     _selectedIndex = index;
+    widget.setIndex(index);
     for (AnimationController animationController in animationControllers) {
       animationController.reset();
     }

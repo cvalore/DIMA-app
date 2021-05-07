@@ -8,7 +8,17 @@ class SearchPage extends StatelessWidget {
 
   final List<dynamic> books;
 
-  const SearchPage({Key key, this.books}) : super(key: key);
+  int _selectedVerticalTab = 0;
+
+  int getIndexVerticalTab() {
+    return this._selectedVerticalTab;
+  }
+
+  void setIndexVerticalTab(int newIndex) {
+    this._selectedVerticalTab = newIndex;
+  }
+  
+  SearchPage({Key key, this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +65,8 @@ class SearchPage extends StatelessWidget {
         ) :
         Builder(builder: (BuildContext context) {
           return MyVerticalTabs(
+            setIndex: setIndexVerticalTab,
+            getIndex: getIndexVerticalTab,
             tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
             tabBarWidth: 85,
             tabsWidth: 85,
