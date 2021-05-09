@@ -19,6 +19,16 @@ class OrdersMainPage extends StatefulWidget {
 class _OrdersMainPageState extends State<OrdersMainPage> {
 
   bool loading = false;
+  int _selectedVerticalTab = 0;
+
+  int getIndexVerticalTab() {
+    return this._selectedVerticalTab;
+  }
+
+  void setIndexVerticalTab(int newIndex) {
+    this._selectedVerticalTab = newIndex;
+  }
+  
 
 
   @override
@@ -68,6 +78,8 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
           ) :
           Builder(builder: (BuildContext context) {
             return MyVerticalTabs(
+              setIndex: setIndexVerticalTab,
+              getIndex: getIndexVerticalTab,
               //tabBarHeight: 120,
                 tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                 tabBarWidth: 90,

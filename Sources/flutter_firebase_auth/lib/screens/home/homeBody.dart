@@ -40,6 +40,8 @@ class _HomeBodyState extends State<HomeBody> {
   );
 
   int _selectedBottomTab = 0;
+  int _selectedVerticalTabMain = 0;
+  int _selectedVerticalTab = 0;
 
   void setIndex(int newIndex) {
     setState(() {
@@ -49,6 +51,22 @@ class _HomeBodyState extends State<HomeBody> {
 
   int getIndex() {
     return this._selectedBottomTab;
+  }
+  
+  int getIndexVerticalTabMain() {
+    return this._selectedVerticalTabMain;
+  }
+  
+  void setIndexVerticalTabMain(int newIndex) {
+    this._selectedVerticalTabMain = newIndex;
+  }
+
+  int getIndexVerticalTab() {
+    return this._selectedVerticalTab;
+  }
+
+  void setIndexVerticalTab(int newIndex) {
+    this._selectedVerticalTab = newIndex;
   }
 
   @override
@@ -169,6 +187,8 @@ class _HomeBodyState extends State<HomeBody> {
             else {
               return MyVerticalTabs(
                 user: userFromAuth,
+                getIndex: getIndexVerticalTabMain,
+                setIndex: setIndexVerticalTabMain,
                 books: books,
                 disabledChangePageFromContentView: true,
                 tabBarSide: TabBarSide.right,
@@ -256,6 +276,8 @@ class _HomeBodyState extends State<HomeBody> {
                 contents: [
                   MyVerticalTabs(
                     //tabBarHeight: 120,
+                    setIndex: setIndexVerticalTab,
+                    getIndex: getIndexVerticalTab,
                     tabBarHeight: MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight,
                     tabBarWidth: 85,
                     tabsWidth: 85,

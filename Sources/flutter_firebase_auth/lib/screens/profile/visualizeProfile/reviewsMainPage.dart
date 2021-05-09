@@ -21,6 +21,16 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
 
   int _selectedIndexForBottomNavigationBar = 0;
 
+  int _selectedVerticalTab = 0;
+
+  int getIndexVerticalTab() {
+    return this._selectedVerticalTab;
+  }
+
+  void setIndexVerticalTab(int newIndex) {
+    this._selectedVerticalTab = newIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -53,6 +63,8 @@ class _ReviewsMainPageState extends State<ReviewsMainPage> {
           ReviewsWrittenByMe(reviews: widget.reviewsWrittenByMe)
               :
             MyVerticalTabs(
+              setIndex: setIndexVerticalTab,
+              getIndex: getIndexVerticalTab,
               indicatorSide: IndicatorSide.end,
               tabBarSide: TabBarSide.right,
               disabledChangePageFromContentView: true,

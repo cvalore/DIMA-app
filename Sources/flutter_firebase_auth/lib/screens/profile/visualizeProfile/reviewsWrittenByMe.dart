@@ -218,7 +218,7 @@ class _ReviewItemState extends State<ReviewItem> {
         }
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: _isTablet ? 16.0 : _isPortrait ? 8.0 : 100.0, vertical: _isTablet ? 8.0 : 4.0),
+        padding: EdgeInsets.symmetric(horizontal: _isTablet ? 16.0 : _isPortrait ? 8.0 : 30.0, vertical: _isTablet ? 8.0 : 4.0),
         child: Card(
           //height: MediaQuery.of(context).size.height / 5,
           child: LimitedBox(

@@ -76,7 +76,7 @@ class _UserInfoState extends State<UserInfo> {
             )
         ),
         Container(
-            width: _isTablet ? MediaQuery.of(context).size.width / 2 : MediaQuery.of(context).size.width,
+            width: _isTablet ? MediaQuery.of(context).size.width / 2 : _isPortrait ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/2,
             child: SingleChildScrollView(
             child:
             _isPortrait ?
