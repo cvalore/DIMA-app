@@ -603,7 +603,6 @@ class _BuyBooksState extends State<BuyBooks> {
           );
           Scaffold.of(context).showSnackBar(snackBar);
           Timer(Duration(milliseconds: 2500), () async {
-            //Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
             if (chat != null && (payCash || (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0))) {
               message = Utils.buildDefaultMessage(
                   sellerUsername[0], booksDefiningTotalPrice,

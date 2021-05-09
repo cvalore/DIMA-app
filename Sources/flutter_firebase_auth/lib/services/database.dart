@@ -1936,12 +1936,13 @@ class DatabaseService {
       batch.update(buyerUserReference, {'books': buyerBooks});
       batch.update(transactionReference, {'exchanges': booksFromTransaction});
 
-      //batch.commit();
+      batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
         .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
 
     if (transactionSuccessfullyCompleted)
       return 'ok';
+
   }
 
 

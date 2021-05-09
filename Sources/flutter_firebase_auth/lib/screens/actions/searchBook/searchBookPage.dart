@@ -29,6 +29,12 @@ class _SearchBookPageState extends State<SearchBookPage> {
   final _lessThanFormFieldController = TextEditingController();
   final _greaterThanFormFieldController = TextEditingController();
   final _isbnFormFieldController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+  List<PerGenreBook> perGenreBooks;
+  DatabaseService _db;
+  int lastBookShownIndex = 0;
+  bool gettingMoreBooks = false;
+
 
   String _title = '';
   String _author = '';
@@ -77,9 +83,57 @@ class _SearchBookPageState extends State<SearchBookPage> {
     list.add(book);
   }
 
+  getMoreBooks() async {
+    List<PerGenreBook> realSearchedBooks = List<PerGenreBook>();
+
+    if (gettingMoreBooks == true)
+      return;
+
+    gettingMoreBooks = true;
+
+    realSearchedBooks.addAll(
+        perGenreBooks.where((b) {
+          if(realSearchedBooks.contains(b)) {
+            return false;
+          }
+
+          if(_title.isNotEmpty && _author.isNotEmpty) {
+            return b.title.toLowerCase().contains(
+                _title.toLowerCase()) ||
+                b.author.toLowerCase().contains(
+                    _author.toLowerCase());
+          }
+          else if(_title.isNotEmpty) {
+            return b.title.toLowerCase().contains(
+                _title.toLowerCase());
+          }
+          else {
+            return b.author.toLowerCase().contains(
+                _author.toLowerCase());
+          }
+        })
+    );
+
+    List<dynamic> realBooksAllInfo = List<dynamic>();
+    for(int i = lastBookShownIndex; i < realSearchedBooks.length && i < lastBookShownIndex + 5; i++) {
+      dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
+      realBooksAllInfo.add(result);
+    }
+    lastBookShownIndex += 5;
+
+    if (realBooksAllInfo.length > 0) {
+      setState(() {
+        _searchLoading = false;
+        booksAllInfo.addAll(realBooksAllInfo);
+      });
+    }
+    gettingMoreBooks = false;
+  }
+
   @override
-  Widget build(BuildContext context) {
-    List<PerGenreBook> perGenreBooks = List<PerGenreBook>();
+  void initState() {
+    super.initState();
+    perGenreBooks = List<PerGenreBook>();
     for(dynamic b in widget.books) {
       if(b != null) {
         perGenreBooks.add(
@@ -93,9 +147,23 @@ class _SearchBookPageState extends State<SearchBookPage> {
       }
     }
 
+    scrollController.addListener(() {
+      double maxScroll = scrollController.position.maxScrollExtent;
+      double currentScroll = scrollController.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.25;
+
+      if (maxScroll - currentScroll <= delta){
+        getMoreBooks();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
-    DatabaseService _db = DatabaseService(user: user);
+    _db = DatabaseService(user: user);
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     bool _isTablet =
@@ -188,9 +256,9 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               }
                             })
                         );
-
+                        lastBookShownIndex = 5;
                         List<dynamic> realBooksAllInfo = List<dynamic>();
-                        for(int i = 0; i < realSearchedBooks.length; i++) {
+                        for(int i = 0; i < realSearchedBooks.length && i < lastBookShownIndex; i++) {
                           dynamic result = await _db.getBookForSearch(realSearchedBooks[i].id);
                           realBooksAllInfo.add(result);
                         }
@@ -575,6 +643,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 flex: 30,
                 child: Container(
                   child: SingleChildScrollView(
+                    controller: scrollController,
                     child: Column(
                       children: [
                         for(int i = 0; i < booksAllInfo.length; i++)

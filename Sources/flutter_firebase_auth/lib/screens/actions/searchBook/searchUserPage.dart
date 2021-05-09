@@ -323,13 +323,14 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                               child: allUsersFound[i]['userProfileImageURL'] != null &&
                                                   allUsersFound[i]['userProfileImageURL'].toString().isNotEmpty ?
                                               CircleAvatar(
+
                                                 radius: _isTablet ? 40.0 : 25.0,
                                                 backgroundImage: NetworkImage(allUsersFound[i]['userProfileImageURL']),
                                                 //FileImage(File(user.userProfileImagePath))
                                               ) : Text(
                                                 allUsersFound[i]['username'][0].toUpperCase(),
                                                 textScaleFactor: 1,
-                                              ),
+                                                ),
                                             ),
                                             Padding(
                                               padding: EdgeInsets.symmetric(horizontal: _isTablet ? 50.0 : 25.0),
