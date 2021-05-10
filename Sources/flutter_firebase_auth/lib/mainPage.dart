@@ -148,7 +148,8 @@ class MainPage extends StatelessWidget {
               ),
               //buttonColor: Colors.blueAccent,
               floatingActionButtonTheme: FloatingActionButtonThemeData(
-                  backgroundColor: Colors.blueAccent
+                  backgroundColor: Colors.teal[600],
+                  foregroundColor: Colors.white,
               ),
               snackBarTheme: SnackBarThemeData(
                 actionTextColor: Colors.white,
@@ -161,7 +162,7 @@ class MainPage extends StatelessWidget {
                           (Set<MaterialState> states) {
                         if (states.contains(MaterialState.disabled))
                           return Colors.red;
-                        return Colors.blueGrey; // Defer to the widget's default.
+                        return Colors.teal[600]; // Defer to the widget's default.
                       }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {

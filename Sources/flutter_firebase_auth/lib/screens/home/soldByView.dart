@@ -86,7 +86,7 @@ class _SoldByViewState extends State<SoldByView> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
                                     CircleAvatar(
-                                      backgroundColor: Colors.brown.shade800,
+                                      backgroundColor: Colors.teal[100],
                                       radius: _isTablet ? 40.0 : 25.0,
                                       child: widget.books[i]['userProfileImageURL'] != null &&
                                           widget.books[i]['userProfileImageURL'].toString().isNotEmpty ?

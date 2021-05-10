@@ -318,7 +318,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             CircleAvatar(
-                                              backgroundColor: Colors.brown.shade800,
+                                              backgroundColor: Colors.teal[100],
                                               radius: _isTablet ? 40.0 : 25.0,
                                               child: allUsersFound[i]['userProfileImageURL'] != null &&
                                                   allUsersFound[i]['userProfileImageURL'].toString().isNotEmpty ?
@@ -683,7 +683,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
                                                 CircleAvatar(
-                                                  backgroundColor: Colors.brown.shade800,
+                                                  backgroundColor: Colors.teal[100],
                                                   radius: _isTablet ? 40.0 : 25.0,
                                                   child: allUsersFound[i]['userProfileImageURL'] != null &&
                                                       allUsersFound[i]['userProfileImageURL'].toString().isNotEmpty ?

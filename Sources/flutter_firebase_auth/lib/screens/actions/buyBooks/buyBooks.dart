@@ -76,6 +76,32 @@ class _BuyBooksState extends State<BuyBooks> {
           Builder(
               builder: (BuildContext context) {
                 return ElevatedButton(
+                  style: Theme.of(context).elevatedButtonTheme.style.copyWith(
+                    elevation: MaterialStateProperty.resolveWith<double> (
+                        (Set<MaterialState> states) {
+                          return 0.0;
+                        }
+                    ),
+                    shape: MaterialStateProperty.resolveWith<OutlinedBorder> (
+                      (Set<MaterialState> states) {
+                        return RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        );
+                      }
+                    ),
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled))
+                            return Colors.red;
+                          return Colors.white10; // Defer to the widget's default.
+                        }),
+                    foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled))
+                            return Colors.grey;
+                          return null; // Defer to the widget's default.
+                        }),
+                  ),
                   child: booksDefiningTotalPrice.length == 0 ?
                   Text('Exchange') :
                   sellerMatchingBooksForExchange.length == 0 ?

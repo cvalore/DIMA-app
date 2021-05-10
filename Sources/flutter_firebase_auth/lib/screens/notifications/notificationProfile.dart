@@ -27,7 +27,7 @@ class NotificationProfile extends StatelessWidget {
           break;
         }
       }
-      if(lastNotificationDate == null) {
+      if(transactions != null && transactions.length != 0 && lastNotificationDate == null) {
         newNotifications = true;
       }
     }

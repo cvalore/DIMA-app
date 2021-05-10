@@ -37,12 +37,14 @@ class DiscussionTabBody extends StatelessWidget {
     return discussions.length == 0 ?
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text("No discussions yet",
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 fontSize: _isTablet ? 17.0 : 15.0,
               ),
+              textAlign: TextAlign.center,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 1.5),
@@ -131,7 +133,7 @@ class DiscussionTabBody extends StatelessWidget {
                                                         padding: const EdgeInsets.symmetric(
                                                             horizontal: 10.0, vertical: 8.0),
                                                         child: CircleAvatar(
-                                                          backgroundColor: Colors.brown.shade800,
+                                                          backgroundColor: Colors.teal[100],
                                                           radius: 35.0,
                                                           child: perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture'] != null &&
                                                               perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture'] != '' ?

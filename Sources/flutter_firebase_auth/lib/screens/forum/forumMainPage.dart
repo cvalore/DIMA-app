@@ -41,7 +41,7 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
            );
          },
        ),
-        body: DiscussionTab(db: _db),
+        body: Center(child: DiscussionTab(db: _db)),
     );
   }
 }

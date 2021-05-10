@@ -59,7 +59,7 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                             Expanded(
                               flex: 2,
                               child: CircleAvatar(
-                                backgroundColor: Colors.brown.shade800,
+                                backgroundColor: Colors.teal[100],
                                 radius: 60.0,
                                 child: user.userProfileImagePath != null && user.userProfileImagePath != '' ?
                                 CircleAvatar(
@@ -100,7 +100,7 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundColor: Colors.brown.shade800,
+                      backgroundColor: Colors.teal[100],
                       radius: 60.0,
                       child: user.userProfileImagePath != null && user.userProfileImagePath != '' ?
                       CircleAvatar(

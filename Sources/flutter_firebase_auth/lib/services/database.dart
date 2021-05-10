@@ -208,106 +208,115 @@ class DatabaseService {
     DocumentReference bookReference = bookCollection.doc(generalInfoBookMap['id']);
     //DocumentReference sellerUserReference = usersCollection.doc(sellingUser);
 
+    bool runningTransaction = false;
+
     await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
+      if(!runningTransaction) {
+        runningTransaction = true;
+        print("Calling add book transaction");
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        DocumentSnapshot documentSnapshot = await transactionOnDb.get(
+            buyerUserReference);
+        numberOfInsertedItems =
+        documentSnapshot.data()['numberOfInsertedItems'];
 
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-      DocumentSnapshot documentSnapshot = await transactionOnDb.get(buyerUserReference);
-      numberOfInsertedItems = documentSnapshot.data()['numberOfInsertedItems'];
+        DocumentSnapshot bookSnapshot = await transactionOnDb.get(
+            bookReference);
+        if (bookSnapshot.exists) {
+          if (book.exchangeable && book.imagesPath != null &&
+              book.imagesPath.length != 0) {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayUnion([user.uid]),
+              'availableNum': FieldValue.increment(1),
+              'exchangeable': FieldValue.increment(1),
+              'haveImages': FieldValue.increment(1),
+            });
+          } else if (book.exchangeable) {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayUnion([user.uid]),
+              'availableNum': FieldValue.increment(1),
+              'exchangeable': FieldValue.increment(1),
+            });
+          } else if (book.imagesPath != null && book.imagesPath.length != 0) {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayUnion([user.uid]),
+              'availableNum': FieldValue.increment(1),
+              'haveImages': FieldValue.increment(1),
+            });
+          } else {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayUnion([user.uid]),
+              'availableNum': FieldValue.increment(1),
+            });
+          }
+          print("Book already present, add you as owner too");
+        } else {
+          generalInfoBookMap['owners'] = [user.uid];
+          batch.set(bookReference, generalInfoBookMap);
+        }
 
-      DocumentSnapshot bookSnapshot = await transactionOnDb.get(bookReference);
-      if (bookSnapshot.exists) {
-        if (book.exchangeable && book.imagesPath != null &&
-            book.imagesPath.length != 0) {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayUnion([user.uid]),
-            'availableNum': FieldValue.increment(1),
-            'exchangeable': FieldValue.increment(1),
-            'haveImages': FieldValue.increment(1),
-          });
-        } else if (book.exchangeable) {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayUnion([user.uid]),
-            'availableNum': FieldValue.increment(1),
-            'exchangeable': FieldValue.increment(1),
-          });
-        } else if (book.imagesPath != null && book.imagesPath.length != 0) {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayUnion([user.uid]),
-            'availableNum': FieldValue.increment(1),
-            'haveImages': FieldValue.increment(1),
+        //add book images to the storage
+        if (book.imagesPath != null) {
+          /*List<String> imagesUrl = await storageService.addBookPictures(
+            user.uid, book.title, numberOfInsertedItems, book.images);
+        book.imagesUrl = imagesUrl;*/
+          List<String> imagesUrl = List<String>();
+          for (int i = 0; i < book.imagesPath.length; i++) {
+            Reference imgRef = await storageService.addBookPicture(
+                user.uid,
+                book.title,
+                numberOfInsertedItems + 1,
+                book.imagesPath[i],
+                i
+            );
+            String imgUrl = await storageService.getUrlPicture(imgRef);
+            imagesUrl.add(imgUrl);
+          }
+
+          book.imagesUrl = imagesUrl;
+        }
+        else {
+          book.imagesUrl = List<String>();
+        }
+
+        numberOfInsertedItems += 1;
+        book.setInsertionNumber(numberOfInsertedItems);
+        var mapBook = book.toMap();
+        mapBook['exchangeStatus'] =
+        mapBook['exchangeable'] == true ? 'available' : 'notAvailable';
+        // add book to the user collection
+        batch.update(buyerUserReference, {
+          'books': FieldValue.arrayUnion([mapBook]),
+          'numberOfInsertedItems': FieldValue.increment(1),
+        });
+
+        Map<String, dynamic> bookPerGenreInfo = {
+          'title': book.title,
+          'author': book.author,
+          'thumbnail': book.bookGeneralInfo.thumbnail,
+        };
+        Map<String, dynamic> bookPerGenreMap = {
+          book.id: bookPerGenreInfo,
+        };
+
+        DocumentReference booksPerGenre = booksPerGenreCollection.doc(
+            book.category);
+        DocumentSnapshot documentSnapshotBooks = await transactionOnDb.get(
+            booksPerGenre);
+        if (!documentSnapshotBooks.exists) {
+          batch.set(booksPerGenre, {
+            "books": FieldValue.arrayUnion([bookPerGenreMap]),
           });
         } else {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayUnion([user.uid]),
-            'availableNum': FieldValue.increment(1),
+          batch.update(booksPerGenre, {
+            "books": FieldValue.arrayUnion([bookPerGenreMap]),
           });
         }
-        print("Book already present, add you as owner too");
-      } else {
-        generalInfoBookMap['owners'] = [user.uid];
-        batch.set(bookReference, generalInfoBookMap);
+
+        batch.commit();
       }
-      batch.commit();
     });
-
-    //add book images to the storage
-    if (book.imagesPath != null) {
-      /*List<String> imagesUrl = await storageService.addBookPictures(
-          user.uid, book.title, numberOfInsertedItems, book.images);
-      book.imagesUrl = imagesUrl;*/
-      List<String> imagesUrl = List<String>();
-      for (int i = 0; i < book.imagesPath.length; i++) {
-        Reference imgRef = await storageService.addBookPicture(
-            user.uid,
-            book.title,
-            numberOfInsertedItems + 1,
-            book.imagesPath[i],
-            i
-        );
-        String imgUrl = await storageService.getUrlPicture(imgRef);
-        imagesUrl.add(imgUrl);
-      }
-
-      book.imagesUrl = imagesUrl;
-    }
-    else {
-      book.imagesUrl = List<String>();
-    }
-
-    numberOfInsertedItems += 1;
-    book.setInsertionNumber(numberOfInsertedItems);
-    var mapBook = book.toMap();
-    mapBook['exchangeStatus'] = mapBook['exchangeable'] == true ? 'available' : 'notAvailable';
-    // add book to the user collection
-    await usersCollection.doc(user.uid).update({
-      'books': FieldValue.arrayUnion([mapBook]),
-      'numberOfInsertedItems': FieldValue.increment(1),
-    });
-
-    Map<String, dynamic> bookPerGenreInfo = {
-      'title': book.title,
-      'author': book.author,
-      'thumbnail': book.bookGeneralInfo.thumbnail,
-    };
-    Map<String, dynamic> bookPerGenreMap = {
-      book.id: bookPerGenreInfo,
-    };
-
-    DocumentReference booksPerGenre = booksPerGenreCollection.doc(book.category);
-    await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
-      WriteBatch bookCollectionBatch = FirebaseFirestore.instance.batch();
-      DocumentSnapshot documentSnapshot = await transactionOnDb.get(booksPerGenre);
-      if (!documentSnapshot.exists) {
-        bookCollectionBatch.set(booksPerGenre, {
-          "books": FieldValue.arrayUnion([bookPerGenreMap]),
-        });
-      } else {
-        bookCollectionBatch.update(booksPerGenre, {
-          "books": FieldValue.arrayUnion([bookPerGenreMap]),
-        });
-      }
-      bookCollectionBatch.commit();
-    });
+    runningTransaction = false;
     print("Book added");
   }
 
@@ -327,63 +336,66 @@ class DatabaseService {
         });*/
 
     DocumentReference userBooksReference = usersCollection.doc(user.uid);
-    await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-      DocumentSnapshot bookSnap = await transactionOnDb.get(userBooksReference);
-      books = bookSnap.data()['books'];
 
-      if (book.imagesPath != null) {
-        /*List<String> imagesUrl = await storageService.addBookPictures(
-          user.uid, book.title, numberOfInsertedItems, book.images);
-      book.imagesUrl = imagesUrl;*/
-        List<String> imagesUrl = List<String>();
-        for (int i = 0; i < book.imagesPath.length; i++) {
-          Reference imgRef = await storageService.addBookPicture(
-              user.uid,
-              book.title,
-              book.insertionNumber,
-              book.imagesPath[i],
-              i
-          );
-          String imgUrl = await storageService.getUrlPicture(imgRef);
-          imagesUrl.add(imgUrl);
+    bool runningTransaction = false;
+
+    await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
+      if(!runningTransaction) {
+        runningTransaction = true;
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        DocumentSnapshot bookSnap = await transactionOnDb.get(
+            userBooksReference);
+        books = bookSnap.data()['books'];
+        DocumentReference bookReference = bookCollection.doc(books[index]['id']);
+
+        if (book.imagesPath != null) {
+          /*List<String> imagesUrl = await storageService.addBookPictures(
+            user.uid, book.title, numberOfInsertedItems, book.images);
+        book.imagesUrl = imagesUrl;*/
+          List<String> imagesUrl = List<String>();
+          for (int i = 0; i < book.imagesPath.length; i++) {
+            Reference imgRef = await storageService.addBookPicture(
+                user.uid,
+                book.title,
+                book.insertionNumber,
+                book.imagesPath[i],
+                i
+            );
+            String imgUrl = await storageService.getUrlPicture(imgRef);
+            imagesUrl.add(imgUrl);
+          }
+
+          book.imagesUrl = imagesUrl;
+        }
+        else {
+          book.imagesUrl = List<String>();
         }
 
-        book.imagesUrl = imagesUrl;
-      }
-      else {
-        book.imagesUrl = List<String>();
-      }
+        books[index]["insertionNumber"] = book.insertionNumber;
+        books[index]["comment"] = book.comment;
+        books[index]["status"] = book.status;
+        books[index]["category"] = book.category;
+        books[index]["price"] = book.price;
+        books[index]["imagesUrl"] = book.imagesUrl;
 
-      books[index]["insertionNumber"] = book.insertionNumber;
-      books[index]["comment"] = book.comment;
-      books[index]["status"] = book.status;
-      books[index]["category"] = book.category;
-      books[index]["price"] = book.price;
-      books[index]["imagesUrl"] = book.imagesUrl;
+        if (book.exchangeStatus == 'pending') {
+          //if the status of the book is pending the user cannot change its mode to not exchangeable
+          book.exchangeable = true;
+          books[index]["exchangeable"] = true;
+          books[index]["exchangeStatus"] = book.exchangeStatus;
+        } else {
+          books[index]["exchangeable"] = book.exchangeable;
+          books[index]["exchangeStatus"] =
+          book.exchangeable == true ? 'available' : 'notAvailable';
+        }
 
-      if (book.exchangeStatus == 'pending') {
-        //if the status of the book is pending the user cannot change its mode to not exchangeable
-        book.exchangeable = true;
-        books[index]["exchangeable"] = true;
-        books[index]["exchangeStatus"] = book.exchangeStatus;
-      } else {
-        books[index]["exchangeable"] = book.exchangeable;
-        books[index]["exchangeStatus"] =
-        book.exchangeable == true ? 'available' : 'notAvailable';
-      }
-
-      batch.update(userBooksReference, {
-        'books': books
-      });
-      batch.commit();
-    });
+        batch.update(userBooksReference, {
+          'books': books
+        });
 
 
-      DocumentReference bookReference = bookCollection.doc(books[index]['id']);
-      await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
-        WriteBatch batch = FirebaseFirestore.instance.batch();
-        DocumentSnapshot documentSnapshot = await transactionOnDb.get(bookReference);
+        DocumentSnapshot documentSnapshot = await transactionOnDb.get(
+            bookReference);
         if (documentSnapshot.exists) {
           if (wasExchangeable && hadImages) {
             if (!book.exchangeable &&
@@ -462,9 +474,12 @@ class DatabaseService {
             }
           }
         }
-        batch.commit();
-      });
 
+
+        batch.commit();
+      }
+    });
+    runningTransaction = false;
     print("Book updated");
   }
 
@@ -590,123 +605,127 @@ class DatabaseService {
     bool duplicatePresent = false;
     bool bookDocumentRemoved = false;
 
+    bool runningTransaction = false;
 
     DocumentReference userReference = usersCollection.doc(user.uid);
     await FirebaseFirestore.instance.runTransaction((transactionOnDb) async {
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-      DocumentSnapshot documentSnapshot = await transactionOnDb.get(userReference);
-      List<dynamic> books = documentSnapshot.data()['books'];
-      id = books[index]['id'];
-      books.removeAt(index);
+      if(!runningTransaction) {
+        runningTransaction = true;
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        DocumentSnapshot documentSnapshot = await transactionOnDb.get(
+            userReference);
+        List<dynamic> books = documentSnapshot.data()['books'];
+        id = books[index]['id'];
+        books.removeAt(index);
 
-      for (int i = 0; i < books.length && !duplicatePresent; i++) {
-        if (books[i]['id'] == id)
-          duplicatePresent = true;
-      }
-
-      batch.update(userReference, {
-            'books': books
-      });
-
-      DocumentReference bookReference = bookCollection.doc(id);
-      DocumentSnapshot docSnap = await transactionOnDb.get(bookReference);
-      if (docSnap.exists) {
-        thumbnail = docSnap.data().containsKey("thumbnail") ?
-          docSnap.data()['thumbnail'] : null;
-      }
-      availableNum = docSnap.data()['availableNum'];
-
-      if (availableNum == 1) {
-        //remove all the document
-        print('No other user has this book, removing all...');
-        batch.delete(bookReference);
-        bookDocumentRemoved = true;
-
-      } else if (!duplicatePresent) {
-        //remove only the current user
-        print('Other users have this book, just removing yours...');
-        if (book.exchangeable && book.imagesUrl != null &&
-            book.imagesUrl.length != 0) {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayRemove([user.uid]),
-            'availableNum': FieldValue.increment(-1),
-            'exchangeable': FieldValue.increment(-1),
-            'haveImages': FieldValue.increment(-1),
-          });
+        for (int i = 0; i < books.length && !duplicatePresent; i++) {
+          if (books[i]['id'] == id)
+            duplicatePresent = true;
         }
-        else if (book.exchangeable) {
 
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayRemove([user.uid]),
-            'availableNum': FieldValue.increment(-1),
-            'exchangeable': FieldValue.increment(-1),
-          });
-        }
-        else if (book.imagesUrl != null && book.imagesUrl.length != 0) {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayRemove([user.uid]),
-            'availableNum': FieldValue.increment(-1),
-            'haveImages': FieldValue.increment(-1),
-          });
-        }
-        else {
-          batch.update(bookReference, {
-            'owners': FieldValue.arrayRemove([user.uid]),
-            'availableNum': FieldValue.increment(-1),
-          });
-        }
-      } else {
-        //only decrement availableNum
-        print(
-            'The user removed a duplicated book, just reducing the availableNum...');
-        if (book.exchangeable && book.imagesUrl != null &&
-            book.imagesUrl.length != 0) {
-          batch.update(bookReference, {
-            'availableNum': FieldValue.increment(-1),
-            'exchangeable': FieldValue.increment(-1),
-            'haveImages': FieldValue.increment(-1),
-          });
-        }
-        else if (book.exchangeable) {
-          batch.update(bookReference, {
-            'availableNum': FieldValue.increment(-1),
-            'exchangeable': FieldValue.increment(-1),
-          });
-        }
-        else if (book.imagesUrl != null && book.imagesUrl.length != 0) {
-          batch.update(bookReference, {
-            'availableNum': FieldValue.increment(-1),
-            'haveImages': FieldValue.increment(-1),
-          });
-        }
-        else {
-          batch.update(bookReference, {
-            'availableNum': FieldValue.increment(-1),
-          });
-        }
-      }
-
-      if (bookDocumentRemoved) {
-        //remove book from book from genres
-        Map<String, dynamic> bookToRemoveInfoMap = {
-          "title": book.title,
-          "author": book.author,
-          "thumbnail": thumbnail,
-        };
-        Map<String, dynamic> bookToRemoveMap = {
-          book.id: bookToRemoveInfoMap,
-        };
-
-        DocumentReference booksPerGenreReference = booksPerGenreCollection.doc(book.category);
-
-        batch.update(booksPerGenreReference, {
-          'books': FieldValue.arrayRemove([bookToRemoveMap]),
+        batch.update(userReference, {
+          'books': books
         });
+
+        DocumentReference bookReference = bookCollection.doc(id);
+        DocumentSnapshot docSnap = await transactionOnDb.get(bookReference);
+        if (docSnap.exists) {
+          thumbnail = docSnap.data().containsKey("thumbnail") ?
+          docSnap.data()['thumbnail'] : null;
+        }
+        availableNum = docSnap.data()['availableNum'];
+
+        if (availableNum == 1) {
+          //remove all the document
+          print('No other user has this book, removing all...');
+          batch.delete(bookReference);
+          bookDocumentRemoved = true;
+        } else if (!duplicatePresent) {
+          //remove only the current user
+          print('Other users have this book, just removing yours...');
+          if (book.exchangeable && book.imagesUrl != null &&
+              book.imagesUrl.length != 0) {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayRemove([user.uid]),
+              'availableNum': FieldValue.increment(-1),
+              'exchangeable': FieldValue.increment(-1),
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+          else if (book.exchangeable) {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayRemove([user.uid]),
+              'availableNum': FieldValue.increment(-1),
+              'exchangeable': FieldValue.increment(-1),
+            });
+          }
+          else if (book.imagesUrl != null && book.imagesUrl.length != 0) {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayRemove([user.uid]),
+              'availableNum': FieldValue.increment(-1),
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+          else {
+            batch.update(bookReference, {
+              'owners': FieldValue.arrayRemove([user.uid]),
+              'availableNum': FieldValue.increment(-1),
+            });
+          }
+        } else {
+          //only decrement availableNum
+          print(
+              'The user removed a duplicated book, just reducing the availableNum...');
+          if (book.exchangeable && book.imagesUrl != null &&
+              book.imagesUrl.length != 0) {
+            batch.update(bookReference, {
+              'availableNum': FieldValue.increment(-1),
+              'exchangeable': FieldValue.increment(-1),
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+          else if (book.exchangeable) {
+            batch.update(bookReference, {
+              'availableNum': FieldValue.increment(-1),
+              'exchangeable': FieldValue.increment(-1),
+            });
+          }
+          else if (book.imagesUrl != null && book.imagesUrl.length != 0) {
+            batch.update(bookReference, {
+              'availableNum': FieldValue.increment(-1),
+              'haveImages': FieldValue.increment(-1),
+            });
+          }
+          else {
+            batch.update(bookReference, {
+              'availableNum': FieldValue.increment(-1),
+            });
+          }
+        }
+
+        if (bookDocumentRemoved) {
+          //remove book from book from genres
+          Map<String, dynamic> bookToRemoveInfoMap = {
+            "title": book.title,
+            "author": book.author,
+            "thumbnail": thumbnail,
+          };
+          Map<String, dynamic> bookToRemoveMap = {
+            book.id: bookToRemoveInfoMap,
+          };
+
+          DocumentReference booksPerGenreReference = booksPerGenreCollection
+              .doc(book.category);
+
+          batch.update(booksPerGenreReference, {
+            'books': FieldValue.arrayRemove([bookToRemoveMap]),
+          });
+        }
+
+        batch.commit();
       }
-
-      batch.commit();
     });
-
+    runningTransaction = false;
     //remove pictures from the storage
     await storageService.removeBookPicture(
         user.uid, book.title, book.insertionNumber);

@@ -113,7 +113,7 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                         ),
                       ) : CircleAvatar(
                         radius: 50,
-                        backgroundColor: Colors.brown.shade800,
+                        backgroundColor: Colors.teal[100],
                         child: Text(
                           widget.username[0].toUpperCase(),
                           textScaleFactor: 3,

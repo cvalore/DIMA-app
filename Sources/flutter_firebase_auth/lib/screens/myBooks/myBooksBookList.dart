@@ -183,12 +183,12 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                           print("Delete book");
                           InsertedBook book = await _db.getBook(index);
                           dynamic result = await _db.removeBook(index, book);
-                          Scaffold.of(context).showSnackBar(
+                          /*Scaffold.of(context).showSnackBar(
                             SnackBar(duration: Duration(seconds: 1),
                               content: Text(
                                 'Book removed: ' + '${book.title}',),
                               backgroundColor: Colors.white24,),
-                          );
+                          );*/
                         }
                       });
                     }

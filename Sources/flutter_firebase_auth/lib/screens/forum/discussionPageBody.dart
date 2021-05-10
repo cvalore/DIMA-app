@@ -126,7 +126,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10.0, vertical: 8.0),
                                       child: CircleAvatar(
-                                        backgroundColor: Colors.brown.shade800,
+                                        backgroundColor: Colors.teal[100],
                                         radius: 35.0,
                                         child: Text(
                                           discussion.messages[index].nameSender[0].toUpperCase(),

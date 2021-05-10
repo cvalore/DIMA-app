@@ -253,7 +253,7 @@ class _ReviewItemState extends State<ReviewItem> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10.0),
                       child: CircleAvatar(
-                        backgroundColor: Colors.brown.shade800,
+                        backgroundColor: Colors.teal[100],
                         radius: 60.0,
                         child: widget.reviewWrittenByMe
                             .reviewedImageProfileURL != '' ?
