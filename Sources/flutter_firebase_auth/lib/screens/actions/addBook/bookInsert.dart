@@ -38,6 +38,13 @@ class _BookInsertState extends State<BookInsert> {
   bool _isTablet;
   DatabaseService _db;
 
+  bool clear = false;
+  void clearFields() {
+    setState(() {
+      widget.insertedBook = InsertedBook();
+    });
+  }
+
   void setSelected(dynamic sel) {
     setState(() {
       widget.selectedBook = sel;
@@ -51,6 +58,7 @@ class _BookInsertState extends State<BookInsert> {
                 db: _db,
                 insertedBook: widget.insertedBook,
                 selectedBook: widget.selectedBook,
+                clearFields: clearFields,
               )
           )
       );
