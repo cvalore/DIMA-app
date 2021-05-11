@@ -158,6 +158,14 @@ class _SearchBookPageState extends State<SearchBookPage> {
     });
   }
 
+  bool loading = false;
+
+  void setLoading(bool newValue) {
+    setState(() {
+      loading = newValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -170,7 +178,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return Container(
+    return loading ? Loading() : Container(
       /*decoration: BoxDecoration(
         border: Border.all(color: Colors.red, width: 2.0),
       ),*/
@@ -710,6 +718,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                           child: SearchBookInfoBody(
                                             book: booksAllInfo[i],
                                             bookInfo: booksAllInfo[i][0]['info'],
+                                            setLoading: setLoading,
+                                            fatherContext: context,
                                           ),
                                         ),
                                         Padding(
@@ -1519,6 +1529,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                                 child: SearchBookInfoBody(
                                                   book: booksAllInfo[i],
                                                   bookInfo: booksAllInfo[i][0]['info'],
+                                                  setLoading: setLoading,
+                                                  fatherContext: context,
                                                 ),
                                               ),
                                               Padding(

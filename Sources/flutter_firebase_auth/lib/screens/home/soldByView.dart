@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
@@ -15,8 +17,10 @@ class SoldByView extends StatefulWidget {
   final dynamic books;
   final bool showOnlyExchangeable;
   final bool fromPending;
+  final Function(bool) setLoading;
+  final BuildContext fatherContext;
 
-  const SoldByView({Key key, this.books, this.showOnlyExchangeable, this.fromPending}) : super(key: key);
+  const SoldByView({Key key, this.books, this.showOnlyExchangeable, this.fromPending, this.setLoading, this.fatherContext}) : super(key: key);
 
   @override
   _SoldByViewState createState() => _SoldByViewState();
@@ -43,7 +47,9 @@ class _SoldByViewState extends State<SoldByView> {
                 InkWell(
                   onTap: () async {
                     //print(widget.books[i]);
-                    Utils.pushBookPage(context, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], widget.books[i]['uid'] != Utils.mySelf.uid);
+                    widget.setLoading(true);
+                    await Utils.pushBookPage(widget.fatherContext, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], widget.books[i]['uid'] != Utils.mySelf.uid);
+                    Timer timer = Timer(Duration(milliseconds: 350), () {widget.setLoading(false);});
                   },
                   child: Column(
                       children: <Widget>[
