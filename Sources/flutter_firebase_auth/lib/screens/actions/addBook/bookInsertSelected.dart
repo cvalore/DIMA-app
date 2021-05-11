@@ -15,8 +15,9 @@ class BookInsertSelected extends StatefulWidget {
   int currentPageValue = 0;
   final pageViewSize = 2;
   DatabaseService db;
+  final Function clearFields;
 
-  BookInsertSelected({Key key, this.db, this.selectedBook, this.insertedBook}) : super(key: key);
+  BookInsertSelected({Key key, this.db, this.selectedBook, this.insertedBook, this.clearFields}) : super(key: key);
 
   @override
   _BookInsertSelectedState createState() => _BookInsertSelectedState();
@@ -55,6 +56,7 @@ class _BookInsertSelectedState extends State<BookInsertSelected> {
         edit: false,
         editIndex: -1,
         updateBook: null,
+        clearFields: widget.clearFields,
       ) : null,
       body: Builder(
           builder: (BuildContext context) {

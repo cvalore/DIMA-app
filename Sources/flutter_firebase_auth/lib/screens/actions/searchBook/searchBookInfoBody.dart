@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 
 class SearchBookInfoBody extends StatelessWidget {
 
   final dynamic book;
   final dynamic bookInfo;
+  final Function(bool) setLoading;
+  final BuildContext fatherContext;
 
-  final sectionContents = [];
 
-  SearchBookInfoBody({Key key, this.book, this.bookInfo}) : super(key: key);
+  SearchBookInfoBody({Key key, this.book, this.bookInfo, this.setLoading, this.fatherContext}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class SearchBookInfoBody extends StatelessWidget {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemCount: 3,
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (BuildContext listContext, int index) {
         return Theme(
           data: Theme.of(context).copyWith(
               dividerColor: index == 2 ?
@@ -44,8 +46,20 @@ class SearchBookInfoBody extends StatelessWidget {
                 HomeBookGeneralInfoView(selectedBook: bookInfo,) :
                 (
                   index == 1 ?
-                    SoldByView(books: book, showOnlyExchangeable: false, fromPending: false,) :
-                    SoldByView(books: book, showOnlyExchangeable: true, fromPending: false,)
+                    SoldByView(
+                      books: book,
+                      showOnlyExchangeable: false,
+                      fromPending: false,
+                      setLoading: setLoading,
+                      fatherContext: fatherContext,
+                    ) :
+                    SoldByView(
+                      books: book,
+                      showOnlyExchangeable: true,
+                      fromPending: false,
+                      setLoading: setLoading,
+                      fatherContext: fatherContext,
+                    )
                 )
               ]
           ),

@@ -4,15 +4,30 @@ import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 
-class HomeBookInfoBody extends StatelessWidget {
+class HomeBookInfoBody extends StatefulWidget {
 
   final PerGenreBook book;
   final DatabaseService db;
 
-  final sectionContents = [];
-
   HomeBookInfoBody({Key key, this.book, this.db}) : super(key: key);
+
+  @override
+  _HomeBookInfoBodyState createState() => _HomeBookInfoBodyState();
+}
+
+class _HomeBookInfoBodyState extends State<HomeBookInfoBody> {
+
+  bool loading = false;
+
+  void setLoading(bool newValue) {
+    setState(() {
+      loading = newValue;
+    });
+  }
+
+  final sectionContents = [];
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +37,11 @@ class HomeBookInfoBody extends StatelessWidget {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return
+    return loading ? Loading() :
       _isPortrait ?
       ListView.builder(
       itemCount: 3,
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (BuildContext listContext, int index) {
         return ExpansionTile(
           initiallyExpanded: index == 1 ? true : false,
           tilePadding: EdgeInsets.symmetric(horizontal: _isTablet ? 32.0 : 12.0, vertical: _isTablet ? 12.0 : 0.0),
@@ -39,7 +54,7 @@ class HomeBookInfoBody extends StatelessWidget {
           children: <Widget>[
             index == 0 ?
             FutureBuilder(
-              future: db.getGeneralBookInfo(book.id),
+              future: widget.db.getGeneralBookInfo(widget.book.id),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting: return Text('Loading....');
@@ -53,28 +68,40 @@ class HomeBookInfoBody extends StatelessWidget {
             ) :
             (index == 1 ?
             FutureBuilder(
-              future: db.getBookSoldBy(book.id),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              future: widget.db.getBookSoldBy(widget.book.id),
+              builder: (BuildContext newContext, AsyncSnapshot<dynamic> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting: return Text('Loading....');
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     else
-                      return SoldByView(books: snapshot.data, showOnlyExchangeable: false, fromPending: false,);
+                      return SoldByView(
+                        books: snapshot.data,
+                        showOnlyExchangeable: false,
+                        fromPending: false,
+                        setLoading: setLoading,
+                        fatherContext: context,
+                      );
                 }
               },
             ) :
             FutureBuilder(
-              future: db.getBookSoldBy(book.id),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              future: widget.db.getBookSoldBy(widget.book.id),
+              builder: (BuildContext newContext, AsyncSnapshot<dynamic> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting: return Text('Loading....');
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     else
-                      return SoldByView(books: snapshot.data, showOnlyExchangeable: true, fromPending: false,);
+                      return SoldByView(
+                        books: snapshot.data,
+                        showOnlyExchangeable: true,
+                        fromPending: false,
+                        setLoading: setLoading,
+                        fatherContext: context,
+                      );
                 }
               },
             )
@@ -100,7 +127,7 @@ class HomeBookInfoBody extends StatelessWidget {
                       itemCount: 1,
                       itemBuilder: (BuildContext context, int index) {
                         return FutureBuilder(
-                          future: db.getGeneralBookInfo(book.id),
+                          future: widget.db.getGeneralBookInfo(widget.book.id),
                           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                             switch (snapshot.connectionState) {
                               case ConnectionState.waiting: return Text('Loading....');
@@ -125,7 +152,7 @@ class HomeBookInfoBody extends StatelessWidget {
             //decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
             child: ListView.builder(
               itemCount: 2,
-              itemBuilder: (BuildContext context, int index) {
+              itemBuilder: (BuildContext listContext, int index) {
                 return ExpansionTile(
                     initiallyExpanded: index == 0 ? true : false,
                     tilePadding: EdgeInsets.symmetric(horizontal: _isTablet ? 32.0 : 12.0, vertical: _isTablet ? 12.0 : 0.0),
@@ -136,28 +163,40 @@ class HomeBookInfoBody extends StatelessWidget {
                     children: <Widget>[
                       index == 0 ?
                       FutureBuilder(
-                        future: db.getBookSoldBy(book.id),
-                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                        future: widget.db.getBookSoldBy(widget.book.id),
+                        builder: (BuildContext newContext, AsyncSnapshot<dynamic> snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting: return Text('Loading....');
                             default:
                               if (snapshot.hasError)
                                 return Text('Error: ${snapshot.error}');
                               else
-                                return SoldByView(books: snapshot.data, showOnlyExchangeable: false, fromPending: false,);
+                                return SoldByView(
+                                  books: snapshot.data,
+                                  showOnlyExchangeable: false,
+                                  fromPending: false,
+                                  setLoading: setLoading,
+                                  fatherContext: context,
+                                );
                           }
                         },
                       ) :
                       FutureBuilder(
-                        future: db.getBookSoldBy(book.id),
-                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                        future: widget.db.getBookSoldBy(widget.book.id),
+                        builder: (BuildContext newContext, AsyncSnapshot<dynamic> snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting: return Text('Loading....');
                             default:
                               if (snapshot.hasError)
                                 return Text('Error: ${snapshot.error}');
                               else
-                                return SoldByView(books: snapshot.data, showOnlyExchangeable: true, fromPending: false,);
+                                return SoldByView(
+                                  books: snapshot.data,
+                                  showOnlyExchangeable: true,
+                                  fromPending: false,
+                                  setLoading: setLoading,
+                                  fatherContext: context,
+                                );
                           }
                         },
                       )

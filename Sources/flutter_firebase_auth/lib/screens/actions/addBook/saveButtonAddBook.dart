@@ -15,8 +15,9 @@ class SaveButtonAddBook extends StatelessWidget {
   final bool edit;
   final int editIndex;
   final Function(InsertedBook) updateBook;
+  final Function() clearFields;
 
-  const SaveButtonAddBook({Key key, this.insertedBook, this.db, this.selectedBook, this.edit, this.editIndex, this.updateBook}) : super(key: key);
+  const SaveButtonAddBook({Key key, this.insertedBook, this.db, this.selectedBook, this.edit, this.editIndex, this.updateBook, this.clearFields}) : super(key: key);
 
 
   @override
@@ -85,6 +86,9 @@ class SaveButtonAddBook extends StatelessWidget {
             insertedBook.setBookGeneralInfo(selectedBook);
             //_insertedBook.printBook();
             await db.addUserBook(insertedBook);
+            if(clearFields != null) {
+              clearFields();
+            }
             final snackBar = SnackBar(
               backgroundColor: Colors.white24,
               duration: Duration(seconds: 1),
