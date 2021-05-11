@@ -1552,7 +1552,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
     booksAllInfoCopy.addAll(booksAllInfo);
 
     RegExp regExp1 = RegExp(r'([\d]+\.[\d]{1,2}$|^[\d]+$)');       //well defined price format
-    RegExp regExp2 = RegExp(r'(^[0]+$|[0]+\.[0]{1,2}$)');       //price with all digits equal to zero should not be matched
+    RegExp regExp2 = RegExp(r'(^[0]+$|^[0]+\.[0]{1,2}$)');       //price with all digits equal to zero should not be matched
     if(!regExp1.hasMatch(_greaterThanPrice) || regExp2.hasMatch(_greaterThanPrice)) {
       _greaterThanPrice = "";
       _greaterThanFormFieldController.clear();

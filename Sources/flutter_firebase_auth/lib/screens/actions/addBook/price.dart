@@ -145,7 +145,7 @@ class PriceBoxState extends State<PriceBox> {
                   style: TextStyle(color: Colors.white),
                   validator: (value) {
                     RegExp regExp1 = RegExp(r'([\d]+\.[\d]{1,2}$|^[\d]+$)');       //well defined price format
-                    RegExp regExp2 = RegExp(r'(^[0]+$|[0]+\.[0]{1,2}$)');       //price with all digits equal to zero should not be matched
+                    RegExp regExp2 = RegExp(r'(^[0]+$|^[0]+\.[0]{1,2}$)');       //price with all digits equal to zero should not be matched
                     return !regExp1.hasMatch(value) || regExp2.hasMatch(value) ?
                               'Enter a valid price' : null;
                     },
