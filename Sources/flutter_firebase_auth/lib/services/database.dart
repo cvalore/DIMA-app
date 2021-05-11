@@ -160,6 +160,9 @@ class DatabaseService {
 
   ForumDiscussion _forumDiscussionFromSnapshot(DocumentSnapshot documentSnapshot) {
     dynamic result = documentSnapshot.data();
+    if(result == null) {
+      return null;
+    }
     List<Message> messages = List<Message>();
     for(int i = 0; i < result['messages'].length; i++) {
       messages.add(Message.fromDynamicToMessage(result['messages'][i]));
@@ -1289,6 +1292,11 @@ class DatabaseService {
       allDiscussions.add(doc.data());
     }
     return allDiscussions;
+  }
+
+  Future<dynamic> removeDiscussion(String title) async {
+    print("Deleting");
+    await forumDiscussionCollection.doc(title).delete();
   }
 
   Future<dynamic> createNewDiscussion(String category, String title) async {
