@@ -17,6 +17,10 @@ class DiscussionTab extends StatefulWidget {
 
 class _DiscussionTabState extends State<DiscussionTab> {
 
+  void updateDiscussionView() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -37,7 +41,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
                       if (newSnapshot.hasError)
                         return Text('Error: ${newSnapshot.error}');
                       else
-                        return DiscussionTabBody(discussions: snapshot.data);
+                        return DiscussionTabBody(discussions: snapshot.data, updateDiscussionView: updateDiscussionView);
                   }
                 },
               );

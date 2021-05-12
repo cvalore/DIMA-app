@@ -7,8 +7,9 @@ import 'package:flutter_firebase_auth/shared/constants.dart';
 class NewDiscussionPage extends StatefulWidget {
 
   final DatabaseService db;
+  final Function() updateDiscussionView;
 
-  const NewDiscussionPage({Key key, this.db}) : super(key: key);
+  const NewDiscussionPage({Key key, this.db, this.updateDiscussionView}) : super(key: key);
 
   @override
   _NewDiscussionPageState createState() => _NewDiscussionPageState();
@@ -55,6 +56,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
           getTitle: getTitle,
           getDropdownLabel: getDropdownLabel,
           getDb: getDb,
+          updateDiscussionView: widget.updateDiscussionView,
         ),
         body: SingleChildScrollView(
           child: Form(

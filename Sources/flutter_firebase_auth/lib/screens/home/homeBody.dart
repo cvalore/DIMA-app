@@ -69,6 +69,10 @@ class _HomeBodyState extends State<HomeBody> {
     this._selectedVerticalTab = newIndex;
   }
 
+  void updateDiscussionView() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -92,7 +96,7 @@ class _HomeBodyState extends State<HomeBody> {
         setIndex: setIndex,
       ),*/
       Container(),
-      ForumMainPage(),
+      ForumMainPage(updateDiscussionView: updateDiscussionView,),
       ProfileMainPage(),
     ];
 
@@ -318,7 +322,7 @@ class _HomeBodyState extends State<HomeBody> {
                   ),
                   Container(),
                   Container(),
-                  ForumMainPage(),
+                  ForumMainPage(updateDiscussionView: updateDiscussionView,),
                   ProfileMainPage(),
                 ],
                 onTaps: [

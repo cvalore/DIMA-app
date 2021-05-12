@@ -8,8 +8,9 @@ class NewDiscussionPageFloatingButton extends StatelessWidget {
   final Function() getTitle;
   final Function() getDropdownLabel;
   final Function() getDb;
+  final Function() updateDiscussionView;
 
-  const NewDiscussionPageFloatingButton({Key key, this.getFormKey, this.getTitle, this.getDropdownLabel, this.getDb,}) : super(key: key);
+  const NewDiscussionPageFloatingButton({Key key, this.getFormKey, this.getTitle, this.getDropdownLabel, this.getDb, this.updateDiscussionView,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +42,12 @@ class NewDiscussionPageFloatingButton extends StatelessWidget {
                 MaterialPageRoute(builder: (context) =>
                     DiscussionPage(
                       discussion: Utils.toForumDiscussion(discussion),
+                      updateDiscussionView: updateDiscussionView,
                     ))
             );
           }
           Scaffold.of(context).showSnackBar(snackBar);
+          updateDiscussionView();
         }
       },
       child: Icon(Icons.check),

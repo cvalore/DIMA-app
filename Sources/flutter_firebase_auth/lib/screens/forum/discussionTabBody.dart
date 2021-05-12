@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
@@ -9,11 +10,23 @@ import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
-class DiscussionTabBody extends StatelessWidget {
+class DiscussionTabBody extends StatefulWidget {
 
   final dynamic discussions;
+  final Function() updateDiscussionView;
 
-  const DiscussionTabBody({Key key, this.discussions}) : super(key: key);
+  DiscussionTabBody({Key key, this.discussions, this.updateDiscussionView}) : super(key: key);
+
+  @override
+  _DiscussionTabBodyState createState() => _DiscussionTabBodyState();
+}
+
+class _DiscussionTabBodyState extends State<DiscussionTabBody> {
+  var _tapPosition;
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +36,7 @@ class DiscussionTabBody extends StatelessWidget {
       perCategoryDiscussion.addAll({e: []});
     });
 
-    discussions.forEach((e) {
+    widget.discussions.forEach((e) {
       List<dynamic> newValue = perCategoryDiscussion[e['category']] ?? [];
       newValue.addAll([e]);
       perCategoryDiscussion.update(e['category'], (value) => newValue, ifAbsent: () => [e]);
@@ -34,7 +47,7 @@ class DiscussionTabBody extends StatelessWidget {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return discussions.length == 0 ?
+    return widget.discussions.length == 0 ?
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,11 +98,59 @@ class DiscussionTabBody extends StatelessWidget {
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: _isTablet ? 6.0 : 2.0),
                                     child: InkWell(
+                                      onTapDown: _storePosition,
+                                      onLongPress: () {
+                                        if(perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedBy'] != Utils.mySelf.uid) {
+                                          return;
+                                        }
+                                        final RenderBox overlay = Overlay
+                                            .of(context)
+                                            .context
+                                            .findRenderObject();
+                                        showMenu(
+                                          context: context,
+                                          color: Colors.grey[800],
+                                          items: [
+                                            PopupMenuItem(
+                                              value: deleteBookPopupIndex,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                                                    child: Icon(
+                                                      Icons.remove_circle, color: Colors.white,),
+                                                  ),
+                                                  Text('Delete', style: TextStyle(color: Colors.white),),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                          position: RelativeRect.fromRect(
+                                              _tapPosition & const Size(40, 40),
+                                              Offset.zero & overlay.size
+                                          ),
+                                        ).then((value) async {
+                                            ForumDiscussion disc = Utils.toForumDiscussion(perCategoryDiscussion[forumDiscussionCategories[i]][j]);
+                                            await Utils.databaseService.removeDiscussion(disc.title);
+                                            final snackBar = SnackBar(
+                                              backgroundColor: Colors.white24,
+                                              duration: Duration(seconds: 1),
+                                              content: Text(
+                                                "Discussion removed",
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                            );
+                                            Scaffold.of(context).showSnackBar(snackBar);
+                                            widget.updateDiscussionView();
+                                            setState(() { });
+                                        });
+                                      },
                                       onTap: () {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => DiscussionPage(
                                               discussion: Utils.toForumDiscussion(perCategoryDiscussion[forumDiscussionCategories[i]][j]),
+                                              updateDiscussionView: widget.updateDiscussionView,
                                             ))
                                         );
                                       },
@@ -103,6 +164,7 @@ class DiscussionTabBody extends StatelessWidget {
                                                 flex: 1,
                                                 child: InkWell(
                                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                                  onTapDown: _storePosition,
                                                   onTap: () async {
                                                     if (perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedBy'] != Utils.mySelf.uid) {
                                                       DatabaseService databaseService = DatabaseService(

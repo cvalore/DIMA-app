@@ -8,6 +8,10 @@ import 'package:provider/provider.dart';
 
 class ForumMainPage extends StatefulWidget {
 
+  final Function() updateDiscussionView;
+
+  const ForumMainPage({Key key, this.updateDiscussionView}) : super(key: key);
+
   @override
   _ForumMainPageState createState() => _ForumMainPageState();
 }
@@ -16,7 +20,6 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-
     AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
     CustomUser user = CustomUser(
         userFromAuth != null ? userFromAuth.uid : "",
@@ -37,7 +40,7 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
          onPressed: () {
            Navigator.push(
                context,
-               MaterialPageRoute(builder: (context) => NewDiscussionPage(db: _db,))
+               MaterialPageRoute(builder: (context) => NewDiscussionPage(db: _db, updateDiscussionView: widget.updateDiscussionView))
            );
          },
        ),
