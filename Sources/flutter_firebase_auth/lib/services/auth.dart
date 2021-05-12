@@ -171,13 +171,13 @@ class AuthService {
   //sign out
   Future signOut() async {
     try {
-      if(_signedInGoogle) {
-        print('Google signed out');
-        return await _googleSignin.signOut();
-      }
-      else {
+        print('Signed out');
+        bool signedInWithGoogle = await _googleSignin.isSignedIn();
+        if(signedInWithGoogle) {
+          await _googleSignin.disconnect();
+          await _googleSignin.signOut();
+        }
         return await _auth.signOut();
-      }
     } catch(e) {
       print(e.toString());
       return null;

@@ -95,7 +95,7 @@ class PriceBoxState extends State<PriceBox> {
         title: Text("Price"),
       ),
       //backgroundColor: Colors.black,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white24,
         onPressed: () {
