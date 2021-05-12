@@ -10,10 +10,10 @@ class ChangeProfilePic extends StatefulWidget {
   double height;
   String username;
   StringWrapper newImagePath;
-  String oldImagePath;
+  String oldImageUrl;
   BoolWrapper oldImageRemoved;
 
-  ChangeProfilePic({Key key, @required this.height, @required this.username, @required this.newImagePath, @required this.oldImagePath, @required this.oldImageRemoved});
+  ChangeProfilePic({Key key, @required this.height, @required this.username, @required this.newImagePath, @required this.oldImageUrl, @required this.oldImageRemoved});
 
   @override
   _ChangeProfilePicState createState() => _ChangeProfilePicState();
@@ -22,6 +22,7 @@ class ChangeProfilePic extends StatefulWidget {
 class _ChangeProfilePicState extends State<ChangeProfilePic> {
 
   final ImagePicker _picker = ImagePicker();
+  String oldImageUrl;
 
   _imgFromCamera() async {
     PickedFile image = await _picker.getImage(
@@ -84,9 +85,16 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    oldImageUrl = widget.oldImageUrl;
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-    widget.oldImagePath = widget.oldImagePath == null ? '' : widget.oldImagePath;
+    //print(widget.oldImagePath);
+    //widget.oldImagePath = widget.oldImagePath == null ? '' : widget.oldImagePath;
 
     return Container(
         height: widget.height,
@@ -105,11 +113,11 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                             radius: 50,
                           backgroundImage: FileImage(File(widget.newImagePath.value))
                         ),
-                      ) : widget.oldImagePath != '' ?  CircleAvatar(
+                      ) : oldImageUrl != null && oldImageUrl != '' ?  CircleAvatar(
                         radius: 50,
                         child: CircleAvatar(
                             radius: 50,
-                            backgroundImage: FileImage(File(widget.oldImagePath))
+                            backgroundImage: NetworkImage(oldImageUrl)
                         ),
                       ) : CircleAvatar(
                         radius: 50,
@@ -139,7 +147,8 @@ class _ChangeProfilePicState extends State<ChangeProfilePic> {
                               onPressed: () {
                                 setState(() {
                                   widget.newImagePath.value = '';
-                                  widget.oldImagePath = '';
+                                  //widget.oldImagePath = '';
+                                  oldImageUrl = '';
                                   widget.oldImageRemoved.value = true;
                                 });
                               },

@@ -40,7 +40,6 @@ class _ModifyProfileMainPageState extends State<ModifyProfileMainPage> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isTablet = MediaQuery.of(context).size.width > mobileMaxWidth;
     DatabaseService _db = DatabaseService(user: widget.user);
 
     return Scaffold(
@@ -71,7 +70,7 @@ class _ModifyProfileMainPageState extends State<ModifyProfileMainPage> {
             ChangeProfilePic(height: 120.0,
               username: widget.user.username,
               newImagePath: widget.newImagePath,
-              oldImagePath: widget.user.userProfileImagePath,
+              oldImageUrl: widget.user.userProfileImageURL,
               oldImageRemoved: widget.isOldImageRemoved,
             ),
             Divider(height: 20, thickness: 2,),

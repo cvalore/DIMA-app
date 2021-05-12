@@ -532,7 +532,9 @@ class _BuyBooksState extends State<BuyBooks> {
   void _handleButtonClick(BuildContext context) {
     bool transactionCompleted = false;
     dynamic chat;
-    dynamic sellerUsername;
+    String sellerUsername;
+    String errorMessage;
+    dynamic result;
     String message;
     String myUsername;
     if (chosenShippingMode == null){
@@ -589,19 +591,34 @@ class _BuyBooksState extends State<BuyBooks> {
             actions: [
               FlatButton(
                   onPressed: () async {
-                    sellerUsername = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange, widget.thumbnails);
-                    if (sellerUsername != null) {
+                    result = await Utils.databaseService.purchaseAndProposeExchange(widget.sellingUserUid, chosenShippingMode, chosenShippingAddress, payCash, booksDefiningTotalPrice, sellerMatchingBooksForExchange, widget.thumbnails);
+                    if (result != null) {
                       print('username diverso da null');
-                      if (sellerUsername is List<String>) {
+                      if (result is List<String>) {
+                        sellerUsername = result[0];
                         transactionCompleted = true;
                         CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
                         myUsername = me.username;
                         chat = await Utils.databaseService.createNewChat(
-                            Utils.mySelf.uid, widget.sellingUserUid, myUsername, sellerUsername[0]);
+                            Utils.mySelf.uid, widget.sellingUserUid, myUsername, sellerUsername);
                         print('chat creata');
                       } else {
-                        print('error');
-                        //TODO
+                        errorMessage = result;
+                        final snackBar = SnackBar(
+                          backgroundColor: Colors.grey.withOpacity(1.0),
+                          duration: Duration(seconds: 2),
+                          content: Text(
+                            errorMessage,
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .bodyText2.copyWith(color: Colors.black),
+                          ),
+                        );
+                        Scaffold.of(context).showSnackBar(snackBar);
+                        Timer(Duration(milliseconds: 2500), () async {
+                            Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+                        });
                       }
                     }
                     Navigator.pop(context);

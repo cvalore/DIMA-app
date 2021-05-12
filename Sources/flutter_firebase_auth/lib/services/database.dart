@@ -1341,6 +1341,7 @@ class DatabaseService {
 
     bool transactionSuccessfullyCompleted = false;
     String usernameToReturn;
+    String errorMessage;
     Map<String, dynamic> transaction = Map<String, dynamic>();
     List<Map<String, dynamic>> booksToPurchaseMap = List<Map<String, dynamic>>();
     Map<String, dynamic> bookMap;
@@ -1631,33 +1632,37 @@ class DatabaseService {
 
       print('Step 6');
       batch.update(sellerUserReference, {'books': sellerBooks});
-      batch.commit();
+      //batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
-      .catchError((error) => "The following error occurred: $error");
+      .catchError((error) => errorMessage = "The following error occurred: $error");
 
     if (transactionSuccessfullyCompleted) {
       print('Step 7');
       await transactionsCollection.doc(transaction['id']).set(transaction)
-          .catchError((error) => "Failed to add transaction: $error");
+          .catchError((error) => errorMessage = "Failed to add transaction");
 
-      print('Step 8');
-      await usersCollection.doc(transaction['seller']).update({
-        'transactionsAsSeller': FieldValue.arrayUnion([
-          {'transactionId': transaction['id'], 'buyer': transaction['buyer']}
-        ]),
-      }).then((value) => print("transaction added for seller"))
-          .catchError((error) =>
-          "Failed to add transaction for seller: $error");
+      if (errorMessage == null) {
+        print('Step 8');
+        await usersCollection.doc(transaction['seller']).update({
+          'transactionsAsSeller': FieldValue.arrayUnion([
+            {'transactionId': transaction['id'], 'buyer': transaction['buyer']}
+          ]),
+        }).then((value) => print("transaction added for seller"))
+            .catchError((error) => errorMessage = "Failed to add transaction for seller");
+      }
 
-      print('Step 9');
-      await usersCollection.doc(user.uid).update({
-        'transactionsAsBuyer': FieldValue.arrayUnion([transaction['id']]),
-      }).then((value) => print("transaction added for buyer"))
-          .catchError((error) =>
-          "Failed to add transaction for buyer: $error");
-      print('Step 10');
+      if (errorMessage == null) {
+        print('Step 9');
+        await usersCollection.doc(user.uid).update({
+          'transactionsAsBuyer': FieldValue.arrayUnion([transaction['id']]),
+        }).then((value) => print("transaction added for buyer"))
+            .catchError((error) => errorMessage = "Failed to add transaction for buyer");
+        print('Step 10');
+      }
     }
 
+    if (errorMessage != null)
+      return errorMessage;
     return [usernameToReturn];
   }
 
@@ -1666,8 +1671,7 @@ class DatabaseService {
       String buyer, Map<String, dynamic> buyerBook
       ) async {
 
-
-    bool transactionSuccessfullyCompleted = false;
+    String errorMessage;
     DocumentReference buyerUserReference = usersCollection.doc(buyer);
     DocumentReference sellerUserReference = usersCollection.doc(seller);
     DocumentReference transactionReference = transactionsCollection.doc(transactionId);
@@ -1718,7 +1722,6 @@ class DatabaseService {
       print(buyerBookToRemoveIndex);
 
       // check on the buyer's books exchanged
-      // still to check this if
 
       //remove books from seller user document
       booksToRemoveId = List<String>();
@@ -1956,12 +1959,12 @@ class DatabaseService {
       batch.update(transactionReference, {'exchanges': booksFromTransaction});
 
       batch.commit();
-    }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
-        .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
+    }).then((value) {print("transaction ended successfully");})
+        .catchError((error) => errorMessage = "The following error occurred: $error");
 
-    if (transactionSuccessfullyCompleted)
-      return 'ok';
-
+    if (errorMessage != null)
+      return errorMessage;
+    return 'ok';
   }
 
 
@@ -1969,7 +1972,7 @@ class DatabaseService {
       String buyer, Map<String, dynamic> buyerBook
       ) async {
 
-    bool transactionSuccessfullyCompleted;
+    String errorMessage;
     DocumentReference buyerUserReference = usersCollection.doc(user.uid);
     DocumentReference sellerUserReference = usersCollection.doc(seller);
     DocumentReference transactionReference = transactionsCollection.doc(transactionId);
@@ -2019,11 +2022,12 @@ class DatabaseService {
       batch.update(buyerUserReference, {'books': buyerBooks});
       batch.update(transactionReference, {'exchanges': booksFromTransaction});
       batch.commit();
-    }).then((value) {print("the exchange has been declined"); transactionSuccessfullyCompleted = true;})
-        .catchError((error) => print("The following error occurred: $error")); //TODO fare return dell'errore e stampare a schermo
+    }).then((value) {print("the exchange has been declined");})
+        .catchError((error) => errorMessage = "The following error occurred: $error");
 
-    if (transactionSuccessfullyCompleted)
-      return 'ok';
+    if (errorMessage != null)
+      return errorMessage;
+    return 'ok';
   }
 
 

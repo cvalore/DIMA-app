@@ -154,25 +154,23 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                   onTap: () async {
                                     var result = await DatabaseService().acceptExchange(widget.transactions[index]['id'], widget.transactions[index]['seller'],
                                         widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
-                                    /*
-                                    if (result is String && result == 'ok') {
-                                      Timer timer = Timer(Duration(milliseconds: 500), () {
+                                    if (result is String && result != 'ok') {
                                       final snackBar = SnackBar(
                                         backgroundColor: Colors.white24,
                                         duration: Duration(seconds: 2),
                                         content: Text(
-                                          'The exchange has been accepted',
+                                          result,
                                           style: Theme
                                               .of(context)
                                               .textTheme
                                               .bodyText2,
                                         ),
                                       );
-                                      Scaffold.of(context).showSnackBar(
-                                          snackBar);
-                                    });
+                                      Scaffold.of(context).showSnackBar(snackBar);
+                                      Timer(Duration(milliseconds: 2500), () {
+                                        Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+                                      });
                                     }
-                                     */
                                     },
                                   child: Icon(Icons.check, color: Colors.green,),
                                 ),
@@ -181,25 +179,23 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                   onTap: () async {
                                     var result = await DatabaseService().declineExchange(widget.transactions[index]['id'], widget.transactions[index]['seller'],
                                         widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
-                                    /*
-                                    if (result is String && result == 'ok'){
-                                      setState(() {
-                                        widget.transactions.removeAt(index);
+                                    if (result is String && result != 'ok') {
+                                      final snackBar = SnackBar(
+                                        backgroundColor: Colors.white24,
+                                        duration: Duration(seconds: 2),
+                                        content: Text(
+                                          result,
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .bodyText2,
+                                        ),
+                                      );
+                                      Scaffold.of(context).showSnackBar(snackBar);
+                                      Timer(Duration(milliseconds: 2500), () {
+                                        Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
                                       });
                                     }
-                                    final snackBar = SnackBar(
-                                      backgroundColor: Colors.white24,
-                                      duration: Duration(seconds: 2),
-                                      content: Text(
-                                        'The exchange has been rejected',
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText2,
-                                      ),
-                                    );
-                                    Scaffold.of(context).showSnackBar(snackBar);
-                                     */
                                   },
                                   child: Icon(Icons.delete_forever_outlined, color: Colors.red,),
                                 ),
