@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/notifications/notificationText.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:flutter_firebase_auth/shared/manuallyCloseableExpansionTile.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/manuallyCloseableExpansionTile.dart';
 
 class NotificationPageBody extends StatelessWidget {
 

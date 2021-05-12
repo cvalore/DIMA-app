@@ -6,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Add username when signing up', (WidgetTester tester) async {
     // Create the widget by telling the tester to build it.
-    InsertedBook insertedBook = InsertedBook(title: 'title', author: 'author');
-
     Map<String,WidgetBuilder> routes = <String,WidgetBuilder>{
       Subscribe.routeName: (context) => Subscribe()
     };

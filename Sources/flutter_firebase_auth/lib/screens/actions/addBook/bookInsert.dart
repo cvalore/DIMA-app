@@ -8,8 +8,8 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/addBookUserInfo.da
 import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsertSelected.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/shared/constants.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 import 'package:provider/provider.dart';
 
 class BookInsert extends StatefulWidget {

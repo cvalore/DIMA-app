@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/shared/loading.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class Exchanges extends StatefulWidget {
