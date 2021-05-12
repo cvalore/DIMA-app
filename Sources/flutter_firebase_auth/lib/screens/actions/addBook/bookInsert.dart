@@ -9,6 +9,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsertSelected
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 class BookInsert extends StatefulWidget {
@@ -77,6 +78,13 @@ class _BookInsertState extends State<BookInsert> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
+    bool loading = false;
+    void setLoading(bool newValue) {
+      setState(() {
+        loading = newValue;
+      });
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //backgroundColor: Colors.black,
@@ -102,7 +110,7 @@ class _BookInsertState extends State<BookInsert> {
         ) : null,
       body: Builder(
         builder: (BuildContext context) {
-        return
+        return loading ? Loading() :
             (widget.edit ?
               AddBookUserInfo(
                 insertedBook: widget.insertedBook,
