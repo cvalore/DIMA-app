@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/saveButtonAddBook.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/shared/constants.dart';
+import 'package:flutter_firebase_auth/shared/loading.dart';
 
 import 'addBookSelection.dart';
 import 'addBookUserInfo.dart';
@@ -26,6 +27,13 @@ class BookInsertSelected extends StatefulWidget {
 class _BookInsertSelectedState extends State<BookInsertSelected> {
 
   final PageController controller = PageController();
+
+  bool loading = false;
+  void setLoading(bool newValue) {
+    setState(() {
+      loading = newValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +65,11 @@ class _BookInsertSelectedState extends State<BookInsertSelected> {
         editIndex: -1,
         updateBook: null,
         clearFields: widget.clearFields,
+        setLoading: setLoading,
       ) : null,
       body: Builder(
           builder: (BuildContext context) {
-            return PageView(
+            return loading ? Loading() : PageView(
               controller: controller,
               onPageChanged: (index) {
                 //print("the index is $index");

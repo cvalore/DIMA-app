@@ -7,7 +7,7 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:provider/provider.dart';
 
-class SaveButtonAddBook extends StatelessWidget {
+class SaveButtonAddBook extends StatefulWidget {
 
   final InsertedBook insertedBook;
   final DatabaseService db;
@@ -16,9 +16,16 @@ class SaveButtonAddBook extends StatelessWidget {
   final int editIndex;
   final Function(InsertedBook) updateBook;
   final Function() clearFields;
+  final Function(bool) setLoading;
 
-  const SaveButtonAddBook({Key key, this.insertedBook, this.db, this.selectedBook, this.edit, this.editIndex, this.updateBook, this.clearFields}) : super(key: key);
+  SaveButtonAddBook({Key key, this.insertedBook, this.db, this.selectedBook, this.edit, this.editIndex, this.updateBook, this.clearFields, this.setLoading}) : super(key: key);
 
+  @override
+  _SaveButtonAddBookState createState() => _SaveButtonAddBookState();
+}
+
+class _SaveButtonAddBookState extends State<SaveButtonAddBook> {
+  bool pressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +38,20 @@ class SaveButtonAddBook extends StatelessWidget {
       backgroundColor: Colors.white24,
       heroTag: "saveBtn",
       onPressed: () async {
-        if(edit) {
-          bool hadImages = insertedBook.imagesUrl != null && insertedBook.imagesUrl.length != 0;
-          bool wasExchangeable = insertedBook.exchangeable;
-          await db.updateBook(insertedBook, editIndex, hadImages, wasExchangeable);
+        if(pressed) {
+          return;
+        }
+        setState(() {
+          pressed = true;
+        });
+        if(widget.edit) {
+          widget.setLoading(true);
+          bool hadImages = widget.insertedBook.imagesUrl != null && widget.insertedBook.imagesUrl.length != 0;
+          bool wasExchangeable = widget.insertedBook.exchangeable;
+          await widget.db.updateBook(widget.insertedBook, widget.editIndex, hadImages, wasExchangeable);
 
-          if(updateBook != null) {
-            updateBook(insertedBook);
+          if(widget.updateBook != null) {
+            widget.updateBook(widget.insertedBook);
           }
 
           final snackBar = SnackBar(
@@ -49,11 +63,12 @@ class SaveButtonAddBook extends StatelessWidget {
           );
           // Find the Scaffold in the widget tree and use
           // it to show a SnackBar.
+          widget.setLoading(false);
           Scaffold.of(context).showSnackBar(snackBar);
           Navigator.pop(context);
         }
-        else if (selectedBook.title != null) {
-          if (insertedBook.category == null || insertedBook.category == '') {
+        else if (widget.selectedBook.title != null) {
+          if (widget.insertedBook.category == null || widget.insertedBook.category == '') {
             final snackBar = SnackBar(
               backgroundColor: Colors.white24,
               duration: Duration(seconds: 1),
@@ -65,7 +80,7 @@ class SaveButtonAddBook extends StatelessWidget {
             // Find the Scaffold in the widget tree and use
             // it to show a SnackBar.
             Scaffold.of(context).showSnackBar(snackBar);
-          } else if (insertedBook.price == null || insertedBook.price == 0.0) {
+          } else if (widget.insertedBook.price == null || widget.insertedBook.price == 0.0) {
             final snackBar = SnackBar(
               backgroundColor: Colors.white24,
               duration: Duration(seconds: 1),
@@ -78,16 +93,17 @@ class SaveButtonAddBook extends StatelessWidget {
             // it to show a SnackBar.
             Scaffold.of(context).showSnackBar(snackBar);
           } else {
-            insertedBook.setIdTitleAuthorIsbn(
-                selectedBook.id,
-                selectedBook.title,
-                selectedBook.author,
-                selectedBook.isbn13);
-            insertedBook.setBookGeneralInfo(selectedBook);
+            widget.setLoading(true);
+            widget.insertedBook.setIdTitleAuthorIsbn(
+                widget.selectedBook.id,
+                widget.selectedBook.title,
+                widget.selectedBook.author,
+                widget.selectedBook.isbn13);
+            widget.insertedBook.setBookGeneralInfo(widget.selectedBook);
             //_insertedBook.printBook();
-            await db.addUserBook(insertedBook);
-            if(clearFields != null) {
-              clearFields();
+            await widget.db.addUserBook(widget.insertedBook);
+            if(widget.clearFields != null) {
+              widget.clearFields();
             }
             final snackBar = SnackBar(
               backgroundColor: Colors.white24,
@@ -100,12 +116,15 @@ class SaveButtonAddBook extends StatelessWidget {
             // Find the Scaffold in the widget tree and use
             // it to show a SnackBar.
             Scaffold.of(context).showSnackBar(snackBar);
-            Timer timer = Timer(Duration(milliseconds: 1500), () {Navigator.pop(context);});
+            Timer timer = Timer(Duration(milliseconds: 1500), () {widget.setLoading(false); Navigator.pop(context);});
           }
         }
+        Timer timer = Timer(Duration(milliseconds: 1500), () {setState(() {
+          pressed = false;
+        });});
       },
       icon: Icon(Icons.save, color: Colors.white),
-      label: Text("Save", style: TextStyle(color: Colors.white),),
+      label: Text(pressed ? "Saving..." : "Save", style: TextStyle(color: Colors.white),),
     );
   }
 }
