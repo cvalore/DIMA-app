@@ -108,7 +108,7 @@ class InsertedBook {
     insertedBook['likedBy'] = likedBy ?? [];
     insertedBook['insertionNumber'] = insertionNumber;
     insertedBook['exchangeable'] = exchangeable ?? false;
-    insertedBook['exchangeStatus'] = exchangeStatus ?? exchangeable ? 'available' : null; //TODO double check
+    insertedBook['exchangeStatus'] = exchangeStatus ?? exchangeable ? 'available' : null;
     insertedBook['price'] = price ?? 0.0;
     insertedBook['category'] = category ?? "Generic";
     insertedBook['thumbnail'] = bookGeneralInfo.thumbnail ?? null;

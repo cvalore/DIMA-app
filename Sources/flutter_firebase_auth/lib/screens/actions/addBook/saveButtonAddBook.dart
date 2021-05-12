@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
-import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:provider/provider.dart';
 
 class SaveButtonAddBook extends StatefulWidget {
 
@@ -29,11 +27,6 @@ class _SaveButtonAddBookState extends State<SaveButtonAddBook> {
 
   @override
   Widget build(BuildContext context) {
-
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
-    DatabaseService _db = DatabaseService(user: user);
-
     return FloatingActionButton.extended(
       backgroundColor: Colors.white24,
       heroTag: "saveBtn",

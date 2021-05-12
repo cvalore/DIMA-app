@@ -8,9 +8,10 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/itemToPurchase.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
+
 import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
 import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/manuallyCloseableExpansionTile.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
 
 import 'addPaymentMethod.dart';
 import 'addShippingInfo.dart';
@@ -513,11 +514,11 @@ class _BuyBooksState extends State<BuyBooks> {
       title: book['title'],
       insertionNumber: book['insertionNumber'],
     );
-    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(Utils.mySelf.uid, bookToPush);
+    Reference bookRef = DatabaseService().storageService().getBookDirectoryReference(Utils.mySelf.uid, bookToPush);
     ListResult lr = await bookRef.listAll();
     for(Reference r in lr.items) {
       try {
-        String filePath = await DatabaseService().storageService.toDownloadFile(r, 0);
+        String filePath = await DatabaseService().storageService().toDownloadFile(r, 0);
         if(filePath != null) {
           book['imagePath'] = filePath;
         }
@@ -660,8 +661,6 @@ class _BuyBooksState extends State<BuyBooks> {
               Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
             }
             });
-        } else {
-          //TODO stampare a schermo l'errore
         }
       }
       );

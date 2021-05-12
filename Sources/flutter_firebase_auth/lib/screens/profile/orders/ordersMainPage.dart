@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
+
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
 
 class OrdersMainPage extends StatefulWidget {
 

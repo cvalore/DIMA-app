@@ -4,8 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 void main() {
-
-  //TODO capire bene come e se mockare i servizi del db
+  
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets("Sign up test with email and password example", (WidgetTester tester) async {
     final Finder signUpEmailField = find.byKey(Key('signUpEmailField'));

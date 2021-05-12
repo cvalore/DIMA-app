@@ -31,7 +31,7 @@ void main() {
     await tester.tap(find.byWidgetPredicate((widget) => widget is RadioListTile && widget.value == 'Epic'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
-    //TODO fare un controllo sulla lunghezza della list tile
+
     expect(find.byType(Container), findsNWidgets(2));
     expect(find.byType(Icon), findsOneWidget);
     expect(find.byType(Text), findsNWidgets(2));

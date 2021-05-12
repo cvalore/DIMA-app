@@ -147,7 +147,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                   TabBarView(
                     children: [
                       UserInfo(user: user, self: widget.self),
-                      widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),   //TODO questo controllo potrebbe essere inutile
+                      widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),
                       ReceivedReviews(reviews: user.receivedReviews),
                     ],
                   ) :
@@ -201,7 +201,7 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
                     ],
                     contents: [
                       UserInfo(user: user, self: widget.self),
-                      widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),   //TODO questo controllo potrebbe essere inutile
+                      widget.books != null ? MyBooks(books: widget.books, self: false, userUid: user.uid) : MyBooks(self: false, userUid: user.uid),
                       ReceivedReviews(reviews: user.receivedReviews),
                     ],
                   );

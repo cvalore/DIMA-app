@@ -2,15 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_firebase_auth/models/chat.dart';
-import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
-import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/models/chat.dart';
+import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/chat/viewPendingBook.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/screens/notifications/viewBookFromTransaction.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/viewBoughtItemPage.dart';
@@ -25,6 +24,8 @@ class Utils {
   static Directory imageDirectory;
   static DatabaseService databaseService;
   static CustomUser mySelf;
+
+  static bool mockedDb = false;
 
 
   static initDatabaseService(AuthCustomUser authCustomUser){
@@ -203,13 +204,13 @@ class Utils {
       price: double.parse(book['price'].toString()),
       exchangeable: book['exchangeable'],
     );
-    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(userUid, bookToPush);
+    Reference bookRef = DatabaseService().storageService().getBookDirectoryReference(userUid, bookToPush);
     List<String> bookPickedFilePaths = List<String>();
     ListResult lr = await bookRef.listAll();
     int count = 0;
     for(Reference r in lr.items) {
       try {
-        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
         if(filePath != null) {
           bookPickedFilePaths.add(filePath);
         }
@@ -347,13 +348,13 @@ class Utils {
         price: boughtItem['price'],
         status: boughtItem['status'],
     );
-    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(boughtItem['seller'], bookToPush);
+    Reference bookRef = DatabaseService().storageService().getBookDirectoryReference(boughtItem['seller'], bookToPush);
     List<String> bookPickedFilePaths = List<String>();
     ListResult lr = await bookRef.listAll();
     int count = 0;
     for(Reference r in lr.items) {
       try {
-        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
         if(filePath != null) {
           bookPickedFilePaths.add(filePath);
         }
@@ -389,13 +390,13 @@ class Utils {
         price: exchangedItem['receivedBook']['price'],
         status: exchangedItem['receivedBook']['status'],
     );
-    bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['seller'], receivedBook);
+    bookRef = DatabaseService().storageService().getBookDirectoryReference(exchangedItem['seller'], receivedBook);
     bookPickedFilePaths = List<String>();
     lr = await bookRef.listAll();
     count = 0;
     for(Reference r in lr.items) {
       try {
-        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
         if(filePath != null) {
           bookPickedFilePaths.add(filePath);
         }
@@ -414,13 +415,13 @@ class Utils {
         price: exchangedItem['offeredBook']['price'],
         status: exchangedItem['offeredBook']['status'],
     );
-    bookRef = DatabaseService().storageService.getBookDirectoryReference(exchangedItem['buyer'], offeredBook);
+    bookRef = DatabaseService().storageService().getBookDirectoryReference(exchangedItem['buyer'], offeredBook);
     bookPickedFilePaths = List<String>();
     lr = await bookRef.listAll();
     count = 0;
     for(Reference r in lr.items) {
       try {
-        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
         if(filePath != null) {
           bookPickedFilePaths.add(filePath);
         }
@@ -451,13 +452,13 @@ class Utils {
       price: book['price'],
       status: book['status'],
     );
-    Reference bookRef = DatabaseService().storageService.getBookDirectoryReference(ownerUid, bookToPush);
+    Reference bookRef = DatabaseService().storageService().getBookDirectoryReference(ownerUid, bookToPush);
     List<String> bookPickedFilePaths = List<String>();
     ListResult lr = await bookRef.listAll();
     int count = 0;
     for(Reference r in lr.items) {
       try {
-        String filePath = await DatabaseService().storageService.toDownloadFile(r, count);
+        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
         if(filePath != null) {
           bookPickedFilePaths.add(filePath);
         }

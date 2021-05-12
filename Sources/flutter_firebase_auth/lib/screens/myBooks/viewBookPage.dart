@@ -10,10 +10,11 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
+
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 
 class ViewBookPage extends StatefulWidget {
 
@@ -74,13 +75,13 @@ class _ViewBookPageState extends State<ViewBookPage> {
               if(value == editBookPopupIndex) {
                 print("Edit book");
                 InsertedBook book = await _db.getBook(widget.index);
-                Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+                Reference bookRef = _db.storageService().getBookDirectoryReference(user.uid, book);
                 List<String> bookPickedFilePaths = List<String>();
                 ListResult lr = await bookRef.listAll();
                 int count = 0;
                 for(Reference r in lr.items) {
                   try {
-                    String filePath = await _db.storageService.toDownloadFile(r, count);
+                    String filePath = await _db.storageService().toDownloadFile(r, count);
                     if(filePath != null) {
                       bookPickedFilePaths.add(filePath);
                     }

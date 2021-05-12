@@ -4,12 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
 import 'package:flutter_firebase_auth/services/googleBooksAPI.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 import 'package:flutter_firebase_auth/utils/bookGeneralInfoListView.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
+
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 
 class AddBookSelection extends StatefulWidget {
 
@@ -405,10 +406,10 @@ class _AddBookSelectionState extends State<AddBookSelection> {
       selectedBook['volumeInfo']['authors'].toString(),
       selectedBook['volumeInfo']['publisher'] ?? null,
       selectedBook['volumeInfo']['publishedDate'] ?? null,
-      booksAPI.getISBN13(selectedBook['volumeInfo']) ?? null,         //check the case it is null
+      booksAPI.getISBN13(selectedBook['volumeInfo']) ?? null,
       imageLink,
       selectedBook['volumeInfo']['description'] ?? null,
-      categories,    //TODO check this
+      categories,
       selectedBook['volumeInfo']['language'] ?? null,
       selectedBook['volumeInfo']['pageCount'] ?? null,
       averageRating,

@@ -7,9 +7,10 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/bookInsert.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
+
 import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
 import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
 
 import 'bookHomePageView.dart';
 
@@ -148,14 +149,14 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                       ).then((value) async {
                         if (value == editBookPopupIndex) {
                           InsertedBook book = await _db.getBook(index);
-                          Reference bookRef = _db.storageService
+                          Reference bookRef = _db.storageService()
                               .getBookDirectoryReference(user.uid, book);
                           List<String> bookPickedFilePaths = List<String>();
                           ListResult lr = await bookRef.listAll();
                           int count = 0;
                           for (Reference r in lr.items) {
                             try {
-                              String filePath = await _db.storageService.toDownloadFile(
+                              String filePath = await _db.storageService().toDownloadFile(
                                   r, count);
                               if (filePath != null) {
                                 bookPickedFilePaths.add(filePath);
@@ -271,13 +272,13 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
     InsertedBook book = await _db.getBook(index);
     bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
     bool wasExchangeable = book.exchangeable;
-    Reference bookRef = _db.storageService.getBookDirectoryReference(user.uid, book);
+    Reference bookRef = _db.storageService().getBookDirectoryReference(user.uid, book);
     List<String> bookPickedFilePaths = List<String>();
     ListResult lr = await bookRef.listAll();
     int count = 0;
     for(Reference r in lr.items) {
       try {
-        String filePath = await _db.storageService.toDownloadFile(r, count);
+        String filePath = await _db.storageService().toDownloadFile(r, count);
         if(filePath != null) {
           bookPickedFilePaths.add(filePath);
         }
@@ -317,14 +318,14 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
       if (selectedBooks[index] == true) {
         book = await _db.getBook(index);
         bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
-        Reference bookRef = _db.storageService.getBookDirectoryReference(
+        Reference bookRef = _db.storageService().getBookDirectoryReference(
             user.uid, book);
         List<String> bookPickedFilePaths = List<String>();
         ListResult lr = await bookRef.listAll();
         int count = 0;
         for (Reference r in lr.items) {
           try {
-            String filePath = await _db.storageService.toDownloadFile(r, count);
+            String filePath = await _db.storageService().toDownloadFile(r, count);
             if (filePath != null) {
               bookPickedFilePaths.add(filePath);
             }

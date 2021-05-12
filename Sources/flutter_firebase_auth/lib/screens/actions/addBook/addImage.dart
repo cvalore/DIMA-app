@@ -200,7 +200,6 @@ class _ImageServiceState extends State<ImageService> {
                                     copyWith(backgroundColor: Colors.white24).backgroundColor.withOpacity(0.4),
                   child: Icon(Icons.add_a_photo, color: Colors.white),
                   onPressed: () {
-                    //TODO aggiungere un set state con loading?
                     _showPicker(context);
                   }
           ),

@@ -5,7 +5,7 @@ class BookGeneralInfo {
   final String author;
   final String publisher;
   final String publishedDate;
-  final String thumbnail;   //TODO check thumbnail
+  final String thumbnail;
   final String description;
   final String isbn13;
   final String language;
@@ -29,7 +29,6 @@ class BookGeneralInfo {
       this.ratingsCount
   );
 
-  //TODO check if it is ok
   Map<String, dynamic> toMap() {
     var bookMap = new Map<String, dynamic>();
     bookMap['id'] = id;
@@ -40,7 +39,7 @@ class BookGeneralInfo {
     if (thumbnail != null) bookMap['thumbnail'] = thumbnail;
     if (description != null) bookMap['summary'] = description;
     if (pageCount != null) bookMap['pageCount'] = pageCount;
-    if (categories != null) bookMap['categories'] = categories;     //TODO check if safe
+    if (categories != null) bookMap['categories'] = categories;
     if (averageRating != null) bookMap['ratingsCount'] = averageRating;
     return bookMap;
   }
