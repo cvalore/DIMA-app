@@ -156,10 +156,21 @@ class _ImageServiceState extends State<ImageService> {
                    padding: EdgeInsets.all(5.0),
                    child: Stack(
                      children: [
-                       ClipRRect(
-                         borderRadius : BorderRadius.circular(8.0),
-                         child: Image.file(
-                             File(listItem[index])
+                       InkWell(
+                         onTap: () {
+                           if (widget.justView) {
+                             Navigator.push(
+                                 context, MaterialPageRoute(builder: (_) {
+                               return LargerImage(
+                                   imagePath: listItem[index]);
+                             }));
+                           }
+                         },
+                         child: ClipRRect(
+                           borderRadius : BorderRadius.circular(8.0),
+                           child: Image.file(
+                               File(listItem[index])
+                           ),
                          ),
                        ),
                        widget.justView ? Container() : Positioned(
@@ -199,3 +210,38 @@ class _ImageServiceState extends State<ImageService> {
     );
   }
 }
+
+
+
+class LargerImage extends StatelessWidget {
+
+  String imagePath;
+
+  LargerImage({Key key, @required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: InkWell(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Hero(
+          tag: 'viewBookPageHero',
+          child: Container(
+            //child: Image.network(widget.user.userProfileImageURL),
+            //height: MediaQuery.of(context).size.height * 6/10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: FileImage(File(imagePath)),
+                fit: BoxFit.contain,
+              ),
+            ),
+          )
+        ),
+      ),
+    );
+  }
+}
+
+
