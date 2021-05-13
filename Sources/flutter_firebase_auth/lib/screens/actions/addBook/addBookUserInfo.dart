@@ -7,8 +7,7 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/exchange.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
-
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
 
 class AddBookUserInfo extends StatelessWidget {
 

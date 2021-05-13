@@ -6,11 +6,11 @@ import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/modifyPro
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/receivedReviews.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/reviewsMainPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_firebase_auth/utils/constants.dart';
+
 
 
 class VisualizeProfileMainPage extends StatefulWidget {

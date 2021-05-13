@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/forum/newDiscussionPageFloatingButton.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
+
 
 
 class NewDiscussionPage extends StatefulWidget {

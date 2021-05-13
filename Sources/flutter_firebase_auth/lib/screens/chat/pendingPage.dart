@@ -3,9 +3,8 @@ import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/chat/pendingPageBody.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/loading.dart';
 import 'package:provider/provider.dart';
-
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
 
 class PendingPage extends StatelessWidget {
 

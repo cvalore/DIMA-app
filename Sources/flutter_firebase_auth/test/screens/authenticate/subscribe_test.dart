@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
-import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

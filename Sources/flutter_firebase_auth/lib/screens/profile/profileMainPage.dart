@@ -11,9 +11,11 @@ import 'package:flutter_firebase_auth/screens/profile/paymentInfo/paymentInfo.da
 import 'package:flutter_firebase_auth/screens/profile/shippingAddress/shippingAddress.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter_firebase_auth/utils/constants.dart';
+
 
 
 class ProfileMainPage extends StatefulWidget {

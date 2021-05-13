@@ -5,13 +5,12 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookInfoBody.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bookGenres.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/loading.dart';
+import 'package:flutter_firebase_auth/utils/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:provider/provider.dart';
 import 'package:radio_grouped_buttons/custom_buttons/custom_radio_buttons_group.dart';
-
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/loading.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/manuallyCloseableExpansionTile.dart';
 
 class SearchBookPage extends StatefulWidget {
 

@@ -8,7 +8,8 @@ import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:toast/toast.dart';
 
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
+
 
 class NotificationText extends StatelessWidget {
 

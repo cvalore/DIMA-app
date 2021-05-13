@@ -6,12 +6,13 @@ import 'package:flutter_firebase_auth/models/message.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
 import 'package:flutter_firebase_auth/models/review.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
+import 'package:flutter_firebase_auth/services/databaseServiceMock.dart';
 import 'package:flutter_firebase_auth/services/datebaseImpl.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
-import 'file:///C:/Users/cvalo/Documents/polimi/magistrale/II-anno/I%20semestre/DIMA/DIMA-app/Sources/flutter_firebase_auth/lib/services/databaseServiceMock.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
+
 
 abstract class DatabaseService {
 
