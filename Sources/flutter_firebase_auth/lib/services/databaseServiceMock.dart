@@ -174,7 +174,7 @@ class DatabaseServiceMock implements DatabaseService {
 
   @override
   Future<Function> setNowAsLastChatsDate() {
-
+    print("MOCK: setNowAsLastChatsDate() method");
   }
 
   @override
@@ -250,12 +250,13 @@ class DatabaseServiceMock implements DatabaseService {
 
   @override
   Future<CustomUser> getUserSnapshot() {
-
+    print("MOCK: getUserSnapshot() method");
   }
 
   @override
-  Future<BookPerGenreUserMap> getUserBooksPerGenreSnapshot() {
-
+  Future<BookPerGenreUserMap> getUserBooksPerGenreSnapshot() async {
+    print("MOCK: getUserBooksPerGenreSnapshot() method");
+    return BookPerGenreUserMap({});
   }
 
   @override
@@ -291,7 +292,7 @@ class DatabaseServiceMock implements DatabaseService {
 
   @override
   void setChat(Chat chat) {
-
+    print("MOCK: setChat() method");
   }
 
   @override

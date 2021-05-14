@@ -23,7 +23,12 @@ class _HomeBookInfoState extends State<HomeBookInfo> {
   @override
   Widget build(BuildContext context) {
 
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    AuthCustomUser userFromAuth;
+    try {
+      userFromAuth = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
     user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     _db = DatabaseService(user: user);
 

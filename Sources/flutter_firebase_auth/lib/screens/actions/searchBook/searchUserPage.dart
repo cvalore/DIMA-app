@@ -42,7 +42,12 @@ class _SearchUserPageState extends State<SearchUserPage> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    AuthCustomUser userFromAuth;
+    try {
+      userFromAuth = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
     CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 

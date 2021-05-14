@@ -7,7 +7,10 @@ class AuthMock implements AuthService {
 
   @override
   Stream<AuthCustomUser> get userStream {
-
+    print("MOCK: userStream() stream");
+    return StreamBuilder<AuthCustomUser>(builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      return null;
+    },).stream;
   }
 
   @override
