@@ -23,15 +23,15 @@ class DiscussionPageBody extends StatefulWidget {
   const DiscussionPageBody({Key key, this.db, this.user}) : super(key: key);
 
   @override
-  _DiscussionPageBodyState createState() => _DiscussionPageBodyState();
+  DiscussionPageBodyState createState() => DiscussionPageBodyState();
 }
 
-class _DiscussionPageBodyState extends State<DiscussionPageBody> {
+class DiscussionPageBodyState extends State<DiscussionPageBody> {
 
   final GlobalKey<FormState> _messageFormKey = GlobalKey();
   final _messageFormFieldController = TextEditingController();
 
-  String _message = "";
+  String message = "";
   bool firstTime = true;
 
   ScrollController _scrollController = ScrollController();
@@ -243,7 +243,7 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
                             'Enter a valid message' : null,
                             onChanged: (value) {
                               setState(() {
-                                _message = value;
+                                message = value;
                               });
                             },
                           ),
@@ -258,20 +258,20 @@ class _DiscussionPageBodyState extends State<DiscussionPageBody> {
 
                         if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
                           CustomUser userFromDb = CustomUser(Utils.mySelf.uid, username: null);
-                          List<Message> messages = await widget.db.addMessageToForum(_message, discussion, userFromDb);
+                          List<Message> messages = await widget.db.addMessageToForum(message, discussion, userFromDb);
                           setState(() {
                             _messageFormFieldController.clear();
-                            _message = "";
+                            message = "";
                             //discussion.messages = messages;
                           });
                           return;
                         }
 
                         CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
-                        List<Message> messages = await widget.db.addMessageToForum(_message, discussion, userFromDb);
+                        List<Message> messages = await widget.db.addMessageToForum(message, discussion, userFromDb);
                         setState(() {
                           _messageFormFieldController.clear();
-                          _message = "";
+                          message = "";
                           //discussion.messages = messages;
                         });
                       },

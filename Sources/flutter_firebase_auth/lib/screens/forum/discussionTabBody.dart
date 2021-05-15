@@ -40,18 +40,21 @@ class _DiscussionTabBodyState extends State<DiscussionTabBody> {
       perCategoryDiscussion.addAll({e: []});
     });
 
-    widget.discussions.forEach((e) {
-      List<dynamic> newValue = perCategoryDiscussion[e['category']] ?? [];
-      newValue.addAll([e]);
-      perCategoryDiscussion.update(e['category'], (value) => newValue, ifAbsent: () => [e]);
-    });
+    if(widget.discussions != null) {
+      widget.discussions.forEach((e) {
+        List<dynamic> newValue = perCategoryDiscussion[e['category']] ?? [];
+        newValue.addAll([e]);
+        perCategoryDiscussion.update(
+            e['category'], (value) => newValue, ifAbsent: () => [e]);
+      });
+    }
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     bool _isTablet =
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return widget.discussions.length == 0 ?
+    return widget.discussions == null || widget.discussions.length == 0 ?
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -209,7 +212,7 @@ class _DiscussionTabBodyState extends State<DiscussionTabBody> {
                                                                 perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByProfilePicture']),
                                                             //FileImage(File(user.userProfileImagePath))
                                                           ) : Text(
-                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'] != null ?
+                                                            perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'] != null && perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].length > 0 ?
                                                             perCategoryDiscussion[forumDiscussionCategories[i]][j]['startedByUsername'].toUpperCase()[0] :
                                                             "A",
                                                             //textScaleFactor: 3,
