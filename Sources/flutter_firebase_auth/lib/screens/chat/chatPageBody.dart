@@ -17,15 +17,15 @@ class ChatPageBody extends StatefulWidget {
   const ChatPageBody({Key key, this.db, this.user}) : super(key: key);
 
   @override
-  _ChatPageBodyState createState() => _ChatPageBodyState();
+  ChatPageBodyState createState() => ChatPageBodyState();
 }
 
-class _ChatPageBodyState extends State<ChatPageBody> {
+class ChatPageBodyState extends State<ChatPageBody> {
 
   final GlobalKey<FormState> _messageFormKey = GlobalKey();
   final _messageFormFieldController = TextEditingController();
 
-  String _message = "";
+  String message = "";
   bool firstTime = true;
 
   ScrollController _scrollController = ScrollController();
@@ -212,7 +212,7 @@ class _ChatPageBodyState extends State<ChatPageBody> {
                               'Enter a valid message' : null,
                               onChanged: (value) {
                                 setState(() {
-                                  _message = value;
+                                  message = value;
                                 });
                               },
                             ),
@@ -226,15 +226,15 @@ class _ChatPageBodyState extends State<ChatPageBody> {
                         onPressed: () async {
 
                           RegExp regExp1 = RegExp(r'(^[ ]*$)');
-                          if(regExp1.hasMatch(_message)){
+                          if(regExp1.hasMatch(message)){
                             return;
                           }
 
                           CustomUser userFromDb = await widget.db.getUserById(widget.user.uid);
-                          List<Message> messages = await widget.db.addMessageToChat(_message, chat, userFromDb);
+                          List<Message> messages = await widget.db.addMessageToChat(message, chat, userFromDb);
                           setState(() {
                             _messageFormFieldController.clear();
-                            _message = "";
+                            message = "";
                             //discussion.messages = messages;
                           });
                         },

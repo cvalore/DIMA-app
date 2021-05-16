@@ -32,8 +32,16 @@ class SoldByView extends StatefulWidget {
 class _SoldByViewState extends State<SoldByView> {
   @override
   Widget build(BuildContext context) {
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
-    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    AuthCustomUser userFromAuth;
+    try {
+      userFromAuth = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
+    CustomUser user = CustomUser(
+        userFromAuth == null ? "" : userFromAuth.uid,
+        email: userFromAuth == null ? "" : userFromAuth.email,
+        isAnonymous: userFromAuth == null ? false : userFromAuth.isAnonymous);
     DatabaseService _db = DatabaseService(user: user);
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
@@ -41,7 +49,7 @@ class _SoldByViewState extends State<SoldByView> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return Padding(
+    return widget.books == null ? Container() : Padding(
       padding: EdgeInsets.symmetric(horizontal: _isTablet ? 45.0 : 20.0, vertical: 10.0),
       child: Column(
           children: [

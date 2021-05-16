@@ -57,7 +57,12 @@ class _MyBooksState extends State<MyBooks> {
     /*
     CustomUser user;
     if (widget.self) {
-      AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+      AuthCustomUser userFromAuth;
+    try {
+      userFromAuth = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
       user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
     } else
       user = Provider.of<CustomUser>(context);

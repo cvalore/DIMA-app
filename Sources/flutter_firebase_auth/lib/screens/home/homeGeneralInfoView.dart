@@ -19,7 +19,8 @@ class HomeBookGeneralInfoView extends StatelessWidget {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return Padding(
+
+    return selectedBook == null ? Container() : Padding(
       padding: EdgeInsets.symmetric(horizontal: _isTablet ? 100.0 : 20.0, vertical: 10.0),
       child: Column(
         children: <Widget>[

@@ -94,6 +94,17 @@ class _ImageServiceState extends State<ImageService> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
+    AuthCustomUser userFromAuth;
+    try {
+      userFromAuth = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
+    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    DatabaseService _db = DatabaseService(user: user);
+
+    var storage = StorageService();
+
     final listItem = widget.insertedBook.imagesPath != null ?
         widget.insertedBook.imagesPath
         : null;

@@ -52,7 +52,13 @@ class _VisualizeProfileMainPageState extends State<VisualizeProfileMainPage> {
   Widget build(BuildContext context) {
 
     CustomUser user;
-    user = widget.user != null ? widget.user : Provider.of<CustomUser>(context);
+    try {
+      user =
+      widget.user != null ? widget.user : Provider.of<CustomUser>(context);
+    }
+    catch(Exception) {
+      print("Cannot read from CustomUser stream provider");
+    }
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 

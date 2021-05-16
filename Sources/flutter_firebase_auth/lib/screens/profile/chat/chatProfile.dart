@@ -118,6 +118,9 @@ class ChatProfile extends StatelessWidget {
 
   List<Chat> createChatsList() {
     List<Chat> newChatsList = List<Chat>();
+    if(chatsMap == null) {
+      return newChatsList;
+    }
     chatsMap.forEach((elem) {
       List<Message> messages = List<Message>();
       elem['messages'].forEach((e) {

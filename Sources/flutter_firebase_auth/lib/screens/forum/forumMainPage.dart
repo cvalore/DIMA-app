@@ -22,7 +22,12 @@ class _ForumMainPageState extends State<ForumMainPage> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    AuthCustomUser userFromAuth = Provider.of<AuthCustomUser>(context);
+    AuthCustomUser userFromAuth;
+    try {
+      userFromAuth = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
     CustomUser user = CustomUser(
         userFromAuth != null ? userFromAuth.uid : "",
         email: userFromAuth != null ? userFromAuth.email : "",
