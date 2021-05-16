@@ -53,7 +53,6 @@ class DiscussionPageBodyState extends State<DiscussionPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    
     ForumDiscussion discussion = Provider.of<ForumDiscussion>(context);
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
