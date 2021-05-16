@@ -14,13 +14,13 @@ class NewDiscussionPage extends StatefulWidget {
   const NewDiscussionPage({Key key, this.db, this.updateDiscussionView}) : super(key: key);
 
   @override
-  _NewDiscussionPageState createState() => _NewDiscussionPageState();
+  NewDiscussionPageState createState() => NewDiscussionPageState();
 }
 
-class _NewDiscussionPageState extends State<NewDiscussionPage> {
+class NewDiscussionPageState extends State<NewDiscussionPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  String _title = '';
+  String title = '';
 
   int _dropdownValue = 0;
   String _dropdownLabel = forumDiscussionCategories[0];
@@ -30,7 +30,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
   }
 
   String getTitle() {
-    return _title;
+    return title;
   }
 
   String getDropdownLabel() {
@@ -100,7 +100,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                     onChanged: (value) {
                       if(value != '') {
                         setState(() {
-                          _title = value;
+                          title = value;
                         });
                       }
                     },
@@ -116,7 +116,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         ),
                         DropdownButton(
-                          key: UniqueKey(),
+                          key: ValueKey("NewDiscussionDropdownButtonKey"),
                           dropdownColor: Colors.grey[700],
                           elevation: 0,
                           value: _dropdownValue,

@@ -23,7 +23,12 @@ class BottomTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    AuthCustomUser user = Provider.of<AuthCustomUser>(context);
+    AuthCustomUser user;
+    try{
+      user = Provider.of<AuthCustomUser>(context);
+    } catch(Exception) {
+      print("Cannot read value from AuthCustomUser stream provider");
+    }
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     _isTablet =

@@ -21,6 +21,8 @@ import 'homePage.dart';
 
 class HomeBody extends StatefulWidget {
 
+  const HomeBody({Key key}) : super(key: key);
+
   @override
   _HomeBodyState createState() => _HomeBodyState();
 }
@@ -87,16 +89,7 @@ class _HomeBodyState extends State<HomeBody> {
     GlobalKey scaffoldKey = GlobalKey();
     List<Widget> _widgetsBottomOptions = <Widget> [
       Container(),
-      Container(),//SearchBookPage(),
-      /*BookInsert(
-        param: AddBookParameters(false,
-          bookIndex: -1,
-          editPurpose: "",
-          editGenre: "",
-
-        ),
-        setIndex: setIndex,
-      ),*/
+      Container(),
       Container(),
       ForumMainPage(updateDiscussionView: updateDiscussionView,),
       ProfileMainPage(),
@@ -175,6 +168,7 @@ class _HomeBodyState extends State<HomeBody> {
                     style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
               ),
               Container(
+                  key: ValueKey("prova"),
                   height: _isTablet ? 60.0 : 40.0,
                   child: Center(child: Text('My Books',
                     style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
