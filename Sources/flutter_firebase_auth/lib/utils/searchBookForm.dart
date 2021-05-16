@@ -30,6 +30,7 @@ class SearchBookForm extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0,),
               child: TextFormField(
+                  key: ValueKey('title'),
                   cursorColor: Colors.black,
                   //decoration: inputFieldDecoration.copyWith(hintText: 'Title'),
                   decoration: InputDecoration(
@@ -69,6 +70,7 @@ class SearchBookForm extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0,),
               child: TextFormField(
+                  key: ValueKey('author'),
                   focusNode: myFocusNode,
                   cursorColor: Colors.black,
                   //decoration: inputFieldDecoration.copyWith(hintText: 'Author'),

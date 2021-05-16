@@ -8,9 +8,10 @@ void main() {
     // Create the widget by telling the tester to build it.
     InsertedBook insertedBook = InsertedBook(title: 'title', author: 'author', status: 3);
 
-    await tester.pumpWidget(MaterialApp(home:Scaffold(body: Status(insertedBook: insertedBook, height: 60, offset: 200, justView: false))));
+    Status statusWidget = Status(insertedBook: insertedBook, height: 60, offset: 200, justView: false);
+    await tester.pumpWidget(MaterialApp(home:Scaffold(body: statusWidget)));
 
-    expect(find.byType(Container), findsNWidgets(7));
+    expect(find.byType(Container), findsNWidgets(8));
     expect(find.byType(IconButton), findsNWidgets(5));
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.star), findsNWidgets(3));
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.star_border), findsNWidgets(2));
@@ -21,6 +22,7 @@ void main() {
 
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.star), findsNWidgets(1));
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.star_border), findsNWidgets(4));
+    assert (statusWidget.insertedBook.status == 1);
   });
 
 }

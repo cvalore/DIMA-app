@@ -11,10 +11,11 @@ void main() {
       CommentBox.routeName: (context) => CommentBox()
     };
 
-    await tester.pumpWidget(MaterialApp(routes: routes, home:Comment(insertedBook: insertedBook, height: 60, justView: false)));
+    Comment commentWidget = Comment(insertedBook: insertedBook, height: 60, justView: false);
+
+    await tester.pumpWidget(MaterialApp(routes: routes, home:Scaffold(body: commentWidget)));
 
     expect(find.byType(Container), findsNWidgets(3));
-    expect(find.byType(Scaffold), findsNothing);
     expect(find.byType(Icon), findsOneWidget);
     expect(find.byType(Text), findsOneWidget);
     await tester.tap(find.byType(InkWell));
