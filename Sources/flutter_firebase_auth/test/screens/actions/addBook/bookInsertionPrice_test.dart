@@ -12,11 +12,15 @@ void main() {
       PriceBox.routeName: (context) => PriceBox()
     };
 
-    await tester.pumpWidget(MaterialApp(routes: routes, home:Price(insertedBook: insertedBook, height: 60, justView: false,)));
+    Price priceWidget = Price(insertedBook: insertedBook, height: 60, justView: false);
+
+    await tester.pumpWidget(MaterialApp(routes: routes, home: Scaffold(body: priceWidget)));
 
     expect(find.byType(Container), findsNWidgets(3));
-    expect(find.byType(Icon), findsOneWidget);
+    expect(find.byType(InkWell), findsOneWidget);
     expect(find.byType(Text), findsOneWidget);
+    expect(find.byType(Icon), findsOneWidget);
+
     await tester.tap(find.byType(InkWell));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
@@ -37,8 +41,46 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 
-
     expect(find.byWidgetPredicate((widget) => widget is Price && widget.insertedBook.price == 60.0), findsOneWidget);
+
+    //type again on price
+    await tester.tap(find.byType(InkWell));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    assert (priceBoxState.price == '60.0');
+    expect(find.byWidgetPredicate((widget) => widget is Text && widget.data == 'Enter a valid price'), findsNothing);
+
+    await tester.enterText(find.byType(TextFormField), '0.00');
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byWidgetPredicate((widget) => widget is Text && widget.data == 'Enter a valid price'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byWidgetPredicate((widget) => widget is Text && widget.data == 'Enter a valid price'), findsNothing);
+
+    await tester.tap(find.byType(InkWell));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.enterText(find.byType(TextFormField), '7.5555');
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byWidgetPredicate((widget) => widget is Text && widget.data == 'Enter a valid price'), findsOneWidget);
+
+
+
   });
 
 }

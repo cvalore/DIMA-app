@@ -23,14 +23,14 @@ class AddBookSelection extends StatefulWidget {
   AddBookSelection({Key key, this.setSelected, this.selectedBook, this.showDots, this.appBarHeight, this.showGeneralInfo}) : super(key: key);
 
   @override
-  _AddBookSelectionState createState() => _AddBookSelectionState();
+  AddBookSelectionState createState() => AddBookSelectionState();
 }
 
-class _AddBookSelectionState extends State<AddBookSelection> {
+class AddBookSelectionState extends State<AddBookSelection> {
   final _formKey = GlobalKey<FormState>();
 
-  String _title = '';
-  String _author = '';
+  String bookTitle = '';
+  String bookAuthor = '';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
   FocusNode myFocusNode;
 
@@ -45,11 +45,11 @@ class _AddBookSelectionState extends State<AddBookSelection> {
   }
 
   void setTitle(String title) {
-    _title = title;
+    bookTitle = title;
   }
 
   void setAuthor(String author) {
-    _author = author;
+    bookAuthor = author;
   }
 
   GlobalKey getFormKey() {
@@ -87,7 +87,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width/1.75 : MediaQuery.of(context).size.width),
+                    width: -100 + (_isTablet ? MediaQuery.of(context).size.width / 1.75 : MediaQuery.of(context).size.width),
                     child: SearchBookForm(
                       setTitle: setTitle,
                       setAuthor: setAuthor,
@@ -111,8 +111,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                           setState(() {
                             widget.loading = true;
                           });
-                          print('Searching for \"' + _title + '\" by \"' + _author + '\"');
-                          final result = await booksAPI.performSearch(_title, _author);
+                          print('Searching for \"' + bookTitle + '\" by \"' + bookAuthor + '\"');
+                          final result = await booksAPI.performSearch(bookTitle, bookAuthor);
                           if(result != null) {
                             setState(() {
                               widget.loading = false;
@@ -122,6 +122,7 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                               }
                               //TestPage.of(context).selected = null;
                               listItems = result['items'];
+                              print(listItems[0]);
                               //print(listItems);
                             });
                           }
@@ -199,10 +200,10 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                 Container(
                   child:
                   _isPortrait ?
-                    BookGeneralInfoListView(selectedBook: widget.selectedBook,):
+                    BookGeneralInfoListView(selectedBook: widget.selectedBook):
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 120.0),
-                      child: BookGeneralInfoListView(selectedBook: widget.selectedBook,),
+                      child: BookGeneralInfoListView(selectedBook: widget.selectedBook),
                     ),
                 ))
             ),
@@ -261,8 +262,8 @@ class _AddBookSelectionState extends State<AddBookSelection> {
                                   setState(() {
                                     widget.loading = true;
                                   });
-                                  print('Searching for \"' + _title + '\" by \"' + _author + '\"');
-                                  final result = await booksAPI.performSearch(_title, _author);
+                                  print('Searching for \"' + bookTitle + '\" by \"' + bookAuthor + '\"');
+                                  final result = await booksAPI.performSearch(bookTitle, bookAuthor);
                                   if(result != null) {
                                     setState(() {
                                       widget.loading = false;

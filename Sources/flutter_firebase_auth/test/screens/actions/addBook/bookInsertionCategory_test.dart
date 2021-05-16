@@ -14,7 +14,9 @@ void main() {
       CategoryBox.routeName: (context) => CategoryBox()
     };
 
-    await tester.pumpWidget(MaterialApp(routes: routes, home:Category(insertedBook: insertedBook, height: 60, justView: false)));
+    Category categoryWidget = Category(insertedBook: insertedBook, height: 60, justView: false);
+
+    await tester.pumpWidget(MaterialApp(routes: routes, home:Scaffold(body: categoryWidget)));
 
     expect(find.byType(Container), findsNWidgets(3));
     expect(find.byType(Icon), findsOneWidget);
@@ -22,9 +24,6 @@ void main() {
     await tester.tap(find.byType(InkWell));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
-
-    //expect(find.byType(Text), findsNWidgets(length + 1));
-    //expect(find.byType(RadioListTile), findsNWidgets(length));
 
     expect(find.byWidgetPredicate((widget) => widget is RadioListTile && widget.value == 'Epic'), findsOneWidget);
 

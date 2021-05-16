@@ -128,7 +128,10 @@ class BookGeneralInfoListView extends StatelessWidget {
           //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text('Language', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
-            Text(selectedBook.language.toString().toUpperCase(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
+            Text(
+              selectedBook.language.toString().toUpperCase(),
+              key: ValueKey('IT'),
+              textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: _isTablet ? 19.0 : 15.0),),
           ],
         ) : Container(),
         Text(''),

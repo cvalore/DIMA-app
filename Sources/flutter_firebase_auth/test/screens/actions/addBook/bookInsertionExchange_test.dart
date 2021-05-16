@@ -7,8 +7,8 @@ void main() {
   testWidgets('Toggle of exchange flag works', (WidgetTester tester) async {
     // Create the widget by telling the tester to build it.
     InsertedBook insertedBook = InsertedBook(title: 'title', author: 'author', status: 3);
-
-    await tester.pumpWidget(MaterialApp(home:Scaffold(body: Exchange(insertedBook: insertedBook, height: 60, justView: false))));
+    Exchange exchangeWidget = Exchange(insertedBook: insertedBook, height: 60, justView: false);
+    await tester.pumpWidget(MaterialApp(home:Scaffold(body: exchangeWidget)));
 
     expect(find.byType(Container), findsNWidgets(2));
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.check_box_outline_blank), findsOneWidget);
@@ -20,6 +20,7 @@ void main() {
 
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.check_box_outline_blank), findsNothing);
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.check_box_outlined), findsOneWidget);
+    assert (exchangeWidget.insertedBook.exchangeable == true);
 
     await tester.tap(find.byType(InkWell));
     await tester.pump();
@@ -27,6 +28,7 @@ void main() {
 
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.check_box_outline_blank), findsOneWidget);
     expect(find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.check_box_outlined), findsNothing);
+    assert (exchangeWidget.insertedBook.exchangeable == false);
   });
 
 }

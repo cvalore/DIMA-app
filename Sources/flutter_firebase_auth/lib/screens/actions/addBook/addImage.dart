@@ -107,12 +107,6 @@ class _ImageServiceState extends State<ImageService> {
 
     final listItem = widget.insertedBook.imagesPath != null ?
         widget.insertedBook.imagesPath
-        /*
-        List<ImageDisplay>.generate(
-          widget.insertedBook.images.length,
-          (index) => ImageDisplay(widget.insertedBook.images[index]))
-
-         */
         : null;
 
     return widget.justView && (listItem == null || listItem.length == 0 ) ?
@@ -156,7 +150,6 @@ class _ImageServiceState extends State<ImageService> {
                  decoration: BoxDecoration(
                      shape: BoxShape.rectangle
                  ),
-                 //padding: EdgeInsets.all(5.0),
                  child: Padding(
                    padding: EdgeInsets.all(5.0),
                    child: Stack(
@@ -182,6 +175,7 @@ class _ImageServiceState extends State<ImageService> {
                          top: 1,
                          right: 1,
                          child: IconButton(
+                           key: ValueKey(index),
                            icon: Icon(Icons.cancel, color: Colors.white70,),
                            onPressed: () {
                              setState(() {
@@ -219,7 +213,7 @@ class _ImageServiceState extends State<ImageService> {
 
 class LargerImage extends StatelessWidget {
 
-  String imagePath;
+  final String imagePath;
 
   LargerImage({Key key, @required this.imagePath});
 
@@ -233,8 +227,6 @@ class LargerImage extends StatelessWidget {
         child: Hero(
           tag: 'viewBookPageHero',
           child: Container(
-            //child: Image.network(widget.user.userProfileImageURL),
-            //height: MediaQuery.of(context).size.height * 6/10,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: FileImage(File(imagePath)),
