@@ -100,10 +100,11 @@ class _ImageServiceState extends State<ImageService> {
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }
-    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
-    DatabaseService _db = DatabaseService(user: user);
-
-    var storage = StorageService();
+    CustomUser user = CustomUser(
+        userFromAuth == null ? "" : userFromAuth.uid,
+        email: userFromAuth == null ? "" : userFromAuth.email,
+        isAnonymous: userFromAuth == null ? false : userFromAuth.isAnonymous
+    );
 
     final listItem = widget.insertedBook.imagesPath != null ?
         widget.insertedBook.imagesPath

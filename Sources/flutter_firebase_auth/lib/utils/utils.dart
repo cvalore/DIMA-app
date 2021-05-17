@@ -204,20 +204,27 @@ class Utils {
       price: double.parse(book['price'].toString()),
       exchangeable: book['exchangeable'],
     );
-    Reference bookRef = DatabaseService().storageService().getBookDirectoryReference(userUid, bookToPush);
+
     List<String> bookPickedFilePaths = List<String>();
-    ListResult lr = await bookRef.listAll();
-    int count = 0;
-    for(Reference r in lr.items) {
-      try {
-        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
-        if(filePath != null) {
-          bookPickedFilePaths.add(filePath);
+    if(DatabaseService().storageService() != null) {
+      Reference bookRef = DatabaseService()
+          .storageService()
+          .getBookDirectoryReference(userUid, bookToPush);
+      ListResult lr = await bookRef.listAll();
+      int count = 0;
+      for (Reference r in lr.items) {
+        try {
+          String filePath = await DatabaseService()
+              .storageService()
+              .toDownloadFile(r, count);
+          if (filePath != null) {
+            bookPickedFilePaths.add(filePath);
+          }
+        } on FirebaseException catch (e) {
+          e.toString();
         }
-      } on FirebaseException catch (e) {
-        e.toString();
+        count = count + 1;
       }
-      count = count + 1;
     }
 
     bookToPush.imagesPath = bookPickedFilePaths;
