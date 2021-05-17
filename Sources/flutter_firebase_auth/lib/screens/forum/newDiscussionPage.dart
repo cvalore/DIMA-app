@@ -22,8 +22,8 @@ class NewDiscussionPageState extends State<NewDiscussionPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   String title = '';
 
-  int _dropdownValue = 0;
-  String _dropdownLabel = forumDiscussionCategories[0];
+  int dropdownValue = 0;
+  String dropdownLabel = forumDiscussionCategories[0];
 
   GlobalKey<FormState> getKey() {
     return _formKey;
@@ -34,7 +34,7 @@ class NewDiscussionPageState extends State<NewDiscussionPage> {
   }
 
   String getDropdownLabel() {
-    return _dropdownLabel;
+    return dropdownLabel;
   }
 
   DatabaseService getDb() {
@@ -119,13 +119,14 @@ class NewDiscussionPageState extends State<NewDiscussionPage> {
                           key: ValueKey("NewDiscussionDropdownButtonKey"),
                           dropdownColor: Colors.grey[700],
                           elevation: 0,
-                          value: _dropdownValue,
+                          value: dropdownValue,
                           selectedItemBuilder: (BuildContext context) {
                             List<Widget> items = [];
                             for(int i = 0; i < forumDiscussionCategories.length; i++)
                               items.add(
                                 Center(
                                     child: Container(
+                                        key: ValueKey("SelectedDropdownItem"+forumDiscussionCategories[i]),
                                         width: 150,
                                         alignment: AlignmentDirectional.center,
                                         child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),)
@@ -138,13 +139,13 @@ class NewDiscussionPageState extends State<NewDiscussionPage> {
                             for(int i = 0; i < forumDiscussionCategories.length; i++)
                               DropdownMenuItem(
                                 value: i,
-                                child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),),
+                                child: Container(key: ValueKey("DropdownItem"+forumDiscussionCategories[i]), child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),)),
                               ),
                           ],
                           onChanged: (value) {
                             setState(() {
-                              _dropdownValue = value;
-                              _dropdownLabel = forumDiscussionCategories[value];
+                              dropdownValue = value;
+                              dropdownLabel = forumDiscussionCategories[value];
                             });
                           },
                         ),

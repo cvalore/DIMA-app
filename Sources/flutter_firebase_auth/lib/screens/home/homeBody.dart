@@ -163,12 +163,13 @@ class _HomeBodyState extends State<HomeBody> {
             indicatorColor: Colors.white,
             tabs: <Widget>[
               Container(
+                  key: ValueKey("ForSaleTab"),
                   height: _isTablet ? 60.0 : 40.0,
                   child: Center(child: Text('For Sale',
                     style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
               ),
               Container(
-                  key: ValueKey("prova"),
+                  key: ValueKey("MyBooksTab"),
                   height: _isTablet ? 60.0 : 40.0,
                   child: Center(child: Text('My Books',
                     style: TextStyle(fontSize: _isTablet ? 20.0 : 14.0),))
@@ -208,7 +209,8 @@ class _HomeBodyState extends State<HomeBody> {
                 tabs: [
                   Tab(
                     child: Container(
-                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                    key: ValueKey("HomeVerticalTab"),
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                     height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -221,8 +223,10 @@ class _HomeBodyState extends State<HomeBody> {
                       ],
                     ),
                   ),),
-                  Tab(child: Container(
-                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                  Tab(
+                    child: Container(
+                    key: ValueKey("SearchVerticalTab"),
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                     height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -235,8 +239,10 @@ class _HomeBodyState extends State<HomeBody> {
                       ],
                     ),
                   ),),
-                  Tab(child: Container(
-                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                  Tab(
+                    child: Container(
+                    key: ValueKey("InsertVerticalTab"),
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                     height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -249,8 +255,10 @@ class _HomeBodyState extends State<HomeBody> {
                       ],
                     ),
                   ),),
-                  Tab(child: Container(
-                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                  Tab(
+                    child: Container(
+                    key: ValueKey("ForumVerticalTab"),
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                     height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -263,8 +271,10 @@ class _HomeBodyState extends State<HomeBody> {
                       ],
                     ),
                   ),),
-                  Tab(child: Container(
-                    //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                  Tab(
+                    child: Container(
+                    key: ValueKey("ProfileVerticalTab"),
+                      //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                     height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -291,8 +301,10 @@ class _HomeBodyState extends State<HomeBody> {
                     tabBackgroundColor: Colors.black26,
                     selectedTabTextStyle: TextStyle(fontWeight: FontWeight.bold),
                     tabs: <Tab>[
-                      Tab(child: Container(
-                          //height: 50,
+                      Tab(
+                          child: Container(
+                            key: ValueKey("ForSaleVerticalTab"),
+                              //height: 50,
                           height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                           child: Center(child: Column(
@@ -303,8 +315,10 @@ class _HomeBodyState extends State<HomeBody> {
                             ],
                           ))
                       )),
-                      Tab(child: Container(
-                          //height: 50,
+                      Tab(
+                          child: Container(
+                            key: ValueKey("MyBooksVerticalTab"),
+                              //height: 50,
                           height: (MediaQuery.of(context).size.height - Scaffold.of(context).appBarMaxHeight)/2,
                           //decoration: BoxDecoration(border: Border.all(color: Colors.red)),
                           child: Center(child: Column(

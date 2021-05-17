@@ -29,7 +29,11 @@ class _HomeBookInfoState extends State<HomeBookInfo> {
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }
-    user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    user = CustomUser(
+        userFromAuth == null ? "" : userFromAuth.uid,
+        email: userFromAuth == null ? "" : userFromAuth.email,
+        isAnonymous: userFromAuth == null ? false : userFromAuth.isAnonymous
+    );
     _db = DatabaseService(user: user);
 
     //dynamic result = _db.getGeneralBookInfo(widget.book);
