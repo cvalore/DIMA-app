@@ -25,7 +25,7 @@ class _StatusState extends State<Status> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return Container(
+    return widget.insertedBook == null ? Container() : Container(
       height: widget.height,
       child: Row(
         children: [

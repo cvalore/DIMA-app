@@ -75,7 +75,11 @@ class _BookInsertState extends State<BookInsert> {
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }
-    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(
+        userFromAuth == null ? "" : userFromAuth.uid,
+        email: userFromAuth == null ? "" : userFromAuth.email,
+        isAnonymous: userFromAuth == null ? false : userFromAuth.isAnonymous
+    );
     _db = DatabaseService(user: user);
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;

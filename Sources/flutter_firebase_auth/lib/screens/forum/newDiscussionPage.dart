@@ -14,27 +14,27 @@ class NewDiscussionPage extends StatefulWidget {
   const NewDiscussionPage({Key key, this.db, this.updateDiscussionView}) : super(key: key);
 
   @override
-  _NewDiscussionPageState createState() => _NewDiscussionPageState();
+  NewDiscussionPageState createState() => NewDiscussionPageState();
 }
 
-class _NewDiscussionPageState extends State<NewDiscussionPage> {
+class NewDiscussionPageState extends State<NewDiscussionPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  String _title = '';
+  String title = '';
 
-  int _dropdownValue = 0;
-  String _dropdownLabel = forumDiscussionCategories[0];
+  int dropdownValue = 0;
+  String dropdownLabel = forumDiscussionCategories[0];
 
   GlobalKey<FormState> getKey() {
     return _formKey;
   }
 
   String getTitle() {
-    return _title;
+    return title;
   }
 
   String getDropdownLabel() {
-    return _dropdownLabel;
+    return dropdownLabel;
   }
 
   DatabaseService getDb() {
@@ -100,7 +100,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                     onChanged: (value) {
                       if(value != '') {
                         setState(() {
-                          _title = value;
+                          title = value;
                         });
                       }
                     },
@@ -116,16 +116,17 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         ),
                         DropdownButton(
-                          key: UniqueKey(),
+                          key: ValueKey("NewDiscussionDropdownButtonKey"),
                           dropdownColor: Colors.grey[700],
                           elevation: 0,
-                          value: _dropdownValue,
+                          value: dropdownValue,
                           selectedItemBuilder: (BuildContext context) {
                             List<Widget> items = [];
                             for(int i = 0; i < forumDiscussionCategories.length; i++)
                               items.add(
                                 Center(
                                     child: Container(
+                                        key: ValueKey("SelectedDropdownItem"+forumDiscussionCategories[i]),
                                         width: 150,
                                         alignment: AlignmentDirectional.center,
                                         child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),)
@@ -138,13 +139,13 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
                             for(int i = 0; i < forumDiscussionCategories.length; i++)
                               DropdownMenuItem(
                                 value: i,
-                                child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),),
+                                child: Container(key: ValueKey("DropdownItem"+forumDiscussionCategories[i]), child: Text(forumDiscussionCategories[i], textAlign: TextAlign.center,style: TextStyle(fontSize: _isTablet ? 18.0 : 16.0),)),
                               ),
                           ],
                           onChanged: (value) {
                             setState(() {
-                              _dropdownValue = value;
-                              _dropdownLabel = forumDiscussionCategories[value];
+                              dropdownValue = value;
+                              dropdownLabel = forumDiscussionCategories[value];
                             });
                           },
                         ),

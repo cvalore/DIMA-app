@@ -56,7 +56,11 @@ class _ViewBookPageState extends State<ViewBookPage> {
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }
-    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(
+        userFromAuth == null ? "" : userFromAuth.uid,
+        email: userFromAuth == null ? "" : userFromAuth.email,
+        isAnonymous: userFromAuth == null ? false : userFromAuth.isAnonymous
+    );
     DatabaseService _db = DatabaseService(user: user);
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
@@ -64,7 +68,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return Scaffold(
+    return widget.book == null ? Container() : Scaffold(
       appBar: AppBar(
         //backgroundColor: Colors.black,
         elevation: 0.0,

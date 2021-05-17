@@ -77,6 +77,7 @@ class HomePageBookList extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: _isTablet ? 12.0 : 5.0),
               child: InkWell(
+                key: ValueKey("PushBookPageInkWell"),
                 onTap: () {
                   _pushBookPage(perGenreBooks, index, context);
                 },
