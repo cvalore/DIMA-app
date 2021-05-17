@@ -113,7 +113,7 @@ class BottomTabs extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(builder: (BuildContext context) {
-                  return SearchPage(books: books,);
+                  return SearchPage(books: books);
                 })
             );
             //setIndex(0);

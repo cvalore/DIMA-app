@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/bookGeneralInfo.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addBookSelection.dart';
-import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/utils/bookGeneralInfoListView.dart';
-import 'package:flutter_firebase_auth/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/searchBookForm.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';

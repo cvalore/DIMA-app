@@ -13,10 +13,10 @@ class AddNewPaymentMethod extends StatefulWidget {
 
 
   @override
-  _AddNewPaymentMethodState createState() => _AddNewPaymentMethodState();
+  AddNewPaymentMethodState createState() => AddNewPaymentMethodState();
 }
 
-class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
+class AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
 
   final _ownerNameKey = GlobalKey<FormFieldState>();
   final _cardNumber = GlobalKey<FormFieldState>();
@@ -65,6 +65,7 @@ class _AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
               : Builder(
             builder: (BuildContext context) {
               return IconButton(
+                key: ValueKey('SavePaymentMethod'),
                 onPressed: () async {
                   myFocusNode.requestFocus();
                   myFocusNode.unfocus();

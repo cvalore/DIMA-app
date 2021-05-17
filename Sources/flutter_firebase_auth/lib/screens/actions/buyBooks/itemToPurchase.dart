@@ -16,6 +16,7 @@ class ItemToPurchase extends StatelessWidget {
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0),
       child: Column(

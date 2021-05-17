@@ -19,7 +19,7 @@ class AddBookUserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     bool _isTablet =
     _isPortrait ?

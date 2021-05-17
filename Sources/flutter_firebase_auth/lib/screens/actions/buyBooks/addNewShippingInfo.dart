@@ -14,14 +14,15 @@ class AddNewShippingInfo extends StatefulWidget {
   AddNewShippingInfo({Key key, this.shippingAddress, this.viewModeOn = false});
 
   @override
-  _AddNewShippingInfoState createState() => _AddNewShippingInfoState();
+  AddNewShippingInfoState createState() => AddNewShippingInfoState();
 }
 
-class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
+class AddNewShippingInfoState extends State<AddNewShippingInfo> {
 
   FocusNode myFocusNode;
   final _fullNameKey = GlobalKey<FormFieldState>();
   final _addressKey = GlobalKey<FormFieldState>();
+  final _cityKey = GlobalKey<FormFieldState>();
   final _CAPKey = GlobalKey<FormFieldState>();
   Map<String, dynamic> infoState = Map<String, dynamic>();
 
@@ -29,7 +30,7 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
   void initState() {
     myFocusNode = FocusNode();
     infoState['fullName'] = '';
-    infoState['state'] = '';
+    infoState['state'] = null;
     infoState['address 1'] = '';
     infoState['address 2'] = '';
     infoState['CAP'] = '';
@@ -53,7 +54,6 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Shipping info'),
@@ -67,13 +67,14 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
               : Builder(
             builder: (BuildContext context) {
               return IconButton(
+                key: ValueKey('SaveShippingAddressButton'),
                 onPressed: () async {
                   setState(() {
                     myFocusNode.requestFocus();
                     myFocusNode.unfocus();
                   });
                   if (_fullNameKey.currentState.validate() && _addressKey.currentState.validate()
-                      && _CAPKey.currentState.validate() && infoState['state'] != ''){
+                      && _CAPKey.currentState.validate() && _cityKey.currentState.validate() && infoState['state'] != null){
                     final snackBar = SnackBar(
                       backgroundColor: Colors.white24,
                       duration: Duration(seconds: 1),
@@ -169,17 +170,14 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                      child: Padding(
                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
                        child: DropdownButton<String>(
+                          key: ValueKey('DropDownButton'),
+                          hint: const Text('Select a state'),
                           isExpanded: true,
                           value: infoState['state'],
                           icon: const Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
                           elevation: 16,
-                          /*style: const TextStyle(color: Colors.deepPurple),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.deepPurpleAccent,
-                          ),*/
-                          onChanged: (value) {
+                          onChanged: (String value) {
                             setState(() {
                                infoState['state'] = value;
                             });
@@ -188,7 +186,10 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
-                              child: Text(value),
+                              child: Text(
+                                value,
+                                key: ValueKey(value),
+                              ),
                             );
                           }).toList(),
                   ),
@@ -295,9 +296,10 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
               Padding(
                 padding: EdgeInsets.all(_isTablet ? 20.0 : 0.0),
                 child: TextFormField(
+                  key: _cityKey,
                   enabled: !widget.viewModeOn,
                   initialValue: widget.shippingAddress != null && widget.shippingAddress['city'] != '' ? widget.shippingAddress['city'] : null,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     labelStyle: TextStyle(fontSize: 16,
                     ),
@@ -311,6 +313,11 @@ class _AddNewShippingInfoState extends State<AddNewShippingInfo> {
                     filled: true,
                     //fillColor: Colors.white24,
                   ),
+                  validator: (value) {
+                    RegExp regExp1 = RegExp(r'^[ ]*$');
+                    return regExp1.hasMatch(value) ?
+                    'Enter a valid city' : null;
+                  },
                   onChanged: (value) {
                     setState(() {
                       infoState['city'] = value;

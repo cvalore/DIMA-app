@@ -2,7 +2,6 @@ class Countries {
 
   static getCountries () {
     return [
-      '',
       'Italy',
       'France',
       'Belgium',

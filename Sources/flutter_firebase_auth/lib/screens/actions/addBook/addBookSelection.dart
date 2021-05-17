@@ -122,7 +122,6 @@ class AddBookSelectionState extends State<AddBookSelection> {
                               }
                               //TestPage.of(context).selected = null;
                               listItems = result['items'];
-                              print(listItems[0]);
                               //print(listItems);
                             });
                           }
@@ -393,8 +392,6 @@ class AddBookSelectionState extends State<AddBookSelection> {
     var categories = selectedBook['volumeInfo']['categories'] != null ?
         List<String>.from(selectedBook['volumeInfo']['categories'])
             : null;
-    //print(categories.runtimeType);
-    //print(categories);
 
     var averageRating = selectedBook['volumeInfo']['averageRating'] != null ?
     Utils.computeAverageRatingFromAPI(selectedBook['volumeInfo']['averageRating'].toDouble()) :
