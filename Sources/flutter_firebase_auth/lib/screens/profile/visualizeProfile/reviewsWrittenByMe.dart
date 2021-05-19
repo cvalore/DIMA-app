@@ -46,7 +46,7 @@ class _ReceivedReviewsState extends State<ReviewsWrittenByMe> {
                       context: context,
                       barrierDismissible: true,
                       builder: (_) => AlertDialog(
-                        content: Text('The selected reviews will be delete. Are you sure?'),
+                        content: Text('The selected reviews will be deleted. Are you sure?'),
                         actions: [
                           FlatButton(
                               onPressed: () {

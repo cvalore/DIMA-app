@@ -8,7 +8,6 @@ import 'package:flutter_firebase_auth/utils/stringWrapper.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class ModifyProfileMainPage extends StatefulWidget {
-  static const routeName = '/modifyProfile';
 
   CustomUser user;
   StringWrapper newImagePath = StringWrapper(value: '');

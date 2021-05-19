@@ -33,47 +33,7 @@ class _FavoritesMainPageState extends State<FavoritesMainPage> {
     Scaffold(
       appBar: AppBar(
         title: Text('My favorites'),
-        /*
-        actions: [
-          PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert_outlined),
-              onSelected: (value) {
-                switch (value) {
-                  case 'Select items':
-                    setState(() {
-                      selectionModeOn = true;
-                    });
-                    break;
-                  case 'Deselect items':
-                    setState(() {
-                      selectionModeOn = false;
-                    });
-                    break;
-                  default:
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) => [
-                selectionModeOn == true ?
-                const PopupMenuItem(
-                    value: 'Deselect items',
-                    child: Text('Deselect items'))
-                : const PopupMenuItem(
-                    value: 'Select items',
-                    child: Text('Select items'))
-              ]
-          )
-        ],
-         */
       ),
-      /*
-      floatingActionButton: selectionModeOn ? FloatingActionButton.extended(
-          label: Text('Remove like'),
-          onPressed: () {
-            //method removing likes from db
-          },
-          ) : null,
-       */
       body: widget.likedBooks != null && widget.likedBooks.length != 0 ?
         GridView.count(
         crossAxisCount: _isPortrait ? _isTablet ? 3 : 2 : 5,
