@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/addNewPaymentMethod.dart';
-import 'package:flutter_firebase_auth/screens/actions/buyBooks/addNewShippingInfo.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/addPaymentMethod.dart';
-import 'package:flutter_firebase_auth/screens/actions/buyBooks/addShippingInfo.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';

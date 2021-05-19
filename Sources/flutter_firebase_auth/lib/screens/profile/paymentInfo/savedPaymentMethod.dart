@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/addNewPaymentMethod.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 
 class SavedPaymentMethod extends StatefulWidget {

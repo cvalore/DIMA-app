@@ -1,11 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/perGenreBook.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
-
 import 'package:flutter_firebase_auth/utils/loading.dart';
-
 
 import 'homeBookInfo.dart';
 

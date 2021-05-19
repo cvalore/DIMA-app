@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
-import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 
 
 class OrdersMainPage extends StatefulWidget {

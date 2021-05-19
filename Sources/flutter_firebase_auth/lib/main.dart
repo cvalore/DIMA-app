@@ -2,11 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/mainPage.dart';
+import 'package:flutter_firebase_auth/utils/loading.dart';
 import 'package:flutter_firebase_auth/utils/networkStatusService.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter_firebase_auth/utils/loading.dart';
 
 
 

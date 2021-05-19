@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/notifications/notificationText.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
-
 import 'package:flutter_firebase_auth/utils/manuallyCloseableExpansionTile.dart';
 
 

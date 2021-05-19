@@ -3,7 +3,6 @@ import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/addImage.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
 
 
@@ -21,7 +20,7 @@ class ViewBookFromTransaction extends StatelessWidget {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    return Scaffold(
+    return book == null ? Container() : Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         title: Text(book.title,

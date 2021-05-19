@@ -9,8 +9,6 @@ import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/userInfo.
 import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_firebase_auth/utils/constants.dart';
-
 
 
 class VisualizeProfileMainPage extends StatefulWidget {

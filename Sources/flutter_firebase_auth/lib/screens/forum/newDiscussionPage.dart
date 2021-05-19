@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/forum/newDiscussionPageFloatingButton.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
 
 

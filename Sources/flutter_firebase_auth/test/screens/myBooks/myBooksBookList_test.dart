@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/bookHomePageView.dart';
-import 'package:flutter_firebase_auth/screens/myBooks/myBooks.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooksBookList.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/viewBookPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';

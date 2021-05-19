@@ -10,12 +10,10 @@ import 'package:flutter_firebase_auth/screens/actions/addBook/price.dart';
 import 'package:flutter_firebase_auth/screens/actions/addBook/status.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/buyBooks.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/loading.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter_firebase_auth/utils/constants.dart';
-
-import 'package:flutter_firebase_auth/utils/loading.dart';
 
 
 class ViewBookPage extends StatefulWidget {

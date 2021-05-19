@@ -1,11 +1,9 @@
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionTabBody.dart';
-import 'package:flutter_firebase_auth/screens/profile/chat/chatProfile.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/auth.dart';
 import 'package:flutter_firebase_auth/services/database.dart';

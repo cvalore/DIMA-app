@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/home/homeGeneralInfoView.dart';
 import 'package:flutter_firebase_auth/screens/home/soldByView.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
-
 import 'package:flutter_firebase_auth/utils/loading.dart';
 
 class ViewPendingBook extends StatefulWidget {

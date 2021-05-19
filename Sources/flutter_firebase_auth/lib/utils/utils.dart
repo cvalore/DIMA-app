@@ -459,22 +459,28 @@ class Utils {
       price: book['price'],
       status: book['status'],
     );
-    Reference bookRef = DatabaseService().storageService().getBookDirectoryReference(ownerUid, bookToPush);
-    List<String> bookPickedFilePaths = List<String>();
-    ListResult lr = await bookRef.listAll();
-    int count = 0;
-    for(Reference r in lr.items) {
-      try {
-        String filePath = await DatabaseService().storageService().toDownloadFile(r, count);
-        if(filePath != null) {
-          bookPickedFilePaths.add(filePath);
+    if(DatabaseService().storageService() != null) {
+      Reference bookRef = DatabaseService()
+          .storageService()
+          .getBookDirectoryReference(ownerUid, bookToPush);
+      List<String> bookPickedFilePaths = List<String>();
+      ListResult lr = await bookRef.listAll();
+      int count = 0;
+      for (Reference r in lr.items) {
+        try {
+          String filePath = await DatabaseService()
+              .storageService()
+              .toDownloadFile(r, count);
+          if (filePath != null) {
+            bookPickedFilePaths.add(filePath);
+          }
+        } on FirebaseException catch (e) {
+          e.toString();
         }
-      } on FirebaseException catch (e) {
-        e.toString();
+        count = count + 1;
       }
-      count = count + 1;
+      bookToPush.imagesPath = bookPickedFilePaths;
     }
-    bookToPush.imagesPath = bookPickedFilePaths;
     Navigator.push(
         context,
         MaterialPageRoute(

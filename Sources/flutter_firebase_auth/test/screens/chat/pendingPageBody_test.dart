@@ -7,7 +7,6 @@ import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bottomTwoDots.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   testWidgets("PendingPageBody test", (WidgetTester tester) async {

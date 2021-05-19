@@ -8,9 +8,9 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/buyBooks/itemToPurchase.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
-import 'package:flutter_firebase_auth/utils/constants.dart';
 
 import 'addPaymentMethod.dart';
 import 'addShippingInfo.dart';

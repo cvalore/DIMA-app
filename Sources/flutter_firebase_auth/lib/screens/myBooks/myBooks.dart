@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/myBooks/myBooksBookList.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
-import 'package:provider/provider.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 
 class MyBooks extends StatefulWidget {

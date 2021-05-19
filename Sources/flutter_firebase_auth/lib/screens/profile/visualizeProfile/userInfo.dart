@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/actions/addUserReview.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 
 

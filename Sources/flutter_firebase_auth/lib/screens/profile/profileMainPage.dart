@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/myTransaction.dart';
-import 'package:flutter_firebase_auth/models/shippingAddressInfo.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/chat/chatProfileManager.dart';
 import 'package:flutter_firebase_auth/screens/notifications/notificationProfileManager.dart';
@@ -11,10 +10,9 @@ import 'package:flutter_firebase_auth/screens/profile/paymentInfo/paymentInfo.da
 import 'package:flutter_firebase_auth/screens/profile/shippingAddress/shippingAddress.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter_firebase_auth/utils/constants.dart';
 
 
 

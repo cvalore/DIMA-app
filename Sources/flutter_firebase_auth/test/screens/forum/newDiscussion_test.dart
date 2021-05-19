@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionPage.dart';
-import 'package:flutter_firebase_auth/screens/forum/discussionPageBody.dart';
 import 'package:flutter_firebase_auth/screens/forum/discussionTab.dart';
 import 'package:flutter_firebase_auth/screens/forum/forumMainPage.dart';
 import 'package:flutter_firebase_auth/screens/forum/newDiscussionPage.dart';
@@ -10,7 +10,6 @@ import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/material.dart';
 
 void main() {
   testWidgets("NewDiscussion Test", (WidgetTester tester) async {

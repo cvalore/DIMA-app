@@ -5,13 +5,10 @@ import 'package:flutter_firebase_auth/models/user.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/constants.dart';
 import 'package:flutter_firebase_auth/utils/manuallyCloseableExpansionTile.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-import 'package:flutter_firebase_auth/utils/constants.dart';
-
-import 'package:flutter_firebase_auth/utils/manuallyCloseableExpansionTile.dart';
 
 
 

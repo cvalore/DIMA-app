@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchBookPage.dart';
 import 'package:flutter_firebase_auth/screens/actions/searchBook/searchUserPage.dart';
-import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 
 class SearchPage extends StatelessWidget {
 

@@ -1,8 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
-
 import 'package:flutter_firebase_auth/utils/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 
 class Purchases extends StatefulWidget {

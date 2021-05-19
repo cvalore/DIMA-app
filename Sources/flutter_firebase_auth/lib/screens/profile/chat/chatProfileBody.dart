@@ -6,9 +6,8 @@ import 'package:flutter_firebase_auth/screens/chat/chatPage.dart';
 import 'package:flutter_firebase_auth/screens/profile/visualizeProfile/visualizeProfileMainPage.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
-
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 
 class ChatProfileBody extends StatelessWidget {

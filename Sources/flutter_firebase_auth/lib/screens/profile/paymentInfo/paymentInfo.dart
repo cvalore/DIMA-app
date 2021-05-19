@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/screens/profile/paymentInfo/savedPaymentMethod.dart';
-import 'package:flutter_firebase_auth/utils/utils.dart';
-
 import 'package:flutter_firebase_auth/utils/loading.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 
 class PaymentInfo extends StatefulWidget {
