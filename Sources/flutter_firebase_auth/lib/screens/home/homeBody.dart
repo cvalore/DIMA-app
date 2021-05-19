@@ -375,7 +375,7 @@ class _HomeBodyState extends State<HomeBody> {
 
   bool onTapInsert(AuthCustomUser user, BuildContext buildContext, List<dynamic> books, int index) {
     if(isAnonymous(user)) {
-      Utils.showNeedToBeLogged(buildContext, 1);
+      Utils.showNeedToBeLogged(buildContext, 2);
       return false;
     }
     Navigator.push(
@@ -393,7 +393,7 @@ class _HomeBodyState extends State<HomeBody> {
 
   bool onTapProfile(AuthCustomUser user, BuildContext buildContext, List<dynamic> books, int index) {
     if(isAnonymous(user)) {
-      Utils.showNeedToBeLogged(buildContext, 1);
+      Utils.showNeedToBeLogged(buildContext, 2);
       return false;
     }
     //setIndex(index);

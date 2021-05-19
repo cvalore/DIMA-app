@@ -77,7 +77,7 @@ class MyBooksBookListState extends State<MyBooksBookList> {
           heroTag: 'select items to buy',
           onPressed: () {
             if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
-              Utils.showNeedToBeLogged(context, 1);
+              Utils.showNeedToBeLogged(context, 2);
               return;
             }
             setState(() {

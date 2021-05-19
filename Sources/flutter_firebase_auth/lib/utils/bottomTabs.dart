@@ -126,7 +126,7 @@ class BottomTabs extends StatelessWidget {
           }
         }
         else {
-          Utils.showNeedToBeLogged(context, 1);
+          Utils.showNeedToBeLogged(context, 2);
         }
       },
     );

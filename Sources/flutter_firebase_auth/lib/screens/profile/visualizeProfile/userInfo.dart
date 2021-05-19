@@ -178,7 +178,8 @@ class _UserInfoState extends State<UserInfo> {
                               Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
                                 ElevatedButton(
                                   //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
-                                  onPressed: () async {
+                                  onPressed: ()  async {
+                                    print('tappi qua?');
                                     if (widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid)) {
                                       await Utils.databaseService.unFollowUser(widget.user);
                                       widget.user.usersFollowingMe.remove(Utils.mySelf.uid);
@@ -186,6 +187,7 @@ class _UserInfoState extends State<UserInfo> {
                                         widget.user.followers -= 1;
                                       });
                                     } else {
+                                      print('ma qua');
                                       await Utils.databaseService.followUser(widget.user);
                                       widget.user.usersFollowingMe.add(Utils.mySelf.uid);
                                       setState(() {
@@ -194,24 +196,22 @@ class _UserInfoState extends State<UserInfo> {
                                     }
                                   },
                                   child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
-                                    Text('UNFOLLOW') : Text('FOLLOW')) :
+                                    Text('UNFOLLOW') : Text('FOLLOW', key: ValueKey('followUnfollowButtonPortrait'))) :
                                 ElevatedButton(
                                   onPressed: () {
-                                    Utils.showNeedToBeLogged(context, 1);
+                                    Utils.showNeedToBeLogged(context, 2);
                                   },
                                   child: Text('FOLLOW'),
                                 ),
                               Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
                                 ElevatedButton(
                                   onPressed: () async {
-
                                     CustomUser me = await Utils.databaseService.getUserById(Utils.mySelf.uid);
                                     String myUsername = me.username;
                                     //DatabaseService db = DatabaseService(user: CustomUser(Utils.mySelf.uid));
                                     dynamic chat = await Utils.databaseService.createNewChat(
                                         Utils.mySelf.uid, widget.user.uid, myUsername, widget.user.username
                                     );
-
                                     if(chat != null) {
                                       Navigator.push(
                                           context,
@@ -226,7 +226,7 @@ class _UserInfoState extends State<UserInfo> {
                               ) :
                                 ElevatedButton(
                                 onPressed: () {
-                                  Utils.showNeedToBeLogged(context, 1);
+                                  Utils.showNeedToBeLogged(context, 2);
                                 },
                                 child: Text('CHAT'),
                               ),
@@ -254,7 +254,7 @@ class _UserInfoState extends State<UserInfo> {
                                   child: Text('REVIEW')):
                                 ElevatedButton(
                                 onPressed: () {
-                                  Utils.showNeedToBeLogged(context, 1);
+                                  Utils.showNeedToBeLogged(context, 2);
                                 },
                                 child: Text('REVIEW'),
                               ),
@@ -391,6 +391,7 @@ class _UserInfoState extends State<UserInfo> {
                             children: [
                               Utils.mySelf.isAnonymous == null || !Utils.mySelf.isAnonymous ?
                               ElevatedButton(
+                                key: ValueKey('followUnfollowButtonLandscape'),
                                 //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
                                   onPressed: () async {
                                     if (widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid)) {
@@ -411,7 +412,7 @@ class _UserInfoState extends State<UserInfo> {
                                   Text('UNFOLLOW') : Text('FOLLOW')) :
                               ElevatedButton(
                                 onPressed: () {
-                                  Utils.showNeedToBeLogged(context, 1);
+                                  Utils.showNeedToBeLogged(context, 2);
                                 },
                                 child: Text('FOLLOW'),
                               ),
@@ -440,7 +441,7 @@ class _UserInfoState extends State<UserInfo> {
                               ) :
                               ElevatedButton(
                                 onPressed: () {
-                                  Utils.showNeedToBeLogged(context, 1);
+                                  Utils.showNeedToBeLogged(context, 2);
                                 },
                                 child: Text('CHAT'),
                               ),
@@ -468,7 +469,7 @@ class _UserInfoState extends State<UserInfo> {
                                   child: Text('REVIEW')):
                               ElevatedButton(
                                 onPressed: () {
-                                  Utils.showNeedToBeLogged(context, 1);
+                                  Utils.showNeedToBeLogged(context, 2);
                                 },
                                 child: Text('REVIEW'),
                               ),

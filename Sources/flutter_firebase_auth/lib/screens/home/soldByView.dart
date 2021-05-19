@@ -158,7 +158,7 @@ class _SoldByViewState extends State<SoldByView> {
                                       onPressed: () async {
 
                                         if(Utils.mySelf.isAnonymous != null && Utils.mySelf.isAnonymous) {
-                                          Utils.showNeedToBeLogged(context, 1);
+                                          Utils.showNeedToBeLogged(context, 2);
                                           return;
                                         }
 
