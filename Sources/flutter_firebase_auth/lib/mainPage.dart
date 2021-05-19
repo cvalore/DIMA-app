@@ -44,7 +44,7 @@ class MainPage extends StatelessWidget {
                           (Set<MaterialState> states) {
                         if (states.contains(MaterialState.disabled))
                           return Colors.red;
-                        return Colors.blueGrey; // Defer to the widget's default.
+                        return Colors.teal[600]; // Defer to the widget's default.
                       }),
                   foregroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
