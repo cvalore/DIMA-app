@@ -55,8 +55,8 @@ class _BuyBooksState extends State<BuyBooks> {
         booksForExchange.add(widget.booksToBuy[i]);
       }
     }
-    shippingAddresses = widget.purchaseInfo['shippingAddressInfo'];
-    paymentCards = widget.purchaseInfo['paymentCardInfo'];
+    shippingAddresses = widget.purchaseInfo == null ? [] : widget.purchaseInfo['shippingAddressInfo'];
+    paymentCards = widget.purchaseInfo == null ? [] : widget.purchaseInfo['paymentCardInfo'];
     super.initState();
   }
 
@@ -76,7 +76,7 @@ class _BuyBooksState extends State<BuyBooks> {
           Builder(
               builder: (BuildContext context) {
                 return ElevatedButton(
-                  style: Theme.of(context).elevatedButtonTheme.style.copyWith(
+                  style: Theme.of(context).elevatedButtonTheme.style == null ? null : Theme.of(context).elevatedButtonTheme.style.copyWith(
                     elevation: MaterialStateProperty.resolveWith<double> (
                         (Set<MaterialState> states) {
                           return 0.0;

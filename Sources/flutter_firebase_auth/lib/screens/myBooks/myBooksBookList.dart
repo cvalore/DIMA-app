@@ -27,10 +27,10 @@ class MyBooksBookList extends StatefulWidget {
   MyBooksBookList({Key key, @required this.self, @required this.books, this.userUid}) : super(key: key);
 
   @override
-  _MyBooksBookListState createState() => _MyBooksBookListState();
+  MyBooksBookListState createState() => MyBooksBookListState();
 }
 
-class _MyBooksBookListState extends State<MyBooksBookList> {
+class MyBooksBookListState extends State<MyBooksBookList> {
 
   DatabaseService _db;
   CustomUser user;
@@ -272,24 +272,28 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
 
   void _pushBookPage(int index, BuildContext context, String thumbnail) async {
     InsertedBook book = await _db.getBook(index);
-    bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
-    bool wasExchangeable = book.exchangeable;
-    Reference bookRef = _db.storageService().getBookDirectoryReference(user.uid, book);
-    List<String> bookPickedFilePaths = List<String>();
-    ListResult lr = await bookRef.listAll();
-    int count = 0;
-    for(Reference r in lr.items) {
-      try {
-        String filePath = await _db.storageService().toDownloadFile(r, count);
-        if(filePath != null) {
-          bookPickedFilePaths.add(filePath);
+    bool hadImages; bool wasExchangeable;
+    if(book != null) {
+      hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
+      wasExchangeable = book.exchangeable;
+      Reference bookRef = _db.storageService().getBookDirectoryReference(
+          user.uid, book);
+      List<String> bookPickedFilePaths = List<String>();
+      ListResult lr = await bookRef.listAll();
+      int count = 0;
+      for (Reference r in lr.items) {
+        try {
+          String filePath = await _db.storageService().toDownloadFile(r, count);
+          if (filePath != null) {
+            bookPickedFilePaths.add(filePath);
+          }
+        } on FirebaseException catch (e) {
+          e.toString();
         }
-      } on FirebaseException catch (e) {
-        e.toString();
+        count = count + 1;
       }
-      count = count + 1;
+      book.imagesPath = bookPickedFilePaths;
     }
-    book.imagesPath = bookPickedFilePaths;
 
     Navigator.push(
         context,
@@ -303,7 +307,7 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
                 self: widget.self,
                 userUid: widget.self ? null : widget.userUid,
                 thumbnail: thumbnail,
-                canBuy: book.exchangeStatus != 'pending',
+                canBuy: book == null ? false : book.exchangeStatus != 'pending',
             )
         )
     );
@@ -319,26 +323,30 @@ class _MyBooksBookListState extends State<MyBooksBookList> {
     for (int index = 0; index < selectedBooks.length; index++) {
       if (selectedBooks[index] == true) {
         book = await _db.getBook(index);
-        bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
-        Reference bookRef = _db.storageService().getBookDirectoryReference(
-            user.uid, book);
-        List<String> bookPickedFilePaths = List<String>();
-        ListResult lr = await bookRef.listAll();
-        int count = 0;
-        for (Reference r in lr.items) {
-          try {
-            String filePath = await _db.storageService().toDownloadFile(r, count);
-            if (filePath != null) {
-              bookPickedFilePaths.add(filePath);
+        if(book != null) {
+          bool hadImages = book.imagesUrl != null && book.imagesUrl.length != 0;
+          Reference bookRef = _db.storageService().getBookDirectoryReference(
+              user.uid, book);
+          List<String> bookPickedFilePaths = List<String>();
+          ListResult lr = await bookRef.listAll();
+          int count = 0;
+          for (Reference r in lr.items) {
+            try {
+              String filePath = await _db.storageService().toDownloadFile(
+                  r, count);
+              if (filePath != null) {
+                bookPickedFilePaths.add(filePath);
+              }
+            } on FirebaseException catch (e) {
+              e.toString();
             }
-          } on FirebaseException catch (e) {
-            e.toString();
+            count = count + 1;
           }
-          count = count + 1;
+          book.imagesPath = bookPickedFilePaths;
+          booksToBuy.add(book);
+          selectedBooksThumbnails[book.insertionNumber] =
+          widget.books[index]['thumbnail'];
         }
-        book.imagesPath = bookPickedFilePaths;
-        booksToBuy.add(book);
-        selectedBooksThumbnails[book.insertionNumber] = widget.books[index]['thumbnail'];
       }
     }
 
