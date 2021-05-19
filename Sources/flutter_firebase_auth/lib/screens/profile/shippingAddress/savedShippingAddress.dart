@@ -49,12 +49,36 @@ class _SavedShippingAddressState extends State<SavedShippingAddress> {
             padding: EdgeInsets.symmetric(horizontal: _isTablet ? 150.0 : 0.0),
             child: ListTile(
               onLongPress: () async {
-                CustomUser user = CustomUser(Utils.mySelf.uid);
-                await DatabaseService(user: user).removeShippingAddress(widget.savedShippingAddress[index - 1]);
-                setState(() {
-                  widget.savedShippingAddress.removeAt(index - 1);
-                });
-              },
+                bool answer = false;
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (_) => AlertDialog(
+                      content: Text('Do you want to delete this address?'),
+                      actions: [
+                        FlatButton(
+                            onPressed: () async {
+                              answer = true;
+                              Navigator.pop(context);
+                            },
+                            child: Text('YES')),
+                        FlatButton(
+                            onPressed: () {
+                              answer = false;
+                              Navigator.pop(context);
+                            },
+                            child: Text('NO')),
+                      ],
+                    )
+                ).then((value) async {
+                  if (answer) {
+                    CustomUser user = CustomUser(Utils.mySelf.uid);
+                    await DatabaseService(user: user).removeShippingAddress(widget.savedShippingAddress[index - 1]);
+                    setState(() {
+                      widget.savedShippingAddress.removeAt(index - 1);
+                    });
+                  }
+              });},
               onTap: () async {
                 var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
                     AddNewShippingInfo(shippingAddress: widget.savedShippingAddress[index - 1], viewModeOn: true)));

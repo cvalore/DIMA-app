@@ -23,7 +23,9 @@ class _VisualizeProfileState extends State<VisualizeProfile> {
   Widget build(BuildContext context) {
 
     CustomUser user = Provider.of<CustomUser>(context);
+
     DatabaseService _db = DatabaseService(user: user);
+
 
     bool _isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 

@@ -58,7 +58,6 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
                   child: Container(
                     child: Column(
                       children: [
-                        //do a sliver appbar with visualize profile??
                         VisualizeProfile(height: _isTablet ? 200.0 : 120.0),
                         Divider(height: 15, thickness: 2,),
                         Favorites(height: _isTablet ? 100.0 : 60.0),

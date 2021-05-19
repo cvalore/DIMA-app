@@ -102,34 +102,3 @@ class _ChooseBooksForExchangeState extends State<ChooseBooksForExchange> {
     );
   }
 }
-
-        /*
-      ListView.separated(
-          separatorBuilder: (context, index) {
-            return Divider(
-              color: Colors.white,
-              indent: _isTablet ? 150.0 : 15.0,
-              endIndent: _isTablet ? 150.0 : 15.0,
-            );
-          },
-          itemCount: widget.booksToExchange.length,
-          itemBuilder: (context, index) {
-            final book = widget.booksToExchange[index];
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: _isTablet ? 150.0 : 0.0),
-              child: RadioListTile(
-                activeColor: Colors.white,
-                title: Text(genre, style: TextStyle(color: Colors.white),),
-                value: genre,
-                controlAffinity: ListTileControlAffinity.trailing,
-                groupValue: chosenGenre,
-                onChanged: (value) {
-                  setState(() {
-                    chosenGenre = value;
-                  });
-                  Navigator.pop(context, chosenGenre);
-                },
-              ),
-            );
-          }
-      ),*/
