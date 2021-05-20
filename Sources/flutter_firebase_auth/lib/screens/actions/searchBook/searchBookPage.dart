@@ -19,10 +19,10 @@ class SearchBookPage extends StatefulWidget {
   const SearchBookPage({Key key, this.books}) : super(key: key);
 
   @override
-  _SearchBookPageState createState() => _SearchBookPageState();
+  SearchBookPageState createState() => SearchBookPageState();
 }
 
-class _SearchBookPageState extends State<SearchBookPage> {
+class SearchBookPageState extends State<SearchBookPage> {
 
   final _formKey = GlobalKey<FormState>();
   final _priceFormKey = GlobalKey<FormState>();
@@ -36,43 +36,43 @@ class _SearchBookPageState extends State<SearchBookPage> {
   bool gettingMoreBooks = false;
 
 
-  String _title = '';
-  String _author = '';
+  String searchTitle = '';
+  String searchAuthor = '';
   bool searchButtonPressed = false;   //check needed to display 'No results found'
 
-  bool _openModifiersSection = false;
+  bool openModifiersSection = false;
 
-  String _selectedOrder = orderByNoOrderLabel;
-  int _selectedOrderValue = 0;
-  String _selectedOrderWay = orderByAscendingWay;
-  int _dropdownValue = orderByAscendingWayValue;
+  String selectedOrder = orderByNoOrderLabel;
+  int selectedOrderValue = 0;
+  String selectedOrderWay = orderByAscendingWay;
+  int dropdownValue = orderByAscendingWayValue;
 
   List<dynamic> booksAllInfo = List<dynamic>();
   List<dynamic> booksAllInfoCopy = List<dynamic>();
-  bool _searchLoading = false;
+  bool searchLoading = false;
 
-  bool _isRemoveFilterEnabled = false;
-  String _lessThanPrice = "";
-  String _greaterThanPrice = "";
-  bool _photosCheckBox = false;
-  bool _exchangeableCheckBox = false;
+  bool isRemoveFilterEnabled = false;
+  String lessThanPrice = "";
+  String greaterThanPrice = "";
+  bool photosCheckBox = false;
+  bool exchangeableCheckBox = false;
 
   final GlobalKey<ManuallyCloseableExpansionTileState> _filterExpansionTileKey = GlobalKey();
   final GlobalKey<ManuallyCloseableExpansionTileState> _orderbyExpansionTileKey = GlobalKey();
 
-  int _dropdownGenreValue = 0;
-  String _dropdownGenreLabel = "";
+  int dropdownGenreValue = 0;
+  String dropdownGenreLabel = "";
 
-  String _isbnFilter = "";
+  String isbnFilter = "";
 
-  String _resultMessage = "No results";
+  String resultMessage = "No results";
 
   void setTitle(String title) {
-    _title = title;
+    searchTitle = title;
   }
 
   void setAuthor(String author) {
-    _author = author;
+    searchAuthor = author;
   }
 
   GlobalKey getFormKey() {
@@ -97,19 +97,19 @@ class _SearchBookPageState extends State<SearchBookPage> {
             return false;
           }
 
-          if(_title.isNotEmpty && _author.isNotEmpty) {
+          if(searchTitle.isNotEmpty && searchAuthor.isNotEmpty) {
             return b.title.toLowerCase().contains(
-                _title.toLowerCase()) ||
+                searchTitle.toLowerCase()) ||
                 b.author.toLowerCase().contains(
-                    _author.toLowerCase());
+                    searchAuthor.toLowerCase());
           }
-          else if(_title.isNotEmpty) {
+          else if(searchTitle.isNotEmpty) {
             return b.title.toLowerCase().contains(
-                _title.toLowerCase());
+                searchTitle.toLowerCase());
           }
           else {
             return b.author.toLowerCase().contains(
-                _author.toLowerCase());
+                searchAuthor.toLowerCase());
           }
         })
     );
@@ -123,7 +123,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
     if (realBooksAllInfo.length > 0) {
       setState(() {
-        _searchLoading = false;
+        searchLoading = false;
         booksAllInfo.addAll(realBooksAllInfo);
       });
     }
@@ -235,14 +235,14 @@ class _SearchBookPageState extends State<SearchBookPage> {
                           }
                           //_openModifiersSection = false;
 
-                          if(_title.isEmpty && _author.isEmpty) {
+                          if(searchTitle.isEmpty && searchAuthor.isEmpty) {
                             valid = false;
-                            _resultMessage = "Insert at least either a Title or an Author";
+                            resultMessage = "Insert at least either a Title or an Author";
                             return;
                           }
 
-                          _searchLoading = true;
-                          _resultMessage = "No results";
+                          searchLoading = true;
+                          resultMessage = "No results";
                         });
 
                         if(!valid) {
@@ -257,19 +257,19 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                 return false;
                               }
 
-                              if(_title.isNotEmpty && _author.isNotEmpty) {
+                              if(searchTitle.isNotEmpty && searchAuthor.isNotEmpty) {
                                 return b.title.toLowerCase().contains(
-                                    _title.toLowerCase()) ||
+                                    searchTitle.toLowerCase()) ||
                                     b.author.toLowerCase().contains(
-                                        _author.toLowerCase());
+                                        searchAuthor.toLowerCase());
                               }
-                              else if(_title.isNotEmpty) {
+                              else if(searchTitle.isNotEmpty) {
                                 return b.title.toLowerCase().contains(
-                                    _title.toLowerCase());
+                                    searchTitle.toLowerCase());
                               }
                               else {
                                 return b.author.toLowerCase().contains(
-                                        _author.toLowerCase());
+                                        searchAuthor.toLowerCase());
                               }
                             })
                         );
@@ -281,7 +281,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         }
 
                         setState(() {
-                          _searchLoading = false;
+                          searchLoading = false;
                           booksAllInfo.clear();
                           booksAllInfo.addAll(realBooksAllInfo);
                         });
@@ -292,7 +292,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     iconSize: 28.0,
                     onPressed: () {
                       setState(() {
-                        _openModifiersSection = !_openModifiersSection;
+                        openModifiersSection = !openModifiersSection;
                       });
                     },
                     icon: Icon(Icons.keyboard_arrow_down)),
@@ -300,7 +300,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
               ),
             ],
           ),
-          _openModifiersSection ? ListTileTheme(
+          openModifiersSection ? ListTileTheme(
             dense: true,
             child: ManuallyCloseableExpansionTile(
               onExpansionChanged: (val) {
@@ -348,7 +348,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      _greaterThanPrice = value;
+                                      greaterThanPrice = value;
                                     });
                                   },
                                 ),
@@ -372,7 +372,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      _lessThanPrice = value;
+                                      lessThanPrice = value;
                                     });
                                   },
                                 ),
@@ -390,10 +390,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               Checkbox(
                                 onChanged: (bool value) {
                                   setState(() {
-                                    _photosCheckBox = !_photosCheckBox;
+                                    photosCheckBox = !photosCheckBox;
                                   });
                                 },
-                                value: _photosCheckBox,
+                                value: photosCheckBox,
                               ),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0),),
                               Text("Exchangeable", style: TextStyle(
@@ -404,10 +404,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               Checkbox(
                                 onChanged: (bool value) {
                                   setState(() {
-                                    _exchangeableCheckBox = !_exchangeableCheckBox;
+                                    exchangeableCheckBox = !exchangeableCheckBox;
                                   });
                                 },
-                                value: _exchangeableCheckBox,
+                                value: exchangeableCheckBox,
                               ),
                             ],
                           ),
@@ -420,10 +420,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               ),),
                               Padding(padding: const EdgeInsets.symmetric(horizontal: 10.0),),
                               DropdownButton(
-                                key: UniqueKey(),
+                                key: ValueKey("GenreDropdownButton"),
                                 dropdownColor: Colors.grey[700],
                                 elevation: 0,
-                                value: _dropdownGenreValue,
+                                value: dropdownGenreValue,
                                 selectedItemBuilder: (BuildContext context) {
                                   List<Widget> items = [];
                                   for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
@@ -431,6 +431,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                     items.add(
                                       Center(
                                         child: Container(
+                                        key: ValueKey("AllGenresSelectedItem"),
                                         width: 200,
                                         alignment: AlignmentDirectional.center,
                                         child: Text("All genres", textAlign: TextAlign.center,
@@ -441,7 +442,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                     items.add(
                                       Center(
                                         child: Container(
-                                          width: 200,
+                                            key: ValueKey(BookGenres().allBookGenres[i-1] + "SelectedItem"),
+                                            width: 200,
                                           alignment: AlignmentDirectional.center,
                                           child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,
                                             style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),
@@ -456,21 +458,25 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                     i == 0 ?
                                       DropdownMenuItem(
                                         value: i,
-                                        child: Text("All genres", textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,)
+                                        child: Text("All genres",
+                                            key: ValueKey("AllGenresItem"),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,)
                                         ),
                                       ) :
                                       DropdownMenuItem(
                                         value: i,
-                                        child: Text(BookGenres().allBookGenres[i-1], textAlign: TextAlign.center,
+                                        child: Text(BookGenres().allBookGenres[i-1],
+                                          key: ValueKey(BookGenres().allBookGenres[i-1] + "Item"),
+                                          textAlign: TextAlign.center,
                                           style: TextStyle(fontSize: _isTablet ? 17.0 : 14.0,),
                                         ),
                                       ),
                                 ],
                                 onChanged: (value) {
                                   setState(() {
-                                    _dropdownGenreValue = value;
-                                    _dropdownGenreLabel =
+                                    dropdownGenreValue = value;
+                                    dropdownGenreLabel =
                                         value == 0 ? "" : BookGenres().allBookGenres[value - 1];
                                   });
                                 },
@@ -495,7 +501,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      _isbnFilter = value;
+                                      isbnFilter = value;
                                     });
                                   },
                                 ),
@@ -510,27 +516,27 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                 onPressed: () {
                                   setState(() {
                                     filter();
-                                    if(!_isRemoveFilterEnabled) {
-                                      _isRemoveFilterEnabled = true;
+                                    if(!isRemoveFilterEnabled) {
+                                      isRemoveFilterEnabled = true;
                                     }
                                     _filterExpansionTileKey.currentState.collapse();
                                   });
                                 },
                                 child: Text("Apply",style: TextStyle(fontSize: _isTablet ? 20.0 : 17.0,),),
                               ),
-                              _isRemoveFilterEnabled ? TextButton(
+                              isRemoveFilterEnabled ? TextButton(
                                 onPressed: () {
                                   setState(() {
                                     _lessThanFormFieldController.clear();
                                     _greaterThanFormFieldController.clear();
                                     _isbnFormFieldController.clear();
-                                    _greaterThanPrice = "";
-                                    _lessThanPrice = "";
-                                    _isbnFilter = "";
+                                    greaterThanPrice = "";
+                                    lessThanPrice = "";
+                                    isbnFilter = "";
                                     clearFilter();
-                                    _isRemoveFilterEnabled = false;
-                                    _photosCheckBox = false;
-                                    _exchangeableCheckBox = false;
+                                    isRemoveFilterEnabled = false;
+                                    photosCheckBox = false;
+                                    exchangeableCheckBox = false;
 
                                     _filterExpansionTileKey.currentState.collapse();
                                   });
@@ -549,7 +555,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
               ],
             ),
           ) : Container(),
-          _openModifiersSection ? ListTileTheme(
+          openModifiersSection ? ListTileTheme(
             dense: true,
             child: Theme(
               data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -567,22 +573,22 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: _isTablet ? 8.0 : 0.0),
                     width: MediaQuery.of(context).size.width,
                     child: CustomRadioButton(
-                      initialSelection: _selectedOrderValue,
+                      initialSelection: selectedOrderValue,
                       buttonLables: orderByBookLabels,
                       buttonValues: orderByBookLabels,
                       radioButtonValue: (value, index) {
                         setState(() {
-                          _searchLoading = true;
-                          bool toReorder = _selectedOrder != value;
-                          _selectedOrder = value;
-                          _selectedOrderValue = index;
+                          searchLoading = true;
+                          bool toReorder = selectedOrder != value;
+                          selectedOrder = value;
+                          selectedOrderValue = index;
                           if(toReorder) {
                             reorder();
                           }
                           _orderbyExpansionTileKey.currentState.collapse();
                         });
                         setState(() {
-                          _searchLoading = false;
+                          searchLoading = false;
                         });
                       },
                       buttonHeight: _isTablet ? 40.0 : 30,
@@ -602,22 +608,22 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     key: UniqueKey(),
                     dropdownColor: Colors.grey[700],
                     elevation: 0,
-                    value: _dropdownValue,
+                    value: dropdownValue,
                     items: [
                       DropdownMenuItem(
                         value: orderByAscendingWayValue,
-                        child: Text(orderByAscendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
+                        child: Text(orderByAscendingWay, key: ValueKey("OrderByAscendingItem"), style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                       DropdownMenuItem(
                         value: orderByDescendingWayValue,
-                        child: Text(orderByDescendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
+                        child: Text(orderByDescendingWay, key: ValueKey("OrderByDescendingItem"), style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                     ],
                     onChanged: (value) {
                       setState(() {
-                        bool toReorder = _dropdownValue != value;
-                        _dropdownValue = value;
-                        _selectedOrderWay = orderByWays[value];
+                        bool toReorder = dropdownValue != value;
+                        dropdownValue = value;
+                        selectedOrderWay = orderByWays[value];
                         if(toReorder) {
                           reorder();
                         }
@@ -633,7 +639,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
               padding: EdgeInsets.symmetric(vertical: _isTablet ? 20.0 : 0.0),
               child: Divider(height: 2.0, thickness: 2.0, indent: _isTablet ? 50.0 : 12.0, endIndent: _isTablet ? 50.0 : 12.0,)
           ),
-          _searchLoading ? Expanded(flex: 26, child: Loading()) :
+          searchLoading ? Expanded(flex: 26, child: Loading()) :
           (
             booksAllInfo == null || booksAllInfo.length == 0 ?
               Expanded(
@@ -647,7 +653,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(_resultMessage,
+                          Text(resultMessage,
                             style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
                           Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
                         ],
@@ -800,14 +806,14 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   }
                                   //_openModifiersSection = false;
 
-                                  if(_title.isEmpty && _author.isEmpty) {
+                                  if(searchTitle.isEmpty && searchAuthor.isEmpty) {
                                     valid = false;
-                                    _resultMessage = "Insert at least either a Title or an Author";
+                                    resultMessage = "Insert at least either a Title or an Author";
                                     return;
                                   }
 
-                                  _searchLoading = true;
-                                  _resultMessage = "No results";
+                                  searchLoading = true;
+                                  resultMessage = "No results";
                                 });
 
                                 if(!valid) {
@@ -822,19 +828,19 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                         return false;
                                       }
 
-                                      if(_title.isNotEmpty && _author.isNotEmpty) {
+                                      if(searchTitle.isNotEmpty && searchAuthor.isNotEmpty) {
                                         return b.title.toLowerCase().contains(
-                                            _title.toLowerCase()) ||
+                                            searchTitle.toLowerCase()) ||
                                             b.author.toLowerCase().contains(
-                                                _author.toLowerCase());
+                                                searchAuthor.toLowerCase());
                                       }
-                                      else if(_title.isNotEmpty) {
+                                      else if(searchTitle.isNotEmpty) {
                                         return b.title.toLowerCase().contains(
-                                            _title.toLowerCase());
+                                            searchTitle.toLowerCase());
                                       }
                                       else {
                                         return b.author.toLowerCase().contains(
-                                            _author.toLowerCase());
+                                            searchAuthor.toLowerCase());
                                       }
                                     })
                                 );
@@ -846,7 +852,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                 }
 
                                 setState(() {
-                                  _searchLoading = false;
+                                  searchLoading = false;
                                   booksAllInfo.clear();
                                   booksAllInfo.addAll(realBooksAllInfo);
                                 });
@@ -857,7 +863,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                               iconSize: 28.0,
                               onPressed: () {
                                 setState(() {
-                                  _openModifiersSection = !_openModifiersSection;
+                                  openModifiersSection = !openModifiersSection;
                                 });
                               },
                               icon: Icon(Icons.keyboard_arrow_down)),
@@ -866,7 +872,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     ],
                   ),
                 ),
-                _openModifiersSection ? Container(
+                openModifiersSection ? Container(
                   width: MediaQuery.of(context).size.width/2.5,
                   child: ListTileTheme(
                     dense: true,
@@ -916,7 +922,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                             ),
                                             onChanged: (value) {
                                               setState(() {
-                                                _greaterThanPrice = value;
+                                                greaterThanPrice = value;
                                               });
                                             },
                                           ),
@@ -940,7 +946,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                             ),
                                             onChanged: (value) {
                                               setState(() {
-                                                _lessThanPrice = value;
+                                                lessThanPrice = value;
                                               });
                                             },
                                           ),
@@ -958,10 +964,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                         Checkbox(
                                           onChanged: (bool value) {
                                             setState(() {
-                                              _photosCheckBox = !_photosCheckBox;
+                                              photosCheckBox = !photosCheckBox;
                                             });
                                           },
-                                          value: _photosCheckBox,
+                                          value: photosCheckBox,
                                         ),
                                         Padding(padding: const EdgeInsets.symmetric(horizontal: 20.0),),
                                         Text("Exchangeable", style: TextStyle(
@@ -972,10 +978,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                         Checkbox(
                                           onChanged: (bool value) {
                                             setState(() {
-                                              _exchangeableCheckBox = !_exchangeableCheckBox;
+                                              exchangeableCheckBox = !exchangeableCheckBox;
                                             });
                                           },
-                                          value: _exchangeableCheckBox,
+                                          value: exchangeableCheckBox,
                                         ),
                                       ],
                                     ) :
@@ -991,7 +997,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                           key: UniqueKey(),
                                           dropdownColor: Colors.grey[700],
                                           elevation: 0,
-                                          value: _dropdownGenreValue,
+                                          value: dropdownGenreValue,
                                           selectedItemBuilder: (BuildContext context) {
                                             List<Widget> items = [];
                                             for(int i = 0; i < BookGenres().allBookGenres.length + 1; i++)
@@ -1037,8 +1043,8 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                           ],
                                           onChanged: (value) {
                                             setState(() {
-                                              _dropdownGenreValue = value;
-                                              _dropdownGenreLabel =
+                                              dropdownGenreValue = value;
+                                              dropdownGenreLabel =
                                               value == 0 ? "" : BookGenres().allBookGenres[value - 1];
                                             });
                                           },
@@ -1063,7 +1069,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                             ),
                                             onChanged: (value) {
                                               setState(() {
-                                                _isbnFilter = value;
+                                                isbnFilter = value;
                                               });
                                             },
                                           ),
@@ -1078,27 +1084,27 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                           onPressed: () {
                                             setState(() {
                                               filter();
-                                              if(!_isRemoveFilterEnabled) {
-                                                _isRemoveFilterEnabled = true;
+                                              if(!isRemoveFilterEnabled) {
+                                                isRemoveFilterEnabled = true;
                                               }
                                               _filterExpansionTileKey.currentState.collapse();
                                             });
                                           },
                                           child: Text("Apply",style: TextStyle(fontSize: _isTablet ? 20.0 : 17.0,),),
                                         ),
-                                        _isRemoveFilterEnabled ? TextButton(
+                                        isRemoveFilterEnabled ? TextButton(
                                             onPressed: () {
                                               setState(() {
                                                 _lessThanFormFieldController.clear();
                                                 _greaterThanFormFieldController.clear();
                                                 _isbnFormFieldController.clear();
-                                                _greaterThanPrice = "";
-                                                _lessThanPrice = "";
-                                                _isbnFilter = "";
+                                                greaterThanPrice = "";
+                                                lessThanPrice = "";
+                                                isbnFilter = "";
                                                 clearFilter();
-                                                _isRemoveFilterEnabled = false;
-                                                _photosCheckBox = false;
-                                                _exchangeableCheckBox = false;
+                                                isRemoveFilterEnabled = false;
+                                                photosCheckBox = false;
+                                                exchangeableCheckBox = false;
 
                                                 _filterExpansionTileKey.currentState.collapse();
                                               });
@@ -1342,7 +1348,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     ),
                   ),
                 ) : Container(),
-                _openModifiersSection ? Container(
+                openModifiersSection ? Container(
                   width: MediaQuery.of(context).size.width/2.5,
                   child: ListTileTheme(
                     dense: true,
@@ -1368,22 +1374,22 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: _isTablet ? 8.0 : 0.0),
                                   width: MediaQuery.of(context).size.width,
                                   child: CustomRadioButton(
-                                    initialSelection: _selectedOrderValue,
+                                    initialSelection: selectedOrderValue,
                                     buttonLables: orderByBookLabels,
                                     buttonValues: orderByBookLabels,
                                     radioButtonValue: (value, index) {
                                       setState(() {
-                                        _searchLoading = true;
-                                        bool toReorder = _selectedOrder != value;
-                                        _selectedOrder = value;
-                                        _selectedOrderValue = index;
+                                        searchLoading = true;
+                                        bool toReorder = selectedOrder != value;
+                                        selectedOrder = value;
+                                        selectedOrderValue = index;
                                         if(toReorder) {
                                           reorder();
                                         }
                                         _orderbyExpansionTileKey.currentState.collapse();
                                       });
                                       setState(() {
-                                        _searchLoading = false;
+                                        searchLoading = false;
                                       });
                                     },
                                     buttonHeight: _isTablet ? 40.0 : 30,
@@ -1402,7 +1408,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   key: UniqueKey(),
                                   dropdownColor: Colors.grey[700],
                                   elevation: 0,
-                                  value: _dropdownValue,
+                                  value: dropdownValue,
                                   items: [
                                     DropdownMenuItem(
                                       value: orderByAscendingWayValue,
@@ -1415,9 +1421,9 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                   ],
                                   onChanged: (value) {
                                     setState(() {
-                                      bool toReorder = _dropdownValue != value;
-                                      _dropdownValue = value;
-                                      _selectedOrderWay = orderByWays[value];
+                                      bool toReorder = dropdownValue != value;
+                                      dropdownValue = value;
+                                      selectedOrderWay = orderByWays[value];
                                       if(toReorder) {
                                         reorder();
                                       }
@@ -1442,7 +1448,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                 width: 1.0,
               ),
             ),
-            _searchLoading ? Expanded(flex: 26, child: Loading()) :
+            searchLoading ? Expanded(flex: 26, child: Loading()) :
             (
                 booksAllInfo == null || booksAllInfo.length == 0 ?
                 Expanded(
@@ -1458,7 +1464,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text(_resultMessage,
+                            Text(resultMessage,
                               style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
                             Icon(Icons.menu_book_rounded, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
                           ],
@@ -1574,12 +1580,12 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
     RegExp regExp1 = RegExp(r'([\d]+\.[\d]{1,2}$|^[\d]+$)');       //well defined price format
     RegExp regExp2 = RegExp(r'(^[0]+$|^[0]+\.[0]{1,2}$)');       //price with all digits equal to zero should not be matched
-    if(!regExp1.hasMatch(_greaterThanPrice) || regExp2.hasMatch(_greaterThanPrice)) {
-      _greaterThanPrice = "";
+    if(!regExp1.hasMatch(greaterThanPrice) || regExp2.hasMatch(greaterThanPrice)) {
+      greaterThanPrice = "";
       _greaterThanFormFieldController.clear();
     }
-    if(!regExp1.hasMatch(_lessThanPrice) || regExp2.hasMatch(_lessThanPrice)) {
-      _lessThanPrice = "";
+    if(!regExp1.hasMatch(lessThanPrice) || regExp2.hasMatch(lessThanPrice)) {
+      lessThanPrice = "";
       _lessThanFormFieldController.clear();
     }
 
@@ -1587,11 +1593,11 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
       bool toRemove = false;
 
-      if(_isbnFilter.isNotEmpty) {
+      if(isbnFilter.isNotEmpty) {
         bool toRemovePartial = true;
         for(int i = 0; i < element.length; i++) {
           if(element[i]['book']['isbn'] != null &&
-              element[i]['book']['isbn'].toString().contains(_isbnFilter)) {
+              element[i]['book']['isbn'].toString().contains(isbnFilter)) {
             toRemovePartial = false;
             break;
           }
@@ -1599,11 +1605,11 @@ class _SearchBookPageState extends State<SearchBookPage> {
         toRemove = toRemovePartial ? true : false;
       }
 
-      if(!toRemove && _dropdownGenreLabel.isNotEmpty) {
+      if(!toRemove && dropdownGenreLabel.isNotEmpty) {
         bool toRemovePartial = true;
         for(int i = 0; i < element.length; i++) {
           if(element[i]['book']['category'].toString().compareTo(
-              _dropdownGenreLabel) == 0) {
+              dropdownGenreLabel) == 0) {
             toRemovePartial = false;
             break;
           }
@@ -1611,20 +1617,20 @@ class _SearchBookPageState extends State<SearchBookPage> {
         toRemove = toRemovePartial ? true : false;
       }
 
-      if(!toRemove && _greaterThanPrice.isNotEmpty) {
+      if(!toRemove && greaterThanPrice.isNotEmpty) {
         bool toRemovePartial = true;
         for(int i = 0; i < element.length; i++) {
-          if(element[i]['book']['price'] >= double.parse(_greaterThanPrice)) {
+          if(element[i]['book']['price'] >= double.parse(greaterThanPrice)) {
             toRemovePartial = false;
             break;
           }
         }
         toRemove = toRemovePartial ? true : false;
       }
-      if(!toRemove && _lessThanPrice.isNotEmpty) {
+      if(!toRemove && lessThanPrice.isNotEmpty) {
         bool toRemovePartial = true;
         for(int i = 0; i < element.length; i++) {
-          if(element[i]['book']['price'] <= double.parse(_lessThanPrice)) {
+          if(element[i]['book']['price'] <= double.parse(lessThanPrice)) {
             toRemovePartial = false;
             break;
           }
@@ -1632,7 +1638,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
         toRemove = toRemovePartial ? true : false;
       }
 
-      if(!toRemove && _photosCheckBox) {
+      if(!toRemove && photosCheckBox) {
         bool toRemovePartial = true;
         for(int i = 0; i < element.length; i++) {
           if(element[i]['book']['imagesUrl'].length > 0) {
@@ -1643,7 +1649,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
         toRemove = toRemovePartial ? true : false;
       }
 
-      if(!toRemove && _exchangeableCheckBox) {
+      if(!toRemove && exchangeableCheckBox) {
         bool toRemovePartial = true;
         for(int i = 0; i < element.length; i++) {
           if(element[i]['book']['exchangeable']) {
@@ -1668,7 +1674,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
   }
 
   void reorder() {
-    switch(_selectedOrder) {
+    switch(selectedOrder) {
       case orderByTitleLabel:
         reorderByStringFieldInUserCollection("title");
         break;
@@ -1728,7 +1734,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
       (a, b) {
         //sort first the list of the same book from different authors
         a.sort((a1, b1) {
-          return _selectedOrderWay == orderByAscendingWay ?
+          return selectedOrderWay == orderByAscendingWay ?
           (
               (a1 == null || a1[collection][field] == null) ? 1 :
               (b1 == null || b1[collection][field] == null) ? -1 :
@@ -1746,7 +1752,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
         });
         //sort first the list of the same book from different authors
         b.sort((a1, b1) {
-          return _selectedOrderWay == orderByAscendingWay ?
+          return selectedOrderWay == orderByAscendingWay ?
           (
               (a1 == null || a1[collection][field]) ? 1 :
               (b1 == null || b1[collection][field] == null) ? -1 :
@@ -1765,7 +1771,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
 
         //sort globally the two elements
-        return _selectedOrderWay == orderByAscendingWay ?
+        return selectedOrderWay == orderByAscendingWay ?
         (
             (a == null || a[0][collection][field] == null) ? 1 :
             (b == null || b[0][collection][field] == null) ? -1 : (
@@ -1788,7 +1794,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
       (a, b) {
         //sort first the list of the same book from different authors
         a.sort((a1, b1) {
-          return _selectedOrderWay == orderByAscendingWay ?
+          return selectedOrderWay == orderByAscendingWay ?
           (
               (a1 == null || a1[collection][field] == null) ? 1 :
               (b1 == null || b1[collection][field] == null) ? -1 :
@@ -1806,7 +1812,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
         });
         //sort first the list of the same book from different authors
         b.sort((a1, b1) {
-          return _selectedOrderWay == orderByAscendingWay ?
+          return selectedOrderWay == orderByAscendingWay ?
           (
               (a1 == null || a1[collection][field]) ? 1 :
               (b1 == null || b1[collection][field] == null) ? -1 :
@@ -1825,7 +1831,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
 
 
         //sort globally the two elements
-        return _selectedOrderWay == orderByAscendingWay ?
+        return selectedOrderWay == orderByAscendingWay ?
         (
             (a == null || a[0][collection][field] == null) ? 1 :
             (b == null || b[0][collection][field] == null) ? -1 : (
@@ -1848,7 +1854,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
   void reorderByNumberOfImages() {
     booksAllInfo.sort(
       (a, b) {
-        return _selectedOrderWay == orderByAscendingWay ?
+        return selectedOrderWay == orderByAscendingWay ?
         (
             a == null ? 1 : b == null ? -1 : (
                 a[0]['book']['imagesUrl'].length >

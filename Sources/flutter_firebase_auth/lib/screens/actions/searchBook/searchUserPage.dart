@@ -12,27 +12,29 @@ import 'package:radio_grouped_buttons/custom_buttons/custom_radio_buttons_group.
 
 class SearchUserPage extends StatefulWidget {
   @override
-  _SearchUserPageState createState() => _SearchUserPageState();
+  SearchUserPageState createState() => SearchUserPageState();
+
+  SearchUserPage({Key key}) : super(key: key);
 }
 
-class _SearchUserPageState extends State<SearchUserPage> {
+class SearchUserPageState extends State<SearchUserPage> {
 
   final GlobalKey<FormState> _searchUserFormKey = GlobalKey();
   final GlobalKey<ManuallyCloseableExpansionTileState> _orderbyExpansionTileKey = GlobalKey();
 
   List<dynamic> allUsersFound = List<dynamic>();
 
-  String _searchUsername = "";
+  String searchUsername = "";
 
-  bool _openModifiersSection = false;
+  bool openModifiersSection = false;
   bool _searchLoading = false;
 
-  String _selectedOrder = orderByNoOrderLabel;
-  int _selectedOrderValue = 0;
-  String _selectedOrderWay = orderByAscendingWay;
-  int _dropdownValue = orderByAscendingWayValue;
+  String selectedOrder = orderByNoOrderLabel;
+  int selectedOrderValue = 0;
+  String selectedOrderWay = orderByAscendingWay;
+  int dropdownValue = orderByAscendingWayValue;
 
-  String _resultMessage = "No results";
+  String resultMessage = "No results";
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,11 @@ class _SearchUserPageState extends State<SearchUserPage> {
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }
-    CustomUser user = CustomUser(userFromAuth.uid, email: userFromAuth.email, isAnonymous: userFromAuth.isAnonymous);
+    CustomUser user = CustomUser(
+        userFromAuth == null ? "" : userFromAuth.uid,
+        email: userFromAuth == null ? "" : userFromAuth.email,
+        isAnonymous: userFromAuth == null ? false : userFromAuth.isAnonymous
+    );
     DatabaseService _db = DatabaseService(user: user);
 
     return Container(
@@ -96,7 +102,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0,),
                       onChanged: (value) {
                         setState(() {
-                          _searchUsername = value;
+                          searchUsername = value;
                         });
                       },
                     ),
@@ -108,7 +114,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   FloatingActionButton(
-                      heroTag: "searchBookBtn",
+                      heroTag: "searchUserBtn",
                       elevation: 0.0,
                       focusElevation: 0.0,
                       hoverElevation: 0.0,
@@ -123,8 +129,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                             _orderbyExpansionTileKey.currentState.collapse();
                           }
 
-                          if(_searchUsername.isEmpty) {
-                            _resultMessage = "Insert a username";
+                          if(searchUsername.isEmpty) {
+                            resultMessage = "Insert a username";
                             valid = false;
                             return;
                           }
@@ -146,7 +152,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                           allUsersFound.addAll(
                             allUsers.where(
                                     (b) => b['username'].toString().toLowerCase().contains(
-                                        _searchUsername.toLowerCase()
+                                        searchUsername.toLowerCase()
                                 )
                             )
                           );
@@ -167,7 +173,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                       iconSize: 28.0,
                       onPressed: () {
                         setState(() {
-                          _openModifiersSection = !_openModifiersSection;
+                          openModifiersSection = !openModifiersSection;
                         });
                       },
                       icon: Icon(Icons.keyboard_arrow_down)),
@@ -175,7 +181,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
               ),
             ],
           ),
-          _openModifiersSection ? ListTileTheme(
+          openModifiersSection ? ListTileTheme(
             dense: true,
             child: Theme(
               data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -188,15 +194,15 @@ class _SearchUserPageState extends State<SearchUserPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     width: MediaQuery.of(context).size.width,
                     child: CustomRadioButton(
-                      initialSelection: _selectedOrderValue,
+                      initialSelection: selectedOrderValue,
                       buttonLables: orderByUsersLabels,
                       buttonValues: orderByUsersLabels,
                       radioButtonValue: (value, index) {
                         setState(() {
                           _searchLoading = true;
-                          bool toReorder = _selectedOrder != value;
-                          _selectedOrder = value;
-                          _selectedOrderValue = index;
+                          bool toReorder = selectedOrder != value;
+                          selectedOrder = value;
+                          selectedOrderValue = index;
                           if(toReorder) {
                             reorder();
                           }
@@ -223,22 +229,22 @@ class _SearchUserPageState extends State<SearchUserPage> {
                     key: UniqueKey(),
                     dropdownColor: Colors.grey[700],
                     elevation: 0,
-                    value: _dropdownValue,
+                    value: dropdownValue,
                     items: [
                       DropdownMenuItem(
                         value: orderByAscendingWayValue,
-                        child: Text(orderByAscendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
+                        child: Text(orderByAscendingWay, key: ValueKey("OrderByAscendingItem"), style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                       DropdownMenuItem(
                         value: orderByDescendingWayValue,
-                        child: Text(orderByDescendingWay, style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
+                        child: Text(orderByDescendingWay, key: ValueKey("OrderByDescendingItem"), style: TextStyle(fontSize: _isTablet ? 18.0 : 14.0,),),
                       ),
                     ],
                     onChanged: (value) {
                       setState(() {
-                        bool toReorder = _dropdownValue != value;
-                        _dropdownValue = value;
-                        _selectedOrderWay = orderByWays[value];
+                        bool toReorder = dropdownValue != value;
+                        dropdownValue = value;
+                        selectedOrderWay = orderByWays[value];
                         if(toReorder) {
                           reorder();
                         }
@@ -267,7 +273,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(_resultMessage,
+                        Text(resultMessage,
                           style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
                         Icon(Icons.person, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
                       ],
@@ -443,7 +449,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                               style: TextStyle(color: Colors.white, fontSize: _isTablet ? 21.0 : 17.0,),
                               onChanged: (value) {
                                 setState(() {
-                                  _searchUsername = value;
+                                  searchUsername = value;
                                 });
                               },
                             ),
@@ -470,8 +476,8 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                     _orderbyExpansionTileKey.currentState.collapse();
                                   }
 
-                                  if(_searchUsername.isEmpty) {
-                                    _resultMessage = "Insert a username";
+                                  if(searchUsername.isEmpty) {
+                                    resultMessage = "Insert a username";
                                     valid = false;
                                     return;
                                   }
@@ -493,7 +499,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                                   allUsersFound.addAll(
                                       allUsers.where(
                                               (b) => b['username'].toString().toLowerCase().contains(
-                                              _searchUsername.toLowerCase()
+                                              searchUsername.toLowerCase()
                                           )
                                       )
                                   );
@@ -514,7 +520,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                               iconSize: 28.0,
                               onPressed: () {
                                 setState(() {
-                                  _openModifiersSection = !_openModifiersSection;
+                                  openModifiersSection = !openModifiersSection;
                                 });
                               },
                               icon: Icon(Icons.keyboard_arrow_down)),
@@ -523,7 +529,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                     ],
                   ),
                 ),
-                _openModifiersSection ?
+                openModifiersSection ?
                 Container(
                   width: MediaQuery.of(context).size.width/2.5,
                   child: ListTileTheme(
@@ -539,15 +545,15 @@ class _SearchUserPageState extends State<SearchUserPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             width: MediaQuery.of(context).size.width,
                             child: CustomRadioButton(
-                              initialSelection: _selectedOrderValue,
+                              initialSelection: selectedOrderValue,
                               buttonLables: orderByUsersLabels,
                               buttonValues: orderByUsersLabels,
                               radioButtonValue: (value, index) {
                                 setState(() {
                                   _searchLoading = true;
-                                  bool toReorder = _selectedOrder != value;
-                                  _selectedOrder = value;
-                                  _selectedOrderValue = index;
+                                  bool toReorder = selectedOrder != value;
+                                  selectedOrder = value;
+                                  selectedOrderValue = index;
                                   if(toReorder) {
                                     reorder();
                                   }
@@ -574,7 +580,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                             key: UniqueKey(),
                             dropdownColor: Colors.grey[700],
                             elevation: 0,
-                            value: _dropdownValue,
+                            value: dropdownValue,
                             items: [
                               DropdownMenuItem(
                                 value: orderByAscendingWayValue,
@@ -587,9 +593,9 @@ class _SearchUserPageState extends State<SearchUserPage> {
                             ],
                             onChanged: (value) {
                               setState(() {
-                                bool toReorder = _dropdownValue != value;
-                                _dropdownValue = value;
-                                _selectedOrderWay = orderByWays[value];
+                                bool toReorder = dropdownValue != value;
+                                dropdownValue = value;
+                                selectedOrderWay = orderByWays[value];
                                 if(toReorder) {
                                   reorder();
                                 }
@@ -631,7 +637,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(_resultMessage,
+                            Text(resultMessage,
                               style: TextStyle(color: Colors.white,  fontSize: _isTablet ? 20.0 : 14.0,),),
                             Icon(Icons.person, color: Colors.white, size: _isTablet ? 30.0 : 20.0,),
                           ],
@@ -766,7 +772,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
   }
 
   void reorder() {
-    switch(_selectedOrder) {
+    switch(selectedOrder) {
       case orderByStarsLabel:
         reorderByStars();
         break;
@@ -783,7 +789,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
   void reorderByStars() {
     allUsersFound.sort(
       (a, b) {
-        return _selectedOrderWay == orderByAscendingWay ?
+        return selectedOrderWay == orderByAscendingWay ?
             (a == null || a['averageRating'] == null) ? 1 :
             (b == null || b['averageRating'] == null) ? -1 : (
                 a['averageRating'] > b['averageRating'] ? 1 : -1
@@ -800,7 +806,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
   void reorderByNumberOfReviews() {
     allUsersFound.sort(
             (a, b) {
-          return _selectedOrderWay == orderByAscendingWay ?
+          return selectedOrderWay == orderByAscendingWay ?
           (a == null || a['receivedReviews'] == null) ? 1 :
           (b == null || b['receivedReviews'] == null) ? -1 : (
               a['receivedReviews'].length > b['receivedReviews'].length ? 1 : -1
