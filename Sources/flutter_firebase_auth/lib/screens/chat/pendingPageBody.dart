@@ -157,14 +157,14 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                         widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
                                     if (result is String && result != 'ok') {
                                       final snackBar = SnackBar(
-                                        backgroundColor: Colors.white24,
+                                        backgroundColor: Colors.grey.withOpacity(1.0),
                                         duration: Duration(seconds: 2),
                                         content: Text(
                                           result,
                                           style: Theme
                                               .of(context)
                                               .textTheme
-                                              .bodyText2,
+                                              .bodyText2.copyWith(color: Colors.black),
                                         ),
                                       );
                                       Scaffold.of(context).showSnackBar(snackBar);
@@ -182,14 +182,14 @@ class _PendingPageBodyState extends State<PendingPageBody> {
                                         widget.transactions[index]['exchanges'][i]['receivedBook'], widget.transactions[index]['buyer'], widget.transactions[index]['exchanges'][i]['offeredBook']);
                                     if (result is String && result != 'ok') {
                                       final snackBar = SnackBar(
-                                        backgroundColor: Colors.white24,
+                                        backgroundColor: Colors.grey.withOpacity(1.0),
                                         duration: Duration(seconds: 2),
                                         content: Text(
                                           result,
                                           style: Theme
                                               .of(context)
                                               .textTheme
-                                              .bodyText2,
+                                              .bodyText2.copyWith(color: Colors.black),
                                         ),
                                       );
                                       Scaffold.of(context).showSnackBar(snackBar);

@@ -38,8 +38,6 @@ class _ChatPageState extends State<ChatPage> {
     widget.db = DatabaseService(user: user);
     widget.db.setChat(widget.chat);
 
-    print('Qua ci arriov');
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.chat.userUid1 == Utils.mySelf.uid ? widget.chat.userUid2Username : widget.chat.userUid1Username),

@@ -183,12 +183,6 @@ class MyBooksBookListState extends State<MyBooksBookList> {
                           print("Delete book");
                           InsertedBook book = await _db.getBook(index);
                           dynamic result = await _db.removeBook(index, book);
-                          /*Scaffold.of(context).showSnackBar(
-                            SnackBar(duration: Duration(seconds: 1),
-                              content: Text(
-                                'Book removed: ' + '${book.title}',),
-                              backgroundColor: Colors.white24,),
-                          );*/
                         }
                       });
                     }
@@ -203,7 +197,11 @@ class MyBooksBookListState extends State<MyBooksBookList> {
                           SnackBar(
                             duration: Duration(seconds: 2, milliseconds: 500),
                             content: Text(
-                              'You cannot select this book because it is involved in a pending transaction'),
+                              'You cannot select this book because it is involved in a pending transaction',
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyText2.copyWith(color: Colors.black)),
                             backgroundColor: Colors.grey.withOpacity(1.0)),
                         );
                       } else {

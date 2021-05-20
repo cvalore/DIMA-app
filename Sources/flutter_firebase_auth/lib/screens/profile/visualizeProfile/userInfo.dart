@@ -236,13 +236,13 @@ class _UserInfoState extends State<UserInfo> {
 
                                     if(!canIReview) {
                                       final snackBar = SnackBar(
-                                        backgroundColor: Colors.black87,
+                                        backgroundColor: Colors.grey.withOpacity(1.0),
                                         duration: Duration(seconds: 2),
                                         content: Text(
                                           "You cannot review an user if you have not bought anything from him",
-                                          style: Theme.of(context).textTheme.bodyText2,
+                                          style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black,
                                         ),
-                                      );
+                                      ));
                                       Scaffold.of(context).showSnackBar(snackBar);
                                       return;
                                     }
@@ -451,11 +451,11 @@ class _UserInfoState extends State<UserInfo> {
 
                                     if(!canIReview) {
                                       final snackBar = SnackBar(
-                                        backgroundColor: Colors.black87,
+                                        backgroundColor: Colors.grey.withOpacity(1.0),
                                         duration: Duration(seconds: 2),
                                         content: Text(
                                           "You cannot review an user if you have not bought anything from him",
-                                          style: Theme.of(context).textTheme.bodyText2,
+                                          style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
                                         ),
                                       );
                                       Scaffold.of(context).showSnackBar(snackBar);

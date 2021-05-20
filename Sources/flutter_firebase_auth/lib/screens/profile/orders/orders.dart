@@ -29,11 +29,12 @@ class _OrdersState extends State<Orders> {
                     if(snapshot.connectionState == ConnectionState.waiting)
                       return Loading();
                     else {
-                      print(snapshot.data);
                       return OrdersMainPage(
                           completedPurchases: snapshot.data[0],
-                          completedExchanges: snapshot.data[1],
-                          pendingExchanges: snapshot.data[2]);
+                          acceptedExchanges: snapshot.data[1],
+                          pendingExchanges: snapshot.data[2],
+                          rejectedExchanges: snapshot.data[3],
+                      );
                     }
                   }
               );

@@ -248,12 +248,10 @@ class _BuyBooksState extends State<BuyBooks> {
                           leading: Icon(Icons.add_circle_outlined),
                           onTap: () async {
                             List<dynamic> myExchangeableBooksFromDb = await Utils.databaseService.getMyExchangeableBooks();
-                            print(sellerMatchingBooksForExchange.length);
                             List<dynamic> myBookIndexesAlreadyUsed = sellerMatchingBooksForExchange.length > 0 ?
                             sellerMatchingBooksForExchange.values.map((e) => e['insertionNumber']).toList() : List<int>();
                             List<int> bookIndexesToRemove = List<int>();
                             for (int j = 0; j < myBookIndexesAlreadyUsed.length; j++){
-                              print(myExchangeableBooksFromDb.length);
                               for (int k = 0; k < myExchangeableBooksFromDb.length; k++){
                                 if(myBookIndexesAlreadyUsed[j] == myExchangeableBooksFromDb[k]['insertionNumber'])
                                   bookIndexesToRemove.add(k);
@@ -291,7 +289,6 @@ class _BuyBooksState extends State<BuyBooks> {
                               var result = await Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                   ChooseBooksForExchange(myExchangeableBooks: myExchangeableBooks)
                               ));
-
                               setState(() {
                                 if (result != null) {
                                   for (int j = 0; j < booksDefiningTotalPrice.length; j++) {
@@ -552,7 +549,7 @@ class _BuyBooksState extends State<BuyBooks> {
             ],
           )
       );
-    } else if (chosenShippingMode == 'express courier' && chosenShippingAddress.length == 0){
+    } else if (chosenShippingMode == 'express courier' && chosenShippingAddress == null){
       showDialog(
           context: context,
           barrierDismissible: true,
@@ -601,12 +598,12 @@ class _BuyBooksState extends State<BuyBooks> {
                         myUsername = me.username;
                         chat = await Utils.databaseService.createNewChat(
                             Utils.mySelf.uid, widget.sellingUserUid, myUsername, sellerUsername);
-                        print('chat creata');
+                        //print('chat creata');
                       } else {
                         errorMessage = result;
                         final snackBar = SnackBar(
                           backgroundColor: Colors.grey.withOpacity(1.0),
-                          duration: Duration(seconds: 2),
+                          duration: Duration(seconds: 3),
                           content: Text(
                             errorMessage,
                             style: Theme
@@ -616,7 +613,7 @@ class _BuyBooksState extends State<BuyBooks> {
                           ),
                         );
                         Scaffold.of(context).showSnackBar(snackBar);
-                        Timer(Duration(milliseconds: 2500), () async {
+                        Timer(Duration(milliseconds: 3500), () async {
                             Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
                         });
                       }
@@ -648,7 +645,7 @@ class _BuyBooksState extends State<BuyBooks> {
           Timer(Duration(milliseconds: 2500), () async {
             if (chat != null && (payCash || (sellerMatchingBooksForExchange != null && sellerMatchingBooksForExchange.length > 0))) {
               message = Utils.buildDefaultMessage(
-                  sellerUsername[0], booksDefiningTotalPrice,
+                  sellerUsername, booksDefiningTotalPrice,
                   sellerMatchingBooksForExchange);
               await Utils.databaseService.addMessageToChat(
                   message, Utils.toChat(chat),

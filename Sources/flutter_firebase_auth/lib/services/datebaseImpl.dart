@@ -900,7 +900,8 @@ class DatabaseServiceImpl implements DatabaseService {
     List<String> transactionsAsBuyer;
     List<dynamic> myPurchasedBooks = List<dynamic>();
     List<dynamic> myPendingExchanges = List<dynamic>();
-    List<dynamic> myCompletedExchanges = List<dynamic>();
+    List<dynamic> myRejectedExchanges = List<dynamic>();
+    List<dynamic> myAcceptedExchanges = List<dynamic>();
     Map<String, dynamic> transactionBody;
     List<dynamic> currentExchanges;
     List<dynamic> currentPaidBooks;
@@ -922,8 +923,10 @@ class DatabaseServiceImpl implements DatabaseService {
             currentExchanges[i]['buyerUsername'] = transactionBody['buyerUsername'];
             if (currentExchanges[i]['exchangeStatus'] == 'pending')
               myPendingExchanges.add(currentExchanges[i]);
+            else if (currentExchanges[i]['exchangeStatus'] == 'rejected')
+              myRejectedExchanges.add(currentExchanges[i]);
             else
-              myCompletedExchanges.add(currentExchanges[i]);
+              myAcceptedExchanges.add(currentExchanges[i]);
           }
           for (int i = 0; i < currentPaidBooks.length; i++){
             currentPaidBooks[i]['chosenShippingMode'] = transactionBody['chosenShippingMode'];
@@ -940,7 +943,7 @@ class DatabaseServiceImpl implements DatabaseService {
       }
     });
 
-    return [myPurchasedBooks, myCompletedExchanges, myPendingExchanges];
+    return [myPurchasedBooks, myAcceptedExchanges, myPendingExchanges, myRejectedExchanges];
   }
 
   Future<List<dynamic>> getMyExchangeableBooks() async {
@@ -1653,9 +1656,9 @@ class DatabaseServiceImpl implements DatabaseService {
 
       print('Step 6');
       batch.update(sellerUserReference, {'books': sellerBooks});
-      //batch.commit();
+      batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
-        .catchError((error) => errorMessage = "The following error occurred: $error");
+        .catchError((error) {errorMessage = "The following error occurred: $error"; print(errorMessage); return errorMessage;});
 
     if (transactionSuccessfullyCompleted) {
       print('Step 7');
@@ -1994,7 +1997,7 @@ class DatabaseServiceImpl implements DatabaseService {
       ) async {
 
     String errorMessage;
-    DocumentReference buyerUserReference = _usersCollection.doc(user.uid);
+    DocumentReference buyerUserReference = _usersCollection.doc(buyer);
     DocumentReference sellerUserReference = _usersCollection.doc(seller);
     DocumentReference transactionReference = _transactionsCollection.doc(transactionId);
 

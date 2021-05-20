@@ -70,11 +70,11 @@ class AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                   myFocusNode.requestFocus();
                   myFocusNode.unfocus();
                   final snackBar = SnackBar(
-                    backgroundColor: Colors.white24,
+                    backgroundColor: Colors.grey.withOpacity(1.0),
                     duration: Duration(seconds: 1),
                     content: Text(
                       'Your card has been successfully added',
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
                     ),
                   );
                   if (_ownerNameKey.currentState.validate() && _cardNumber.currentState.validate()

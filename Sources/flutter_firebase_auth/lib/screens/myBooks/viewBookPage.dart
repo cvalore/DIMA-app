@@ -118,8 +118,12 @@ class _ViewBookPageState extends State<ViewBookPage> {
                 dynamic result = await _db.removeBook(widget.index, widget.book);
                 Navigator.pop(context);
                 Scaffold.of(widget.fatherContext).showSnackBar(
-                  SnackBar(duration: Duration(seconds: 1), content: Text(
-                    'Book removed: ' + '${widget.book.title}',), backgroundColor: Colors.white24,),
+                  SnackBar(duration: Duration(seconds: 2), content: Text(
+                    'Book removed: ' + '${widget.book.title}',
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyText2.copyWith(color: Colors.black)), backgroundColor: Colors.grey.withOpacity(1.0),),
                 );
               }
             },

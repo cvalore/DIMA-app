@@ -116,6 +116,7 @@ class _BookInsertState extends State<BookInsert> {
           edit: widget.edit,
           editIndex: widget.editIndex,
           updateBook: widget.updateBook,
+          setLoading: setLoading,
         ) : null,
       body: Builder(
         builder: (BuildContext context) {

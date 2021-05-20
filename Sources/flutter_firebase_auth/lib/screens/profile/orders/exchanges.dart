@@ -6,8 +6,9 @@ import 'package:flutter_firebase_auth/utils/utils.dart';
 class Exchanges extends StatefulWidget {
 
   List<dynamic> exchanges;
+  String type;
 
-  Exchanges({Key key, this.exchanges});
+  Exchanges({Key key, this.exchanges, this.type});
 
   @override
   _ExchangesState createState() => _ExchangesState();
@@ -27,13 +28,12 @@ class _ExchangesState extends State<Exchanges> {
         itemBuilder: (context, index) {
       return InkWell(
         onTap: () {
-          print(widget.exchanges[index]);
-          Utils.pushExchangedBookPage(context, widget.exchanges[index]);
+          Utils.pushExchangedBookPage(context, widget.exchanges[index], widget.type);
         },
         child: Card(
           elevation: 0.0,
           child: LimitedBox(
-            maxHeight: 170,
+            maxHeight: 190,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -132,7 +132,20 @@ class _ExchangesState extends State<Exchanges> {
         ),
       );
     }
-    ) : Container()
+    ) :
+      Center(
+        child: widget.type == 'Accepted' ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text('All your accepted exchanges will appear here!'), Icon(Icons.compare_arrows_outlined)]
+        ) : widget.type == 'Pending' ?
+        Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text('All your pending exchanges will appear here!'), Icon(Icons.pending_outlined)]
+        ) :  Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text('All your rejected exchanges will appear here!'), Icon(Icons.cancel_outlined)]
+        ),
+      ),
     );
   }
 }

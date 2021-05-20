@@ -12,8 +12,9 @@ class ViewExchangedItemPage extends StatefulWidget {
   InsertedBook receivedBook;
   InsertedBook offeredBook;
   Map<String, dynamic> transactionsInfo;
+  String type;
 
-  ViewExchangedItemPage({Key key, @required this.receivedBook, @required this.offeredBook, @required this.transactionsInfo});
+  ViewExchangedItemPage({Key key, @required this.receivedBook, @required this.offeredBook, @required this.transactionsInfo, @required this.type});
   @override
   _ViewExchangedItemPageState createState() => _ViewExchangedItemPageState();
 }
@@ -29,7 +30,6 @@ class _ViewExchangedItemPageState extends State<ViewExchangedItemPage> {
 
     return Scaffold(
       appBar: AppBar(
-        //backgroundColor: Colors.black,
         elevation: 0.0,
         title: Text('Exchanged book',
           style: TextStyle(
@@ -149,7 +149,7 @@ class _ViewExchangedItemPageState extends State<ViewExchangedItemPage> {
               ListTileTheme(
                 contentPadding:  EdgeInsets.all(0.0),
                 child: ManuallyCloseableExpansionTile(
-                  title: Text('Received book'),
+                  title: Text(widget.type == 'Accepted' ? 'Received book' : 'Requested book'),
                   initiallyExpanded: true,
                   children: [
                     ImageService(insertedBook: widget.receivedBook, justView: true),
@@ -343,10 +343,10 @@ class _ViewExchangedItemPageState extends State<ViewExchangedItemPage> {
                       child: Row(
                         children: [
                           Expanded(
-                            flex: 5,
+                            flex: 6,
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Text("Date of purchase",
+                              child: Text("Exchange proposed on",
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontStyle: FontStyle.normal,

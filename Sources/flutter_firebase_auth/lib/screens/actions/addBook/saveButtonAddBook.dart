@@ -34,11 +34,11 @@ class _SaveButtonAddBookState extends State<SaveButtonAddBook> {
         if(pressed) {
           return;
         }
-        setState(() {
-          pressed = true;
-        });
         if(widget.edit) {
-          widget.setLoading(true);
+          //widget.setLoading(true);
+          setState(() {
+            pressed = true;
+          });
           bool hadImages = widget.insertedBook.imagesUrl != null && widget.insertedBook.imagesUrl.length != 0;
           bool wasExchangeable = widget.insertedBook.exchangeable;
           await widget.db.updateBook(widget.insertedBook, widget.editIndex, hadImages, wasExchangeable);
@@ -48,26 +48,36 @@ class _SaveButtonAddBookState extends State<SaveButtonAddBook> {
           }
 
           final snackBar = SnackBar(
-            backgroundColor: Colors.white24,
-            duration: Duration(seconds: 1),
+            backgroundColor: Colors.grey.withOpacity(1.0),
+            duration: Duration(seconds: 2),
             content: Text(
               'Book updated successfully',
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2.copyWith(color: Colors.black),
             ),
           );
           // Find the Scaffold in the widget tree and use
           // it to show a SnackBar.
-          widget.setLoading(false);
+          //widget.setLoading(false);
+          setState(() {
+            pressed = false;
+          });
           Scaffold.of(context).showSnackBar(snackBar);
-          Navigator.pop(context);
+          Timer(Duration(milliseconds: 2500), () {
+            //widget.setLoading(false);
+            Navigator.pop(context);});
+          //Navigator.pop(context);
         }
         else if (widget.selectedBook.title != null) {
           if (widget.insertedBook.category == null || widget.insertedBook.category == '') {
             final snackBar = SnackBar(
-              backgroundColor: Colors.white24,
-              duration: Duration(seconds: 1),
+              backgroundColor: Colors.grey.withOpacity(1.0),
+              duration: Duration(seconds: 2),
               content: Text(
                 'You need to insert book category',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
               ),
             );
             // Find the Scaffold in the widget tree and use
@@ -75,46 +85,56 @@ class _SaveButtonAddBookState extends State<SaveButtonAddBook> {
             Scaffold.of(context).showSnackBar(snackBar);
           } else if (widget.insertedBook.price == null || widget.insertedBook.price == 0.0) {
             final snackBar = SnackBar(
-              backgroundColor: Colors.white24,
-              duration: Duration(seconds: 1),
+              backgroundColor: Colors.grey.withOpacity(1.0),
+              duration: Duration(seconds: 2),
               content: Text(
                 'You need to insert a price for the book',
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
               ),
             );
             // Find the Scaffold in the widget tree and use
             // it to show a SnackBar.
             Scaffold.of(context).showSnackBar(snackBar);
           } else {
-            widget.setLoading(true);
+            setState(() {
+              pressed = true;
+            });
+            //widget.setLoading(true);
             widget.insertedBook.setIdTitleAuthorIsbn(
                 widget.selectedBook.id,
                 widget.selectedBook.title,
                 widget.selectedBook.author,
                 widget.selectedBook.isbn13);
             widget.insertedBook.setBookGeneralInfo(widget.selectedBook);
-            //_insertedBook.printBook();
             await widget.db.addUserBook(widget.insertedBook);
             if(widget.clearFields != null) {
               widget.clearFields();
             }
             final snackBar = SnackBar(
-              backgroundColor: Colors.white24,
-              duration: Duration(seconds: 1),
+              backgroundColor: Colors.grey.withOpacity(1.0),
+              duration: Duration(seconds: 2),
               content: Text(
                 'Book added successfully',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
               ),
             );
             // Find the Scaffold in the widget tree and use
             // it to show a SnackBar.
+            setState(() {
+              pressed = false;
+            });
             Scaffold.of(context).showSnackBar(snackBar);
-            Timer timer = Timer(Duration(milliseconds: 1500), () {widget.setLoading(false); Navigator.pop(context);});
+            Timer(Duration(milliseconds: 2500), () {
+              //widget.setLoading(false);
+              Navigator.pop(context);});
           }
         }
-        Timer timer = Timer(Duration(milliseconds: 1500), () {setState(() {
+        /*
+        Timer(Duration(milliseconds: 2000), () {setState(() {
           pressed = false;
         });});
+
+         */
       },
       icon: Icon(Icons.save, color: Colors.white),
       label: Text(pressed ? "Saving..." : "Save", style: TextStyle(color: Colors.white),),

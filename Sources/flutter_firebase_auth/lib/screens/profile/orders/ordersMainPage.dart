@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_auth/screens/profile/orders/completedExchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
 import 'package:flutter_firebase_auth/utils/constants.dart';
@@ -8,10 +9,11 @@ import 'package:flutter_firebase_auth/utils/myVerticalTabs.dart';
 class OrdersMainPage extends StatefulWidget {
 
   List<dynamic> completedPurchases;
-  List<dynamic> completedExchanges;
+  List<dynamic> acceptedExchanges;
   List<dynamic> pendingExchanges;
+  List<dynamic> rejectedExchanges;
 
-  OrdersMainPage({Key key, this.completedPurchases, this.completedExchanges, this.pendingExchanges});
+  OrdersMainPage({Key key, this.completedPurchases, this.acceptedExchanges, this.pendingExchanges, this.rejectedExchanges});
 
   @override
   _OrdersMainPageState createState() => _OrdersMainPageState();
@@ -60,11 +62,11 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
             indicatorColor: Colors.white,
             tabs: <Widget>[
               Tab(text: 'Purchases',
-              icon: Icon(Icons.info_outline)),
+              icon: Icon(Icons.shopping_cart_outlined)),
               Tab(text: 'Exchanges',
-              icon: Icon(Icons.rate_review_outlined)),
+              icon: Icon(Icons.compare_arrows_outlined)),
               Tab(text: 'Pending',
-                  icon: Icon(Icons.rate_review_outlined)),
+                  icon: Icon(Icons.pending_outlined)),
             ],
           ) : null,
         ),
@@ -73,8 +75,8 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
           TabBarView(
             children: [
               Purchases(purchases: widget.completedPurchases),
-              Exchanges(exchanges: widget.completedExchanges),
-              Exchanges(exchanges: widget.pendingExchanges),
+              CompletedExchanges(acceptedExchanges: widget.acceptedExchanges, rejectedExchanges: widget.rejectedExchanges),
+              Exchanges(exchanges: widget.pendingExchanges, type: 'Pending'),
             ]
           ) :
           Builder(builder: (BuildContext context) {
@@ -100,7 +102,7 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
                           Text('Purchases', textAlign: TextAlign.center,),
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Icon(Icons.info_outline),
+                            child: Icon(Icons.shopping_cart_outlined),
                           ),
                         ],
                       ))
@@ -115,7 +117,7 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
                           Text('Exchanges', textAlign: TextAlign.center,),
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Icon(Icons.rate_review_outlined),
+                            child: Icon(Icons.compare_arrows_outlined),
                           ),
                         ],
                       ))
@@ -130,7 +132,7 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
                           Text('Pending', textAlign: TextAlign.center,),
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Icon(Icons.rate_review_outlined),
+                            child: Icon(Icons.pending_outlined),
                           ),
                         ],
                       ))
@@ -138,8 +140,8 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
                 ],
                 contents: [
                   Purchases(purchases: widget.completedPurchases),
-                  Exchanges(exchanges: widget.completedExchanges),
-                  Exchanges(exchanges: widget.pendingExchanges),
+                  CompletedExchanges(acceptedExchanges: widget.acceptedExchanges, rejectedExchanges: widget.rejectedExchanges),
+                  Exchanges(exchanges: widget.pendingExchanges, type: 'Pending'),
                 ]
             );
           },)

@@ -138,11 +138,11 @@ class _DiscussionTabBodyState extends State<DiscussionTabBody> {
                                             ForumDiscussion disc = Utils.toForumDiscussion(perCategoryDiscussion[forumDiscussionCategories[i]][j]);
                                             await Utils.databaseService.removeDiscussion(disc.title);
                                             final snackBar = SnackBar(
-                                              backgroundColor: Colors.white24,
+                                              backgroundColor: Colors.grey.withOpacity(1.0),
                                               duration: Duration(seconds: 1),
                                               content: Text(
                                                 "Discussion removed",
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
                                               ),
                                             );
                                             Scaffold.of(context).showSnackBar(snackBar);

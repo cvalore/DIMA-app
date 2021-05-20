@@ -76,11 +76,11 @@ class AddNewShippingInfoState extends State<AddNewShippingInfo> {
                   if (_fullNameKey.currentState.validate() && _addressKey.currentState.validate()
                       && _CAPKey.currentState.validate() && _cityKey.currentState.validate() && infoState['state'] != null){
                     final snackBar = SnackBar(
-                      backgroundColor: Colors.white24,
+                      backgroundColor: Colors.grey.withOpacity(1.0),
                       duration: Duration(seconds: 1),
                       content: Text(
                         'The shipping address has been successfully added',
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
                       ),
                     );
                     await Utils.databaseService.saveShippingAddressInfo(infoState);

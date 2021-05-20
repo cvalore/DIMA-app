@@ -33,14 +33,13 @@ class _PurchasesState extends State<Purchases> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  print(widget.purchases[index]);
                   Utils.pushBoughtItemPage(context, widget.purchases[index]);
                 },
                 child: Card(
                   elevation: 0.0,
                   //height: MediaQuery.of(context).size.height / 5,
                   child: LimitedBox(
-                    maxHeight: 170,
+                    maxHeight: 190,
                     //setMaxHeight(widget.reviews[index].review),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -107,7 +106,7 @@ class _PurchasesState extends State<Purchases> {
                                 ),
                                 SizedBox(height: 2),
                                 Text(
-                                  widget.purchases[index]['price'].toString() + ' €',
+                                  widget.purchases[index]['price'].toStringAsFixed(2) + ' €',
                                   style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: 2),
@@ -121,7 +120,13 @@ class _PurchasesState extends State<Purchases> {
                 ),
               );
             }
-        ) : Container()
+        ) :
+        Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text('All your completed purchases will appear here!'), Icon(Icons.shopping_cart_outlined)]
+          ),
+        ),
     );
   }
 }

@@ -337,11 +337,14 @@ class Utils {
   static void showNeedToBeLogged(BuildContext context, int duration) {
     final snackBar = SnackBar(
       duration: Duration(seconds: duration),
+      backgroundColor: Colors.grey.withOpacity(1.0),
       content: Text(
         'You need to be logged in to access this functionality',
-        style: TextStyle(color: Colors.white),
+        style: Theme
+            .of(context)
+            .textTheme
+            .bodyText2.copyWith(color: Colors.black),
       ),
-      backgroundColor: Colors.black87,
     );
     // Find the Scaffold in the widget tree and use
     // it to show a SnackBar.
@@ -383,7 +386,7 @@ class Utils {
     );
   }
 
-  static pushExchangedBookPage(BuildContext context, Map<String, dynamic> exchangedItem) async {
+  static pushExchangedBookPage(BuildContext context, Map<String, dynamic> exchangedItem, String type) async {
     InsertedBook receivedBook;
     InsertedBook offeredBook;
     Reference bookRef;
@@ -446,6 +449,7 @@ class Utils {
               receivedBook: receivedBook,
               offeredBook: offeredBook,
               transactionsInfo: exchangedItem,
+              type: type,
             )
         )
     );

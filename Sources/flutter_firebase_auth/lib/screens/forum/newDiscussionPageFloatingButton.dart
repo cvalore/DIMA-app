@@ -28,11 +28,11 @@ class NewDiscussionPageFloatingButton extends StatelessWidget {
           "Discussion successfully inserted" :
           "Error creating discussion OR Discussion already exists");
           final snackBar = SnackBar(
-            backgroundColor: Colors.white24,
+            backgroundColor: Colors.grey.withOpacity(1.0),
             duration: Duration(seconds: 1),
             content: Text(
               snackBarMessage,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
             ),
           );
           Navigator.pop(context);
