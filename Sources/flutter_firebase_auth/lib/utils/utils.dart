@@ -178,6 +178,7 @@ class Utils {
   static Chat toChat(dynamic chatMap) {
 
     List<Message> messages = List<Message>();
+    print(chatMap['messages']);
     chatMap['messages'].forEach(
             (element) {
           messages.add(Message.fromDynamicToMessage(element));

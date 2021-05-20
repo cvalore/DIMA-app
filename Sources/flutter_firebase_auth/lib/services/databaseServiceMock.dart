@@ -27,8 +27,20 @@ class DatabaseServiceMock implements DatabaseService {
 
   @override
   Future<dynamic> createNewChat(String userUid1, String userUid2,
-      String userUid1Username, String userUid2Username) {
-    print("MOCK: createNewChat() method");
+      String userUid1Username, String userUid2Username) async {
+    dynamic chatsMap = {
+      "chatKey" : "",
+      "userUid1" : "",
+      "userUid2" : "",
+      "userUid1Username" : "",
+      "userUid2Username" : "",
+      "messages" : [],
+      "time" : Timestamp.fromDate(DateTime.now().add(Duration(minutes: 1))),
+    };
+    Duration delay = Duration(milliseconds: 100);
+    Future<dynamic> result = Future<dynamic>.delayed(delay, () => chatsMap);
+    await result;
+    return result;
   }
 
   @override
@@ -141,8 +153,12 @@ class DatabaseServiceMock implements DatabaseService {
 
   @override
   Future<Map<String, Map<String, dynamic>>> getReviewsInfoByUid(
-      List<String> usersUid) {
-    print("MOCK: getReviewsInfoByUid() method");
+      List<String> usersUid) async {
+    Duration delay = Duration(milliseconds: 0);
+    Map<String, Map<String, dynamic>> result = {'reviewerUid': {'username': 'Carmelo', 'userProfileImageURL': ''}, 'reviewerUid2': {'username': 'Francesco', 'userProfileImageURL': ''}};
+    Future<Map<String, Map<String, dynamic>>> res = Future<Map<String, Map<String, dynamic>>>.delayed(delay, () => result);
+    await res;
+    return res;
   }
 
   @override
@@ -244,8 +260,11 @@ class DatabaseServiceMock implements DatabaseService {
   }
 
   @override
-  Future<CustomUser> getUserById(String uid) {
-    print("MOCK: getUserById() method");
+  Future<CustomUser> getUserById(String uid) async {
+    Duration delay = Duration(milliseconds: 100);
+    final Future<CustomUser> user = Future<CustomUser>.delayed(delay, () => CustomUser('uid', username: 'Carmelo'));
+    await user;
+    return user;
   }
 
   @override

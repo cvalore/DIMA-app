@@ -74,7 +74,6 @@ class _AddUserReviewState extends State<AddUserReview> {
           Divider(height: 10.0, thickness: 1.0,),
           TextFormField(
               cursorColor: Colors.black,
-
               maxLines: 7,
               decoration: InputDecoration(
                 hintText: 'Add a review...',

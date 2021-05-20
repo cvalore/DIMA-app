@@ -179,7 +179,6 @@ class _UserInfoState extends State<UserInfo> {
                                 ElevatedButton(
                                   //style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blu),
                                   onPressed: ()  async {
-                                    print('tappi qua?');
                                     if (widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid)) {
                                       await Utils.databaseService.unFollowUser(widget.user);
                                       widget.user.usersFollowingMe.remove(Utils.mySelf.uid);
@@ -187,7 +186,6 @@ class _UserInfoState extends State<UserInfo> {
                                         widget.user.followers -= 1;
                                       });
                                     } else {
-                                      print('ma qua');
                                       await Utils.databaseService.followUser(widget.user);
                                       widget.user.usersFollowingMe.add(Utils.mySelf.uid);
                                       setState(() {
@@ -196,7 +194,7 @@ class _UserInfoState extends State<UserInfo> {
                                     }
                                   },
                                   child: widget.user.usersFollowingMe != null && widget.user.usersFollowingMe.contains(Utils.mySelf.uid) ?
-                                    Text('UNFOLLOW') : Text('FOLLOW', key: ValueKey('followUnfollowButtonPortrait'))) :
+                                    Text('UNFOLLOW') : Text('FOLLOW')) :
                                 ElevatedButton(
                                   onPressed: () {
                                     Utils.showNeedToBeLogged(context, 2);
