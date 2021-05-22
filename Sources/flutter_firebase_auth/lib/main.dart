@@ -55,12 +55,14 @@ class _AppState extends State<App> {
 
    @override
    Widget build(BuildContext context) {
+
+   if(!Utils.mockedDb) {
      // Show error message if initialization failed
-     if(_error) {
+     if (_error) {
        return Center(
          child: Text('error',
-          textDirection: TextDirection.ltr,
-          textAlign: TextAlign.center,
+           textDirection: TextDirection.ltr,
+           textAlign: TextAlign.center,
          ),
        );
      }
@@ -69,6 +71,7 @@ class _AppState extends State<App> {
      if (!_initialized) {
        return Loading();
      }
+   }
 
      return StreamProvider<NetworkStatus>(
         create: (context) =>

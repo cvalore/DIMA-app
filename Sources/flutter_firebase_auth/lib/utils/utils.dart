@@ -27,6 +27,9 @@ class Utils {
 
   static bool mockedDb = false;
 
+  static AuthCustomUser mockedLoggedUser;
+  static Map<String, String> mockedUsers = Map<String, String>();
+
 
   static initDatabaseService(AuthCustomUser authCustomUser){
     CustomUser customUser = CustomUser(authCustomUser.uid, email: authCustomUser.email, isAnonymous: authCustomUser.isAnonymous);

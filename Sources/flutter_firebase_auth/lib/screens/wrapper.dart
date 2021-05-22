@@ -5,21 +5,40 @@ import 'package:flutter_firebase_auth/screens/home/home.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class Wrapper extends StatelessWidget {
+class Wrapper extends StatefulWidget {
+  @override
+  WrapperState createState() => WrapperState();
+}
+
+class WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthCustomUser>(context);
-
-    if(user == null) {
-      return Container(
-          child: Authenticate()
-      );
+    if(!Utils.mockedDb) {
+      final user = Provider.of<AuthCustomUser>(context);
+      if (user == null) {
+        return Container(
+            child: Authenticate()
+        );
+      }
+      else {
+        Utils.initDatabaseService(user);
+        return Container(
+          child: Home(),
+        );
+      }
     }
     else {
-      Utils.initDatabaseService(user);
-      return Container(
-        child: Home(),
-      );
+      if(Utils.mockedLoggedUser == null) {
+        return Container(
+            child: Authenticate()
+        );
+      }
+      else {
+        Utils.initDatabaseService(Utils.mockedLoggedUser);
+        return Container(
+          child: Home(),
+        );
+      }
     }
 
     /*return OrientationBuilder(
@@ -49,5 +68,11 @@ class Wrapper extends StatelessWidget {
     );*/
 
 
+  }
+
+  void rebuildForTest() {
+    setState(() {
+
+    });
   }
 }

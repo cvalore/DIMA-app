@@ -4,6 +4,7 @@ import 'package:flutter_firebase_auth/screens/home/homeBody.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -12,7 +13,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     AuthCustomUser userFromAuth;
     try {
-      userFromAuth = Provider.of<AuthCustomUser>(context);
+      userFromAuth = !Utils.mockedDb ? Provider.of<AuthCustomUser>(context) : Utils.mockedLoggedUser;
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }
