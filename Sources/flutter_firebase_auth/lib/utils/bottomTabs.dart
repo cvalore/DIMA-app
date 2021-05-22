@@ -23,7 +23,7 @@ class BottomTabs extends StatelessWidget {
 
     AuthCustomUser user;
     try{
-      user = Provider.of<AuthCustomUser>(context);
+      user = !Utils.mockedDb ? Provider.of<AuthCustomUser>(context) : Utils.mockedLoggedUser;
     } catch(Exception) {
       print("Cannot read value from AuthCustomUser stream provider");
     }

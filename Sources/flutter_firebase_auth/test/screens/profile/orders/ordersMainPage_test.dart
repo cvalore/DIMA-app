@@ -1,12 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_auth/models/insertedBook.dart';
 import 'package:flutter_firebase_auth/models/user.dart';
-import 'package:flutter_firebase_auth/screens/profile/orders/exchanges.dart';
 import 'package:flutter_firebase_auth/screens/profile/orders/ordersMainPage.dart';
-import 'package:flutter_firebase_auth/screens/profile/orders/purchases.dart';
-import 'package:flutter_firebase_auth/screens/profile/orders/viewBoughtItemPage.dart';
-import 'package:flutter_firebase_auth/screens/profile/paymentInfo/savedPaymentMethod.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';

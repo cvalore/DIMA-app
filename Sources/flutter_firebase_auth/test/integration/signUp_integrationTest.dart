@@ -6,8 +6,6 @@ import 'package:flutter_firebase_auth/screens/authenticate/register.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/signIn.dart';
 import 'package:flutter_firebase_auth/screens/authenticate/subscribe.dart';
 import 'package:flutter_firebase_auth/screens/home/home.dart';
-import 'package:flutter_firebase_auth/screens/home/homeBody.dart';
-import 'package:flutter_firebase_auth/screens/home/homePage.dart';
 import 'package:flutter_firebase_auth/screens/wrapper.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/utils.dart';
@@ -19,7 +17,7 @@ void main() {
   Utils.mySelf = CustomUser("");
   Utils.databaseService = DatabaseService();
 
-  testWidgets('SignUp - SignIn - email and password', (WidgetTester tester) async {
+  testWidgets('SignUp - SignIn email and password Integration Test', (WidgetTester tester) async {
     tester.binding.window.physicalSizeTestValue = Size(15000, 16000);
 
     app.main();
