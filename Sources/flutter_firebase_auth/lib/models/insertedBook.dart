@@ -19,6 +19,10 @@ class InsertedBook {
   String exchangeStatus;
 
 
+  @override
+  String toString() {
+    return 'InsertedBook{id: $id, title: $title, author: $author, isbn13: $isbn13, imagesPath: $imagesPath, imagesUrl: $imagesUrl, likedBy: $likedBy, bookGeneralInfo: $bookGeneralInfo, category: $category, insertionNumber: $insertionNumber, status: $status, comment: $comment, price: $price, exchangeable: $exchangeable, exchangeStatus: $exchangeStatus}';
+  }
 
   InsertedBook({
     this.id,

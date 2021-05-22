@@ -10,13 +10,19 @@ import 'package:provider/provider.dart';
 import 'bookPerGenreMap.dart';
 
 
-class BottomTabs extends StatelessWidget {
+class BottomTabs extends StatefulWidget {
 
   final int Function() getIndex;
   final void Function(int) setIndex;
-  bool _isTablet;
 
   BottomTabs({Key key, this.getIndex, this.setIndex}) : super(key: key);
+
+  @override
+  BottomTabsState createState() => BottomTabsState();
+}
+
+class BottomTabsState extends State<BottomTabs> {
+  bool _isTablet;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +39,11 @@ class BottomTabs extends StatelessWidget {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    Map<String,dynamic> booksMap = Provider.of<BookPerGenreMap>(context) != null ?
-    Provider.of<BookPerGenreMap>(context).result : null;
+    Map<String,dynamic> booksMap =
+    !Utils.mockedDb ?
+    Provider.of<BookPerGenreMap>(context) != null ?
+    Provider.of<BookPerGenreMap>(context).result : null :
+    Utils.mockedInsertedBooksMap;
 
     if(booksMap != null && booksMap.length != 0) {
       booksMap.removeWhere((key, value) {
@@ -58,32 +67,32 @@ class BottomTabs extends StatelessWidget {
       unselectedLabelStyle: TextStyle(fontSize: _isTablet ? 17.0 : 11.0),
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(getIndex() == 0 ? Icons.home : Icons.home_outlined, key: ValueKey("HomeBottomNavTab"),
+          icon: Icon(widget.getIndex() == 0 ? Icons.home : Icons.home_outlined, key: ValueKey("HomeBottomNavTab"),
             size: _isTablet ? 28.0 : 21.0,),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined, key: ValueKey("SearchBottomNavTab"),
+            icon: Icon(widget.getIndex() == 1 ? Icons.find_in_page : Icons.find_in_page_outlined, key: ValueKey("SearchBottomNavTab"),
               size: _isTablet ? 28.0 : 21.0,),
             label: 'Search'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined, key: ValueKey("InsertBottomNavTab"),
+            icon: Icon(widget.getIndex() == 2 ? Icons.add_circle : Icons.add_circle_outline_outlined, key: ValueKey("InsertBottomNavTab"),
               size: _isTablet ? 45.0 : 32.0,),
             label: 'Insert Book'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 3 ? Icons.forum : Icons.forum_outlined, key: ValueKey("ForumBottomNavTab"),
+            icon: Icon(widget.getIndex() == 3 ? Icons.forum : Icons.forum_outlined, key: ValueKey("ForumBottomNavTab"),
               size: _isTablet ? 28.0 : 21.0,),
             label: 'Forum'
         ),
         BottomNavigationBarItem(
-            icon: Icon(getIndex() == 4 ? Icons.person : Icons.person_outlined, key: ValueKey("ProfileBottomNavTab"),
+            icon: Icon(widget.getIndex() == 4 ? Icons.person : Icons.person_outlined, key: ValueKey("ProfileBottomNavTab"),
               size: _isTablet ? 28.0 : 21.0,),
             label: 'Profile'
         ),
       ],
-      currentIndex: getIndex(),
+      currentIndex: widget.getIndex(),
       unselectedItemColor: Colors.white,
       selectedItemColor: Colors.white,
       //add line below if wanted, probably better if not, since icons are not equally spaced
@@ -122,7 +131,7 @@ class BottomTabs extends StatelessWidget {
             //setIndex(0);
           }
           else {
-            setIndex(index);
+            widget.setIndex(index);
           }
         }
         else {
@@ -130,5 +139,11 @@ class BottomTabs extends StatelessWidget {
         }
       },
     );
+  }
+
+  void rebuildForTest() {
+    setState(() {
+
+    });
   }
 }

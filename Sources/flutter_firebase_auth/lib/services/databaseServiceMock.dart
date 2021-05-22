@@ -10,6 +10,7 @@ import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/services/storage.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreUserMap.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class DatabaseServiceMock implements DatabaseService {
 
@@ -287,6 +288,13 @@ class DatabaseServiceMock implements DatabaseService {
   @override
   Future addUserBook(InsertedBook book) {
     print("MOCK: addUserBook() method");
+    Utils.mockedInsertedBooks.add(book);
+    if(Utils.mockedInsertedBooksMap.containsKey(book.category)) {
+      Utils.mockedInsertedBooksMap[book.category]['books'].add(book.toMap());
+    }
+    else {
+      Utils.mockedInsertedBooksMap.addAll({book.category : {"books" : [book.toMap()]}});
+    }
   }
 
   @override

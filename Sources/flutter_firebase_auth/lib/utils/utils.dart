@@ -29,6 +29,8 @@ class Utils {
 
   static AuthCustomUser mockedLoggedUser;
   static Map<String, String> mockedUsers = Map<String, String>();
+  static List<InsertedBook> mockedInsertedBooks = List<InsertedBook>();
+  static Map<String, dynamic> mockedInsertedBooksMap = Map<String, dynamic>();
 
 
   static initDatabaseService(AuthCustomUser authCustomUser){
