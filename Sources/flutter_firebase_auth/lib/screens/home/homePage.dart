@@ -60,10 +60,11 @@ class HomePageState extends State<HomePage> {
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     Map<String,dynamic> books =
-    !Utils.mockedDb ?
     Provider.of<BookPerGenreMap>(context) != null ?
-    Provider.of<BookPerGenreMap>(context).result : null :
-    Utils.mockedInsertedBooksMap;
+      Provider.of<BookPerGenreMap>(context).result :
+      Utils.mockedDb ?
+        Utils.mockedInsertedBooksMap.length > 0 ? Utils.mockedInsertedBooksMap : null :
+        null;
 
     if(books != null && books.length != 0) {
       books.removeWhere((key, value) {

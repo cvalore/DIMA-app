@@ -40,10 +40,11 @@ class BottomTabsState extends State<BottomTabs> {
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
     Map<String,dynamic> booksMap =
-    !Utils.mockedDb ?
     Provider.of<BookPerGenreMap>(context) != null ?
-    Provider.of<BookPerGenreMap>(context).result : null :
-    Utils.mockedInsertedBooksMap;
+      Provider.of<BookPerGenreMap>(context).result :
+      Utils.mockedDb ?
+        Utils.mockedInsertedBooksMap.length > 0 ? Utils.mockedInsertedBooksMap : null :
+        null;
 
     if(booksMap != null && booksMap.length != 0) {
       booksMap.removeWhere((key, value) {
@@ -102,7 +103,7 @@ class BottomTabsState extends State<BottomTabs> {
 
         //add every page you can NOT access without being logged
         if(index == 2 || index == 4) {
-          if(user == null || user.isAnonymous) {
+          if(!Utils.mockedDb && (user == null || user.isAnonymous)) {
             success = false;
           }
         }

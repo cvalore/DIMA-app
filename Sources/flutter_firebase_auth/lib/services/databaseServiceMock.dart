@@ -261,6 +261,9 @@ class DatabaseServiceMock implements DatabaseService {
   @override
   Future<dynamic> getBookSoldBy(String bookId) async {
     print("MOCK: getBookSoldBy() method");
+    if(Utils.mockedInsertedBooksMap.length == 0) {
+      return;
+    }
     dynamic book = Utils.mockedInsertedBooksMap["Fantasy"]["books"][0];
     book = book[book.keys.elementAt(0).toString()];
     book['imagesUrl'] = [];
