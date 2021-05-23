@@ -5,16 +5,17 @@ import 'package:flutter_firebase_auth/screens/home/homePageBookList.dart';
 import 'package:flutter_firebase_auth/services/database.dart';
 import 'package:flutter_firebase_auth/utils/bookPerGenreMap.dart';
 import 'package:flutter_firebase_auth/utils/constants.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 
 class HomePage extends StatefulWidget {
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   ScrollController _scrollController;
   double _scrollOffset = 0.0;
   bool _isTablet;
@@ -58,8 +59,11 @@ class _HomePageState extends State<HomePage> {
     _isPortrait ?
     MediaQuery.of(context).size.width > mobileMaxWidth : MediaQuery.of(context).size.height > mobileMaxWidth;
 
-    Map<String,dynamic> books = Provider.of<BookPerGenreMap>(context) != null ?
-      Provider.of<BookPerGenreMap>(context).result : null;
+    Map<String,dynamic> books =
+    !Utils.mockedDb ?
+    Provider.of<BookPerGenreMap>(context) != null ?
+    Provider.of<BookPerGenreMap>(context).result : null :
+    Utils.mockedInsertedBooksMap;
 
     if(books != null && books.length != 0) {
       books.removeWhere((key, value) {
@@ -97,5 +101,11 @@ class _HomePageState extends State<HomePage> {
             )
         ],
     );
+  }
+
+  void rebuildForTest() {
+    setState(() {
+
+    });
   }
 }

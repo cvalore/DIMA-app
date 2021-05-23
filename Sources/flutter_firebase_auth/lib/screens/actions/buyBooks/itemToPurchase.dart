@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
+import 'package:flutter_firebase_auth/utils/utils.dart';
 
 class ItemToPurchase extends StatelessWidget {
 
@@ -35,7 +36,7 @@ class ItemToPurchase extends StatelessWidget {
                     child: book.imagesPath != null && book.imagesPath.length > 0 ?
                     Image.file(
                         File(book.imagesPath[0])
-                    ) : thumbnail != null && thumbnail != '' ?
+                    ) : thumbnail != null && thumbnail != '' && !Utils.mockedDb ?
                         Image.network(thumbnail) :
                         Image.asset("assets/images/no_image_available.png"),
                   ),

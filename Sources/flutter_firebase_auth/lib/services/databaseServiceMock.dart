@@ -84,6 +84,8 @@ class DatabaseServiceMock implements DatabaseService {
       Map<InsertedBook, Map<String, dynamic>> booksToExchange,
       Map<int, String> thumbnails) {
     print("MOCK: purchaseAndProposeExchange() method");
+    Utils.mockedInsertedBooksMap.clear();
+    Utils.mockedInsertedBooks.clear();
   }
 
   @override
@@ -128,8 +130,12 @@ class DatabaseServiceMock implements DatabaseService {
   }
 
   @override
-  Future getPurchaseInfo() {
+  Future getPurchaseInfo() async {
     print("MOCK: getPurchaseInfo() method");
+    Map<String, List<dynamic>> result = Map<String, List<dynamic>>();
+    result['paymentCardInfo'] = [];
+    result['shippingAddressInfo'] = [];
+    return result;
   }
 
   @override
@@ -216,9 +222,9 @@ class DatabaseServiceMock implements DatabaseService {
 
   @override
   Future<dynamic> getBookForSearch(String bookId) async {
+    print("MOCK: getBookForSearch() method");
     dynamic book = Utils.mockedInsertedBooksMap["Fantasy"]["books"][0];
     book = book[book.keys.elementAt(0).toString()];
-    print("MOCK: getBookForSearch() method");
     var toReturn = [];
     toReturn.add({
       "uid": "userUidData",
@@ -253,8 +259,23 @@ class DatabaseServiceMock implements DatabaseService {
   }
 
   @override
-  Future<dynamic> getBookSoldBy(String bookId) {
+  Future<dynamic> getBookSoldBy(String bookId) async {
     print("MOCK: getBookSoldBy() method");
+    dynamic book = Utils.mockedInsertedBooksMap["Fantasy"]["books"][0];
+    book = book[book.keys.elementAt(0).toString()];
+    book['imagesUrl'] = [];
+    var toReturn = [];
+    toReturn.add(
+        {
+          "uid": "userUid",
+          "username": "userUsername",
+          "userProfileImageURL": "",
+          "email": "userEmail",
+          "book": book,
+          "thumbnail" : book["thumbnail"],
+        }
+    );
+    return toReturn;
   }
 
   @override
