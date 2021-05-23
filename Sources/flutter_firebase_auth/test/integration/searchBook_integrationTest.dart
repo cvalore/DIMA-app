@@ -61,10 +61,10 @@ void main() {
 
     final titleTextField = find.byType(TextFormField).first;
     final authorTextField = find.byType(TextFormField).last;
-    await tester.enterText(titleTextField, "titleTest");
+    await tester.enterText(titleTextField, "harry");
     await tester.pump();
     await tester.pump(Duration(seconds: 1));
-    await tester.enterText(authorTextField, "authorTest");
+    await tester.enterText(authorTextField, "rowling");
     await tester.pump();
     await tester.pump(Duration(seconds: 1));
 
@@ -139,6 +139,8 @@ void main() {
 
     BottomTabsState bottomTabsState = tester.state(find.byType(BottomTabs));
     bottomTabsState.rebuildForTest();
+    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
 
     final searchBookIcon = find.byWidgetPredicate((widget) => widget is Icon && widget.key == ValueKey("SearchBottomNavTab"));
     await tester.tap(searchBookIcon);
@@ -156,10 +158,14 @@ void main() {
     await tester.pump();
     await tester.pump(Duration(seconds: 1));
 
+    expect(find.byType(ExpansionTile), findsNothing);
+
     final searchButton = find.byWidgetPredicate((widget) => widget is Icon && widget.icon == Icons.search);
     await tester.tap(searchButton);
     await tester.pump();
     await tester.pump(Duration(seconds: 1));
+
+    expect(find.byType(ExpansionTile), findsOneWidget);
 
     addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
   });

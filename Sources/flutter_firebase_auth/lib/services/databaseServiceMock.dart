@@ -215,8 +215,20 @@ class DatabaseServiceMock implements DatabaseService {
   }
 
   @override
-  Future<dynamic> getBookForSearch(String bookId) {
+  Future<dynamic> getBookForSearch(String bookId) async {
+    dynamic book = Utils.mockedInsertedBooksMap["Fantasy"]["books"][0];
+    book = book[book.keys.elementAt(0).toString()];
     print("MOCK: getBookForSearch() method");
+    var toReturn = [];
+    toReturn.add({
+      "uid": "userUidData",
+      "username": "userUsername",
+      "userProfileImageURL": "",
+      "email": "userEmail",
+      "book": book,
+      "info": "bookInfoData",
+    });
+    return toReturn;
   }
 
   @override
@@ -290,10 +302,10 @@ class DatabaseServiceMock implements DatabaseService {
     print("MOCK: addUserBook() method");
     Utils.mockedInsertedBooks.add(book);
     if(Utils.mockedInsertedBooksMap.containsKey(book.category)) {
-      Utils.mockedInsertedBooksMap[book.category]['books'].add(book.toMap());
+      Utils.mockedInsertedBooksMap[book.category]['books'].add({book.id : book.toMap()});
     }
     else {
-      Utils.mockedInsertedBooksMap.addAll({book.category : {"books" : [book.toMap()]}});
+      Utils.mockedInsertedBooksMap.addAll({book.category : {"books" : [{book.id : book.toMap()}]}});
     }
   }
 
