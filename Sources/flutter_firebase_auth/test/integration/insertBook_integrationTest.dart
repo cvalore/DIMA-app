@@ -141,7 +141,7 @@ void main() {
 
     final saveButton = find.byWidgetPredicate((widget) => widget is Text && widget.data == "Save");
     await tester.tap(saveButton);
-    await tester.pump(Duration(milliseconds: 3000)); //to handle the timer
+    await tester.pump(Duration(seconds: 3)); //to handle the timer
 
     assert (Utils.mockedInsertedBooks.length == 1);
     InsertedBook insertedBook = Utils.mockedInsertedBooks[0];
