@@ -76,7 +76,7 @@ class _HomeBookInfoBodyState extends State<HomeBookInfoBody> {
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
-                    else
+                    else if(snapshot.data != null)
                       return SoldByView(
                         books: snapshot.data,
                         showOnlyExchangeable: false,
@@ -84,6 +84,9 @@ class _HomeBookInfoBodyState extends State<HomeBookInfoBody> {
                         setLoading: setLoading,
                         fatherContext: context,
                       );
+                    else {
+                      return Container();
+                    }
                 }
               },
             ) :
@@ -95,7 +98,7 @@ class _HomeBookInfoBodyState extends State<HomeBookInfoBody> {
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
-                    else
+                    else if(snapshot.data != null)
                       return SoldByView(
                         books: snapshot.data,
                         showOnlyExchangeable: true,
@@ -103,6 +106,8 @@ class _HomeBookInfoBodyState extends State<HomeBookInfoBody> {
                         setLoading: setLoading,
                         fatherContext: context,
                       );
+                    else
+                      return Container();
                 }
               },
             )

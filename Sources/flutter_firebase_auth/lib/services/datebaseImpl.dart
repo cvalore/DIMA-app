@@ -792,6 +792,9 @@ class DatabaseServiceImpl implements DatabaseService {
   Future<dynamic> getBookSoldBy(String bookId) async {
     var usersData = [];
     await _bookCollection.doc(bookId).get().then((valueBook) async {
+      if(valueBook == null || valueBook.data() == null) {
+        return null;
+      }
       for (int i = 0; i < valueBook.data()['owners'].length; i++) {
         String thumbnail = valueBook.data()['thumbnail'];
         String own = valueBook.data()['owners'][i];
@@ -1658,7 +1661,7 @@ class DatabaseServiceImpl implements DatabaseService {
       batch.update(sellerUserReference, {'books': sellerBooks});
       batch.commit();
     }).then((value) {print("transaction ended successfully"); transactionSuccessfullyCompleted = true;})
-        .catchError((error) {errorMessage = "The following error occurred: $error"; print(errorMessage); return errorMessage;});
+        .catchError((error) {errorMessage = "The following error occurred: $error"; print(errorMessage);});
 
     if (transactionSuccessfullyCompleted) {
       print('Step 7');
