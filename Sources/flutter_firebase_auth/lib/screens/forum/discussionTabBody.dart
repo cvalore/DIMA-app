@@ -139,7 +139,7 @@ class _DiscussionTabBodyState extends State<DiscussionTabBody> {
                                             await Utils.databaseService.removeDiscussion(disc.title);
                                             final snackBar = SnackBar(
                                               backgroundColor: Colors.grey.withOpacity(1.0),
-                                              duration: Duration(seconds: 1),
+                                              duration: Duration(seconds: 2),
                                               content: Text(
                                                 "Discussion removed",
                                                 style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),

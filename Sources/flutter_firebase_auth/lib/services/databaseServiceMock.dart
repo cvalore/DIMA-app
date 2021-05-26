@@ -398,4 +398,13 @@ class DatabaseServiceMock implements DatabaseService {
   CollectionReference usersCollection() {
     print("MOCK: usersCollection() method");
   }
+
+  @override
+  Future<bool> checkBookStillExists(String userUid, int bookInsertionNumber) async {
+    print("MOCK: checkBookStillExists() method");
+    Duration delay = Duration(milliseconds: 1000);
+    final Future<bool> bookExists = Future<bool>.delayed(delay, () => true);
+    await bookExists;
+    return bookExists;
+  }
 }

@@ -54,11 +54,32 @@ class _SoldByViewState extends State<SoldByView> {
             for(int i = 0; i < widget.books.length; i++)
               if(!widget.showOnlyExchangeable || widget.books[i]['book']['exchangeable'] == true)
                 InkWell(
-                  onTap: () async {
-                    //print(widget.books[i]);
-                    widget.setLoading(true);
-                    await Utils.pushBookPage(widget.fatherContext, widget.books[i]['book'], widget.books[i]['uid'], widget.books[i]['thumbnail'], widget.books[i]['uid'] != Utils.mySelf.uid);
-                    Timer timer = Timer(Duration(milliseconds: 350), () {widget.setLoading(false);});
+                    onTap: () async {
+                    bool bookExists = await DatabaseService().checkBookStillExists(widget.books[i]['uid'], widget.books[i]['book']['insertionNumber']);
+                    print(bookExists);
+                    if (bookExists == true) {
+                      widget.setLoading(true);
+                      await Utils.pushBookPage(
+                          widget.fatherContext, widget.books[i]['book'],
+                          widget.books[i]['uid'], widget.books[i]['thumbnail'],
+                          widget.books[i]['uid'] != Utils.mySelf.uid);
+                      Timer(Duration(milliseconds: 350), () {
+                        widget.setLoading(false);
+                      });
+                    } else {
+                      final snackBar = SnackBar(
+                        backgroundColor: Colors.grey.withOpacity(1.0),
+                        duration: Duration(seconds: 2),
+                        content: Text(
+                          'The book you are looking for might have been already sold',
+                          style: Theme.of(widget.fatherContext).textTheme.bodyText2.copyWith(color: Colors.black),
+                        ),
+                      );
+                      Scaffold.of(widget.fatherContext).showSnackBar(snackBar);
+                      Timer(Duration(milliseconds: 2500), () {
+                        Navigator.popUntil(widget.fatherContext, ModalRoute.withName(Navigator.defaultRouteName));
+                      });
+                    }
                   },
                   child: Column(
                       children: <Widget>[

@@ -137,7 +137,7 @@ void main() {
     await tester.pump();
     expect(find.text('Enter a valid security code'), findsNothing);
     expect(addNewPaymentMethodState.infoState['securityCode'], '207');
-    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(seconds: 10));
 
 
     expect(find.byType(ListTile), findsNWidgets(4));

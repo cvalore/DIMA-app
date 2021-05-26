@@ -1001,6 +1001,20 @@ class DatabaseServiceImpl implements DatabaseService {
     return usersData;
   }
 
+  Future<bool> checkBookStillExists(String userUid, int bookInsertionNumber) async {
+    bool bookExists = false;
+    await _usersCollection.doc(userUid).get().then((valueUser) {
+      dynamic userData = valueUser.data();
+      dynamic userBook = userData['books'];
+      for (int j = 0; j < userBook.length && !bookExists; j++) {
+        if (userBook[j]['insertionNumber'] == bookInsertionNumber) {
+          bookExists = true;
+        }
+      }
+    });
+    return bookExists;
+  }
+
   //endregion
 
   //region Profile/User

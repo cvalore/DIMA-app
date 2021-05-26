@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase_auth/models/chat.dart';
 import 'package:flutter_firebase_auth/models/forumDiscussion.dart';
 import 'package:flutter_firebase_auth/models/insertedBook.dart';
@@ -132,6 +133,8 @@ abstract class DatabaseService {
   Future<List<dynamic>> getMyExchangeableBooks();
 
   Future<dynamic> getBookForSearch(String bookId);
+
+  Future<bool> checkBookStillExists(String userUid, int bookInsertionNumber);
 
   //endregion
 

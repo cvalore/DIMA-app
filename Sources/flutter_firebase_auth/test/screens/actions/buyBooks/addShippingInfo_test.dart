@@ -152,7 +152,7 @@ void main() {
     expect(addNewShippingInfoState.infoState['city'], 'Chieti');
 
     print(addNewShippingInfoState.infoState);
-    await tester.pumpAndSettle(const Duration(seconds: 2));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
 
     expect(find.byType(ListTile), findsNWidgets(4));
     expect(find.byWidgetPredicate((widget) => widget is Text && widget.data == 'Add new shipping address'), findsOneWidget);

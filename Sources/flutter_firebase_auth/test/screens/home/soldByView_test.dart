@@ -88,6 +88,9 @@ void main() {
     await tester.tap(find.byType(InkWell).first);
     await tester.pump();
     await tester.pump(Duration(seconds: 1));
+
+    await tester.pump();
+    await tester.pump(Duration(seconds: 1));
     expect(find.byType(ViewBookPage), findsOneWidget);
 
     await tester.pageBack();

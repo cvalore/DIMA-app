@@ -77,7 +77,7 @@ class AddNewShippingInfoState extends State<AddNewShippingInfo> {
                       && _CAPKey.currentState.validate() && _cityKey.currentState.validate() && infoState['state'] != null){
                     final snackBar = SnackBar(
                       backgroundColor: Colors.grey.withOpacity(1.0),
-                      duration: Duration(seconds: 1),
+                      duration: Duration(seconds: 2),
                       content: Text(
                         'The shipping address has been successfully added',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
@@ -85,7 +85,7 @@ class AddNewShippingInfoState extends State<AddNewShippingInfo> {
                     );
                     await Utils.databaseService.saveShippingAddressInfo(infoState);
                     Scaffold.of(context).showSnackBar(snackBar);
-                    Timer(Duration(milliseconds: 1500), () {Navigator.pop(context, infoState);});
+                    Timer(Duration(milliseconds: 2500), () {Navigator.pop(context, infoState);});
                   }
                 },
                 icon: Icon(Icons.check_outlined),

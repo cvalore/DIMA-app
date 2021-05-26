@@ -71,7 +71,7 @@ class AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                   myFocusNode.unfocus();
                   final snackBar = SnackBar(
                     backgroundColor: Colors.grey.withOpacity(1.0),
-                    duration: Duration(seconds: 1),
+                    duration: Duration(seconds: 2),
                     content: Text(
                       'Your card has been successfully added',
                       style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.black),
@@ -81,7 +81,7 @@ class AddNewPaymentMethodState extends State<AddNewPaymentMethod> {
                       && _expiringDateKey.currentState.validate() && _securityCodeKey.currentState.validate()) {
                     await Utils.databaseService.savePaymentCardInfo(infoState);
                     Scaffold.of(context).showSnackBar(snackBar);
-                    Timer(Duration(milliseconds: 1500), () {Navigator.pop(context, infoState);});
+                    Timer(Duration(milliseconds: 2500), () {Navigator.pop(context, infoState);});
                   }
                 },
                 //label: Text('Save payment method'),
