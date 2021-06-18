@@ -1,0 +1,1514 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lmodern}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{longtable}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{array, caption, tabularx,  ragged2e,  booktabs}
+\usepackage{listings}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\pagestyle{fancy}
+\renewcommand{\footrulewidth}{0.4pt}
+\interlinepenalty=10000
+\fancyhf{}
+\rhead{\color{gray}{\small{\rightmark}}}
+\lfoot{\textcolor{gray}{\small{BookYourBook Design Document v1.0, June 2020\\Copyright 2020 - Alessio Russo, Carmelo Valore}}}
+\rfoot{\textcolor{gray}{\normalsize{\thepage}}}
+
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+\let\Oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
+
+\title{\textbf{NomeApp - Design Document}}
+\author{Alessio Russo, Carmelo Valore}
+\date{\today}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \includegraphics[width=0.4\textwidth]{images/intro/logo.png}
+
+		\vspace{1cm}
+
+		\Huge
+        \textbf{Book Your Book\\Design Document}
+
+        \vspace{1.0cm}
+
+		\large
+        Design and Implementation of Mobile App project
+
+        \vspace{1.0cm}
+
+ 		\normalsize
+        \textbf{Alessio Russo 945781\\Carmelo Valore 944851}
+
+        \vfill
+
+		\normalsize
+        Accademic year 2020/2021
+
+        \vspace{0.8cm}
+
+		\normalsize
+
+        \textit{Industrial and Information Engineering}\\
+        \textit{Computer Science and Engineering}\\
+        \textit{\today}\\
+
+    \end{center}
+\end{titlepage}
+
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\subsection{About the Design Document}
+In this section we want to briefly introduce our application. The application is developed for the course of "Design and Implementation of Mobile Applications" at Politecnico di Milano. The goal of the course is to efficiently design and implement a mobile application on a platform of our choice. Flutter has been chosen as the language for the development. The purpose of this document is to clearly illustrate the idea behind the application, show how the software has been implemented detailing the overall architecture up to providing insights to the structure and the design of each component. Some use cases and sequence diagrams are presented. The purpose of this document is to provide a full description of the design of BookYourBook.
+
+\subsection{Platform}
+The choice over the platform used for the app development fell on Flutter. It is the relatively new toolkit developed by Google in 2017. It allows to use a single codebase for both Android and iOS applications. Flutter has been chosen because it is based on Dart, a client-optimized language for developing fast apps on any platform. Flutter also comes with a rich documentation and a constantly growing community that easily help to face any difficulty. None of the authors had previous experience with app development, so there was non bias towards different languages.
+
+\subsection{Choice of the application}
+The main idea the application is based on is to build a platform where users with a passion for reading could buy, sell and exchange their books. They can open discussions about specific books, authors, genres, give their personal opinion and share ideas with a vibrant community.  
+
+\subsection{Risk analysis}
+capire se quello scritto nel DD di Simo corrisponde a quello che deve essere riportato in questa sessione
+
+\subsection{Time constraints}
+Our goal was to start and finish the development of the application within the call dates of the June/July session in 2021. The application development started at the end of February and lasted about 4 months. ...aggiungere altro?
+\newpage
+\section{General overview}
+
+\subsection{Idea}
+BookYourBook is a Flutter application that provides users with the possibility of buying, selling or exchanging books that have been inserted in the app by other users. It is basically a market-place application where users can also bring their opinions about any content by means of reviews and discussions that can be raised in the app's forum, The discussions may vary from a single book to a specific literary genre. 
+Each user needs to have a registered account to fully use the app in all its functionalities but he/she can also use the app anonymously having the possibility to browse the existing books and the discussions on the forum.
+The main components of the project are:
+\begin{itemize}
+    \item A server side part, composed by a NoSQL document-oriented database that contains alarms for each user.
+    \item A client side part, the application, whose tasks are to handle the application logic and to give users a point of interaction with the offered services, by allowing to retrieve information from the database, displaying them on the screen and updating information stored on the server side database.
+\end{itemize}
+
+\subsection{Core features}
+Here we list the core functionalities that can be found in our application. They are shown here reflecting how they are really organized in the source code, allowing the reader to easily understand them and where they could be found in the application.
+\begin{itemize}
+    \item Authentication
+    \begin{itemize}
+        \item Allows users to authenticate in two different ways: a combination of email and password or a Google account
+        \item When a user registers for the first time he/she also needs to provide a username that will be associated to its account
+        \item A user can also proceed without authentication but with limited functionalities 
+    \end{itemize}
+    \item Home
+    \begin{itemize}
+        \item The home component provides the user with a list of the books that can be bought or taken by exchange. The list is ordered according to the genres books belong to.
+        \item The home component also provides, on selection, a view of the books inserted by the users themselves.
+        \item The home is the root of the application and all the main functionalities can directly be reached from this screen.
+    \end{itemize}
+    \item Search page
+    \begin{itemize}
+        \item Users can perform a search to find specific books among the ones present in the application. The filtering can be done over the title of the book, the author, the range of prices they are sold...aggiungere altri criteri che ora non ho il cell davanti
+        \item Users can perform a search to find other users. The search is carried on by inserting (even partially) the username of the user. 
+    \end{itemize}
+    \item Book insertion
+    \begin{itemize}
+        \item This functionality first allows the user to find the general information about the book he/she wants to insert. By performing a search on the book's title and the author's name, the user might see the book's ISBN, a brief summary of its content, the number of pages it contains, its average rating and other useful info.
+        \item Once the corresponding book has been chosen, the user can add images to show the conditions of the book he is selling, insert information about its current status, provide a comment, establish a selling price and stating if he/she is willing to exchange it with a different book. 
+    \end{itemize}
+    \item Forum
+    \begin{itemize}
+        \item The user can read and take part in open discussions that may span from a specific book to a specific literary genre.
+        \item The user can create a new thread of discussion.
+    \end{itemize}
+    \item Profile
+    \begin{itemize}
+        \item The user can visualize and change its own profile. He/she can add a profile picture, a short bio, his/her personal info such as full name and birthday. He/she can see the number of followers and following users.
+        \item The user may visualize the reviews he has received and the ones he has written.
+        \item The user may visualize the items he/she has put a like on.
+        \item The user may visualize the orders he has performed, dividing them somehow between the pending and completed ones.
+        \item The user may visualize the chats started with other users.
+        \item The user may visualize the notifications he gets when some other user sends him a request for exchange or when an item is bought.
+        \item The user may visualize the information about the saved payment methods.
+        \item The user may visualize the information about the saved shipping addresses.
+    \end{itemize}
+    \item Book purchase
+    \begin{itemize}
+        \item The user can select a single book or a collection of books from a specific user. The user can visualize the total amount of money he would pay. He/she can select the shipping mode (express courier or live) and, if needed, the shipping address. He/she can also select the payment method. 
+        \item The user has the possibility to choose an exchangeable book he wants to get and a book he/she owns to give in exchange 
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{General qualities}
+Our application has several characteristics of accessibility and usability. The user interface is easy to use and intuitive, the user is guided through the application thanks to intuitive icons and simple and direct section names. The design is captivating and trying to guarantee the best experience possible.
+\begin{itemize}
+    \item Usability: the main actor of the system is the end user. He/she is guided by the simple user interface through the application's screens, being able to use all the provided functionalities.
+    \item No Account Required: the user can access the application anonymously being able to look at the forum's discussions and search for relevant information about the sold items and users selling them. 
+    \item Dark mode: the range of colors used in the applications reflects a tendency towards dark colors for the background and lighter shades for the text.
+\end{itemize}
+
+\subsection{Functional requirements}
+In this section we present the requirements necessary to the correct behavior of the system:
+\subsubsection{General requirements:}
+\begin{itemize}
+    \item The application must be comprehensible by as many people as possible, so we decided to use English language.
+\end{itemize}
+
+\subsubsection{Authentication requirements:}
+\begin{itemize}
+    \item The application should allow users to register and login by providing email and password
+    \item The application should allow users to register and login by using an already existing Google account
+    \item The application should ask users to provide a username when registering
+    \item The application should allow users to enter the application anonymously
+    \item The application should provide a button to logout from the application if the user was logged in
+\end{itemize}
+
+The following requirements assume the user is registered and logged in.
+\subsubsection{Home requirements:}
+\begin{itemize}
+    \item The application should allow users to have a view of the available books divided by book categories 
+    \item The application should allow users to see his/her own inserted book 
+    \item The application should allow users to execute all the available functionalities starting from the home screen
+\end{itemize}
+
+\subsubsection{Search requirements:}
+\begin{itemize}
+    \item The application should allow users to search for specific books by either entering the book's title or the book's author
+    \item The search function should allow to filter by specifying a range of prices for the books
+    \item The search function should allow to filter by books that have associated pictures
+    \item The search function should allow to filter by books that are exchangeable
+    \item The search function should allow to filter books by genre
+    \item The search function should allow to filter books by their ISBN
+    \item The search function should allow to order the results of the search according to, either book's title, book's author, language, price, number of pages, average rating, number of associated images, or book's status
+    \item The search function should allow to specify the ordering direction between ascending and descending
+    \item The search function should allow to search users by their username
+    \item The search function applied on users should allow to order the results according to the average rating of the user or the number of received reviews
+    \item The search function applied on the users should allow to order the results according to an ascending or descending order
+\end{itemize}
+
+\subsubsection{Book insertion requirements:}
+\begin{itemize}
+    \item The application should allow to get general information about the book that is going to be inserted by the user \footnote{The general information about the book are the ones provided by the GoogleBooks API. In particular, they include: title, author, ISBN, language, rating's count, page count, summary, category.}
+    \item The general information about a book that is going to be inserted should be obtained by specifying at least partially the book's title and the book's author 
+    \item The application should allow users to upload one or more images showing the book they are inserting
+    \item The application should allow users to specify the book's status selecting an integer value between 1 and 5
+    \item The application should allow users to specify the category the book belongs to
+    \item The application should allow users to optionally insert a comment about the book
+    \item The application should allow users to specify a price for the book he will sell
+    \item The application should allow users to specify if they just want to sell the book or they also want to give it in exchange for another book offered by the buyer
+    \item The application should allow the owner to modify the information inserted about the book even after it has been saved
+    \item The application should allow the owner to delete the inserted book
+\end{itemize}
+
+\subsubsection{Forum requirements:}
+\begin{itemize}
+    \item The application should allow users to create a discussion on the forum
+    \item The application should allow users to specify a title and the thread for the new discussion
+    \item The application should allow users to read discussions on the forum and to contribute to them by writing new messages
+\end{itemize}
+
+\subsubsection{Profile requirements:}
+\begin{itemize}
+    \item The application should allow users to insert and visualize an image profile, a short bio, a full user name, the city he/she lives in
+    \item The application should allow users to visualize the user's email and the number of following and followers
+    \item The application should allow users to visualize the reviews they received and the reviews they have written
+    \item The application should allow the users to remove an already published review or a set of reviews
+    \item The application should allow users to visualize the books they have put a like on
+    \item The application should allow users to visualize the orders they have done distinguishing among the completed transactions and the pending, the accepted or the refused exchanges
+    \item The application should allow users to visualize chats opened with other users
+    \item The application should allow users to write messages on a private chat with another user 
+    \item The application should allow users to either accept or refuse proposed exchanges
+    \item The application should allow users to visualize notifications regarding proposed exchanges and sold books
+    \item The application should allow users to insert and visualize payment methods
+    \item The application should allow users to insert and visualize shipping addresses where the bought books has to be sent
+\end{itemize}
+
+\subsubsection{Visualize other user's profile requirements:}
+\begin{itemize}
+    \item The application should allow users to visualize the profile of other users
+    \item The application should allow users to create a chat with another user
+    \item The application should give to a user the possibility to follow another user
+    \item The application should give to a user the possibility to unfollow another user, if already following him/her
+    \item The application should prevent a user to review another user if the first hasn't bought something from the second one
+    \item The application should allow a user to visualize the reviews of another user
+    \item The application should allow a user to see the books inserted by another user from his/her profile
+    \item The application should allow a user to buy books selecting them from the owner's profile 
+\end{itemize}
+
+\subsubsection{Visualize book details:}
+\begin{itemize}
+    \item The application should allow users to visualize the sold books given a specific title
+    \item The application should allow users to visualize the owners of the book that is being sold
+    \item The application should allow users to visualize the number of likes associated to a specific book
+    \item The application should allow users to put a like to a specific book sold by a user
+    \item The application should allow users to remove a like if it has been previously put on
+    \item The application should allow users to see the price of a book sold by another user
+    \item The application should allow users to see the price of a book sold by another user
+    \item The application should allow users to visualize pictures associated to the sold book
+    \item The application should allow users to visualize the status of the book, the category it belongs to, the optional comment, the flag showing if book is available for exchange
+\end{itemize}
+
+\subsubsection{Purchase and sell books requirements:}
+\begin{itemize}
+    \item The application should allow users to select one or more books to buy them
+    \item The application should allow users to see the total price that is going to be paid
+    \item The application should allow users to select a shipping mode between "express courier" and "live dispatch"
+    \item The application should allow users to specify a shipping address only if the shipping mode selected is "express courier"
+    \item The application should allow users to pay cash only if the chosen shipping mode is "live dispatch"
+    \item The application should allow users to add a payment method only if the chosen shipping mode is "express courier"
+    \item The application should allow users to match an exchangeable book with one of his/her own books 
+    \item The application should ask the user for confirmation after the payment info has been filled
+    \item The application should allow users that have received a request for exchange to either accept or deny the offer
+    \item The application should not allow users to select books to buy when they are in a pending status 
+\end{itemize}
+
+\subsubsection{Anonymous users requirements:}
+\begin{itemize}
+    \item The application should allow anonymous users to search for specific books and for specific users
+    \item The application should allow anonymous users to read and write in forum discussions
+    \item The application should not allow anonymous users to buy books or propose exchanges to other users
+    \item The application should not allow anonymous users to insert a book
+\end{itemize}
+
+\subsection{Non-functional requirements}
+These are the non-functional requirements that are necessary to guarantee a functional application.
+\begin{itemize}
+    \item \textbf{Portability}: in order to be used by the largest number of user possible, the application is available and working for both Android and Apple users.
+    \item \textbf{Stability}: the system should always be available to be used at any time it is needed. System failures and server side crashes must be avoided in order to guarantee this requirement.
+    \item \textbf{Availability}: the services must always be up and running even during a failure period. The availability of the application is strictly related to the Firebase database availability. 
+    \item \textbf{Reliability}: the characteristic of the system to be reliable and work continuously without interruption is strictly related with the reliability of the Firebase database 
+    \item \textbf{Consistency}: the data must be consistent and updated. This is assured by using atomic transactions used when performing sensitive operations such as purchase, exchange acceptance, book insertion, book update.
+    \item \textbf{Efficiency}: the application needs to use as less resource as possible. Algorithms and data structures have been developed to optimize the consumption of resources in the best way possible.
+    \item \textbf{Extensibility}: the application was programmed with the idea that further extensions could be added in a simple way without deeply modifying the core of the application.
+    \item \textbf{Maintainability}: code is easily readable and commented, in this way it is maintainable by future programmers.
+\end{itemize}
+
+\newpage
+\section{Data design}
+\subsection{Internal software data structure}
+The structure of our application is divided in two main parts: client-side and server-side. The client-side part is the one retaining most of the application logic: we can indeed define it a fat client. The server-side part deals with data collection. Our application needs Internet connection as external requests to the DB are often sent with the objective to always display consistent and updated data. The choice of preserving consistency is deemed necessary for the scope of our application. BookYourBook is based on data displaying and data creation, so the data is isolated and accessed only using the Model-View-Controller paradigm. By navigating through the different sections of the application the user triggers database requests that, on completion, update the new screen.
+The communication between the server and the database is handled using Firebase
+services, in particular using Flutter Firebase APIs to save data on the
+Firestore database and retrieve them. Firestore database is a cloud NoSQL document-based database that retains most of the data used in the application. Images inserted by users are instead uploaded on the Firestore storage: this service gives the possibility to create new directories and to store files (images) in there. 
+On the client-side we defined some classes to represent the most important elements of the application. They resemble the structure of the documents saved in the Firestore database.
+
+\subsection{Database design \& implementation}
+The design of the database has been developed following the logical structure of the elements that need to be saved. In the Cloud Firestore Database we can identify 6 main collections: 
+\begin{itemize}
+    \item \textbf{Users}: this collection contains a document for each user registered in the application. Each document is named after the user's uid.
+    \begin{itemize}
+        \item \textbf{uid}: unique uid identifying the user
+        \item \textbf{username}: username of the user
+        \item \textbf{bio}: some info representing the user
+        \item \textbf{email}: user's email
+        \item \textbf{fullName}: user's fullName
+        \item \textbf{birthday}: user's birthday
+        \item \textbf{city}: city where the user lives
+        \item \textbf{following}: number of users followed by the user
+        \item \textbf{followers}: number of users following the user
+        \item \textbf{usersFollowedByMe}: set of users' uids of the followed users
+        \item \textbf{usersFollowingMe}: set of users' uids of users following me
+        \item \textbf{userProfileImageURL}: URL of the profile picture uploaded by the user and saved on Firestore storage
+        \item \textbf{shippingAddressInfo}: information about saved shipping adddresses
+        \item \textbf{paymentCardInfo}: information about saved credit/debit cards used for payment
+        \item \textbf{receivedReviews}: set of reviews written on the user
+        \item \textbf{reviewsWrittenByMe}: set of reviews written by the user to other users
+        \item \textbf{transactionsAsBuyer}: information about the transactions where the user was the buyer
+        \item \textbf{transactionsAsSeller}: information about the transactions where the user was the seller
+        \item \textbf{chats}: IDs of chats the user has with other users
+        \item \textbf{lastChatsDate}: timestamp of the last time the user opened the chat. It is used to highlight new messages arrived after that timestamp
+        \item \textbf{lastNotificationDate}: timestamp of the last time the user opened the notification page. It is used to highlight the new notifications arrived after that timestamp
+        \item \textbf{booksILike}: information about books the user has put a like on
+        \item \textbf{numberOfInsertedItems}: integer value increasing by one every time the user inserts a new book
+        \item \textbf{books}:
+        \begin{itemize}
+            \item \textbf{id}: id of the book used in GoogleBooks API
+            \item \textbf{author}
+            \item \textbf{title}
+            \item \textbf{category}
+            \item \textbf{comment}
+            \item \textbf{isbn}
+            \item \textbf{price}: price at which the book will be sold
+            \item \textbf{status}: integer representing the condition of the book inserted. It goes from 1 to 5, with the meaning that 1 is in awful conditions while 5 represents perfect conditions
+            \item \textbf{exchangeable}: if the book is available for exchange
+            \item \textbf{exchangeStatus}: it can assume be 'available', 'pending' if someone requested it, 'notAvailable' if \textbf{exchangeable} is \textit{False}
+            \item \textbf{imagesUrl}: set of links to images uploaded by the user and saved in Firestore storage
+            \item \textbf{insertionNumber}: integer identifying the i-th number inserted by the user
+            \item \textbf{likedBy}: set of users' uids that put a like on the book
+            \item \textbf{thumbnail}: image URL of the book cover
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{books}: this collection contains documents for each book's uid. The uid is the same assigned by the GoogleBooks API.
+    \begin{itemize}
+        \item \textbf{id}
+        \item \textbf{author}
+        \item \textbf{title}
+        \item \textbf{isbn}
+        \item \textbf{pageCount}
+        \item \textbf{language}
+        \item \textbf{categories}: categories the books belongs to
+        \item \textbf{thumbnail}: image URL of the book's cover
+        \item \textbf{summary}: short description about the book's content
+        \item \textbf{ratingsCount}: general rating assigned to the book
+        \item \textbf{availableNum}: integer representing how many users inserted that book in the application
+        \item \textbf{haveImages}: integer representing how many books among the ones inserted in the application are associated with images showing them
+        \item \textbf{exchangeable}: integer representing how many books among the ones inserted in the applications are available for exchange
+        \item \textbf{owners}: set of uids of the users that have inserted a copy of the book
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{booksPerGenre}: this collection contains documents for each genre reported in the application.
+    \begin{itemize}
+        \item \textbf{Books}: set of the books of that genre inserted in the application. Each book is identified by its uid (GoogleBooks uid) and contains:
+        \begin{itemize}
+            \item \textbf{author}
+            \item \textbf{title}
+            \item \textbf{thumbnail}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{transactions}: this collection contains documents for each transaction. Each document is named after the transaction uid. 
+    \begin{itemize}
+        \item \textbf{id}: transaction's uid
+        \item \textbf{buyer}: the user starting the transaction
+        \item \textbf{seller}: the user owning the sold books or the books asked for exchange
+        \item \textbf{buyerUsername}: the username of the buyer
+        \item \textbf{sellerUsername}: the username of the seller
+        \item \textbf{chosenShippingMode}: the shipping mode chosen. It can be either "express courier" or "live dispatch"
+        \item \textbf{payCash}: boolean value stating if the payment will be cash
+        \item \textbf{shippingAddress}: information about the shipping address where the books should be delivered
+        \item \textbf{time}: timestamp of the transaction's creation
+        \item \textbf{exchanges}:
+        \begin{itemize}
+            \item \textbf{exchangeStatus}: it can have values 'accepted', 'pending' or 'rejected'
+            \item \textbf{offeredBook}: information about the book that the buyer is offering for exchange
+            \item \textbf{receivedBook}: information about the book of the seller that should be exchanged
+        \end{itemize}
+          \item \textbf{paidBooks}: general information about the sold books and the price at which they have been sold
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{chats}: this collection contains documents for each chats between two users. Each document is named after the chat's uid. 
+    \begin{itemize}
+        \item \textbf{chatKey}: chat's identifier
+        \item \textbf{time}: timestamp of the chat's creation
+        \item \textbf{userUid1}: uid of the user generating the chat
+        \item \textbf{userUid1Username}: username of userUid1
+        \item \textbf{userUid2}: uid of the second user in the chat
+        \item \textbf{userUid22Username}: username of userUid2
+        \item \textbf{messages}: 
+        \begin{itemize}
+            \item \textbf{messageKey}: identifier of the message
+            \item \textbf{messageBody}: body of the message
+            \item \textbf{uidSender}: uid of the sender
+            \item \textbf{nameSender}: username of the sender
+            \item \textbf{time}: timestamp of the message
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{forumDiscussion}: this collection contains documents for each discussion opened. Each document is named after the discussion's title. This structure of each document is pretty similar to the structure of chat's documents. The mayor differences are:
+    \begin{itemize}
+        \item \textbf{category}: it contains the category the discussion belongs to. It can have 4 possible values: 'Book', 'Promotion', 'Shipping', 'Other'.
+        \item \textbf{startedBy}: uid of the user who started the discussion
+    \end{itemize}
+\end{itemize}
+
+The structure used to store images in the Firebase storage defines a directory for each registered user. The name of the directory is the user's uid. Inside each directory there are other directories, one for each inserted book, containing pictures related to the specific book. In addition, in the user's directory, an file called "imageProfilePic" represents the image profile of the user.
+
+\section{Architectures and component level design}
+As previously said, BookYourBook application consists of a two tiered architecture where the client-side mobile application is responsible for both the presentation and application layer, while the data
+layer is managed using Firebase Cloud Firestore and Firestore storage. We can then define our client as thick client given that the main functionalities are handled by it.
+\subsection{Client side}
+Both the presentation and the application layer reside on the client. It is developed using Flutter that is based on the client-optimized Dart language.
+
+\subsection{Client-server interaction}
+Now we will focus on the details regarding the internal structure of the mobile application, in
+order to better understand the interaction between the client device and the server.
+\newline
+The paradigm chosen for the application development is the Model-View-Controller pattern. In the client, the interfaces displayed to the user are the views. The controller logic is the part of the application that allows interaction with the data that is mainly stored remotely: the local and remote representation of the state and content of the application constitute our model. 
+\\
+Below we can see a representation of the paradigm:
+\\
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.3]{images/Chapter4/the-mvc-pattern.png}
+    \hspace{1.5cm}
+    \caption{The MVC paradigm}
+    \label{fig:mvc_paradigm}
+\end{figure}
+
+\subsection{Architectural design}
+In this section we will focus on briefly describing how the two part, the server side and the client side, are composed.
+The server side is composed by a single layer:
+\begin{itemize}
+    \item \textbf{Data Layer}: this data layer stores all data needed to start and keep the application up and running. It manages and provides access to data.
+\end{itemize}
+On the client side part, we have three divisions:
+\begin{itemize}
+    \item \textbf{Data Layer}: it consists of some elements that are persisted and are used through the application and updated when new response are sent from the DB 
+    \item \textbf{Business Layer}: it consists of different classes. They mainly handle the communication between the client and the data model, they manage the application logic and support the view 
+    \item \textbf{View Layer}: it allows the user to interact with the application. Since our is a mobile application, this layer is represented by the touch screen of the device used to visualize the application. This layer communicates with the logic level underneath and allows to potentially produce changes in the model.
+\end{itemize}
+
+\clearpage
+\subsection{Package organization}
+\subsubsection{Application organization}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.5]{images/Chapter4/Packages/Application packaging.jpg}
+    \hspace{1.5cm}
+    \caption{Application packages}
+    \label{fig:application_packages}
+\end{figure}
+
+In this picture we show the general structure of the Flutter application. The core of the code resides in the lib directory. Now we will show better what each package contains. 
+
+\subsubsection{Model}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.5]{images/Chapter4/Packages/model.jpg}
+    \hspace{1.5cm}
+    \caption{The \textit{Model} package}
+    \label{fig:model_package}
+\end{figure}
+
+In this package we grouped the classes that represent the information that is stored on the remote database. Instances of these classes are created from data received by the user and from data received from the database.
+
+\subsubsection{Actions}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.5]{images/Chapter4/Packages/actions.jpg}
+    \caption{Caption}
+    \label{fig:actions_packeges}
+\end{figure}
+This package contains the most important actions that can be executed with the application. Among them we point out: the action of adding a new book, buying a book, search a book among the ones inserted in the application.
+
+\clearpage
+\subsubsection{Main screens}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=.5]{images/Chapter4/Packages/mainScreens.jpg}
+    \caption{Caption}
+    \label{fig:main_screens}
+\end{figure}
+Here we group the main class of screens that can be seen in the application: 'authenticate', 'chat', 'forum', 'home', 'myBooks', 'notifications'.
+
+\clearpage
+\subsubsection{Profile}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=.5]{images/Chapter4/Packages/profile.jpg}
+    \caption{Caption}
+    \label{fig:profile_package}
+\end{figure}
+Here we see the main sections that can be visualized from the user profile.
+
+\clearpage
+\subsubsection{Services}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=.5]{images/Chapter4/Packages/services.jpg}
+    \caption{Caption}
+    \label{fig:services_packages}
+\end{figure}
+Here we point out the main classes used to handle the communication between the view layer and the data layer. The service package is the one strictly representing the controller layer. The package \textit{utils} offers different functionalities for various purposes across the application.
+
+
+
+\clearpage
+\section{User interfaces}
+In this section we will provide a certain number of screenshots of the application. We focused our attention in designing the application for mobile phones and tablets, both for portrait and landscape usage.
+\\We will present mainly the mobile-portrait interfaces and some significant screenshot of mobile-landscape. Tablet interfaces, both for landscape and portrait mode, are very similar to the mobile ones, thus just few screenshot are reported
+
+
+\subsection{Mobile}
+
+\subsubsection{Portrait}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/signin.png}
+    \hspace{1.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/signup.png}
+    \caption{SignIn and SignUp interfaces}
+    \label{fig:mobile_portrait_auth}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/home.png}
+    \hspace{1.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/mybooks.png}
+    \caption{Home page and My Books interfaces}
+    \label{fig:mobile_portrait_home}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/searchBook.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/searchBook1.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/searchBook2.png}
+    \caption{Search Book interfaces}
+    \label{fig:mobile_portrait_searchBook}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/searchUser.png}
+    \caption{Search User interfaces}
+    \label{fig:mobile_portrait_searchUser}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/bookInsert.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/bookInsert1.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/bookInsert2.png}
+    \caption{Book Insert interfaces}
+    \label{fig:mobile_portrait_bookInsert}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/viewBook.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/viewBook1.png}
+    \caption{View Book interfaces}
+    \label{fig:mobile_portrait_view}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/buyBook.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/buy1.png}
+    \caption{Buy Books interfaces}
+    \label{fig:mobile_portrait_buy}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/forum.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/forum1.png}
+    \caption{Forum interfaces}
+    \label{fig:mobile_portrait_forum}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/otherProfile.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/otherProfile1.png}
+    \caption{Other Profile interfaces}
+    \label{fig:mobile_portrait_otherProfile}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfile.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfileInfo.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfileInfoEdit.png}
+    \caption{Own Profile interfaces}
+    \label{fig:mobile_portrait_ownProfile}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfile1.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfileAddresses.png}
+    \caption{Own Profile interfaces}
+    \label{fig:mobile_portrait_ownProfile1}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfileChats.png}
+    \hspace{0.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/portrait/ownProfileChats1.png}
+    \caption{Chats interfaces}
+    \label{fig:mobile_portrait_chat}
+\end{figure}
+
+\subsubsection{Landscape}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/mybooks.png}
+    \hspace{1.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/home.png}
+    \hspace{1.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/viewbook.png}
+    \caption{Home page, My Books and View Book interfaces}
+    \label{fig:mobile_landscape_home}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/searchBook.png}
+    \caption{Search Book interface}
+    \label{fig:mobile_landscape_search}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/bookInsert.png}
+    \caption{Book insert interface}
+    \label{fig:mobile_landscape_bookinsert}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/ownProfile.png}
+    \hspace{1.5cm}
+    \includegraphics[scale = 0.1]{images/interfaces/mobile/landscape/ownProfileInfo.png}
+    \caption{Home page and My Books interfaces}
+    \label{fig:mobile_landscape_profile}
+\end{figure}
+
+\subsection{Tablet}
+
+\subsubsection{Portrait}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.09]{images/interfaces/tablet/portrait/home.png}
+    \includegraphics[scale = 0.09]{images/interfaces/tablet/portrait/mybook.png}
+    \includegraphics[scale = 0.09]{images/interfaces/tablet/portrait/viewBook.png}
+    \caption{Home page, My Books and View Book interfaces}
+    \label{fig:table_portrait_home}
+\end{figure}
+
+\subsubsection{Landscape}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.09]{images/interfaces/tablet/landscape/home.png}
+    \includegraphics[scale = 0.09]{images/interfaces/tablet/landscape/mybook.png}
+    \includegraphics[scale = 0.09]{images/interfaces/tablet/landscape/viewBook.png}
+    \caption{Home page, My Books and View Book interfaces}
+    \label{fig:table_portrait_home}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/tablet/landscape/searchBook.png}
+    \caption{Search Book interface}
+    \label{fig:table_landscape_search}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/tablet/landscape/buy.png}
+    \caption{Search Book interface}
+    \label{fig:table_landscape_buy}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.1]{images/interfaces/tablet/landscape/profile.png}
+    \caption{Search Book interface}
+    \label{fig:table_landscape_profile}
+\end{figure}
+
+    
+\section{External services and Libraries}
+We have used several external services for our application, some of them are necessary for the proper behavior of the system and other only to enrich the overall experience of the user. They are completely transparent to the user and fully integrated within the application.\\
+The main advantage in using these kind of services is first of all the ease to not to have to implement specific portion of code in order to achieve the same result that these external services already provide.\\\\
+Now we present the main external services that we have used and integrated in our application.
+
+\subsection[Google Firebase]{Google Firebase\footnote{\url{https://firebase.google.com/}}}
+
+\subsubsection{Authentication}
+This service has fundamental importance since it handles all the authentication procedures for the users. In the client-side part of the application, it is used to allow user to register or login using their preferred method among Google or classic email and password. \\
+In the server-side of the application, it is used to verify that the user token received in the header of a request are of a valid user. It has been easily integrated in the application.
+
+\subsubsection{Firestore}
+This service handles the communication between server and client in both directions. Messages are sent from client to server to update the model or retrieve books or users. The messages sent to the server may be of different types (update book, send a new message on chat, send a new message on forum, buy book, insert book, update profile info, send review, etc..). Furthermore, thare are also constant streams that updates the application. As an example, whenever the user opens the application and authenticates itself, a firestore stream of books is retrieved and shown in the home page.
+
+\subsection[Google Play Services]{Google Play Services\footnote{\url{https://developers.google.com/android/}}}
+The service is used to obtain the Google user profile and email, that is then used by Firebase Authentication to handle new user creation or authentication.
+
+\subsubsection[Books]{Books\footnote{\url{https://developers.google.com/books/}}}
+This service is used to obtain books information for the books the user willingly to insert/search. This is probably the main conceptual-logic service our application relies to. The API offers the possibility to perform searches in different ways; what the application does is retrieving a book information using title and author fields, and then convert the JSON formatted response the API gives back to an higher-level representation. 
+
+\subsection{Other minor libraries}
+Other libraries and services of secondary importance have been used in the application, mostly to make the user experience better, altough needing to reimplement some basic flutter functions by hands.
+\begin{itemize}
+    \item ManuallyCloseableExpansionTile: a reimplementation of ExpansionTile\footnote{\url{https://api.flutter.dev/flutter/material/ExpansionTile-class.html}} widget that allows us to programmatically open/close it
+    \item MyVerticalTabs: a reimplementation of VerticalTab\footnote{\url{https://pub.dev/packages/vertical_tabs}} widgets done to better suits to the application layout
+\end{itemize}
+
+\section{UML diagrams}
+In this section we present some useful diagrams that helps the reader to better understand
+the interaction between the user and the application. Here we present some of them.
+
+\subsection{Use Case diagrams}
+These diagrams show the flow of operation triggered by a specific actor when it tries to perform some task.The use cases we propose show the main operations that are possible to perform in the system.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.5]{images/UML/use_cases/auth.png}
+    \caption{Use case: User authentication}
+    \label{fig:auth_use_case}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.5]{images/UML/use_cases/uml_unlogged_user.png}
+    \caption{Use case: Unlogged user interaction}
+    \label{fig:unlogged_use_case}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.5]{images/UML/use_cases/uml_logged_user.png}
+    \caption{Use case: Logged user interaction}
+    \label{fig:logged_use_case}
+\end{figure}
+
+\subsection{Sequence diagrams}
+In this section we provide few sequence diagrams concerning the flow of the logical operations performed by our application once a certain operation is executed. These diagrams will show the interaction between methods and activities, rather than user and application. We decided to include three examples of Sequence diagrams, in order to make the document not too complex and less readable. The operations chosen are concerned with book insertion, book searching and book buying.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.7]{images/UML/sequence_diagrams/seq_insert.png}
+    \caption{Sequence diagram: Book insertion}
+    \label{fig:seq_insert}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.7]{images/UML/sequence_diagrams/seq_search.png}
+    \caption{Sequence diagram: Book Search}
+    \label{fig:seq_search}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.7]{images/UML/sequence_diagrams/seq_buy.png}
+    \caption{Sequence diagram: Book Buy}
+    \label{fig:seq_buy}
+\end{figure}
+
+\subsection{Flowcharts}
+In this section we provide an high-level representation of screens flow to illustrate the possible actions which can occur
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.7]{images/UML/flowchart/flowchart_auth.png}
+    \caption{Sequence diagram: Authentication}
+    \label{fig:flow_auth}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.7]{images/UML/flowchart/flowchart_home.png}
+    \caption{Sequence diagram: Home}
+    \label{fig:flow_home}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale = 0.7]{images/UML/flowchart/flowchart_profile.png}
+    \caption{Sequence diagram: Profile}
+    \label{fig:flow_profile}
+\end{figure}
+
+
+\section{Test cases}
+This section describe the main tests done on Book Your Book application. For each test we report the goal of the test, the input, the expected outcome and the result of the test. All of these tests have been done in automated way using flutter tests capabilities. A brief screenshot of all the tests done and of the results is shown at the end of this section.
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Show sign in/sign up screen \vskip0.1cm\\
+\hline
+    Input & Open the application and press the sign up button \vskip0.1cm\\
+\hline
+    Expected outcome & The screen changes to the sign up one, where the user can insert an email and a password and sign up to Book Your Book \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: The application starts by rendering sign in page, in which by pressing the sign up button the user is redirected to the sign up screen. From here he can go back to  sign in screen by pressing the corresponding button \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Sign up \vskip0.1cm\\
+\hline
+    Input & Fill the sign up form field and press sign up button \vskip0.1cm\\
+\hline
+    Expected outcome & The user, after landed on sign up page, insert an email and password and press the sign up button. After the procedure the subscribe page is shown \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: Once landed on the sign up screen, the user can freely insert an email and a password in the corresponding text fields. When pressing the sign up button, the app verifies the validity of the email and password and if success show the subscribe page, otherwise show an error message \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Subscribe \vskip0.1cm\\
+\hline
+    Input & Fill the username form field and click sign up button \vskip0.1cm\\
+\hline
+    Expected outcome & If the username is not in use the user is redirected to the home page, otherwise an error message is shown \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Logout \vskip0.1cm\\
+\hline
+    Input & Click the logout button in the app bar of the home page \vskip0.1cm\\
+\hline
+    Expected outcome & The user is redirected back to the sign in page \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Sign in \vskip0.1cm\\
+\hline
+    Input & Open the application and fill username and password fields; then press the sign in button\vskip0.1cm\\
+\hline
+    Expected outcome & The user will be redirected to the home page \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: The application checks whether there's a match for the inserted email and password in the database or not. In the former case the home user is correctly redirected to the home page; in the latter an error message is shown \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Sign in anonymously \vskip0.1cm\\
+\hline
+    Input & Open the application and press the continue anonymously button \vskip0.1cm\\
+\hline
+    Expected outcome & The user is granted the possibility to see the home page and use the application \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\vskip0.25cm
+The following tests always consider the user has already performed a valid sign in (w.l.o.g. excluding \textit{anonymous sign in})
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Navigate to book insertion page \vskip0.1cm\\
+\hline
+    Input & Click the book insertion icon on the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The book insertion screen is pushed over the home page and the user can interact with it, searching for a book to insert \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Book to insert selection \vskip0.1cm\\
+\hline
+    Input & After searched a book, the user tap the corresponding result. Then swipes. \vskip0.1cm\\
+\hline
+    Expected outcome & The user sees a screen with all the information of the book. After swiping he sees the fields to fill relatively to his own copy (e.g. add photo, status, comment, etc..) \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: After tapping the result the user is shown all the general info got from the \textit{Google Books' API} such as title, author, ratings, etc.. By swiping he is redirected to a screen in which can fill his own copy's information \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Book to insert fill own fields \vskip0.1cm\\
+\hline
+    Input & After tapped a book result and swiped, the user tap on all the elements of the screen and fills the relative form fields \vskip0.1cm\\
+\hline
+    Expected outcome & The page correctly shows all the information inserted by the user, that are: photos added, comment, status, price, category, availability for exchange \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Book insertion \vskip0.1cm\\
+\hline
+    Input & After having filled price and category fields on a searched book, press save button \vskip0.1cm\\
+\hline
+    Expected outcome & The book is successfully added \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: Since the mandatory parameters are filled, the application correctly saves this new book and add it to its collections. If mandatory parameters were missing, it shows an error message \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Navigate to search page \vskip0.1cm\\
+\hline
+    Input & Click the search icon on the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The search screen is pushed over the home page and the user can interact with it \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Search for book \vskip0.1cm\\
+\hline
+    Input & In the search page fill the book's title and author fields of a book that exists in the application's database and press search button. Then clicks the result and tap on a specific instance of that book sold by another user\vskip0.1cm\\
+\hline
+    Expected outcome & A result is visualized and it's interactive. The user can manage to arrive to the buy page by tapping on the desired instance of the book searched \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: Since the book searched is in the database, it is visualized in the form of a list tile and by clicking it the user can see, apart from general information about the book, the users who sell it and by tapping on that instance he is redirected to the page where he can see all the specific information of of that book instance, and buy it if he want \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Buy book from home page with no exchanges \vskip0.1cm\\
+\hline
+    Input & Tap a book in the home page, then tap on a specific instance of the book sold by another user for which exchange is not available. Tap buy button and select a valid shipping mode, shipping address and payment method. Finally click pay button and confirm his choice \vskip0.1cm\\
+\hline
+    Expected outcome & The user is permitted to arrive without error to the buy page. Once there, since he correctly filled all the fields relative to the payment, the purchase is valid and will be popped back to the home page\vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Navigate to own profile \vskip0.1cm\\
+\hline
+    Input & Click the profile icon on the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The profile screen is seen instead of the home page and the user can interact with it \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Navigate/use chat page \vskip0.1cm\\
+\hline
+    Input & After being in profile, tap on chats section and then tap on a specific chat. Finally write a new message and hit send\vskip0.1cm\\
+\hline
+    Expected outcome & The chats page is shown to the user. There by tapping on a specific chat, the latter is pushed and shown. Here by writing a message and hit send on the bottom part of the screen, the new message will be added and shown in the chat in real-time \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Navigate to pending exchanges page \vskip0.1cm\\
+\hline
+    Input & Go to a specific chat page and swipe \vskip0.1cm\\
+\hline
+    Expected outcome & The pending page, containing all the pending exchanges with that specific chat's user, is shown, where the user can interact by pressing accept or decline buttons \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Navigate to forum page \vskip0.1cm\\
+\hline
+    Input & Click the forum icon on the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The forum screen is seen instead of the home page and the user can interact with it \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Create a new discussion on forum  \vskip0.1cm\\
+\hline
+    Input & On forum page, tap the new discussion button, then insert a name and tap on confirmation button \vskip0.1cm\\
+\hline
+    Expected outcome & The new discussion page is shown and then back to the forum discussion a new one has been inserted\vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Send a new message on forum discussion  \vskip0.1cm\\
+\hline
+    Input & On forum page, tap a discussion, then insert a new message and hit send \vskip0.1cm\\
+\hline
+    Expected outcome & The discussion page is show and then a new message is shown\vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Home book interaction  \vskip0.1cm\\
+\hline
+    Input & On home page tap on a book, then tap a specific instance \vskip0.1cm\\
+\hline
+    Expected outcome & The tapped book is seen in details \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Visit another profile from home  \vskip0.1cm\\
+\hline
+    Input & On home page tap on a book, then tap a specific user profile \vskip0.1cm\\
+\hline
+    Expected outcome & The user profile is seen in details \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Own list of books  \vskip0.1cm\\
+\hline
+    Input & On home page tap "My Books" tab \vskip0.1cm\\
+\hline
+    Expected outcome & All of the books inserted by the user are correctly seen\vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & New notifications setup \vskip0.1cm\\
+\hline
+    Input & From home, tap to the profile icon in the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The "new" icon is shown \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & No new notifications setup \vskip0.1cm\\
+\hline
+    Input & From home, tap to the profile icon in the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The "new" icon is not shown \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & New chats setup \vskip0.1cm\\
+\hline
+    Input & From home, tap to the profile icon in the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The "new" icon is shown \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & No new chats setup \vskip0.1cm\\
+\hline
+    Input & From home, tap to the profile icon in the bottom navigation bar \vskip0.1cm\\
+\hline
+    Expected outcome & The "new" icon is not shown \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\noindent\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Edit profile \vskip0.1cm\\
+\hline
+    Input & From home, tap to the profile icon then tap the edit button and one at time edit all the fields \vskip0.1cm\\
+\hline
+    Expected outcome & All the fields are correctly updated \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\begin{center}
+\vskip0.5cm
+\setlength\tabcolsep{4pt}%
+\begin{tabularx}{0.9\linewidth}{|| >{\hsize=.25\hsize\raggedright\arraybackslash}X | >{\hsize=.75\hsize\raggedright\arraybackslash}X ||}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ [0.5ex] 
+\hline\hline
+    Goal & Order addition \vskip0.1cm\\
+\hline
+    Input & From home, tap to the profile then tap on orders \vskip0.1cm\\
+\hline
+    Expected outcome & The new order is correctly seen \vskip0.1cm\\
+\hline
+    Actual outcome & CORRECT: \textit{As expected} \vskip0.1cm\\
+\hline
+\end{tabularx}
+\vskip0.5cm
+\end{center}
+
+\textit{\\This is not an exhaustive list of test done. \\
+Some of the tests previously listed, have been replicated also for "Lanscape mode" checking.}
+
+\subsection{Tests result}
+Here we present some screenshots to address the results of all the tests done. This is the result of the command
+
+\begin{lstlisting}[breaklines]
+    00:07 +1: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\actions\addBoo
+k\addImage_test.dart: Add images when inserting book
+
+00:07 +2: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\actions\addBoo
+k\addImage_test.dart: Delete images in update mode
+
+00:09 +11: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\actions\buyBo
+oks\addShippingInfo_test.dart: add shipping address and selecting it when buying item
+
+00:09 +12: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\actions\buyBo
+oks\addPaymentMethod_test.dart: add payment method and selecting it when buying item
+
+00:12 +13: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\actions\buyBooks\addPaymentMethod_test.dart: add payme
+nt method and selecting it when buying item
+
+00:13 +15: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\actions\buyBooks\addShippingInfo_test.dart: add shippi
+ng address and selecting it when buying item
+
+00:14 +18: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\chat\chatPageBody_test.dart: ChatPageBody Test
+
+00:14 +18: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\chat\chatProfileBody_test.dart: Chat Profile Test
+
+00:14 +20: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\chat\chatProfile_test.dart: Chat Profile Test
+
+00:15 +21: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\chat\chatProfileBody_test.dart: Chat Profile Test
+
+00:15 +22: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\forum\newDiscussion_test.dart: NewDiscussion Test
+
+00:17 +22: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\chat\pendingPageBody_test.dart: PendingPageBody test
+
+00:18 +23: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\forum\discussionPageBody_test.dart: DiscussionPageBody
+ Test
+
+00:18 +23: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\forum\discussionPageBody_test.dart: DiscussionPageBody
+ Test
+
+00:18 +24: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\soldByView_test.dart: SoldByView Test
+
+00:18 +24: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\forum\discussionTabBody_test.dart: DiscussionTabBody T
+est
+
+00:18 +24: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homePageBookList_test.dart: HomePageBookList Test
+
+00:19 +24: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\soldByView_test.dart: SoldByView Test
+
+00:19 +24: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homePageBookList_test.dart: HomePageBookList Test
+
+00:20 +26: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\myBooks\myBooksBookList_test.dart: MyBooksBookList Sel
+f Test
+
+00:20 +26: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\soldByView_test.dart: SoldByView Test
+
+00:20 +27: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homeBody_test.dart: HomeBody Portrait Test
+
+00:21 +28: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\forum\newDiscussion_test.dart: NewDiscussion Test
+
+00:21 +29: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\forum\discussionTabBody_test.dart: DiscussionTabBody T
+est
+
+00:21 +31: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\myBooks\myBooksBookList_test.dart: MyBooksBookList Not
+
+00:21 +31: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homeBody_test.dart: HomeBody Portrait Test
+
+00:21 +31: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\myBooks\viewBookPage_test.dart: ViewBookPage Test
+
+00:22 +32: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homeBody_test.dart: HomeBody Portrait Test
+
+00:22 +33: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homeBody_test.dart: HomeBody Portrait Test
+
+00:23 +34: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\notifications\notificationProfile_test.dart: Notificat
+ionProfile New Test
+
+00:23 +34: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\notifications\notificationText_test.dart: Notification
+Text Test
+
+00:24 +36: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\home\homeBody_test.dart: HomeBody Landscape Test
+
+00:24 +39: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\notifications\notificationProfile_test.dart: Notificat
+ionProfile Old Test
+
+00:24 +40: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\notifications\notificationText_test.dart: Notification
+Text Test
+
+00:27 +47: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\profile\orders\viewBoughtItemPage_test.dart: view boug
+ht book from my orders
+
+00:27 +47: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\profile\orders\viewExchangeItemPage_test.dart: view ex
+changed book from my orders
+
+00:28 +48: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\profile\orders\viewExchangeItemPage_test.dart: view ex
+changed book from my orders
+
+00:30 +51: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\profile\visualizeProfile\addUserReview_test.dart: add
+a review for a user
+
+
+00:31 +56: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\profile\visualizeProfile\userInfo_test.dart: visualize
+ other users' profile
+
+00:31 +57: C:\Users\cvalo\Documents\polimi\magistrale\II-anno\I semestre\DIMA\DIMA-app\Sources\flutter_firebase_auth\test\screens\profile\visualizeProfile\userInfo_test.dart: visualize
+ other users' profile
+
+00:31 +58: All tests passed!
+
+\end{lstlisting}
+
+\section{Future development}
+The main extension to the app that will be developed is the possibility to perform real payments through \textit{Stripe} service, so to be ready to the deployment of the app in the market.\\In a second time, we are planning to enrich the possibility of book insertion giving the chance to insert a book just by scanning is QR-code or ISBN number. 
+\\\\These two main future development will account for better scalability and usability.
+\\\\Finally we are planning to add more user-to-user interaction, making them, as an example, being able to see each other followed/followers, suggest books to other friends, etc..
+
+\end{document}

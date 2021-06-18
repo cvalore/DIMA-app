@@ -45,7 +45,7 @@ class _ProfileMainPageState extends State<ProfileMainPage> {
     return StreamProvider<CustomUser>.value(
       value: _db.userInfo,
       child: Container(
-        padding: EdgeInsets.fromLTRB(_isTablet ? 150.0 : 25.0, _isTablet ? 10.0 : 0.0, _isTablet ? 150.0 : 25.0, 20.0),
+        padding: EdgeInsets.fromLTRB(_isTablet ? 150.0 : 25.0, _isTablet ? 60.0 : 16.0, _isTablet ? 150.0 : 25.0, 20.0),
         child:
         _isPortrait ?
         Column(
